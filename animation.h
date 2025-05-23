@@ -5,8 +5,10 @@
 enum AnimationType
 {
     kNothing,
-    kStand,
+    kIdle,
     kWalk,
+    kSlowRun,
+    kFastRun,
     kJump,
 };
 
@@ -131,4 +133,7 @@ public:
         return is_blend_;
     }
 
+
+    //デバッグ用
+    void Draw(const AnimationType& type);
 };

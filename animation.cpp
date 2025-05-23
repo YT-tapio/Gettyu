@@ -9,9 +9,15 @@ void Load(AnimationData& animation_data,
     animation_data.type = type;
     animation_data.animation_handle = MV1LoadModel(name);
 
+    if (animation_data.animation_handle == -1)
+    {
+        printfDx("アニメーションの読み込みに失敗してます");
+    }
+
     animation_data.model_handle = model;
 
     animation_data.play_time = 0.0f;
+    animation_data.total_time = 0.0f;
     animation_data.play_speed = play_speed;
 
 }
@@ -60,7 +66,22 @@ void Animation::Attach(AnimationType type)
                 MV1AttachAnim(animation.model_handle, 0, animation.animation_handle, FALSE);
 
             animation.total_time =
-                MV1GetAttachAnimTotalTime(animation.model_handle, animation.attach_index);
+                MV1GetAttachAnimTotalTime(animation.model_handle, 
+                    animation.attach_index);
+
+            
+
+            if (animation.attach_index == -1)
+            {
+                printfDx("アタッチに失敗しました");
+            }
+
+            if (animation.total_time < 0)
+            {
+                printfDx("トータルおかしい");
+            }
+
+            break;
         }
     }
 }
@@ -107,9 +128,8 @@ void Animation::BlendUpdate()
             }
         }
 
-        // blend_rate_ += (Delta_Time_ / 10);
-
-        blend_rate_ += delta_time_;
+        
+        blend_rate_ += (delta_time_ * 0.5f);
 
         if (blend_rate_ > 1.0f)
         {
@@ -144,8 +164,25 @@ void Animation::Update(AnimationType type)
             MV1SetAttachAnimTime(animation.model_handle, animation.attach_index,
                 animation.play_time);
 
+            
+            break;
+
         }
     }
 
     BlendUpdate();
+}
+
+void Animation::Draw(const AnimationType& type)
+{
+    for (auto& animation : animation_data_)
+    {
+        if (animation.type == type)
+        {
+            DrawFormatString(200, 200, GetColor(255, 255, 255), "%d", animation.attach_index);
+            DrawFormatString(200, 100, GetColor(255, 255, 255), "%f", animation.total_time);
+
+            break;
+        }
+    }
 }
