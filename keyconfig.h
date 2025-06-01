@@ -14,8 +14,9 @@ struct KeyConfig
 
 struct PadConfig
 {
+    static const int kLeftStick = 14000;
+    static const int kRightStick = -19000;
+    static const int kUpStick = 0;
+    static const int kDownStick = 0;
     static const int kJumpButton = XINPUT_BUTTON_A;
-    static const int kAttackButton = XINPUT_BUTTON_X;
-    static const int kLeftButton = 14000;
-    static const int kRightButton = -19000;
 };

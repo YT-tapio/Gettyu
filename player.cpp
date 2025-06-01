@@ -1,5 +1,8 @@
 #include"player.h"
 #include"keyconfig.h"
+
+
+
 Player::Player(VECTOR pos, int model,int pad_num)
 {
 	model_ = model;
@@ -38,9 +41,9 @@ void Player::Init(VECTOR pos)
 void Player::Draw()
 {
 	MV1SetPosition(model_, pos_);
-	DrawSphere3D(pos_, 0.5f, 5, GetColor(0, 255, 0), GetColor(0, 255, 0), FALSE);
+	DrawSphere3D(VGet(pos_.x, pos_.y + 15, pos_.z), 0.5f, 5, GetColor(0, 255, 0), GetColor(0, 255, 0), FALSE);
 
-	MV1SetScale(model_, VGet(0.1f, 0.1f, 0.1f));
+	MV1SetScale(model_, VGet(0.01f, 0.01f, 0.01f));
 
 	MV1DrawModel(model_);
 	animation_.Draw(now_type_);
@@ -61,7 +64,7 @@ void Player::InputState()
 }
 
 
-void Player::Update()
+void Player::Update(const VECTOR& pos)
 {
 
 	InputState();
@@ -74,24 +77,9 @@ void Player::Update()
 
 	/*(PadConfig::kLeftButton)*/
 
-	if (key_input_[KeyConfig::kRightKey] || pad_input_.ThumbLX > (PadConfig::kLeftButton))
-	{
-		direction_ = VAdd(direction_, VGet(1, 0, 0));
-	}
+	CheckDirection(pos);
 
-
-	if (key_input_[KeyConfig::kLeftKey] || pad_input_.ThumbLX < (PadConfig::kRightButton))
-	{
-		direction_ = VAdd(direction_, VGet(-1, 0, 0));
-	}
-
-	//移動しているなら正規化
-	if (VSquareSize(direction_) > 0)
-	{
-		direction_ = VNorm(direction_);
-	}
-
-	velocity = VScale(direction_, 0.5f);
+	velocity = VScale(direction_, speed_);
 
 
 	if (VSize(velocity) != 0)
@@ -165,4 +153,86 @@ void Player::Update()
 
 
 	
+}
+
+
+void Player::CheckDirection(const VECTOR& pos)
+{
+	float constant = 0.0f;
+
+	MakeLine(constant, pos);
+
+	VECTOR direction = VGet(0, 0, 0);
+
+
+
+	//どちらが前かの判別
+	//原点からの距離を見る
+
+	float my_scale = sqrt((pos_.x * pos_.x) + (pos_.z * pos_.z));
+	float other_scale = sqrt((pos.x * pos.x) + (pos.z * pos.z));
+
+	if (pos_.x > pos.x)
+	{
+		direction = VGet(1, 0, 0);
+	}
+	else
+	{
+		direction = VGet(-1, 0, 0);
+	}
+
+
+	/*--------プレイヤーの操作--------*/
+
+	//前
+	if (key_input_[KeyConfig::kUpKey])
+	{
+		direction_ = VAdd(direction_, VGet(direction.x, 0, direction.x * constant));
+	}
+
+	//後ろ
+	if (key_input_[KeyConfig::kDownKey])
+	{
+		direction_ = VAdd(direction_, VGet(-1.0f * (direction.x), 0, -1.0f * (direction.x * constant)));
+	}
+
+
+	//右
+	if (key_input_[KeyConfig::kRightKey])
+	{
+		direction_ = VAdd(direction_, VGet(direction.x * constant, 0, -direction.x));
+	}
+
+	//左
+	if (key_input_[KeyConfig::kLeftKey])
+	{
+		direction_ = VAdd(direction_, VGet(-(direction.x * constant), 0, direction.x));
+	}
+
+
+	//正規化
+	if (VSquareSize(direction_) > 0)
+	{
+		direction_ = VNorm(direction_);
+	}
+
+
+
+}
+
+
+void Player::MakeLine(float& constant, const VECTOR& pos)
+{
+	//直線のvector
+	VECTOR  distance = VGet(pos.x - pos_.x, 0, pos.z - pos_.z);
+
+	if (distance.x != 0.0f)
+	{
+		constant = distance.z / distance.x;
+	}
+	else
+	{
+		constant = distance.z;
+	}
+
 }

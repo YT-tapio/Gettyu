@@ -104,13 +104,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>DxLib_h</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>DxLib_h;EffekseerForDxLib</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>DxLib_h</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>DxLib_h;EffekseerForDxLib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -132,14 +132,17 @@
   <ItemGroup>
     <ClCompile Include="animation.cpp" />
     <ClCompile Include="camera.cpp" />
+    <ClCompile Include="effect.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="player.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="animation.h" />
     <ClInclude Include="camera.h" />
+    <ClInclude Include="effect.h" />
     <ClInclude Include="keyconfig.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="screen.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -23,6 +23,8 @@ private:
 	char key_input_[256] = {};
 	XINPUT_STATE pad_input_ = {};
 
+	float speed_ = 0.5f;
+
 	float delta_time_;
 
 public:
@@ -52,10 +54,16 @@ public:
 	void InputState();
 
 
-	void Update();
+	void Update(const VECTOR& pos);
+
+	void CheckDirection(const VECTOR& pos);
+
+
+	void MakeLine(float& constant, const VECTOR& pos);
 
 
 	const VECTOR& GetPos() const { return pos_; }
 
+	VECTOR GetCenterPos() { return { pos_.x,pos_.y + 15,pos_.z }; }
 
 };

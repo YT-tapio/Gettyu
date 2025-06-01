@@ -1,13 +1,15 @@
 #include<iostream>
 #include"DxLib.h"
+#include"EffekseerForDxLib.h"
 #include"animation.h"
 #include"player.h"
 #include"camera.h"
+#include"effect.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
     SetGraphMode(1280, 832, 32);			//ウィンドウのサイズとカラーモードを決める
-    ChangeWindowMode(FALSE);				//ウィンドウモードにする
+    ChangeWindowMode(TRUE);				//ウィンドウモードにする
     if (DxLib_Init() == -1)        // ＤＸライブラリ初期化処理
     {
         return -1;        // エラーが起きたら直ちに終了
@@ -18,6 +20,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     SetUseZBufferFlag(TRUE);		// Ｚバッファを使用する
     SetUseBackCulling(TRUE);		// バックカリングを行う
+
+    SetMouseDispFlag(FALSE);
 
     int red = GetColor(255, 0, 0);
     int green = GetColor(0, 255, 0);
@@ -34,6 +38,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     AnimationData walk;
     AnimationData slow_run;
     AnimationData fast_run;
+
+   std::shared_ptr<EffectManager>effect_manager = std::make_shared<EffectManager>();
 
     char idle_path[256] = "data/animation/Idle.mv1";
     char walk_path[256] = "data/animation/Walking.mv1";
@@ -84,8 +90,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
         //更新処理
         player->SetDeltaTime(delta_time);
-        player->Update();
-        camera->Update(player->GetPos());
+        player->Update(camera->GetPos());
+        camera->Update(player->GetCenterPos());
+        effect_manager->Update(player->GetPos());
        
         
 
@@ -106,11 +113,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         DrawLine3D(VGet(0, 0, 10), VGet(0, 0, -10), blue);
 
         player->Draw();
+        effect_manager->Draw();
 
         ScreenFlip();
 
         prevTime = nowTime;
     }
+
+    Effkseer_End();
 
     DxLib_End();
 
