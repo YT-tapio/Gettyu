@@ -11,6 +11,8 @@ class Camera
 {
 private:
 
+	const float  FovDegrees = 60.0f * DX_PI_F / 180.0f;		// カメラの視野角(度数)
+
 	VECTOR pos_;	//ポジション
 	VECTOR velocity_ = { 0,0,0 };
 	VECTOR direction_ = { 0,0,0 };
@@ -55,6 +57,11 @@ public:
 
 
 	const VECTOR& GetPos() const { return pos_; }
+
+	/// <summary>
+	/// 横の回転量を取得する
+	/// </summary>
+	const float GetSideRad() const { return side_rad_; }
 
 
 	

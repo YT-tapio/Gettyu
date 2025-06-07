@@ -1,4 +1,4 @@
-#include"effect.h"
+#include"effect_manager.h"
 #include"EffekseerForDXLib.h"
 #include "DxLib.h"
 
@@ -8,6 +8,8 @@ EffectManager::EffectManager()
     : effectResourceHandle(-1)
     , playingEffectHandle(-1)
     , playCount(0)
+    , on_disp_(TRUE)
+    ,play_type_(EffectPlayType::kStart)
 {
     // 初期化
     Initialize();
@@ -56,25 +58,64 @@ void EffectManager::Load()
 {
     // エフェクトのリソースを読み込む
     effectResourceHandle = LoadEffekseerEffect(EffectFilePath, EffectSize);
+
+    if (effectResourceHandle == -1)
+    {
+        printfDx("失敗");
+    }
+    //playingEffectHandle = PlayEffekseer3DEffect(effectResourceHandle);
 }
 
 /// <summary>
 /// 更新
 /// </summary>
 /// <param name="playPosition">再生座標</param>
-void EffectManager::Update(VECTOR playPosition)
+void EffectManager::Update(const VECTOR& playPosition)
 {
-    // 定期的にエフェクトを再生する
-    if (!(playCount % EffectPlayInterval))
+
+    if (!on_disp_)
     {
-        // エフェクトを再生する。
+        return;
+    }
+    
+
+    // 定期的にエフェクトを再生する
+    if (playCount > EffectPlayInterval)
+    {
+        
+        if (FALSE)
+        {
+            // エフェクトを再生する。
+            playingEffectHandle = PlayEffekseer3DEffect(effectResourceHandle);
+        }
+        /*
+        if (playingEffectHandle == -1)
+        {
+            printfDx("失敗");
+        }
+        */
+
+        play_type_ = EffectPlayType::kEnd;
+        on_disp_ = FALSE;
+        playCount = 0;
+
+    }
+
+    if (play_type_ == EffectPlayType::kStart)
+    {
         playingEffectHandle = PlayEffekseer3DEffect(effectResourceHandle);
+        play_type_ = kPlay;
+    }
+    
+    if (play_type_ == EffectPlayType::kEnd)
+    {
+        StopEffekseer3DEffect(playingEffectHandle);
     }
 
     // 再生カウントを進める
     playCount++;
 
-    if (FALSE)
+    if (TRUE)
     {
         // 再生中のエフェクトを移動する。
         SetPosPlayingEffekseer3DEffect(playingEffectHandle, playPosition.x, playPosition.y, playPosition.z);
@@ -95,6 +136,7 @@ void EffectManager::Update(VECTOR playPosition)
 void EffectManager::Draw()
 {
     // Effekseerにより再生中のエフェクトを描画する。
+    
     DrawEffekseer3D();
-
+    
 }

@@ -158,7 +158,15 @@ void Animation::Update(AnimationType type)
 
             if (animation.play_time >= animation.total_time)
             {
-                animation.play_time = 0.0f;
+                if (animation.type < kNoLoop)
+                {
+                    animation.play_time = 0.0f;
+                }
+                else
+                {
+                    animation.play_time = animation.total_time - 0.5f;
+                }
+                
             }
 
             MV1SetAttachAnimTime(animation.model_handle, animation.attach_index,

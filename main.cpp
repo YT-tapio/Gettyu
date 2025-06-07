@@ -4,7 +4,8 @@
 #include"animation.h"
 #include"player.h"
 #include"camera.h"
-#include"effect.h"
+#include"effect_manager.h"
+#include"FPS.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -38,6 +39,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     AnimationData walk;
     AnimationData slow_run;
     AnimationData fast_run;
+    AnimationData jumping_up;
+    AnimationData jumping_down;
 
    std::shared_ptr<EffectManager>effect_manager = std::make_shared<EffectManager>();
 
@@ -45,6 +48,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     char walk_path[256] = "data/animation/Walking.mv1";
     char slow_run_path[256] = "data/animation/Slow_Run.mv1";
     char fast_run_path[256] = "data/animation/Fast_Run.mv1";
+    char jumping_up_path[256] = "data/animation/Jumping_Up.mv1";
+    char jumping_down_path[256] = "data/animation/Jumping_Down.mv1";
 
     Load(idle, idle_path,
         AnimationType::kIdle, chara,3.0f);
@@ -57,6 +62,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     Load(fast_run, fast_run_path,
         AnimationType::kFastRun, chara, 3.0f);
+
+    Load(jumping_up, jumping_up_path, 
+        AnimationType::kJumpUp, chara, 2.0f);
+
+    Load(jumping_down, jumping_down_path,
+        AnimationType::kJumpDown, chara, 2.0f);
 
     //カメラを生成
     std::shared_ptr<Camera>camera = std::make_shared<Camera>();
@@ -71,26 +82,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     player->AddAnim(walk);
     player->AddAnim(slow_run);
     player->AddAnim(fast_run);
+    player->AddAnim(jumping_up);
+    player->AddAnim(jumping_down);
 
     //高精度タイマーでフレーム管理
-    LONGLONG prevTime = GetNowHiPerformanceCount();
-
-   
+   std::shared_ptr<FPS>fps = std::make_shared<FPS>();
 
     while (ScreenFlip() == 0 && ProcessMessage() == 0 && ClearDrawScreen() == 0 && !CheckHitKey(KEY_INPUT_ESCAPE))
     {
         //現在の時間を取得
-        LONGLONG nowTime = GetNowHiPerformanceCount();
+        fps->Update();
 
-       
-        // deltaTime計測
-        float delta_time;
-        // nowCount = GetNowCount();
-        delta_time = (nowTime - prevTime) / 100000.0f;
-
+        
         //更新処理
-        player->SetDeltaTime(delta_time);
-        player->Update(camera->GetPos());
+        player->SetDeltaTime(fps->GetDeltaTime());
+        player->Update(camera->GetPos(),camera->GetSideRad());
         camera->Update(player->GetCenterPos());
         effect_manager->Update(player->GetPos());
        
@@ -101,7 +107,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         /*-----------------描画処理------------------*/
 
         /*----デルタタイム表示----*/
-        DrawFormatString(100, 100, GetColor(255, 255, 255), "%f", delta_time);
+        DrawFormatString(100, 100, GetColor(255, 255, 255), "%f", fps->GetDeltaTime());
+        
+        fps->Draw();
 
         DrawString(0, 0, "x", red);
         DrawString(15, 0, "y", green);
@@ -117,7 +125,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
         ScreenFlip();
 
-        prevTime = nowTime;
+        fps->Wait();
+
+        fps->SetPrevTime();
+        
     }
 
     Effkseer_End();

@@ -6,24 +6,38 @@ class Player
 {
 private:
 
+	const float kWalkSpeed = 1.0f;
+	const float kNormalSpeed = 2.0f;
+	const float kDashSpeed = 2.8f;
+	
+	const float kGravity = 0.3f;		//重力
+	const float kJumpPower = 4.5f;		//ジャンプ力
+
 	Animation animation_;
 	AnimationType now_type_;            //現在のプレイヤーのアニメ～しょん
 	AnimationType before_type_;			//1つ前のアニメーション
 	AnimationType before_before_type_;	//2つ前のアニメーション
 
-	VECTOR pos_;	//ポジション
+	VECTOR pos_;						//ポジション
 	VECTOR velocity_;
 	VECTOR direction_;
-	int model_;			//モデル
+	VECTOR rotation_;
 
-	//入力するパッドの番号
-	int pad_input_num_;
+	bool is_ground_;					//地面の上にいるとき
+
+	int model_;							//モデル
+
+	
+	int pad_input_num_;					//入力するパッドの番号
 
 	//操作タイプ
 	char key_input_[256] = {};
 	XINPUT_STATE pad_input_ = {};
 
-	float speed_ = 0.5f;
+	float fall_speed_;
+
+
+	//float speed_ = 0.5f;
 
 	float delta_time_;
 
@@ -54,15 +68,25 @@ public:
 	void InputState();
 
 
-	void Update(const VECTOR& pos);
+	void Update(const VECTOR& pos,const float& rotation);
 
-	void CheckDirection(const VECTOR& pos);
+	
+	void InputMovement(const VECTOR& pos, const float& rotation);
+
+
+	void JumpAction(VECTOR& velocity);
+
+
+	bool CheckGround();
+
+	void CheckDirection(const VECTOR& pos, const float& rotation);
 
 
 	void MakeLine(float& constant, const VECTOR& pos);
 
 
 	const VECTOR& GetPos() const { return pos_; }
+	
 
 	VECTOR GetCenterPos() { return { pos_.x,pos_.y + 15,pos_.z }; }
 

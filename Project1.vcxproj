@@ -132,14 +132,16 @@
   <ItemGroup>
     <ClCompile Include="animation.cpp" />
     <ClCompile Include="camera.cpp" />
-    <ClCompile Include="effect.cpp" />
+    <ClCompile Include="effect_manager.cpp" />
+    <ClCompile Include="FPS.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="player.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="animation.h" />
     <ClInclude Include="camera.h" />
-    <ClInclude Include="effect.h" />
+    <ClInclude Include="effect_manager.h" />
+    <ClInclude Include="FPS.h" />
     <ClInclude Include="keyconfig.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="screen.h" />

@@ -1,5 +1,6 @@
 #include"camera.h"
 #include"screen.h"
+#include"EffekseerForDxLib.h"
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -9,7 +10,10 @@ Camera::Camera()
 	//奥行1.0～1000までをカメラの描画範囲とする
 	SetCameraNearFar(1.0f, 1000.0f);
 
-	pos_ = VGet(10, 300, -300);
+	pos_ = VGet(0, 0, -0);
+
+	// 視野角設定
+	SetupCamera_Perspective(FovDegrees);
 }
 
 Camera::~Camera()
@@ -20,16 +24,20 @@ Camera::~Camera()
 
 void Camera::Update(const VECTOR& target_pos)
 {
+	//マウスポインターの取得
 	GetMousePoint(&now_mouse_pos_.x, &now_mouse_pos_.y);
 
 
-
+	//前回と現在のポインターの位置が違うとき
 	if (CheckMousePoint(now_mouse_pos_, before_mouse_pos_))
 	{
+		//横の回転が360を超えないように
 		if (side_rad_ > (M_PI * 2)) { side_rad_ = 0; }
 
+		//縦の回転を作る
 		MakeVertical(target_pos);
 
+		//
 		if (now_mouse_pos_.x > before_mouse_pos_.x)
 		{
 			float constant = now_mouse_pos_.x - before_mouse_pos_.x;
@@ -65,7 +73,7 @@ void Camera::Update(const VECTOR& target_pos)
 
 	pos_ = VAdd(target_pos, velocity_);
 
-
+	Effekseer_Sync3DSetting();
 	
 	SetCameraPositionAndTarget_UpVecY(pos_, target_pos);
 }

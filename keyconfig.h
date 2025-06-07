@@ -9,6 +9,8 @@ struct KeyConfig
     static const int kDownKey = KEY_INPUT_S;
     static const int kLeftKey = KEY_INPUT_A;
     static const int kRightKey = KEY_INPUT_D;
+    static const int kDashKey = KEY_INPUT_LSHIFT;
+    static const int kWalkKey = KEY_INPUT_LCONTROL;
     static const int kJumpKey = KEY_INPUT_SPACE;
 };
 

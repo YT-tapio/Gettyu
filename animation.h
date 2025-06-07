@@ -9,7 +9,9 @@ enum AnimationType
     kWalk,
     kSlowRun,
     kFastRun,
-    kJump,
+    kNoLoop,        //ここより先のアニメーションはループなし
+    kJumpUp,
+    kJumpDown
 };
 
 
@@ -28,10 +30,7 @@ struct AnimationData
     float play_speed;      //再生スピード
 };
 
-/// <summary>
-/// 初期化を行う場所
-/// </summary>
-/// <param name="name[]">アニメーションの名前</param>
+
 void Load(AnimationData& animation_data,
     const char name[], AnimationType type, int model, float play_speed);
 
