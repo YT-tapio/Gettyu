@@ -10,8 +10,8 @@ private:
 	const float kNormalSpeed = 2.0f;
 	const float kDashSpeed = 2.8f;
 	
-	const float kGravity = 0.3f;		//重力
-	const float kJumpPower = 4.5f;		//ジャンプ力
+	const float kGravity = 0.6f;		//重力
+	const float kJumpPower = 3.5f;		//ジャンプ力
 
 	Animation animation_;
 	AnimationType now_type_;            //現在のプレイヤーのアニメ～しょん

@@ -16,6 +16,29 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         return -1;        // エラーが起きたら直ちに終了
     }
 
+    // DirectX11を使用するようにする。(DirectX9も可、一部機能不可)
+    // Effekseerを使用するには必ず設定する。
+    SetUseDirect3DVersion(DX_DIRECT3D_11);
+
+    // 引数には画面に表示する最大パーティクル数を設定する。
+    if (Effkseer_Init(20000) == -1) { DxLib_End(); }
+
+    // フルスクリーンウインドウの切り替えでリソースが消えるのを防ぐ。
+    // Effekseerを使用する場合は必ず設定する。
+    SetChangeScreenModeGraphicsSystemResetFlag(FALSE);
+
+    // DXライブラリのデバイスロストした時のコールバックを設定する。
+    // ウインドウとフルスクリーンの切り替えが発生する場合は必ず実行する。
+    Effekseer_SetGraphicsDeviceLostCallbackFunctions();
+
+    // Zバッファを有効にする。
+    // Effekseerを使用する場合、2DゲームでもZバッファを使用する。
+    SetUseZBuffer3D(TRUE);
+
+    // Zバッファへの書き込みを有効にする。
+    // Effekseerを使用する場合、2DゲームでもZバッファを使用する。
+    SetWriteZBuffer3D(TRUE);
+
     // 描画先画面を裏画面にする
     SetDrawScreen(DX_SCREEN_BACK);
 
@@ -42,7 +65,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     AnimationData jumping_up;
     AnimationData jumping_down;
 
-   std::shared_ptr<EffectManager>effect_manager = std::make_shared<EffectManager>();
+   std::shared_ptr<EffectManager>test_effect1 = 
+       std::make_shared<EffectManager>("data/effect/Simple_Distortion.efkefc",1.0f,120);
+
+   std::shared_ptr<EffectManager>test_effect2 =
+       std::make_shared<EffectManager>("data/effect/Laser02.efkefc", 1.0f, 240);
 
     char idle_path[256] = "data/animation/Idle.mv1";
     char walk_path[256] = "data/animation/Walking.mv1";
@@ -96,10 +123,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         
         //更新処理
         player->SetDeltaTime(fps->GetDeltaTime());
+        test_effect1->SetDeltaTime(fps->GetDeltaTime());
         player->Update(camera->GetPos(),camera->GetSideRad());
         camera->Update(player->GetCenterPos());
-        effect_manager->Update(player->GetPos());
-       
+        test_effect1->Update(player->GetPos());
+        test_effect2->Update(player->GetPos());
         
 
         ClearDrawScreen();
@@ -121,7 +149,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         DrawLine3D(VGet(0, 0, 10), VGet(0, 0, -10), blue);
 
         player->Draw();
-        effect_manager->Draw();
+        test_effect1->Draw();
+        test_effect2->Draw();
 
         ScreenFlip();
 

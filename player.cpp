@@ -224,7 +224,7 @@ void Player::InputMovement(const VECTOR& pos, const float& rotation)
 void  Player::JumpAction(VECTOR& velocity)
 {
 	//èdóÕ
-	fall_speed_ -= kGravity;
+	fall_speed_ -= (kGravity * delta_time_);
 
 	//ínñ Ç…Ç¢ÇÈÇ©ÇÃîªíË
 	is_ground_ = CheckGround();

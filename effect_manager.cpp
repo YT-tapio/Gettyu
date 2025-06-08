@@ -4,12 +4,16 @@
 
 
 // コンストラクタ
-EffectManager::EffectManager()
-    : effectResourceHandle(-1)
-    , playingEffectHandle(-1)
+EffectManager::EffectManager(const char* file_path,float size,int play_interval)
+    : resource_handle_(-1)
+    , playing_handle_(-1)
     , playCount(0)
     , on_disp_(TRUE)
     ,play_type_(EffectPlayType::kStart)
+    ,delta_time_(0.0f)
+    ,file_path_(file_path)
+    ,size_(size)
+    ,play_interval_(play_interval)
 {
     // 初期化
     Initialize();
@@ -23,43 +27,22 @@ EffectManager::~EffectManager()
 {
     // エフェクトリソースの開放
     // (Effekseer終了時に破棄されるので削除しなくてもいい)
-    DeleteEffekseerEffect(effectResourceHandle);
+    DeleteEffekseerEffect(resource_handle_);
 }
 
 // 初期化
 void EffectManager::Initialize()
 {
-    // DirectX11を使用するようにする。(DirectX9も可、一部機能不可)
-    // Effekseerを使用するには必ず設定する。
-    SetUseDirect3DVersion(DX_DIRECT3D_11);
-
-    // 引数には画面に表示する最大パーティクル数を設定する。
-    if (Effkseer_Init(EffectParticleLimit) == -1) { DxLib_End(); }
-
-    // フルスクリーンウインドウの切り替えでリソースが消えるのを防ぐ。
-    // Effekseerを使用する場合は必ず設定する。
-    SetChangeScreenModeGraphicsSystemResetFlag(FALSE);
-
-    // DXライブラリのデバイスロストした時のコールバックを設定する。
-    // ウインドウとフルスクリーンの切り替えが発生する場合は必ず実行する。
-    Effekseer_SetGraphicsDeviceLostCallbackFunctions();
-
-    // Zバッファを有効にする。
-    // Effekseerを使用する場合、2DゲームでもZバッファを使用する。
-    SetUseZBuffer3D(TRUE);
-
-    // Zバッファへの書き込みを有効にする。
-    // Effekseerを使用する場合、2DゲームでもZバッファを使用する。
-    SetWriteZBuffer3D(TRUE);
+    
 }
 
 // 読み込み
 void EffectManager::Load()
 {
     // エフェクトのリソースを読み込む
-    effectResourceHandle = LoadEffekseerEffect(EffectFilePath, EffectSize);
+    resource_handle_ = LoadEffekseerEffect(file_path_, size_);
 
-    if (effectResourceHandle == -1)
+    if (resource_handle_ == -1)
     {
         printfDx("失敗");
     }
@@ -80,13 +63,13 @@ void EffectManager::Update(const VECTOR& playPosition)
     
 
     // 定期的にエフェクトを再生する
-    if (playCount > EffectPlayInterval)
+    if (playCount > play_interval_)
     {
         
         if (FALSE)
         {
             // エフェクトを再生する。
-            playingEffectHandle = PlayEffekseer3DEffect(effectResourceHandle);
+            playing_handle_ = PlayEffekseer3DEffect(resource_handle_);
         }
         /*
         if (playingEffectHandle == -1)
@@ -103,27 +86,27 @@ void EffectManager::Update(const VECTOR& playPosition)
 
     if (play_type_ == EffectPlayType::kStart)
     {
-        playingEffectHandle = PlayEffekseer3DEffect(effectResourceHandle);
+        playing_handle_ = PlayEffekseer3DEffect(resource_handle_);
         play_type_ = kPlay;
     }
     
     if (play_type_ == EffectPlayType::kEnd)
     {
-        StopEffekseer3DEffect(playingEffectHandle);
+        StopEffekseer3DEffect(playing_handle_);
     }
 
     // 再生カウントを進める
-    playCount++;
+    playCount += (1 * (delta_time_ * 10));
 
     if (TRUE)
     {
         // 再生中のエフェクトを移動する。
-        SetPosPlayingEffekseer3DEffect(playingEffectHandle, playPosition.x, playPosition.y, playPosition.z);
+        SetPosPlayingEffekseer3DEffect(playing_handle_, playPosition.x, playPosition.y, playPosition.z);
     }
     else
     {
         // 再生中のエフェクトを移動する。
-        SetPosPlayingEffekseer3DEffect(playingEffectHandle, 0, 0, 0);
+        SetPosPlayingEffekseer3DEffect(playing_handle_, 0, 0, 0);
     }
     
    
@@ -136,7 +119,6 @@ void EffectManager::Update(const VECTOR& playPosition)
 void EffectManager::Draw()
 {
     // Effekseerにより再生中のエフェクトを描画する。
-    
     DrawEffekseer3D();
     
 }
