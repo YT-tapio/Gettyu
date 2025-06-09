@@ -1,5 +1,6 @@
 #include"player.h"
 #include"keyconfig.h"
+#include"weapon.h"
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -8,6 +9,7 @@
 Player::Player(VECTOR pos, int model,int pad_num)
 	: model_(model)
 	, pad_input_num_(pad_num)
+	,weapon_(nullptr)
 {
 	//model_ = model;
 	//pad_input_num_ = pad_num;
@@ -36,6 +38,11 @@ void Player::Init(VECTOR pos)
 
 	before_type_ = AnimationType::kNothing;
 	before_before_type_ = AnimationType::kNothing;
+
+	//int
+	frame_num_ = 0;
+
+	//float
 	pos_ = pos;
 	fall_speed_ = 0.0f;
 	velocity_ = VGet(0, 0, 0);
@@ -62,8 +69,13 @@ void Player::Draw()
 
 	MV1SetMatrix(model_, model_matrix);
 
+	weapon_->Draw();
 	MV1DrawModel(model_);
-	animation_.Draw(now_type_);
+	//animation_.Draw(now_type_);
+
+
+
+	TestFunc();
 }
 
 
@@ -78,6 +90,28 @@ void Player::InputState()
 	GetHitKeyStateAll(key_input_);
 
 	GetJoypadXInputState(pad_input_num_, &pad_input_);
+}
+
+
+void Player::AttachWeapon(const TCHAR* frame_path, int model,float scale)
+{
+	if (weapon_ != nullptr)
+	{
+		weapon_ = nullptr;
+	}
+
+	int i = 0;
+
+	for (i = 0; i < MV1GetFrameNum(model_); i++)
+	{
+		if (frame_path == MV1GetFrameName(model_, i))
+		{
+			break;
+		}
+	}
+
+	weapon_ = new Weapon(MV1GetFrameLocalMatrix(model_, i), model,scale);
+
 }
 
 
@@ -384,6 +418,23 @@ void Player::CheckDirection(const VECTOR& pos, const float& rotation)
 		rotation_ = VGet(0, rot / input_count, 0);
 	}
 
+
+
+}
+
+
+void Player::TestFunc()
+{
+	frame_num_ = MV1GetFrameNum(model_);
+
+
+	for (int i = 0; i < frame_num_; i++)
+	{
+
+		// ƒtƒŒ[ƒ€–¼‚Ì•`‰æ
+		DrawFormatString(0, i * 15, GetColor(255, 255, 255), "Name         %s", MV1GetFrameName(model_, i));
+
+	}
 
 
 }

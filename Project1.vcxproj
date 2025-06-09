@@ -136,6 +136,7 @@
     <ClCompile Include="FPS.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="weapon.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="animation.h" />
@@ -143,8 +144,10 @@
     <ClInclude Include="effect_manager.h" />
     <ClInclude Include="FPS.h" />
     <ClInclude Include="keyconfig.h" />
+    <ClInclude Include="mixamo_fram.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="screen.h" />
+    <ClInclude Include="weapon.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

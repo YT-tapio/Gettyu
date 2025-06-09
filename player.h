@@ -2,6 +2,8 @@
 #include"DxLib.h"
 #include"animation.h"
 
+class Weapon;
+
 class Player
 {
 private:
@@ -12,6 +14,8 @@ private:
 	
 	const float kGravity = 0.6f;		//重力
 	const float kJumpPower = 3.5f;		//ジャンプ力
+
+	Weapon* weapon_;
 
 	Animation animation_;
 	AnimationType now_type_;            //現在のプレイヤーのアニメ～しょん
@@ -41,6 +45,8 @@ private:
 
 	float delta_time_;
 
+	int frame_num_;
+
 public:
 
 	
@@ -68,6 +74,9 @@ public:
 	void InputState();
 
 
+	void AttachWeapon(const TCHAR* frame_path, int model,float scale);
+
+
 	void Update(const VECTOR& pos,const float& rotation);
 
 	
@@ -83,6 +92,9 @@ public:
 
 
 	void MakeLine(float& constant, const VECTOR& pos);
+
+
+	void TestFunc();
 
 
 	const VECTOR& GetPos() const { return pos_; }

@@ -6,6 +6,7 @@
 #include"camera.h"
 #include"effect_manager.h"
 #include"FPS.h"
+#include"mixamo_fram.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -53,7 +54,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     /*--キャラクターのダウンロード--*/
 
-    int chara = MV1LoadModel("data/model/Dreyar_By_M.Aure.mv1");
+    int chara = MV1LoadModel("data/model/character/Dreyar_By_M.Aure.mv1");
 
     /*-----ダウンロードするアニメーション----*/
 
@@ -112,6 +113,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     player->AddAnim(jumping_up);
     player->AddAnim(jumping_down);
 
+    MixamoBonePath bone;
+
+    player->AttachWeapon(bone.HIPS, MV1LoadModel("data/model/weapon/use_path/Bat.mv1"),0.1f);
+
     //高精度タイマーでフレーム管理
    std::shared_ptr<FPS>fps = std::make_shared<FPS>();
 
@@ -135,9 +140,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         /*-----------------描画処理------------------*/
 
         /*----デルタタイム表示----*/
-        DrawFormatString(100, 100, GetColor(255, 255, 255), "%f", fps->GetDeltaTime());
+        //DrawFormatString(100, 100, GetColor(255, 255, 255), "%f", fps->GetDeltaTime());
         
-        fps->Draw();
+        //fps->Draw();
 
         DrawString(0, 0, "x", red);
         DrawString(15, 0, "y", green);
