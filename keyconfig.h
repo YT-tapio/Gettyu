@@ -12,6 +12,7 @@ struct KeyConfig
     static const int kDashKey = KEY_INPUT_LSHIFT;
     static const int kWalkKey = KEY_INPUT_LCONTROL;
     static const int kJumpKey = KEY_INPUT_SPACE;
+    //static const int kSwordSlash;
 };
 
 struct PadConfig

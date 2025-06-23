@@ -17,6 +17,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         return -1;        // エラーが起きたら直ちに終了
     }
 
+    
     // DirectX11を使用するようにする。(DirectX9も可、一部機能不可)
     // Effekseerを使用するには必ず設定する。
     SetUseDirect3DVersion(DX_DIRECT3D_11);
@@ -65,6 +66,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     AnimationData fast_run;
     AnimationData jumping_up;
     AnimationData jumping_down;
+    AnimationData sword_slash_attack;
 
    std::shared_ptr<EffectManager>test_effect1 = 
        std::make_shared<EffectManager>("data/effect/Simple_Distortion.efkefc",1.0f,120);
@@ -72,12 +74,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
    std::shared_ptr<EffectManager>test_effect2 =
        std::make_shared<EffectManager>("data/effect/Laser02.efkefc", 1.0f, 240);
 
-    char idle_path[256] = "data/animation/Idle.mv1";
-    char walk_path[256] = "data/animation/Walking.mv1";
-    char slow_run_path[256] = "data/animation/Slow_Run.mv1";
-    char fast_run_path[256] = "data/animation/Fast_Run.mv1";
-    char jumping_up_path[256] = "data/animation/Jumping_Up.mv1";
-    char jumping_down_path[256] = "data/animation/Jumping_Down.mv1";
+    char idle_path[256]             = "data/animation/Idle.mv1";
+    char walk_path[256]             = "data/animation/Walking.mv1";
+    char slow_run_path[256]         = "data/animation/Slow_Run.mv1";
+    char fast_run_path[256]         = "data/animation/Fast_Run.mv1";
+    char jumping_up_path[256]       = "data/animation/Jumping_Up.mv1";
+    char jumping_down_path[256]     = "data/animation/Jumping_Down.mv1";
+    char sword_slash_path[256]      = "data/animation/SwordSlash.mv1";
 
     Load(idle, idle_path,
         AnimationType::kIdle, chara,3.0f);
@@ -97,6 +100,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     Load(jumping_down, jumping_down_path,
         AnimationType::kJumpDown, chara, 2.0f);
 
+    Load(sword_slash_attack, sword_slash_path,
+        AnimationType::kSwordSlash, chara, 4.0f);
+
     //カメラを生成
     std::shared_ptr<Camera>camera = std::make_shared<Camera>();
 
@@ -112,13 +118,20 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     player->AddAnim(fast_run);
     player->AddAnim(jumping_up);
     player->AddAnim(jumping_down);
+    player->AddAnim(sword_slash_attack);
 
     MixamoBonePath bone;
 
-    player->AttachWeapon(bone.HIPS, MV1LoadModel("data/model/weapon/use_path/Bat.mv1"),0.1f);
+    player->AttachWeapon(bone.RIGHT_HAND,
+        MV1LoadModel("data/model/weapon/use_path/Bat.mv1"), 8.0f);
+
+
+
 
     //高精度タイマーでフレーム管理
    std::shared_ptr<FPS>fps = std::make_shared<FPS>();
+
+
 
     while (ScreenFlip() == 0 && ProcessMessage() == 0 && ClearDrawScreen() == 0 && !CheckHitKey(KEY_INPUT_ESCAPE))
     {
@@ -133,7 +146,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         camera->Update(player->GetCenterPos());
         test_effect1->Update(player->GetPos());
         test_effect2->Update(player->GetPos());
+
         
+        
+
 
         ClearDrawScreen();
 

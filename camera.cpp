@@ -75,6 +75,8 @@ void Camera::Update(const VECTOR& target_pos)
 
 	Effekseer_Sync3DSetting();
 	
+	SetLightPosition(pos_);
+	
 	SetCameraPositionAndTarget_UpVecY(pos_, target_pos);
 }
 

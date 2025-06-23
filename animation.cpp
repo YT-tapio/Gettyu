@@ -23,6 +23,22 @@ void Load(AnimationData& animation_data,
 }
 
 
+Animation::Animation()
+    : model_handle_(-1)
+    , now_type_(AnimationType::kNothing)
+    , before_type_(AnimationType::kNothing)
+    , now_blend_attach_index_(-1)
+    , before_blend_attach_index_(-1)
+    , delta_time_(0.0f)
+{
+
+}
+
+
+Animation::~Animation()
+{
+    //‚È‚µ
+}
 
 void Animation::InitBlend(AnimationType now, AnimationType before)
 {
@@ -108,7 +124,7 @@ void Animation::BlendUpdate()
 
     if (GetBlendFlag())
     {
-        //printfDx("AnimationUpdate");
+        
         for (auto& animation : animation_data_)
         {
             if (before_type_ == animation.type)
@@ -158,24 +174,36 @@ void Animation::Update(AnimationType type)
 
             if (animation.play_time >= animation.total_time)
             {
+
+                
                 if (animation.type < kNoLoop)
                 {
                     animation.play_time = 0.0f;
                 }
                 else
                 {
-                    animation.play_time = animation.total_time - 0.5f;
+                    if (animation.type > kAttack)
+                    {
+                        animation.play_time = animation.total_time - 0.1f;
+                    }
+                    else
+                    {
+                        animation.play_time = animation.total_time;
+                        SetIsEnd(TRUE);
+                    }
+                    
                 }
+                
                 
             }
 
             MV1SetAttachAnimTime(animation.model_handle, animation.attach_index,
                 animation.play_time);
 
-            
-            break;
-
         }
+
+        
+
     }
 
     BlendUpdate();

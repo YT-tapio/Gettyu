@@ -11,14 +11,16 @@ enum AnimationType
     kFastRun,
     kNoLoop,        //ここより先のアニメーションはループなし
     kJumpUp,
-    kJumpDown
+    kJumpDown,
+    kAttack,        //ここより先は攻撃アニメーション(最後になるとアニメーションを終了)
+    kSwordSlash,
 };
 
 
 
 struct AnimationData
 {
-    AnimationType type;         // アニメーションのやつ 
+    AnimationType type;         // アニメーションの種類
 
     int model_handle;            // モデル
     int attach_index;              // アタッチの要素数
@@ -58,9 +60,15 @@ private:
     int before_blend_attach_index_;
 
     bool is_blend_ = FALSE;
+    bool is_end_ = FALSE;
+
     float delta_time_;
 
 public:
+
+    Animation();
+
+    ~Animation();
 
     /// <summary>
     /// アニメーションを違和感なく再生する初期化
@@ -112,6 +120,11 @@ public:
     void SetBlend(bool flag)
     {
         is_blend_ = flag;
+    }
+
+    void SetIsEnd(bool flag)
+    {
+        is_end_ = flag;
     }
 
     /// <summary>

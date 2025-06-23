@@ -12,10 +12,12 @@ private:
 	const float kNormalSpeed = 2.0f;
 	const float kDashSpeed = 2.8f;
 	
-	const float kGravity = 0.6f;		//重力
+	const float kGravity = 0.75f;		//重力
 	const float kJumpPower = 3.5f;		//ジャンプ力
 
 	Weapon* weapon_;
+
+	MATRIX model_matrix_;				//
 
 	Animation animation_;
 	AnimationType now_type_;            //現在のプレイヤーのアニメ～しょん
@@ -26,6 +28,10 @@ private:
 	VECTOR velocity_;
 	VECTOR direction_;
 	VECTOR rotation_;
+
+	float before_rot_;
+
+	float target_rot_;
 
 	bool is_ground_;					//地面の上にいるとき
 
@@ -91,10 +97,15 @@ public:
 	void CheckDirection(const VECTOR& pos, const float& rotation);
 
 
+	void CheckReverseRot(float& now_rot, float target_rot);
+
+
 	void MakeLine(float& constant, const VECTOR& pos);
 
 
 	void TestFunc();
+
+	MATRIX GetFrameMatrix();
 
 
 	const VECTOR& GetPos() const { return pos_; }
@@ -102,4 +113,7 @@ public:
 
 	VECTOR GetCenterPos() { return { pos_.x,pos_.y + 15,pos_.z }; }
 
+
+	const VECTOR GetDirection() const { return direction_; }
 };
+
