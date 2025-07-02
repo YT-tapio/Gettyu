@@ -7,6 +7,9 @@
 #include"effect_manager.h"
 #include"FPS.h"
 #include"mixamo_fram.h"
+#include"base_object.h"
+#include"still_object.h"
+#include"brain.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -106,9 +109,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     //カメラを生成
     std::shared_ptr<Camera>camera = std::make_shared<Camera>();
 
+    //brainを生成
+    std::shared_ptr<Brain>brain = std::make_shared<Brain>();
+
+
     //playerを生成
     std::shared_ptr<Player>player = 
         std::make_shared<Player>(VGet(0,0,0),chara,DX_INPUT_PAD1);
+
+    //オブジェクトを生成
+    std::shared_ptr<BaseObject>object =
+        std::make_shared<StillObject>(VGet(50, 20, 10), -1);
 
     /*---プレイヤーにアニメーションを追加---*/
 
@@ -137,13 +148,29 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     {
         //現在の時間を取得
         fps->Update();
-
+        //camera->GetPos();
         
         //更新処理
         player->SetDeltaTime(fps->GetDeltaTime());
         test_effect1->SetDeltaTime(fps->GetDeltaTime());
-        player->Update(camera->GetPos(),camera->GetSideRad());
-        camera->Update(player->GetCenterPos());
+
+        player->InputState();
+
+        if (CheckHitKey(KEY_INPUT_H))
+        {
+            player->SetIsTarget(TRUE);
+            player->Update(object->GetPos(), brain->GetSideRad());
+        }
+        else
+        {
+            player->SetIsTarget(FALSE);
+            player->Update(camera->GetPos(), brain->GetSideRad());
+        }
+
+        
+
+        brain->Update(player->GetCenterPos());
+        camera->Update(player->GetCenterPos(),brain->GetVelocity());
         test_effect1->Update(player->GetPos());
         test_effect2->Update(player->GetPos());
 
@@ -160,6 +187,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         
         //fps->Draw();
 
+
         DrawString(0, 0, "x", red);
         DrawString(15, 0, "y", green);
         DrawString(30, 0, "z", blue);
@@ -173,7 +201,20 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         test_effect1->Draw();
         test_effect2->Draw();
 
+        object->Draw();
+
+        if (player->GetIsTarget())
+        {
+            DrawFormatString(300, 300, GetColor(255, 255, 255), "target:TRUE");
+        }
+        else
+        {
+            DrawFormatString(300, 300, GetColor(255, 255, 255), "target:FALSE");
+        }
+
         ScreenFlip();
+
+        
 
         fps->Wait();
 

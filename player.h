@@ -2,6 +2,8 @@
 #include"DxLib.h"
 #include"animation.h"
 
+
+
 class Weapon;
 
 class Player
@@ -30,11 +32,13 @@ private:
 	VECTOR rotation_;
 
 	float before_rot_;
-
 	float target_rot_;
 
-	bool is_ground_;					//地面の上にいるとき
 
+	bool is_ground_;					//地面の上にいるとき
+	bool is_target_;					///ターゲットしているかどうか
+	
+	
 	int model_;							//モデル
 
 	
@@ -52,6 +56,11 @@ private:
 	float delta_time_;
 
 	int frame_num_;
+
+	
+	//ターゲットの方向を見つける
+	void MakeTargetRot(const VECTOR& target_pos,float& target_rot);
+
 
 public:
 
@@ -86,7 +95,7 @@ public:
 	void Update(const VECTOR& pos,const float& rotation);
 
 	
-	void InputMovement(const VECTOR& pos, const float& rotation);
+	void InputMovement(const VECTOR& pos, float& rotation);
 
 
 	void JumpAction(VECTOR& velocity);
@@ -94,13 +103,19 @@ public:
 
 	bool CheckGround();
 
-	void CheckDirection(const VECTOR& pos, const float& rotation);
+	void CheckDirection(const VECTOR& pos, float& rotation);
 
 
 	void CheckReverseRot(float& now_rot, float target_rot);
 
 
 	void MakeLine(float& constant, const VECTOR& pos);
+
+
+	void SetIsTarget(bool flag)
+	{
+		is_target_ = flag;
+	}
 
 
 	void TestFunc();
@@ -115,5 +130,7 @@ public:
 
 
 	const VECTOR GetDirection() const { return direction_; }
+
+	const bool GetIsTarget() const { return is_target_; }
 };
 

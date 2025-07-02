@@ -1,9 +1,11 @@
+#include<iostream>
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 #include"player.h"
 #include"keyconfig.h"
 #include"weapon.h"
 
-#define _USE_MATH_DEFINES
-#include <math.h>
 
 
 Player::Player(VECTOR pos, int model,int pad_num)
@@ -24,16 +26,34 @@ Player::~Player()
 
 }
 
+/*--------------------private--------------------------*/
+
+
+void Player::MakeTargetRot(const VECTOR& target_pos, float& target_rot)
+{
+	
+	//新しいVECTORを作る(rotation)
+	VECTOR rot_vec = VGet(target_pos.x - pos_.x,0.0f,target_pos.z - pos_.z);
+
+	//タンジェントの解を求める
+	float tan_num = 0;
+
+	tan_num = -(rot_vec.z / rot_vec.x);
+
+	target_rot = atanf(tan_num);
+
+	///printfDx("%f", target_rot);
+
+}
+
+
+
+
+/*------------------------public---------------------------*/
 
 void Player::Init(VECTOR pos)
 {
-	/*
-	if (!(now_type_ == kNothing))
-	{
-		animation_.Detach(now_type_);
-		now_type_ = kNothing;
-	}
-	*/
+	
 	
 	now_type_ = AnimationType::kIdle;
 
@@ -56,6 +76,7 @@ void Player::Init(VECTOR pos)
 
 	//bool
 	is_ground_ = TRUE;
+	is_target_ = FALSE;
 }
 
 
@@ -72,8 +93,11 @@ void Player::Draw()
 	//MV1SetRotationXYZ(model_, rotation_);
 	DrawSphere3D(VGet(pos_.x, pos_.y + 15, pos_.z), 0.5f, 5, GetColor(0, 255, 0), GetColor(0, 255, 0), FALSE);
 
+	DrawFormatString(200, 200, GetColor(255, 255, 255), "%f", rotation_.y);
+
 	MV1SetMatrix(model_, model_matrix_);
-	
+	//MV1SetRotationXYZ(model_, rotation_);
+
 	MV1DrawModel(model_);
 
 	if (weapon_ != nullptr)
@@ -83,7 +107,7 @@ void Player::Draw()
 	
 
 	//animation_.Draw(now_type_);
-
+	
 
 
 	//TestFunc();
@@ -136,9 +160,22 @@ void Player::AttachWeapon(const TCHAR* frame_path, int model,float scale)
 void Player::Update(const VECTOR& pos, const float& rotation)
 {
 
-	InputState();
+	// ターゲットを切り替えた時のrotationを色んな奴に持たすわけにはいかないのでplayerに持たせる、
+	// updateにはposだけにしといていいと思う(引き数)
 
-	InputMovement(pos, rotation);
+	float target_rot = rotation;
+
+
+
+
+	//何かをターゲットしているならそいつに方向を向かす
+	if (is_target_)
+	{
+		MakeTargetRot(pos, target_rot);
+	}
+	
+
+	InputMovement(pos, target_rot);
 	if (AnimationType::kAttack > now_type_)
 	{
 		pos_ = VAdd(pos_, velocity_);
@@ -156,11 +193,13 @@ void Player::Update(const VECTOR& pos, const float& rotation)
 		weapon_->SetPos(MV1GetFramePosition(model_, frame_num_));
 	}
 
+	printfDx("%f\n", target_rot);
 
+	//rotation_.y = target_rot;
 
 }
 
-void Player::InputMovement(const VECTOR& pos, const float& rotation)
+void Player::InputMovement(const VECTOR& pos,float& rotation)
 {
 	VECTOR velocity = { 0.0f,0.0f,0.0f };
 
@@ -284,7 +323,7 @@ void Player::InputMovement(const VECTOR& pos, const float& rotation)
 }
 
 
-void Player::CheckDirection(const VECTOR& pos, const float& rotation)
+void Player::CheckDirection(const VECTOR& pos, float& rotation)
 {
 	
 	float constant = 0.0f;
@@ -311,11 +350,29 @@ void Player::CheckDirection(const VECTOR& pos, const float& rotation)
 
 	if (pos_.x > pos.x)
 	{
-		direction = VGet(1, 0, 0);
+		if (is_target_)
+		{
+			direction = VGet(-1, 0, 0);
+		}
+		else
+		{
+			direction = VGet(1, 0, 0);
+		}
+
+		
 	}
 	else
 	{
-		direction = VGet(-1, 0, 0);
+		if (is_target_)
+		{
+			direction = VGet(1, 0, 0);
+		}
+		else
+		{
+			direction = VGet(-1, 0, 0);
+			
+		}
+		
 	}
 
 
@@ -334,8 +391,7 @@ void Player::CheckDirection(const VECTOR& pos, const float& rotation)
 			rot += (static_cast<float>((M_PI / 180) * 0));
 
 			input_count++;
-
-		}
+		} 
 
 	}
 
@@ -432,278 +488,7 @@ void Player::CheckReverseRot(float& now_rot, float target_rot)
 	if (now_rot == target_rot) { return; }
 	
 	//ここで180の値を宣言
-	float simple_reverce_num = (static_cast<float>(M_PI / 180) * 180);
-
-	//target_rotが反対にあるんかの確認を行います
-	//ここで反対のアングルを確認(-180よりもした、もしくは180よりも上に行く場合はここで値の調整などを行う)
-	if (FALSE)
-	{
-		
-
-
-		//フラグを用意(180を超えるもしくは-180を下回った時の確認をするためのフラグ)
-		bool over_plus = FALSE;		//180を超える場合
-		bool over_minus = FALSE;		//-180を下回る場合
-
-
-		//now_rotに180度を足すとどうなるかを判定
-
-		//180度足した時(右周り)の場所を確認
-		float reverse_plus_rot = now_rot + simple_reverce_num;
-		float reverse_minus_rot = now_rot - simple_reverce_num;
-
-		//180,-180を超えるかの確認(これからは-180を下回ることも超えると書きます)
-
-		//先に超えた分の値を保管しとくやつを宣言と思ったけどいらないかも
-		float over_plus_rot = 0.0f;
-		float over_minus_rot = 0.0f;
-
-
-
-		//180
-		if (reverse_plus_rot >= simple_reverce_num)
-		{
-			over_plus = TRUE;
-
-			//いったん値を出します(超過分の値を出し,180からひけばok)
-			if (TRUE)
-			{
-				//めっちゃいるやんけ//反転した時の値出しですこれ重要
-				over_plus_rot =
-					(reverse_plus_rot - simple_reverce_num
-						- simple_reverce_num);
-			}
-
-		}
-
-
-		//-180
-		if (reverse_minus_rot <= -simple_reverce_num)
-		{
-			if (!over_plus)
-			{
-				over_minus = TRUE;
-			}
-
-			//いったん値を出します(超過分の値を出し,-180をたせばok必要)
-			//上記の通り
-			if (TRUE)
-			{
-				//めっちゃいるやんけ//反転した時の値出しですこれ重要
-				over_minus_rot =
-					(reverse_minus_rot + simple_reverce_num
-						+ simple_reverce_num);
-			}
-
-		}
-
-		float diff = 0.0f;
-
-		//target_rotが範囲内にいるかのフラグ
-		bool on_plus_target = FALSE;
-		bool on_minus_target = FALSE;
-
-		//とりあえず普通の処理はできた
-
-		//ここから例外処理
-		//もし、反対にしたとき180,-180を超えるのが確認できているときに
-		if (over_plus)
-		{
-			//180をもし超えているときに調整する値
-			// (初期値は引っかからないように360,-360を超えるようにする)
-			float offset_target_rot = simple_reverce_num * 3;
-
-			if (target_rot > simple_reverce_num)
-			{
-				offset_target_rot = target_rot - (simple_reverce_num * 2);
-			}
-
-			if (target_rot < -(simple_reverce_num))
-			{
-				offset_target_rot = target_rot + (simple_reverce_num * 2);
-			}
-
-
-
-			//もし、target_rotがその間にいたら
-			if ((now_rot < target_rot &&
-				target_rot <= simple_reverce_num) ||
-				(-simple_reverce_num <= offset_target_rot &&
-					offset_target_rot <= over_plus_rot)
-				)
-			{
-				diff = (static_cast<float>((M_PI / 180) * 4));
-				/*このifの中で計算しないとめんどそう(180を超えた時の)*/
-				//未来を先取り
-				float future_rot = now_rot + (diff * (delta_time_ * 10));
-
-				if (future_rot > simple_reverce_num)
-				{
-					float reverce_future_rot = (future_rot - simple_reverce_num)
-						- simple_reverce_num;
-
-					now_rot = reverce_future_rot;
-				}
-				else
-				{
-					now_rot += (diff * (delta_time_ * 10));
-				}
-
-
-				//180をターゲットがこえていないとき
-				if (target_rot > (static_cast<float>(M_PI / 180) * 0) &&
-					target_rot <= simple_reverce_num)
-				{
-					if (target_rot < now_rot)
-					{
-						now_rot = target_rot;
-					}
-				}
-				else if (now_rot < static_cast<float>((M_PI / 180) * 0))//超えていてとき、現在の回転も180を超えているとき
-				{
-					if (offset_target_rot < now_rot)
-					{
-						now_rot = offset_target_rot;
-					}
-				}
-
-				on_plus_target = TRUE;
-			}
-			else  //反対のrotが180を超えているけど、そこにターゲットがいないとき
-			{
-				diff = -1 * (static_cast<float>((M_PI / 180) * 4));
-				now_rot += (diff * (delta_time_ * 10));
-
-				//ターゲットより低くならないように調整
-				if (now_rot < target_rot)
-				{
-					now_rot = target_rot;
-				}
-
-
-			}
-
-
-
-		}
-
-		//-180
-		if (over_minus)
-		{
-			//180をもし超えているときに調整する値
-			// (初期値は引っかからないように360,-360を超えるようにする)
-			float offset_target_rot = -(simple_reverce_num * 3);
-
-			if (target_rot > simple_reverce_num)
-			{
-				offset_target_rot = target_rot - (simple_reverce_num * 2);
-			}
-
-			if (target_rot < -simple_reverce_num)
-			{
-				offset_target_rot = target_rot + (simple_reverce_num * 2);
-			}
-
-
-
-			//その間にtarget_rotがいると
-			if ((now_rot > target_rot &&
-				target_rot >= -simple_reverce_num) ||
-				(simple_reverce_num >= offset_target_rot &&
-					offset_target_rot >= over_minus_rot))
-			{
-				diff = -1 * (static_cast<float>((M_PI / 180) * 4));
-
-				//未来を先取り
-				float future_rot = now_rot + (diff * (delta_time_ * 10));
-
-				//-180を超えてしまうとき
-				if (future_rot < (-1 * simple_reverce_num))
-				{
-					float future_reverce_rot = (future_rot +
-						simple_reverce_num + simple_reverce_num);
-
-					now_rot = future_reverce_rot;
-				}
-				else
-				{
-					now_rot += (diff * (delta_time_ * 10));
-				}
-
-
-
-				//-180をターゲットが超えていないとき
-				if (target_rot < (static_cast<float>(M_PI / 180) * 0) &&
-					target_rot >= -simple_reverce_num)
-				{
-					if (target_rot > now_rot)
-					{
-						now_rot = target_rot;
-					}
-				}
-				else if (now_rot > static_cast<float>((M_PI / 180) * 0)) //超えているときに現在のrotが+なら
-				{
-					if (offset_target_rot > now_rot)
-					{
-						now_rot = offset_target_rot;
-					}
-				}
-
-
-				on_minus_target = TRUE;
-			}
-			else  //反対のrotが-180を超えているけど、そこにターゲットがいないとき
-			{
-				diff = (static_cast<float>((M_PI / 180) * 4));
-				now_rot += (diff * (delta_time_ * 10));
-
-				//ターゲットより低くならないように調整
-				if (now_rot < target_rot)
-				{
-					now_rot = target_rot;
-				}
-			}
-
-
-
-		}
-
-
-
-
-		//now_rotがtarget_rotよりも大きいとき-を代入
-
-		if (FALSE)
-		{
-			if (now_rot > target_rot)
-			{
-				diff = -1 * (static_cast<float>((M_PI / 180) * 4));
-			}
-
-			//now_rotがtarget_rotよりも小さいとき+を代入
-			if (now_rot < target_rot)
-			{
-				diff = (static_cast<float>((M_PI / 180) * 4));
-			}
-
-		}
-
-
-		//どちらかを表示
-		if (TRUE)
-		{
-			if (over_plus)
-			{
-				printfDx("plus\n");
-			}
-
-			if (over_minus)
-			{
-				printfDx("minus\n");
-			}
-
-		}
-	}
+	float simple_reverse_num = (static_cast<float>(M_PI / 180) * 180);
 
 	/*---------------------------新しい処理----------------------------*/
 
@@ -728,7 +513,7 @@ void Player::CheckReverseRot(float& now_rot, float target_rot)
 	}
 
 	// rot_distanceの絶対値が180より大きいなら
-	if (fabs(rot_distance) > simple_reverce_num)
+	if (fabs(rot_distance) > simple_reverse_num)
 	{
 		//現在の回転量がマイナスなら
 		if (now_rot < static_cast<float>((M_PI / 180) * 0))
@@ -736,13 +521,13 @@ void Player::CheckReverseRot(float& now_rot, float target_rot)
 			now_rot -= rot_num;
 
 			//-180を超えるとき
-			if (now_rot < -simple_reverce_num)
+			if (now_rot < -simple_reverse_num)
 			{
 				//-180からどんだけ超えているのかを確認
-				float over_num = now_rot + simple_reverce_num;
+				float over_num = now_rot + simple_reverse_num;
 
 				//超過したときの+の値を代入
-				now_rot = simple_reverce_num + over_num;
+				now_rot = simple_reverse_num + over_num;
 
 			}
 
@@ -752,13 +537,13 @@ void Player::CheckReverseRot(float& now_rot, float target_rot)
 			now_rot += rot_num;
 
 			//180を超えるとき
-			if (now_rot > simple_reverce_num)
+			if (now_rot > simple_reverse_num)
 			{
 				//180からどんだけ超えているかを確認
-				float over_num = now_rot - simple_reverce_num;
+				float over_num = now_rot - simple_reverse_num;
 
 				//超過したときの-の値を代入
-				now_rot = -simple_reverce_num + over_num;
+				now_rot = -simple_reverse_num + over_num;
 
 			}
 		}

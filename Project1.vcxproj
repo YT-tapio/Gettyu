@@ -131,15 +131,21 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="animation.cpp" />
+    <ClCompile Include="base_object.cpp" />
+    <ClCompile Include="brain.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="effect_manager.cpp" />
     <ClCompile Include="FPS.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="still_object.cpp" />
+    <ClCompile Include="turn_camera.cpp" />
     <ClCompile Include="weapon.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="animation.h" />
+    <ClInclude Include="base_object.h" />
+    <ClInclude Include="brain.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="effect_manager.h" />
     <ClInclude Include="FPS.h" />
@@ -147,6 +153,8 @@
     <ClInclude Include="mixamo_fram.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="screen.h" />
+    <ClInclude Include="still_object.h" />
+    <ClInclude Include="turn_camera.h" />
     <ClInclude Include="weapon.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
