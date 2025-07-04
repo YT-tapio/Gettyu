@@ -11,12 +11,12 @@ class Camera
 {
 private:
 
-	const float  FovDegrees = 60.0f * DX_PI_F / 180.0f;		// カメラの視野角(度数)
-
+	float fov_;		// 今のカメラの視野角(度数)
+	float target_fov_;	// 次のカメラの視野角(度数)
 	
 	VECTOR pos_;	//ポジション
-	VECTOR velocity_ = { 0,0,0 };
-	VECTOR direction_ = { 0,0,0 };
+	VECTOR velocity_;
+	VECTOR direction_;
 
 
 	
@@ -28,7 +28,7 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	Camera();
+	Camera(float fov);
 
 	/// <summary>
 	/// デストラクタ
@@ -43,6 +43,9 @@ public:
 
 
 	const VECTOR& GetPos() const { return pos_; }
+
+
+	void SetFov(float fov) { fov_ = fov; }
 
 	
 };

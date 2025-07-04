@@ -95,7 +95,7 @@ bool Brain::CheckMousePoint(MousePoint now_point, MousePoint before_point)
 
 void Brain::Update(const VECTOR& target_pos)
 {
-
+	
 	SphereUpdate(target_pos);
 
 }
@@ -186,10 +186,47 @@ void Brain::ChangeCamera()
 }
 
 
+void Brain::SetRad(const VECTOR& target_pos, const VECTOR& player_pos)
+{
+	//新しいVECTORを作る(rotation)
+	VECTOR rot_vec = VGet(target_pos.x - player_pos.x, 0.0f, target_pos.z -player_pos.z);
+
+	//タンジェントの解を求める
+	float tan_num = 0;
+
+	if (rot_vec.x == 0.0f)
+	{
+		if (rot_vec.z > 0.0f)
+		{
+			side_rad_ = static_cast<float>((M_PI / 180) * 90);
+		}
+		else
+		{
+			side_rad_ = -1 * (static_cast<float>((M_PI / 180) * 90));
+		}
+
+	}
+	else
+	{
+		tan_num = rot_vec.z / rot_vec.x;
+
+		side_rad_ = atanf(tan_num);
+	}
+
+	vertical_rad_ = static_cast<float>((M_PI / 180) * 45);
+
+}
+
 void Brain::SetPos(const VECTOR& pos, const VECTOR& next_pos,const ChangeType& change_type)
 {
 	pos_ = pos;
 	next_pos_ = next_pos;
 	is_change_ = TRUE;
 	change_type_ = change_type;
+}
+
+
+void Brain::Draw()
+{
+	DrawFormatString(200,200,)
 }

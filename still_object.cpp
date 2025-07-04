@@ -44,7 +44,7 @@ void StillObject::Draw()
 	}
 	else
 	{
-		DrawSphere3D(position_, 3, 3, GetColor(255, 0, 0), GetColor(255, 0, 0), FALSE);
+		DrawSphere3D(position_, 1.0f, 1.0f, GetColor(255, 0, 0), GetColor(255, 0, 0), FALSE);
 	}
 	
 }

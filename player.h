@@ -132,5 +132,7 @@ public:
 	const VECTOR GetDirection() const { return direction_; }
 
 	const bool GetIsTarget() const { return is_target_; }
+
+	void Draw();
 };
 

@@ -5,7 +5,11 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-Camera::Camera()
+Camera::Camera(float fov)
+	: pos_(VGet(0, 0, 0))
+	, fov_(fov)	
+	, velocity_({ 0,0,0 })
+	, direction_({ 0,0,0 })
 {
 	//‰œs1.0`1000‚Ü‚Å‚ğƒJƒƒ‰‚Ì•`‰æ”ÍˆÍ‚Æ‚·‚é
 	SetCameraNearFar(1.0f, 1000.0f);
@@ -13,7 +17,7 @@ Camera::Camera()
 	pos_ = VGet(0, 0, -0);
 
 	// ‹–ìŠpİ’è
-	SetupCamera_Perspective(FovDegrees);
+	SetupCamera_Perspective(fov);
 }
 
 Camera::~Camera()

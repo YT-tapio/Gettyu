@@ -49,6 +49,7 @@ public:
 	
 	void Update(const VECTOR& target_pos);
 
+
 	/// <summary>
 	/// ƒJƒƒ‰‚ª‹…‘Ìã‚É‰ñ‚éˆ—
 	/// </summary>
@@ -58,9 +59,11 @@ public:
 	void ChangeCamera();
 
 	
+	void SetRad(const VECTOR& target_pos, const VECTOR& player_pos);
+
+
 	void SetPos(const VECTOR& pos, const VECTOR& next_pos, const ChangeType& change_type);
 
-	
 	const bool GetIsChange() const { return is_change_; }
 
 	/// <summary>

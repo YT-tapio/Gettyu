@@ -107,7 +107,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         AnimationType::kSwordSlash, chara, 4.0f);
 
     //カメラを生成
-    std::shared_ptr<Camera>camera = std::make_shared<Camera>();
+    std::shared_ptr<Camera>camera = std::make_shared<Camera>(75.0f * DX_PI_F / 180.0f);
 
     //brainを生成
     std::shared_ptr<Brain>brain = std::make_shared<Brain>();
@@ -119,7 +119,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     //オブジェクトを生成
     std::shared_ptr<BaseObject>object =
-        std::make_shared<StillObject>(VGet(50, 20, 10), -1);
+        std::make_shared<StillObject>(VGet(50, 10, 10), -1);
 
     /*---プレイヤーにアニメーションを追加---*/
 
@@ -156,20 +156,28 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
         player->InputState();
 
-        if (CheckHitKey(KEY_INPUT_H))
+        if (CheckHitKey(KEY_INPUT_H) > 0)
         {
             player->SetIsTarget(TRUE);
-            player->Update(object->GetPos(), brain->GetSideRad());
+            brain->SetRad(object->GetPos(), player->GetPos());
         }
         else
         {
             player->SetIsTarget(FALSE);
-            player->Update(camera->GetPos(), brain->GetSideRad());
         }
+       
+
+        player->Update(camera->GetPos(), brain->GetSideRad());
+        
+
+        if (!(player->GetIsTarget()))
+        {
+            brain->Update(player->GetCenterPos());
+        }
+        
 
         
 
-        brain->Update(player->GetCenterPos());
         camera->Update(player->GetCenterPos(),brain->GetVelocity());
         test_effect1->Update(player->GetPos());
         test_effect2->Update(player->GetPos());
@@ -196,6 +204,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         DrawLine3D(VGet(10, 0, 0), VGet(-10, 0, 0), red);
         DrawLine3D(VGet(0, 10, 0), VGet(0, -10, 0), green);
         DrawLine3D(VGet(0, 0, 10), VGet(0, 0, -10), blue);
+
+
+        DrawLine3D(object->GetPos(), player->GetPos(),GetColor(100,240,50));
+
+        //プレイヤーを中心とした座標軸を描画
+        /*
+        DrawLine3D(VGet((player->GetPos().x), 0, 0), VGet(-10, 0, 0), red);
+        DrawLine3D(VGet(0, 10, 0), VGet(0, -10, 0), green);
+        DrawLine3D(VGet(0, 0, 10), VGet(0, 0, -10), blue);
+        */
+        
 
         player->Draw();
         test_effect1->Draw();

@@ -38,10 +38,26 @@ void Player::MakeTargetRot(const VECTOR& target_pos, float& target_rot)
 	//タンジェントの解を求める
 	float tan_num = 0;
 
-	tan_num = -(rot_vec.z / rot_vec.x);
+	if (rot_vec.x == 0.0f)
+	{
+		if (rot_vec.z > 0.0f)
+		{
+			target_rot = static_cast<float>((M_PI / 180) * 90);
+		}
+		else
+		{
+			target_rot = -1 * (static_cast<float>((M_PI / 180) * 90));
+		}
+		
+	}
+	else
+	{
+		tan_num = rot_vec.z / rot_vec.x;
 
-	target_rot = atanf(tan_num);
-
+		target_rot = atanf(tan_num);
+	}
+	
+	
 	///printfDx("%f", target_rot);
 
 }
@@ -164,15 +180,6 @@ void Player::Update(const VECTOR& pos, const float& rotation)
 	// updateにはposだけにしといていいと思う(引き数)
 
 	float target_rot = rotation;
-
-
-
-
-	//何かをターゲットしているならそいつに方向を向かす
-	if (is_target_)
-	{
-		MakeTargetRot(pos, target_rot);
-	}
 	
 
 	InputMovement(pos, target_rot);
@@ -350,29 +357,11 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 
 	if (pos_.x > pos.x)
 	{
-		if (is_target_)
-		{
-			direction = VGet(-1, 0, 0);
-		}
-		else
-		{
-			direction = VGet(1, 0, 0);
-		}
-
-		
+		direction = VGet(1, 0, 0);	
 	}
 	else
 	{
-		if (is_target_)
-		{
-			direction = VGet(1, 0, 0);
-		}
-		else
-		{
-			direction = VGet(-1, 0, 0);
-			
-		}
-		
+		direction = VGet(-1, 0, 0);
 	}
 
 
@@ -529,6 +518,11 @@ void Player::CheckReverseRot(float& now_rot, float target_rot)
 				//超過したときの+の値を代入
 				now_rot = simple_reverse_num + over_num;
 
+				if (now_rot < target_rot)
+				{
+					now_rot = target_rot;
+				}
+
 			}
 
 		}
@@ -544,6 +538,11 @@ void Player::CheckReverseRot(float& now_rot, float target_rot)
 
 				//超過したときの-の値を代入
 				now_rot = -simple_reverse_num + over_num;
+
+				if (now_rot > target_rot)
+				{
+					now_rot = target_rot;
+				}
 
 			}
 		}
