@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -136,6 +136,7 @@
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="effect_manager.cpp" />
     <ClCompile Include="FPS.cpp" />
+    <ClCompile Include="input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="still_object.cpp" />
@@ -146,9 +147,11 @@
     <ClInclude Include="animation.h" />
     <ClInclude Include="base_object.h" />
     <ClInclude Include="brain.h" />
+    <ClInclude Include="Calculation.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="effect_manager.h" />
     <ClInclude Include="FPS.h" />
+    <ClInclude Include="input.h" />
     <ClInclude Include="keyconfig.h" />
     <ClInclude Include="mixamo_fram.h" />
     <ClInclude Include="player.h" />

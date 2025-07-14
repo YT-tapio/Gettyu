@@ -106,17 +106,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     Load(sword_slash_attack, sword_slash_path,
         AnimationType::kSwordSlash, chara, 4.0f);
 
-    //カメラを生成
-    std::shared_ptr<Camera>camera = std::make_shared<Camera>(75.0f * DX_PI_F / 180.0f);
+    //playerを生成
+    std::shared_ptr<Player>player =
+        std::make_shared<Player>(VGet(0, 0, 0), chara, DX_INPUT_PAD1);
 
     //brainを生成
     std::shared_ptr<Brain>brain = std::make_shared<Brain>();
 
+    //カメラを生成
+    std::shared_ptr<Camera>camera = std::make_shared<Camera>(brain->GetPositionFromTarget(player->GetCenterPos()), 75.0f * DX_PI_F / 180.0f);
 
-    //playerを生成
-    std::shared_ptr<Player>player = 
-        std::make_shared<Player>(VGet(0,0,0),chara,DX_INPUT_PAD1);
-
+    
     //オブジェクトを生成
     std::shared_ptr<BaseObject>object =
         std::make_shared<StillObject>(VGet(50, 10, 10), -1);
@@ -156,10 +156,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
         player->InputState();
 
-        if (CheckHitKey(KEY_INPUT_H) > 0)
+        if (GetMouseInput() & MOUSE_INPUT_RIGHT)
         {
             player->SetIsTarget(TRUE);
-            brain->SetRad(object->GetPos(), player->GetPos());
         }
         else
         {
@@ -167,13 +166,22 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         }
        
 
+        if (!(player->GetIsTarget()))
+        {
+            //マウスでの操作
+            brain->Update(player->GetCenterPos(), camera->GetPos());
+        }
+        else  //カメラは操作できなくとも位置は更新される
+        {
+            brain->SetRad(object->GetPos(), player->GetPos());
+            brain->SetVelocity(player->GetPos(), camera->GetPos());
+        }
+        
+        
         player->Update(camera->GetPos(), brain->GetSideRad());
         
 
-        if (!(player->GetIsTarget()))
-        {
-            brain->Update(player->GetCenterPos());
-        }
+       
         
 
         
@@ -208,6 +216,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
         DrawLine3D(object->GetPos(), player->GetPos(),GetColor(100,240,50));
 
+        DrawLine3D(VGet(player->GetPos().x, 0.0f, player->GetPos().z),
+            VGet(camera->GetPos().x, 0.0f, camera->GetPos().z), GetColor(123, 145, 9));
+
         //プレイヤーを中心とした座標軸を描画
         /*
         DrawLine3D(VGet((player->GetPos().x), 0, 0), VGet(-10, 0, 0), red);
@@ -222,6 +233,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
         object->Draw();
 
+        brain->Draw();
+
         if (player->GetIsTarget())
         {
             DrawFormatString(300, 300, GetColor(255, 255, 255), "target:TRUE");
@@ -230,6 +243,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         {
             DrawFormatString(300, 300, GetColor(255, 255, 255), "target:FALSE");
         }
+
+        
 
         ScreenFlip();
 

@@ -5,6 +5,7 @@
 
 
 class Weapon;
+class Input;
 
 class Player
 {
@@ -17,7 +18,10 @@ private:
 	const float kGravity = 0.75f;		//重力
 	const float kJumpPower = 3.5f;		//ジャンプ力
 
+
+	//クラス関連
 	Weapon* weapon_;
+	Input* input_;
 
 	MATRIX model_matrix_;				//
 
@@ -38,9 +42,7 @@ private:
 	bool is_ground_;					//地面の上にいるとき
 	bool is_target_;					///ターゲットしているかどうか
 	
-	
 	int model_;							//モデル
-
 	
 	int pad_input_num_;					//入力するパッドの番号
 
@@ -49,9 +51,6 @@ private:
 	XINPUT_STATE pad_input_ = {};
 
 	float fall_speed_;
-
-
-	//float speed_ = 0.5f;
 
 	float delta_time_;
 
@@ -132,7 +131,5 @@ public:
 	const VECTOR GetDirection() const { return direction_; }
 
 	const bool GetIsTarget() const { return is_target_; }
-
-	void Draw();
 };
 

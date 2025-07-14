@@ -5,6 +5,7 @@
 #include"player.h"
 #include"keyconfig.h"
 #include"weapon.h"
+#include"input.h"
 
 
 
@@ -12,6 +13,7 @@ Player::Player(VECTOR pos, int model,int pad_num)
 	: model_(model)
 	, pad_input_num_(pad_num)
 	, weapon_(nullptr)
+	, input_(new Input (DX_INPUT_PAD1))
 	, now_type_(AnimationType::kNothing)
 	, target_rot_(0.0f)
 	, before_rot_(0.0f)
@@ -23,7 +25,8 @@ Player::Player(VECTOR pos, int model,int pad_num)
 
 Player::~Player()
 {
-
+	delete weapon_;
+	delete input_;
 }
 
 /*--------------------private--------------------------*/
@@ -109,11 +112,16 @@ void Player::Draw()
 	//MV1SetRotationXYZ(model_, rotation_);
 	DrawSphere3D(VGet(pos_.x, pos_.y + 15, pos_.z), 0.5f, 5, GetColor(0, 255, 0), GetColor(0, 255, 0), FALSE);
 
-	DrawFormatString(200, 200, GetColor(255, 255, 255), "%f", rotation_.y);
+	//DrawFormatString(200, 200, GetColor(255, 255, 255), "%f", rotation_.y);
 
 	MV1SetMatrix(model_, model_matrix_);
 	//MV1SetRotationXYZ(model_, rotation_);
 
+	/*
+	DrawFormatString(200, 200, GetColor(255, 255, 255), "%f", target_rot_);
+	DrawFormatString(200, 220, GetColor(255, 255, 255), "%f", rotation_.y);
+	
+	*/
 	MV1DrawModel(model_);
 
 	if (weapon_ != nullptr)
@@ -121,6 +129,7 @@ void Player::Draw()
 		weapon_->Draw();
 	}
 	
+	//input_->Draw();
 
 	//animation_.Draw(now_type_);
 	
@@ -139,6 +148,8 @@ void Player::AddAnim(const AnimationData& animation_data)
 
 void Player::InputState()
 {
+	input_->Update();
+
 	GetHitKeyStateAll(key_input_);
 
 	GetJoypadXInputState(pad_input_num_, &pad_input_);
@@ -200,7 +211,7 @@ void Player::Update(const VECTOR& pos, const float& rotation)
 		weapon_->SetPos(MV1GetFramePosition(model_, frame_num_));
 	}
 
-	printfDx("%f\n", target_rot);
+	//printfDx("%f\n", target_rot);
 
 	//rotation_.y = target_rot;
 
@@ -219,13 +230,13 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 	CheckDirection(pos, rotation);
 
 
-	if (key_input_[KeyConfig::kDashKey])
+	if (input_->CheckInputKey(KeyConfig::kDashKey) > InputState::kOff)
 	{
 		speed = kDashSpeed;
 
 		now_type_ = AnimationType::kFastRun;
 	}
-	else if (key_input_[KeyConfig::kWalkKey])
+	else if (input_->CheckInputKey(KeyConfig::kWalkKey) > InputState::kOff)
 	{
 		speed = kWalkSpeed;
 
@@ -368,14 +379,14 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 	/*--------プレイヤーの操作--------*/
 
 	//前
-	if (key_input_[KeyConfig::kUpKey] || pad_input_.ThumbLY > PadConfig::kUpStick)
+	if (input_->CheckInputKey(KeyConfig::kUpKey) || pad_input_.ThumbLY > PadConfig::kUpStick)
 	{
 		direction_ = VAdd(direction_, VGet(direction.x, 0, direction.x * constant));
 		//rotation_ = VGet(0, rotation, 0);
 
 		/*---例外処理(行列使ったらこんなことしなくて済んだかも)---*/
 
-		if (!(key_input_[KeyConfig::kDownKey]))
+		if (!(input_->CheckInputKey(KeyConfig::kDownKey) > InputState::kOff))
 		{
 			rot += (static_cast<float>((M_PI / 180) * 0));
 
@@ -385,18 +396,18 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 	}
 
 	//後ろ
-	if (key_input_[KeyConfig::kDownKey] || pad_input_.ThumbLY < PadConfig::kDownStick)
+	if ((input_->CheckInputKey(KeyConfig::kDownKey) > InputState::kOff) || pad_input_.ThumbLY < PadConfig::kDownStick)
 	{
 		direction_ = VAdd(direction_, VGet(-1.0f * (direction.x), 0, -1.0f * (direction.x * constant)));
 
 		/*---例外処理---*/
-		if (!key_input_[KeyConfig::kUpKey])
+		if (!(input_->CheckInputKey(KeyConfig::kUpKey) > InputState::kOff))
 		{
-			if (key_input_[KeyConfig::kRightKey] || pad_input_.ThumbLX < PadConfig::kRightStick)
+			if ((input_->CheckInputKey(KeyConfig::kRightKey) > InputState::kOff) || pad_input_.ThumbLX < PadConfig::kRightStick)
 			{
 				rot += (static_cast<float>((M_PI / 180) * 180));
 			}
-			else if(key_input_[KeyConfig::kLeftKey] || pad_input_.ThumbLX > PadConfig::kLeftStick)
+			else if((input_->CheckInputKey(KeyConfig::kLeftKey) > InputState::kOff) || pad_input_.ThumbLX > PadConfig::kLeftStick)
 			{
 				rot +=  -1 * (static_cast<float>((M_PI / 180) *  180));
 			}
@@ -422,12 +433,12 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 
 
 	//右
-	if (key_input_[KeyConfig::kRightKey] || pad_input_.ThumbLX < PadConfig::kRightStick)
+	if ((input_->CheckInputKey(KeyConfig::kRightKey) > InputState::kOff) || pad_input_.ThumbLX < PadConfig::kRightStick)
 	{
 		direction_ = VAdd(direction_, VGet(direction.x * constant, 0, -direction.x));
 
 		/*---例外処理---*/
-		if (!key_input_[KeyConfig::kLeftKey])
+		if (!((input_->CheckInputKey(KeyConfig::kLeftKey) > InputState::kOff)))
 		{
 			rot += (static_cast<float>((M_PI / 180) * 90));
 			input_count++;
@@ -436,12 +447,12 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 	}
 
 	//左
-	if (key_input_[KeyConfig::kLeftKey] || pad_input_.ThumbLX > PadConfig::kLeftStick)
+	if ((input_->CheckInputKey(KeyConfig::kLeftKey) > InputState::kOff) || pad_input_.ThumbLX > PadConfig::kLeftStick)
 	{
 		direction_ = VAdd(direction_, VGet(-(direction.x * constant), 0, direction.x));
 
 		/*---例外処理---*/
-		if (!key_input_[KeyConfig::kRightKey])
+		if (!((input_->CheckInputKey(KeyConfig::kRightKey) > InputState::kOff)))
 		{
 			rot += -1 * static_cast<float>((M_PI / 180) * 90);
 
@@ -458,11 +469,23 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 		direction_ = VNorm(direction_);
 	}
 
+	//
 	SetLightDirection(VGet(direction.x, 0, direction.x * constant));
 
 	if (input_count != 0)
 	{
 		target_rot_ = (rotation + (rot / input_count));
+
+		if (target_rot_ > (static_cast<float>((M_PI / 180) * 180)))
+		{
+			target_rot_ = target_rot_ - (static_cast<float>((M_PI / 180) * 360));
+		}
+
+		if (target_rot_ < -(static_cast<float>((M_PI / 180) * 180)))
+		{
+			target_rot_ = target_rot_ + (static_cast<float>((M_PI / 180) * 360));
+		}
+
 		before_rot_ = rot / input_count;
 	}
 
@@ -586,7 +609,7 @@ void  Player::JumpAction(VECTOR& velocity)
 	if (is_ground_)
 	{
 
-		if (key_input_[KeyConfig::kJumpKey] || pad_input_.Buttons[PadConfig::kJumpButton])
+		if (input_->CheckInputKey(KeyConfig::kJumpKey) == InputState::kPush || pad_input_.Buttons[PadConfig::kJumpButton])
 		{
 			//ジャンプの処理
 			fall_speed_ = kJumpPower;

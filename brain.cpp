@@ -2,6 +2,7 @@
 #include"DxLib.h"
 #include"camera.h"
 #include"screen.h"
+#include"Calculation.h"
 #include"brain.h"
 
 #define _USE_MATH_DEFINES
@@ -13,7 +14,7 @@ Brain::Brain()
 	,is_change_(FALSE)
 	,change_type_(ChangeType::Straight)
 {
-
+	
 }
 
 
@@ -24,7 +25,7 @@ Brain::~Brain()
 
 /*----------------private-----------------*/
 
-void Brain::MakeVertical(const VECTOR& pos)
+void Brain::MakeVertical()
 {
 	if (vertical_rad_ > (M_PI * 2)) { vertical_rad_ = 0; }
 
@@ -39,7 +40,7 @@ void Brain::MakeVertical(const VECTOR& pos)
 			constant = kMaxMouseDiff;
 		}
 
-		vertical_rad_ += static_cast<float>((M_PI / 180) * (constant / 10) * sensitivity_);
+		vertical_rad_ += static_cast<float>((M_PI / 180) * (constant / 10) * all_sensitivity_) * vertical_sensitivity_;
 	}
 
 	//下に行くとき
@@ -52,7 +53,7 @@ void Brain::MakeVertical(const VECTOR& pos)
 			constant = kMaxMouseDiff;
 		}
 
-		vertical_rad_ -= static_cast<float>((M_PI / 180) * (constant / 10) * sensitivity_);
+		vertical_rad_ -= static_cast<float>((M_PI / 180) * (constant / 10) * all_sensitivity_) * vertical_sensitivity_;
 	}
 
 	//真上に来た時に後ろに行かないように
@@ -90,18 +91,30 @@ bool Brain::CheckMousePoint(MousePoint now_point, MousePoint before_point)
 }
 
 
-
-/*---------------public---------------*/
-
-void Brain::Update(const VECTOR& target_pos)
+VECTOR Brain::GetVelocityDecidedRad()
 {
+	VECTOR vel;
+
+	vel.y = (sinf(vertical_rad_)) * distance_;
+	side_distance_ = (cosf(vertical_rad_)) * distance_;
 	
-	SphereUpdate(target_pos);
+	vel.x = (sinf(side_rad_)) * side_distance_;
+	vel.z = (cosf(side_rad_)) * side_distance_;
+
+	return vel;
 
 }
 
 
-void Brain::SphereUpdate(const VECTOR& target_pos)
+/*---------------public---------------*/
+
+void Brain::Update(const VECTOR& target_pos,const VECTOR& camera_pos)
+{
+	SphereUpdate(target_pos,camera_pos);
+}
+
+
+void Brain::SphereUpdate(const VECTOR& target_pos,const VECTOR& camera_pos)
 {
 	//マウスポインターの取得
 	GetMousePoint(&now_mouse_pos_.x, &now_mouse_pos_.y);
@@ -114,7 +127,7 @@ void Brain::SphereUpdate(const VECTOR& target_pos)
 		if (side_rad_ > (M_PI * 2)) { side_rad_ = 0; }
 
 		//縦の回転を作る
-		MakeVertical(target_pos);
+		MakeVertical();
 
 		//
 		if (now_mouse_pos_.x > before_mouse_pos_.x)
@@ -126,7 +139,7 @@ void Brain::SphereUpdate(const VECTOR& target_pos)
 				constant = kMaxMouseDiff;
 			}
 
-			side_rad_ += static_cast<float>((M_PI / 180) * (constant / 10) * sensitivity_);
+			side_rad_ += static_cast<float>((M_PI / 180) * (constant / 10) * all_sensitivity_) * side_sensitivity_;
 		}
 
 		if (now_mouse_pos_.x < before_mouse_pos_.x)
@@ -138,7 +151,7 @@ void Brain::SphereUpdate(const VECTOR& target_pos)
 				constant = kMaxMouseDiff;
 			}
 
-			side_rad_ -= static_cast<float>((M_PI / 180) * (constant / 10) * sensitivity_);
+			side_rad_ -= static_cast<float>((M_PI / 180) * (constant / 10) * all_sensitivity_) * side_sensitivity_;
 		}
 
 
@@ -148,8 +161,6 @@ void Brain::SphereUpdate(const VECTOR& target_pos)
 		SetMousePoint(MouseX, MouseY);
 		GetMousePoint(&now_mouse_pos_.x, &now_mouse_pos_.y);
 		before_mouse_pos_ = now_mouse_pos_;
-
-
 	}
 
 	direction_.x = sinf(side_rad_);
@@ -160,6 +171,10 @@ void Brain::SphereUpdate(const VECTOR& target_pos)
 
 	velocity_.x = direction_.x * side_distance_;
 	velocity_.z = direction_.z * side_distance_;
+
+	VECTOR future_pos = VAdd(target_pos, velocity_);
+	//velocityの調整を行う(未来の座標と今の座標の距離を測る)
+	velocity_ = GetFutureToNowPositionVelocity(future_pos, camera_pos);
 
 }
 
@@ -189,8 +204,8 @@ void Brain::ChangeCamera()
 void Brain::SetRad(const VECTOR& target_pos, const VECTOR& player_pos)
 {
 	//新しいVECTORを作る(rotation)
-	VECTOR rot_vec = VGet(target_pos.x - player_pos.x, 0.0f, target_pos.z -player_pos.z);
-
+	VECTOR rot_vec = VGet(target_pos.x - player_pos.x, 0.0f, target_pos.z - player_pos.z);
+	
 	//タンジェントの解を求める
 	float tan_num = 0;
 
@@ -208,25 +223,84 @@ void Brain::SetRad(const VECTOR& target_pos, const VECTOR& player_pos)
 	}
 	else
 	{
-		tan_num = rot_vec.z / rot_vec.x;
-
-		side_rad_ = atanf(tan_num);
+		side_rad_ = static_cast<float>((M_PI / 180) * 180) +atan2f(rot_vec.x, rot_vec.z);
 	}
 
-	vertical_rad_ = static_cast<float>((M_PI / 180) * 45);
+	vertical_rad_ = static_cast<float>((M_PI / 180) * 30);
+	
+	int MouseX = (float(kGameWidth) * 0.5f), MouseY = (float(kGameHeight) * 0.5f);
+	SetMousePoint(MouseX, MouseY);
 
 }
 
-void Brain::SetPos(const VECTOR& pos, const VECTOR& next_pos,const ChangeType& change_type)
+void Brain::SetVelocity(const VECTOR& target_pos,const VECTOR& camera_pos)
 {
-	pos_ = pos;
-	next_pos_ = next_pos;
-	is_change_ = TRUE;
-	change_type_ = change_type;
+	
+	velocity_ = GetVelocityDecidedRad();
+
+	VECTOR future_pos = VAdd(target_pos, velocity_);
+
+	velocity_ = GetFutureToNowPositionVelocity(future_pos, camera_pos);
+	
+	velocity_ = OffsetVelocity(velocity_, 3.0f);
+}
+
+
+VECTOR Brain::GetFutureToNowPositionVelocity(const VECTOR& future_pos, const VECTOR& now_pos)
+{
+	return VGet(future_pos.x - now_pos.x, future_pos.y - now_pos.y, future_pos.z - now_pos.z);
+}
+
+
+VECTOR Brain::OffsetVelocity(const VECTOR& velocity,float offset_num)
+{
+	VECTOR vel = velocity;
+
+	//既定の移動量を超えるなら
+	if (VSize(velocity) > offset_num)
+	{
+		VECTOR norm_vel = VNorm(velocity);
+		vel = VScale(norm_vel, offset_num);
+	}
+
+
+	return vel;
+
+
+}
+
+
+VECTOR Brain::GetPositionFromTarget(const VECTOR& target_pos)
+{
+	VECTOR pos;				//求めたい位置
+	VECTOR velocity;		//ターゲットからの距離
+	float side_dis;			//地面との平衡の距離
+	
+	//高さを出す
+	velocity.y = (distance_ * sinf(vertical_rad_));
+
+	//地面の距離を出す
+	side_distance_ = (distance_ * cosf(vertical_rad_));
+
+	//地面のポジションを出す
+	velocity.x = (side_distance_ * cosf(side_rad_));		//xを求めるにはcos
+	velocity.z = (side_distance_ * sinf(side_rad_));		//zを求めるにはsin
+
+	//ターゲットのポジションにたす
+	pos = VAdd(target_pos, velocity);
+
+	return pos;
 }
 
 
 void Brain::Draw()
 {
-	DrawFormatString(200,200,)
+	DrawFormatString(200, 200, GetColor(255, 0, 0), "%f", side_rad_);
+	DrawFormatString(200, 220, GetColor(255, 0, 0), "%f", vertical_rad_);
+
+	float side_rad_not_pi = side_rad_ / (M_PI / 180);
+	float vertical_rad_not_pi = vertical_rad_ / (M_PI / 180);
+
+	DrawFormatString(200, 240, GetColor(255, 0, 0), "%f", side_rad_not_pi);
+	DrawFormatString(200, 260, GetColor(255, 0, 0), "%f", vertical_rad_not_pi);
 }
