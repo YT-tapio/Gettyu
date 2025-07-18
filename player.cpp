@@ -129,7 +129,7 @@ void Player::Draw()
 		weapon_->Draw();
 	}
 	
-	//input_->Draw();
+	input_->Draw();
 
 	//animation_.Draw(now_type_);
 	
@@ -229,7 +229,7 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 
 	CheckDirection(pos, rotation);
 
-
+	/*左スティックの入力量をみる*/
 	if (input_->CheckInputKey(KeyConfig::kDashKey) > InputState::kOff)
 	{
 		speed = kDashSpeed;
@@ -249,6 +249,18 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 		now_type_ = AnimationType::kSlowRun;
 	}
 
+	//回転量からvelocityを出す
+	
+	/*
+	if (VSize(direction_) > 0)
+	{
+		velocity.x = (cosf(target_rot_) * speed);
+		velocity.z = (sinf(target_rot_) * speed);
+	}
+	*/
+	
+
+	
 	velocity = VScale(direction_, speed);
 
 	JumpAction(velocity);
@@ -379,7 +391,7 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 	/*--------プレイヤーの操作--------*/
 
 	//前
-	if (input_->CheckInputKey(KeyConfig::kUpKey) || pad_input_.ThumbLY > PadConfig::kUpStick)
+	if (input_->CheckInputKey(KeyConfig::kUpKey))
 	{
 		direction_ = VAdd(direction_, VGet(direction.x, 0, direction.x * constant));
 		//rotation_ = VGet(0, rotation, 0);
@@ -391,23 +403,23 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 			rot += (static_cast<float>((M_PI / 180) * 0));
 
 			input_count++;
-		} 
+		}
 
 	}
 
 	//後ろ
-	if ((input_->CheckInputKey(KeyConfig::kDownKey) > InputState::kOff) || pad_input_.ThumbLY < PadConfig::kDownStick)
+	if ((input_->CheckInputKey(KeyConfig::kDownKey) > InputState::kOff))
 	{
 		direction_ = VAdd(direction_, VGet(-1.0f * (direction.x), 0, -1.0f * (direction.x * constant)));
 
 		/*---例外処理---*/
 		if (!(input_->CheckInputKey(KeyConfig::kUpKey) > InputState::kOff))
 		{
-			if ((input_->CheckInputKey(KeyConfig::kRightKey) > InputState::kOff) || pad_input_.ThumbLX < PadConfig::kRightStick)
+			if ((input_->CheckInputKey(KeyConfig::kRightKey) > InputState::kOff))
 			{
 				rot += (static_cast<float>((M_PI / 180) * 180));
 			}
-			else if((input_->CheckInputKey(KeyConfig::kLeftKey) > InputState::kOff) || pad_input_.ThumbLX > PadConfig::kLeftStick)
+			else if((input_->CheckInputKey(KeyConfig::kLeftKey) > InputState::kOff))
 			{
 				rot +=  -1 * (static_cast<float>((M_PI / 180) *  180));
 			}
@@ -433,7 +445,7 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 
 
 	//右
-	if ((input_->CheckInputKey(KeyConfig::kRightKey) > InputState::kOff) || pad_input_.ThumbLX < PadConfig::kRightStick)
+	if ((input_->CheckInputKey(KeyConfig::kRightKey) > InputState::kOff))
 	{
 		direction_ = VAdd(direction_, VGet(direction.x * constant, 0, -direction.x));
 
@@ -447,7 +459,7 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 	}
 
 	//左
-	if ((input_->CheckInputKey(KeyConfig::kLeftKey) > InputState::kOff) || pad_input_.ThumbLX > PadConfig::kLeftStick)
+	if ((input_->CheckInputKey(KeyConfig::kLeftKey) > InputState::kOff))
 	{
 		direction_ = VAdd(direction_, VGet(-(direction.x * constant), 0, direction.x));
 
@@ -462,6 +474,22 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 		//rotation_ = VAdd(rotation_, VGet(0, rotation - static_cast<float>((M_PI / 180) * 90), 0));
 	}
 
+
+	/*---pad除外----*/
+
+	if (input_->GetPadStickVertical(StickType::kLeft) > 50.0f)
+	{
+		rot += input_->GetPadStickRad(StickType::kLeft);
+		
+		direction_ = VAdd(direction_,
+			VGet(-sinf(rot + rotation), 0.0f, -cosf(rot + rotation)));
+
+		input_count++;
+	}
+
+	//回転からdirectionを出すことができる
+	//direction_.x = cosf(rot) * 1.0f;
+	//direction_.z = sinf(rot) * 1.0f;
 
 	//正規化
 	if (VSquareSize(direction_) > 0)

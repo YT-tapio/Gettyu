@@ -12,6 +12,18 @@ struct InputType
 	XINPUT_STATE pad = {};
 };
 
+struct StickDeadZone
+{
+	static const int kX = 5000;
+	static const int kY = 5000;
+};
+
+struct StickType
+{
+	static const int kRight = 0;
+	static const int kLeft = 1;
+};
+
 //入力されているなどの状態を表すもの
 enum InputState
 {
@@ -48,7 +60,7 @@ private:
 public:
 
 	// コンストラクタ
-	Input(int num);
+	Input(const int num);
 	
 
 	// デストラクタ
@@ -58,6 +70,7 @@ public:
 	// 入力更新
 	void Update();
 
+	void SetTypeState(const  InputType& now_input,const InputType& before_input);
 
 	// キー入力を見る
 	InputState CheckInputKey(int key_code);
@@ -68,17 +81,23 @@ public:
 	// パッド(ボタン)入力を見る
 	InputState CheckInputPadButton(int pad_config);
 
-	// パッド(スティック)の入力量を返す(直線の長さ)
-	float GetPadStickVertical();
+	//マウスの移動量
+	float GetMouseVertical();
+
+	float GetMouseRad();
+
+	// パッド(スティック)の入力量を返す(直線の長さ) // 左右
+	float GetPadStickVertical(int type);
 
 	// スティック入力の角度を返す
-	float GetPadStickRad();
-
-
+	float GetPadStickRad(int type);
 
 
 	const InputType GetNowTypeState() const { return now_type_state_; }
+	const InputType GetBeforeTypeState() const { return before_type_state_; }
 
+
+	const int GetPadNom() const { return num_; }
 
 	void Draw();
 

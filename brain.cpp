@@ -4,6 +4,7 @@
 #include"screen.h"
 #include"Calculation.h"
 #include"brain.h"
+#include"input.h"
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -68,10 +69,7 @@ void Brain::MakeVertical()
 		vertical_rad_ = -(static_cast<float>((M_PI / 180) * 80));
 	}
 
-	/*----横の長さをだす(cos)---*/
-
-	velocity_.y = (sinf(vertical_rad_)) * distance_;
-	side_distance_ = (cosf(vertical_rad_)) * distance_;
+	
 
 }
 
@@ -108,14 +106,20 @@ VECTOR Brain::GetVelocityDecidedRad()
 
 /*---------------public---------------*/
 
-void Brain::Update(const VECTOR& target_pos,const VECTOR& camera_pos)
+void Brain::Update(const VECTOR& target_pos,const VECTOR& camera_pos,const Input* input)
 {
-	SphereUpdate(target_pos,camera_pos);
+	SphereUpdate(target_pos, camera_pos, input);
 }
 
 
-void Brain::SphereUpdate(const VECTOR& target_pos,const VECTOR& camera_pos)
+
+
+void Brain::SphereUpdate(const VECTOR& target_pos,const VECTOR& camera_pos,const Input* input)
 {
+
+	Input* inp = new Input(input->GetPadNom());
+	inp->SetTypeState(input->GetNowTypeState(), input->GetBeforeTypeState());
+
 	//マウスポインターの取得
 	GetMousePoint(&now_mouse_pos_.x, &now_mouse_pos_.y);
 
@@ -163,11 +167,22 @@ void Brain::SphereUpdate(const VECTOR& target_pos,const VECTOR& camera_pos)
 		before_mouse_pos_ = now_mouse_pos_;
 	}
 
+	float pad_vertical_num = inp->GetPadStickVertical(StickType::kRight);
+
+	if (pad_vertical_num > 50.0f)
+	{
+
+
+	}
+	
+
 	direction_.x = sinf(side_rad_);
 	direction_.z = cosf(side_rad_);
 
-	direction_ = VNorm(direction_);
+	/*----横の長さをだす(cos)---*/
 
+	velocity_.y = (sinf(vertical_rad_)) * distance_;
+	side_distance_ = (cosf(vertical_rad_)) * distance_;
 
 	velocity_.x = direction_.x * side_distance_;
 	velocity_.z = direction_.z * side_distance_;

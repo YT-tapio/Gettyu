@@ -1,16 +1,20 @@
 #pragma once
 
+
+class Input;
+
 struct MousePoint
 {
 	int x;
 	int y;
 };
 
+
 class Brain
 {
 private:
 
-	const int kMaxMouseDiff = 25.0f;
+	const int kMaxMouseDiff = 35.0f;
 
 	const float kMaxMoveDistance = 0.0f;
 
@@ -33,7 +37,7 @@ private:
 
 	float side_sensitivity_ = 1.0f;
 	float vertical_sensitivity_ = 0.5f;
-	float all_sensitivity_ = 10.5f;
+	float all_sensitivity_ = 5.5f;
 
 	MousePoint now_mouse_pos_;
 	MousePoint before_mouse_pos_;
@@ -57,13 +61,13 @@ public:
 	~Brain();
 
 	
-	void Update(const VECTOR& target_pos, const VECTOR& camera_pos);
+	void Update(const VECTOR& target_pos, const VECTOR& camera_pos, const Input* input);
 
 
 	/// <summary>
 	/// ƒJƒƒ‰‚ª‹…‘Ìã‚É‰ñ‚éˆ—
 	/// </summary>
-	void SphereUpdate(const VECTOR& target_pos, const VECTOR& camera_pos);
+	void SphereUpdate(const VECTOR& target_pos, const VECTOR& camera_pos,const Input* input);
 
 
 	void ChangeCamera();

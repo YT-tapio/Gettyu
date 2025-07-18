@@ -28,7 +28,7 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	Camera(float fov);
+	Camera(const VECTOR& pos, float fov);
 
 	/// <summary>
 	/// デストラクタ

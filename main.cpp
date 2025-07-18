@@ -169,7 +169,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         if (!(player->GetIsTarget()))
         {
             //マウスでの操作
-            brain->Update(player->GetCenterPos(), camera->GetPos());
+            brain->Update(player->GetCenterPos(), camera->GetPos(),player->GetInput());
         }
         else  //カメラは操作できなくとも位置は更新される
         {
