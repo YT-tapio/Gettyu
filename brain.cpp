@@ -57,17 +57,7 @@ void Brain::MakeVertical()
 		vertical_rad_ -= static_cast<float>((M_PI / 180) * (constant / 10) * all_sensitivity_) * vertical_sensitivity_;
 	}
 
-	//真上に来た時に後ろに行かないように
-	if (vertical_rad_ > static_cast<float>((M_PI / 180) * 80))
-	{
-		vertical_rad_ = static_cast<float>((M_PI / 180) * 80);
-	}
-
-	//真下に来た時に後ろに行かないように
-	if (vertical_rad_ < -(static_cast<float>((M_PI / 180) * 80)))
-	{
-		vertical_rad_ = -(static_cast<float>((M_PI / 180) * 80));
-	}
+	
 
 	
 
@@ -167,17 +157,26 @@ void Brain::SphereUpdate(const VECTOR& target_pos,const VECTOR& camera_pos,const
 		before_mouse_pos_ = now_mouse_pos_;
 	}
 
-	float pad_vertical_num = inp->GetPadStickVertical(StickType::kRight);
-
-	if (pad_vertical_num > 50.0f)
-	{
-
-
-	}
 	
+	//pad対応
+	side_rad_ += static_cast<float>((M_PI / 180) * (inp->GetPadStickPercent(StickType::kRight,Control::kX) * kCameraSpeed) * all_sensitivity_) * side_sensitivity_;
+	vertical_rad_ -= static_cast<float>((M_PI / 180) * (inp->GetPadStickPercent(StickType::kRight, Control::kY) * kCameraSpeed) * all_sensitivity_) * side_sensitivity_;
+	
+	//真上に来た時に後ろに行かないように
+	if (vertical_rad_ > static_cast<float>((M_PI / 180) * 80))
+	{
+		vertical_rad_ = static_cast<float>((M_PI / 180) * 80);
+	}
+
+	//真下に来た時に後ろに行かないように
+	if (vertical_rad_ < -(static_cast<float>((M_PI / 180) * 80)))
+	{
+		vertical_rad_ = -(static_cast<float>((M_PI / 180) * 80));
+	}
 
 	direction_.x = sinf(side_rad_);
 	direction_.z = cosf(side_rad_);
+
 
 	/*----横の長さをだす(cos)---*/
 

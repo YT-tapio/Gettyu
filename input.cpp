@@ -30,6 +30,20 @@ VECTOR Input::GetVerticalVector(const VECTOR& next_pos, const VECTOR& pos)
 }
 
 
+float Input::MakePercent(float value, float min, float max)
+{
+	
+	if (value > 0)
+	{
+		return (value + min) / (max + min);
+	}
+	else if (value < 0)
+	{
+		return -((value - min) / (-max - min));
+	}
+
+}
+
 /*-----------public-----------*/
 
 void Input::Update()
@@ -200,6 +214,111 @@ float Input::GetPadStickRad(int type)
 	}
 
 	return rad;
+}
+
+
+float Input::GetPadStickPercent(int type, int control)
+{
+	float percent_num = 0.0f;
+	
+	
+
+	//スティックの左右
+	if (type == StickType::kLeft)
+	{
+		
+
+		if (control == Control::kX)
+		{
+
+			if (-kPadStickDeadZone < now_type_state_.pad.ThumbLX && now_type_state_.pad.ThumbLX < kPadStickDeadZone)
+			{
+				return percent_num;
+			}
+
+			percent_num = MakePercent(now_type_state_.pad.ThumbLX, kPadStickDeadZone, kMaxPadStickNum);
+		}
+		else if(control == Control::kY)
+		{
+
+			if (-kPadStickDeadZone < now_type_state_.pad.ThumbLY && now_type_state_.pad.ThumbLY < kPadStickDeadZone)
+			{
+				return percent_num;
+			}
+
+			percent_num = MakePercent(now_type_state_.pad.ThumbLY, kPadStickDeadZone, kMaxPadStickNum);
+		}
+		else
+		{
+			printfDx("error");
+		}
+
+	}
+	else if (type == StickType::kRight)
+	{
+		if (control == Control::kX)
+		{
+			if (-kPadStickDeadZone < now_type_state_.pad.ThumbRX && now_type_state_.pad.ThumbRX < kPadStickDeadZone)
+			{
+				return percent_num;
+			}
+
+			percent_num = MakePercent(now_type_state_.pad.ThumbRX, kPadStickDeadZone, kMaxPadStickNum);
+		}
+		else if (control == Control::kY)
+		{
+
+			if (-kPadStickDeadZone < now_type_state_.pad.ThumbRY && now_type_state_.pad.ThumbRY < kPadStickDeadZone)
+			{
+				return percent_num;
+			}
+
+			percent_num = MakePercent(now_type_state_.pad.ThumbRY, kPadStickDeadZone, kMaxPadStickNum);
+		}
+		else
+		{
+			printfDx("error");
+		}
+
+	}
+	else
+	{
+		printfDx("error");
+	}
+
+	return percent_num;
+}
+
+
+float Input::GetMousePercent(int control)
+{
+	float percent_num = 0.0f;
+
+	
+
+	if (control == Control::kX)
+	{
+		if (-kMouseDeadZone < now_type_state_.mouse_x && now_type_state_.mouse_x < kMouseDeadZone)
+		{
+			return percent_num;
+		}
+
+		
+
+
+	}
+	else if(control == Control::kY)
+	{
+
+	}
+	else
+	{
+		printfDx("error");
+	}
+
+
+
+	return percent_num;
 }
 
 

@@ -17,6 +17,7 @@ private:
 	const int kMaxMouseDiff = 35.0f;
 
 	const float kMaxMoveDistance = 0.0f;
+	const float kCameraSpeed = 1.3f;
 
 	ChangeType change_type_;
 

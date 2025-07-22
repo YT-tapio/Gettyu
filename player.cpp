@@ -539,7 +539,7 @@ void Player::CheckReverseRot(float& now_rot, float target_rot)
 	float rot_distance = 0.0f;
 
 	//‰ñ“]—Ê
-	float rot_num = (static_cast<float>((M_PI / 180) * 4)) * (delta_time_ * 10);
+	float rot_num = (static_cast<float>((M_PI / 180) * 5.5f)) * (delta_time_ * 10);
 
 	// “¯‚¶‚Æ‚«‚Íæ‚É‚Í‚¶‚­‚æ‚¤‚É‚µ‚Ä‚¢‚é‚Ì‚Å‘åä•v
 	// ‚Ç‚¿‚ç‚ª¬‚³‚¢‚©‚ğŒ©‚Ä¬‚³‚¢‚Ù‚¤‚©‚ç‘å‚«‚¢‚Ù‚¤‚ğˆø‚­

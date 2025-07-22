@@ -12,16 +12,18 @@ struct InputType
 	XINPUT_STATE pad = {};
 };
 
-struct StickDeadZone
-{
-	static const int kX = 5000;
-	static const int kY = 5000;
-};
+
 
 struct StickType
 {
 	static const int kRight = 0;
 	static const int kLeft = 1;
+};
+
+struct Control
+{
+	static const int kX = 0;
+	static const int kY = 1;
 };
 
 //入力されているなどの状態を表すもの
@@ -37,6 +39,13 @@ class Input
 {
 
 private:
+
+
+	/*------定数------*/
+
+	const float kMaxPadStickNum = 32767;
+	const float kPadStickDeadZone = 10000;
+	const float kMouseDeadZone = 10;
 
 	/*-----変数-----*/
 
@@ -56,6 +65,8 @@ private:
 	/// <param name="pos">今の場所</param>
 	/// <returns></returns>
 	VECTOR GetVerticalVector(const VECTOR& next_pos,const VECTOR& pos);
+
+	float MakePercent(float value, float min, float max);
 
 public:
 
@@ -92,6 +103,11 @@ public:
 	// スティック入力の角度を返す
 	float GetPadStickRad(int type);
 
+	// 
+	float GetPadStickPercent(int type, int control);
+
+
+	float GetMousePercent(int control);
 
 	const InputType GetNowTypeState() const { return now_type_state_; }
 	const InputType GetBeforeTypeState() const { return before_type_state_; }
