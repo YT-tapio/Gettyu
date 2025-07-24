@@ -14,16 +14,15 @@ private:
 
 	float delta_time_;
 	float now_fps_;
+	float time_scale_;
 
 	int count_;
 
 public:
 
-	FPS()
-	{
-		Init();
-	}
+	FPS();
 	
+	~FPS();
 
 	void Init();
 
@@ -34,15 +33,24 @@ public:
 	void Wait();
 
 
+	void SetTimeScale(float time_scale)
+	{
+		time_scale_ = time_scale;
+	}
+
+
 	void SetPrevTime()
 	{
 		prev_time_ = now_time_;
 	}
 
-
+	
 	const float GetDeltaTime() const { return delta_time_; }
 
 
-	void Draw();
+	void DrawDeltaTime();
+
+
+	void DrawTimeScale();
 
 };

@@ -294,6 +294,7 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 	//velocity_ = VScale(velocity, delta_time_);
 
 	/*---デバッグ用---*/
+	/*
 	if (key_input_[KEY_INPUT_1])
 	{
 		now_type_ = AnimationType::kIdle;
@@ -313,6 +314,8 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 	{
 		now_type_ = AnimationType::kSwordSlash;
 	}
+	*/
+	
 
 	/*
 	if (now_type_ != AnimationType::kIdle)
@@ -345,11 +348,7 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 		animation_.Update(before_type_);
 	}
 
-
-
 	velocity_ = VScale(velocity,delta_time_);
-
-
 }
 
 

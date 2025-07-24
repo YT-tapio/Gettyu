@@ -1,4 +1,5 @@
 #include<iostream>
+#include<vector>
 #include"DxLib.h"
 #include"EffekseerForDxLib.h"
 #include"animation.h"
@@ -55,6 +56,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     int red = GetColor(255, 0, 0);
     int green = GetColor(0, 255, 0);
     int blue = GetColor(0, 0, 255);
+
+    //全体のタイムスケール
+    float time_scale = 1.0f;
 
     /*--キャラクターのダウンロード--*/
 
@@ -116,7 +120,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     //カメラを生成
     std::shared_ptr<Camera>camera = std::make_shared<Camera>(brain->GetPositionFromTarget(player->GetCenterPos()), 75.0f * DX_PI_F / 180.0f);
 
+    std::vector<std::shared_ptr<BaseObject>>objects;
     
+
     //オブジェクトを生成
     std::shared_ptr<BaseObject>object =
         std::make_shared<StillObject>(VGet(50, 10, 10), -1);
@@ -179,20 +185,33 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         
         
         player->Update(camera->GetPos(), brain->GetSideRad());
-        
-
-       
-        
-
-        
 
         camera->Update(player->GetCenterPos(),brain->GetVelocity());
         test_effect1->Update(player->GetPos());
         test_effect2->Update(player->GetPos());
 
         
-        
+        if (CheckHitKey(KEY_INPUT_1))
+        {
+            time_scale += 0.01;
+            
+        }
 
+        if (CheckHitKey(KEY_INPUT_2))
+        {
+            time_scale -= 0.01f;
+            if (time_scale < 0.0f)
+            {
+                time_scale = 0.0f;
+            }
+        }
+
+        if (CheckHitKey(KEY_INPUT_R))
+        {
+            time_scale = 1.0f;
+        }
+
+        fps->SetTimeScale(time_scale);
 
         ClearDrawScreen();
 
@@ -234,6 +253,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         object->Draw();
 
         brain->Draw();
+
+        fps->DrawTimeScale();
 
         if (player->GetIsTarget())
         {

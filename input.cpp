@@ -226,8 +226,6 @@ float Input::GetPadStickPercent(int type, int control)
 	//スティックの左右
 	if (type == StickType::kLeft)
 	{
-		
-
 		if (control == Control::kX)
 		{
 
@@ -294,21 +292,49 @@ float Input::GetMousePercent(int control)
 {
 	float percent_num = 0.0f;
 
-	
+	//中心からの距離
+	float center_to_mouse_x = now_type_state_.mouse_x - (kGameWidth * 0.5f);
+	float center_to_mouse_y = now_type_state_.mouse_y - (kGameHeight * 0.5f);
 
+	if (center_to_mouse_x < -(kGameWidth * 0.5f))
+	{
+		center_to_mouse_x = -(kGameWidth * 0.5f);
+	}
+
+	if (center_to_mouse_x > (kGameWidth * 0.5f))
+	{
+		center_to_mouse_x = (kGameWidth * 0.5f);
+	}
+
+	if (center_to_mouse_y < -(kGameHeight * 0.5f))
+	{
+		center_to_mouse_y = -(kGameHeight * 0.5f);
+	}
+
+	if (center_to_mouse_y > (kGameHeight * 0.5f))
+	{
+		center_to_mouse_y = (kGameHeight * 0.5f);
+	}
+
+	//x座標が選択されている
 	if (control == Control::kX)
 	{
-		if (-kMouseDeadZone < now_type_state_.mouse_x && now_type_state_.mouse_x < kMouseDeadZone)
+		if (-kMouseDeadZone < center_to_mouse_x && center_to_mouse_x < kMouseDeadZone)
 		{
 			return percent_num;
 		}
 
-		
 
 
 	}
 	else if(control == Control::kY)
 	{
+		if (-kMouseDeadZone < center_to_mouse_y && center_to_mouse_y < kMouseDeadZone)
+		{
+			return percent_num;
+		}
+		
+
 
 	}
 	else

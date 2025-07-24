@@ -1,6 +1,22 @@
 #include"FPS.h"
 #include<math.h>
 
+FPS::FPS()
+	: prev_time_(GetNowHiPerformanceCount())
+	, now_time_(0.0f)
+	, delta_time_(0.0f)
+	, count_(0)
+	,now_fps_(0.0f)
+	,time_scale_(1.0f)
+{
+
+}
+
+FPS::~FPS()
+{
+	//èàóùÇ»Çµ
+}
+
 
 void FPS::Init()
 {
@@ -9,6 +25,7 @@ void FPS::Init()
 	delta_time_ = 0.0f;
 	count_ = 0;
 	now_fps_ = 0.0f;
+	time_scale_ = 0.0f;
 }
 
 
@@ -16,7 +33,7 @@ void FPS::Update()
 {
 	now_time_ = GetNowHiPerformanceCount();
 
-	delta_time_ = (now_time_ - prev_time_) / 100000.0f;
+	delta_time_ = ((now_time_ - prev_time_) / 100000.0f) * time_scale_;
 
 	if (count_ == kTargetFps)
 	{
@@ -44,7 +61,12 @@ void FPS::Wait()
 }
 
 
-void FPS::Draw()
+void FPS::DrawDeltaTime()
 {
 	DrawFormatString(400, 100, GetColor(255, 255, 255), "%.1f", now_fps_);
+}
+
+void FPS::DrawTimeScale()
+{
+	DrawFormatString(400, 100, GetColor(255, 255, 255), "%f", time_scale_);
 }

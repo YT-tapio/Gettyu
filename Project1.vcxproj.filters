@@ -25,15 +25,15 @@
     <Filter Include="ソース ファイル\camera">
       <UniqueIdentifier>{6ebbd0ff-3448-41ae-8729-ad5329630857}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\FPS">
+      <UniqueIdentifier>{82cee67e-d633-42a9-ba44-b62a51a378ec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="effect_manager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="FPS.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="weapon.cpp">
@@ -63,6 +63,9 @@
     <ClCompile Include="brain.cpp">
       <Filter>ソース ファイル\camera</Filter>
     </ClCompile>
+    <ClCompile Include="FPS.cpp">
+      <Filter>ソース ファイル\FPS</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="keyconfig.h">
@@ -72,9 +75,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="effect_manager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="FPS.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="weapon.h">
@@ -109,6 +109,9 @@
     </ClInclude>
     <ClInclude Include="brain.h">
       <Filter>ソース ファイル\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="FPS.h">
+      <Filter>ソース ファイル\FPS</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
