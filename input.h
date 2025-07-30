@@ -66,6 +66,13 @@ private:
 	/// <returns></returns>
 	VECTOR GetVerticalVector(const VECTOR& next_pos,const VECTOR& pos);
 
+	/// <summary>
+	/// パーセントを作ります
+	/// </summary>
+	/// <param name="value">調べたい値</param>
+	/// <param name="min">最低値(デッドゾーンなどがある場合)</param>
+	/// <param name="max">最大値</param>
+	/// <returns></returns>
 	float MakePercent(float value, float min, float max);
 
 public:
@@ -82,6 +89,8 @@ public:
 	void Update();
 
 	void SetTypeState(const  InputType& now_input,const InputType& before_input);
+
+	void ResetMousePoint();
 
 	// キー入力を見る
 	InputState CheckInputKey(int key_code);

@@ -61,6 +61,14 @@ void Input::SetTypeState(const  InputType& now_input, const InputType& before_in
 	before_type_state_ = before_input;
 }
 
+
+void Input::ResetMousePoint()
+{
+	int center_mouse_x = static_cast<int>(kGameWidth * 0.5f);
+	int center_mouse_y = static_cast<int>(kGameHeight * 0.5f);
+	SetMousePoint(center_mouse_x,center_mouse_y);
+}
+
 InputState Input::CheckInputKey(int key_code)
 {
 
@@ -296,25 +304,15 @@ float Input::GetMousePercent(int control)
 	float center_to_mouse_x = now_type_state_.mouse_x - (kGameWidth * 0.5f);
 	float center_to_mouse_y = now_type_state_.mouse_y - (kGameHeight * 0.5f);
 
-	if (center_to_mouse_x < -(kGameWidth * 0.5f))
+	/*画面外に行ったときの処理*/
+	if (false)
 	{
-		center_to_mouse_x = -(kGameWidth * 0.5f);
+		if (center_to_mouse_x < -(kGameWidth * 0.5f)) { center_to_mouse_x = -(kGameWidth * 0.5f); }		//左
+		if (center_to_mouse_x > (kGameWidth * 0.5f)) { center_to_mouse_x = (kGameWidth * 0.5f); }			//右
+		if (center_to_mouse_y < -(kGameHeight * 0.5f)) { center_to_mouse_y = -(kGameHeight * 0.5f); }		//上
+		if (center_to_mouse_y > (kGameHeight * 0.5f)) { center_to_mouse_y = (kGameHeight * 0.5f); }		//下
 	}
-
-	if (center_to_mouse_x > (kGameWidth * 0.5f))
-	{
-		center_to_mouse_x = (kGameWidth * 0.5f);
-	}
-
-	if (center_to_mouse_y < -(kGameHeight * 0.5f))
-	{
-		center_to_mouse_y = -(kGameHeight * 0.5f);
-	}
-
-	if (center_to_mouse_y > (kGameHeight * 0.5f))
-	{
-		center_to_mouse_y = (kGameHeight * 0.5f);
-	}
+	
 
 	//x座標が選択されている
 	if (control == Control::kX)
@@ -323,9 +321,7 @@ float Input::GetMousePercent(int control)
 		{
 			return percent_num;
 		}
-
-
-
+		percent_num = MakePercent(center_to_mouse_x, kMouseDeadZone, (kGameWidth * 0.5f));
 	}
 	else if(control == Control::kY)
 	{
@@ -334,7 +330,7 @@ float Input::GetMousePercent(int control)
 			return percent_num;
 		}
 		
-
+		percent_num = MakePercent(center_to_mouse_y, kMouseDeadZone, (kGameHeight * 0.5f));
 
 	}
 	else

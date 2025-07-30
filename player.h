@@ -7,6 +7,22 @@
 class Weapon;
 class Input;
 
+struct CapsuleData
+{
+	VECTOR start_pos;
+	VECTOR end_pos;
+	float vertical_num;
+	float r;
+	int div_num;
+};
+
+enum State
+{
+	Stand,
+	Run,
+	Jump
+};
+
 class Player
 {
 private:
@@ -14,7 +30,7 @@ private:
 	const float kWalkSpeed = 1.0f;
 	const float kNormalSpeed = 2.0f;
 	const float kDashSpeed = 2.8f;
-	
+
 	const float kGravity = 0.75f;		//重力
 	const float kJumpPower = 3.5f;		//ジャンプ力
 
@@ -22,6 +38,8 @@ private:
 	//クラス関連
 	Weapon* weapon_;
 	Input* input_;
+
+	State now_state_;
 
 	MATRIX model_matrix_;				//
 
@@ -35,15 +53,17 @@ private:
 	VECTOR direction_;
 	VECTOR rotation_;
 
+	CapsuleData capsule_;
+
 	float before_rot_;
 	float target_rot_;
 
 
 	bool is_ground_;					//地面の上にいるとき
 	bool is_target_;					///ターゲットしているかどうか
-	
+
 	int model_;							//モデル
-	
+
 	int pad_input_num_;					//入力するパッドの番号
 
 	//操作タイプ
@@ -56,18 +76,16 @@ private:
 
 	int frame_num_;
 
-	
-	//ターゲットの方向を見つける
-	void MakeTargetRot(const VECTOR& target_pos,float& target_rot);
 
+	//ターゲットの方向を見つける
+	void MakeTargetRot(const VECTOR& target_pos, float& target_rot);
 
 public:
 
-	
-	Player(VECTOR pos, int model,int pad_num);
+
+	Player(VECTOR pos, int model, int pad_num, int div, float r, float vertical_num);
 
 	~Player();
-
 
 	void Init(VECTOR pos);
 
@@ -88,12 +106,12 @@ public:
 	void InputState();
 
 
-	void AttachWeapon(const TCHAR* frame_path, int model,float scale);
+	void AttachWeapon(const TCHAR* frame_path, int model, float scale);
 
 
-	void Update(const VECTOR& pos,const float& rotation);
+	void Update(const VECTOR& pos, const float& rotation);
 
-	
+
 	void InputMovement(const VECTOR& pos, float& rotation);
 
 
@@ -121,9 +139,8 @@ public:
 
 	MATRIX GetFrameMatrix();
 
-
 	const VECTOR& GetPos() const { return pos_; }
-	
+
 
 	VECTOR GetCenterPos() { return { pos_.x,pos_.y + 15,pos_.z }; }
 
@@ -134,5 +151,19 @@ public:
 
 
 	const Input* GetInput() const { return input_; }
+
+	const CapsuleData GetCapsuleData() const { return capsule_; }
 };
+
+
+
+
+
+
+
+
+
+
+
+//おふろ
 

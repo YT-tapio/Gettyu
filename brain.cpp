@@ -103,65 +103,111 @@ void Brain::Update(const VECTOR& target_pos,const VECTOR& camera_pos,const Input
 
 
 
-
 void Brain::SphereUpdate(const VECTOR& target_pos,const VECTOR& camera_pos,const Input* input)
 {
 
 	Input* inp = new Input(input->GetPadNom());
 	inp->SetTypeState(input->GetNowTypeState(), input->GetBeforeTypeState());
 
-	//マウスポインターの取得
-	GetMousePoint(&now_mouse_pos_.x, &now_mouse_pos_.y);
+	float pad_side_rad_value = 0.0f;
+	float pad_vertical_rad_value = 0.0f;
 
+	float mouse_side_rad_value = 0.0f;
+	float mouse_vertical_rad_value = 0.0f;
 
-	//前回と現在のポインターの位置が違うとき
-	if (CheckMousePoint(now_mouse_pos_, before_mouse_pos_))
+	float decide_side_rad_value = 0.0f;
+	float decide_vertical_rad_value = 0.0f;
+
+	if (false)
 	{
-		//横の回転が360を超えないように
-		if (side_rad_ > (M_PI * 2)) { side_rad_ = 0; }
-
-		//縦の回転を作る
-		MakeVertical();
-
-		//
-		if (now_mouse_pos_.x > before_mouse_pos_.x)
-		{
-			float constant = now_mouse_pos_.x - before_mouse_pos_.x;
-
-			if (constant > kMaxMouseDiff)
-			{
-				constant = kMaxMouseDiff;
-			}
-
-			side_rad_ += static_cast<float>((M_PI / 180) * (constant / 10) * all_sensitivity_) * side_sensitivity_;
-		}
-
-		if (now_mouse_pos_.x < before_mouse_pos_.x)
-		{
-			float constant = before_mouse_pos_.x - now_mouse_pos_.x;
-
-			if (constant > kMaxMouseDiff)
-			{
-				constant = kMaxMouseDiff;
-			}
-
-			side_rad_ -= static_cast<float>((M_PI / 180) * (constant / 10) * all_sensitivity_) * side_sensitivity_;
-		}
-
-
-		//pos_.y = 40;
-
-		int MouseX = (float(kGameWidth) * 0.5f), MouseY = (float(kGameHeight) * 0.5f);
-		SetMousePoint(MouseX, MouseY);
+		//マウスポインターの取得
 		GetMousePoint(&now_mouse_pos_.x, &now_mouse_pos_.y);
-		before_mouse_pos_ = now_mouse_pos_;
+
+		//前回と現在のポインターの位置が違うとき
+		if (CheckMousePoint(now_mouse_pos_, before_mouse_pos_))
+		{
+
+
+			//横の回転が360を超えないように
+			if (side_rad_ > (M_PI * 2)) { side_rad_ = 0; }
+
+			//縦の回転を作る
+			MakeVertical();
+
+			//
+			if (now_mouse_pos_.x > before_mouse_pos_.x)
+			{
+				float constant = now_mouse_pos_.x - before_mouse_pos_.x;
+
+				if (constant > kMaxMouseDiff)
+				{
+					constant = kMaxMouseDiff;
+				}
+
+				side_rad_ += static_cast<float>((M_PI / 180) * (constant / 10) * all_sensitivity_) * side_sensitivity_;
+			}
+
+			if (now_mouse_pos_.x < before_mouse_pos_.x)
+			{
+				float constant = before_mouse_pos_.x - now_mouse_pos_.x;
+
+				if (constant > kMaxMouseDiff)
+				{
+					constant = kMaxMouseDiff;
+				}
+
+				side_rad_ -= static_cast<float>((M_PI / 180) * (constant / 10) * all_sensitivity_) * side_sensitivity_;
+			}
+
+
+			//pos_.y = 40;
+
+			int MouseX = (float(kGameWidth) * 0.5f), MouseY = (float(kGameHeight) * 0.5f);
+			SetMousePoint(MouseX, MouseY);
+			GetMousePoint(&now_mouse_pos_.x, &now_mouse_pos_.y);
+			before_mouse_pos_ = now_mouse_pos_;
+		}
 	}
 
 	
+
+	pad_side_rad_value = static_cast<float>((M_PI / 180) * (inp->GetPadStickPercent(StickType::kRight, Control::kX) * kCameraSpeed) * all_sensitivity_) * side_sensitivity_;;
+	pad_vertical_rad_value = -(static_cast<float>((M_PI / 180) * (inp->GetPadStickPercent(StickType::kRight, Control::kY) * kCameraSpeed) * all_sensitivity_) * vertical_sensitivity_);
+
+	//if()
+	mouse_side_rad_value = static_cast<float>((M_PI / 180) * (inp->GetMousePercent(Control::kX) * kCameraSpeed) * all_sensitivity_) * side_sensitivity_;;
+	mouse_vertical_rad_value = static_cast<float>((M_PI / 180) * (inp->GetMousePercent(Control::kY) * kCameraSpeed) * all_sensitivity_) * vertical_sensitivity_;
+
+	inp->ResetMousePoint();
+
+
+	if (pad_side_rad_value == 0.0f && pad_vertical_rad_value == 0.0f)
+	{
+		decide_side_rad_value = mouse_side_rad_value;
+		decide_vertical_rad_value = mouse_vertical_rad_value;
+	}
+
+	if (mouse_side_rad_value == 0.0f && mouse_vertical_rad_value == 0.0f)
+	{
+		decide_side_rad_value = pad_side_rad_value;
+		decide_vertical_rad_value = pad_vertical_rad_value;
+	}
+
 	//pad対応
-	side_rad_ += static_cast<float>((M_PI / 180) * (inp->GetPadStickPercent(StickType::kRight,Control::kX) * kCameraSpeed) * all_sensitivity_) * side_sensitivity_;
-	vertical_rad_ -= static_cast<float>((M_PI / 180) * (inp->GetPadStickPercent(StickType::kRight, Control::kY) * kCameraSpeed) * all_sensitivity_) * side_sensitivity_;
+	side_rad_ += decide_side_rad_value;
+	vertical_rad_ += decide_vertical_rad_value;	//pad操作の時、カメラを動かすときは上下が反転する
 	
+	//side_radの調整
+	if (side_rad_ > static_cast<float>((M_PI / 180) * 180))
+	{
+		side_rad_ -= static_cast<float>((M_PI / 180) * 360);
+	}
+
+	if (side_rad_ < -static_cast<float>((M_PI / 180) * 180))
+	{
+		side_rad_ += static_cast<float>((M_PI / 180) * 360);
+	}
+
 	//真上に来た時に後ろに行かないように
 	if (vertical_rad_ > static_cast<float>((M_PI / 180) * 80))
 	{

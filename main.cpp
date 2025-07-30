@@ -11,6 +11,7 @@
 #include"base_object.h"
 #include"still_object.h"
 #include"brain.h"
+#include"stage.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -111,8 +112,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         AnimationType::kSwordSlash, chara, 4.0f);
 
     //playerを生成
-    std::shared_ptr<Player>player =
-        std::make_shared<Player>(VGet(0, 0, 0), chara, DX_INPUT_PAD1);
+    std::shared_ptr<Player>player = 
+        std::make_shared<Player>(VGet(0, 0, 100), chara, DX_INPUT_PAD1, 20, 3.0f, 10.0f);
 
     //brainを生成
     std::shared_ptr<Brain>brain = std::make_shared<Brain>();
@@ -120,12 +121,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     //カメラを生成
     std::shared_ptr<Camera>camera = std::make_shared<Camera>(brain->GetPositionFromTarget(player->GetCenterPos()), 75.0f * DX_PI_F / 180.0f);
 
-    std::vector<std::shared_ptr<BaseObject>>objects;
+    //std::vector<std::shared_ptr<BaseObject>>objects;
+
+    int model_data = MV1LoadModel("data/model/map/city/cartoon_circuit.mv1");
+
+    std::shared_ptr<Stage>stage = std::make_shared<Stage>(model_data, VGet(0, 0, 0), 0.1f);
+    //objects.push_back(std::make_shared<StillObject>(VGet(0, 0, 0), MV1LoadModel("data/model/map/block/block.mv1")));
+    
     
 
     //オブジェクトを生成
-    std::shared_ptr<BaseObject>object =
-        std::make_shared<StillObject>(VGet(50, 10, 10), -1);
+    std::shared_ptr<BaseObject>object = 
+        std::make_shared<StillObject>(VGet(50, 0, 10), -1,1.0f);
 
     /*---プレイヤーにアニメーションを追加---*/
 
@@ -172,19 +179,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         }
        
 
+       
+        
+        
+        player->Update(camera->GetPos(), brain->GetSideRad());
+
         if (!(player->GetIsTarget()))
         {
             //マウスでの操作
-            brain->Update(player->GetCenterPos(), camera->GetPos(),player->GetInput());
+            brain->Update(player->GetCenterPos(), camera->GetPos(), player->GetInput());
         }
         else  //カメラは操作できなくとも位置は更新される
         {
             brain->SetRad(object->GetPos(), player->GetPos());
             brain->SetVelocity(player->GetPos(), camera->GetPos());
         }
-        
-        
-        player->Update(camera->GetPos(), brain->GetSideRad());
 
         camera->Update(player->GetCenterPos(),brain->GetVelocity());
         test_effect1->Update(player->GetPos());
@@ -222,6 +231,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         
         //fps->Draw();
 
+        
 
         DrawString(0, 0, "x", red);
         DrawString(15, 0, "y", green);
@@ -247,10 +257,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         
 
         player->Draw();
+
+        
+
+        SetUseLighting(FALSE);
+
+        stage->Draw();
         test_effect1->Draw();
         test_effect2->Draw();
 
         object->Draw();
+
+        
 
         brain->Draw();
 
@@ -265,7 +283,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
             DrawFormatString(300, 300, GetColor(255, 255, 255), "target:FALSE");
         }
 
-        
+        SetUseLighting(TRUE);
 
         ScreenFlip();
 

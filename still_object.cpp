@@ -4,8 +4,9 @@
 #include"still_object.h"
 
 
-StillObject::StillObject(VECTOR position, int model_handle)
+StillObject::StillObject(VECTOR position, int model_handle,const float& scale)
 	: BaseObject(position,model_handle)
+	,scale_(VGet(scale,scale,scale))
 {
 
 }
@@ -33,11 +34,21 @@ void StillObject::Draw()
 {
 	if (!(model_ == -1))
 	{
+
+		MATRIX scale_matrix = MGetScale(scale_);
 		//行列を生成
 		MATRIX pos_matrix = MGetTranslate(position_);
 
 		//モデルの行列をセットする
-		matrix_ = pos_matrix;
+		if (TRUE)
+		{
+			matrix_ = MMult(scale_matrix, pos_matrix);
+		}
+		else
+		{
+			matrix_ = pos_matrix;
+		}
+		
 
 		MV1SetMatrix(model_, matrix_);
 		MV1DrawModel(model_);

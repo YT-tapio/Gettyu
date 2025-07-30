@@ -138,11 +138,13 @@
     <ClCompile Include="base_object.cpp" />
     <ClCompile Include="brain.cpp" />
     <ClCompile Include="camera.cpp" />
+    <ClCompile Include="collision.cpp" />
     <ClCompile Include="effect_manager.cpp" />
     <ClCompile Include="FPS.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="stage.cpp" />
     <ClCompile Include="still_object.cpp" />
     <ClCompile Include="turn_camera.cpp" />
     <ClCompile Include="weapon.cpp" />
@@ -153,6 +155,7 @@
     <ClInclude Include="brain.h" />
     <ClInclude Include="Calculation.h" />
     <ClInclude Include="camera.h" />
+    <ClInclude Include="collision.h" />
     <ClInclude Include="effect_manager.h" />
     <ClInclude Include="FPS.h" />
     <ClInclude Include="input.h" />
@@ -160,6 +163,7 @@
     <ClInclude Include="mixamo_fram.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="screen.h" />
+    <ClInclude Include="stage.h" />
     <ClInclude Include="still_object.h" />
     <ClInclude Include="turn_camera.h" />
     <ClInclude Include="weapon.h" />

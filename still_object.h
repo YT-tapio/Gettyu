@@ -7,7 +7,7 @@ class StillObject : public BaseObject
 {
 private:
 
-
+	VECTOR scale_;
 
 protected:
 
@@ -15,7 +15,7 @@ protected:
 
 public:
 
-	StillObject(VECTOR position,int model_handle);
+	StillObject(VECTOR position,int model_handle,const float& scale);
 
 	~StillObject() override;
 

@@ -9,7 +9,7 @@
 
 
 
-Player::Player(VECTOR pos, int model,int pad_num)
+Player::Player(VECTOR pos, int model,int pad_num,int div, float r, float vertical_num)
 	: model_(model)
 	, pad_input_num_(pad_num)
 	, weapon_(nullptr)
@@ -17,7 +17,11 @@ Player::Player(VECTOR pos, int model,int pad_num)
 	, now_type_(AnimationType::kNothing)
 	, target_rot_(0.0f)
 	, before_rot_(0.0f)
+	, now_state_(State::Stand)
 {
+	capsule_.r = r;
+	capsule_.div_num = div;
+	capsule_.vertical_num = vertical_num;
 	//model_ = model;
 	//pad_input_num_ = pad_num;
 	Init(pos);
@@ -122,7 +126,9 @@ void Player::Draw()
 	DrawFormatString(200, 220, GetColor(255, 255, 255), "%f", rotation_.y);
 	
 	*/
+	DrawCapsule3D(capsule_.start_pos, capsule_.end_pos, capsule_.r, capsule_.div_num, GetColor(255, 0, 0), GetColor(255, 0, 0), FALSE);
 	MV1DrawModel(model_);
+
 
 	if (weapon_ != nullptr)
 	{
@@ -210,6 +216,11 @@ void Player::Update(const VECTOR& pos, const float& rotation)
 		weapon_->SetMatrix(test);
 		weapon_->SetPos(MV1GetFramePosition(model_, frame_num_));
 	}
+
+	capsule_.start_pos = pos_;
+	capsule_.start_pos.y += capsule_.r;
+	capsule_.end_pos = capsule_.start_pos;
+	capsule_.end_pos.y += capsule_.vertical_num;
 
 	//printfDx("%f\n", target_rot);
 
@@ -414,6 +425,7 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 		/*---—áŠOˆ—---*/
 		if (!(input_->CheckInputKey(KeyConfig::kUpKey) > InputState::kOff))
 		{
+			
 			if ((input_->CheckInputKey(KeyConfig::kRightKey) > InputState::kOff))
 			{
 				rot += (static_cast<float>((M_PI / 180) * 180));
@@ -424,16 +436,11 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 			}
 			else
 			{
-				//‘O‰ñ‚ðŽQÆ‚·‚é
-				if (before_rot_ > static_cast<float>((M_PI / 180) * 0))
-				{
-					rot += (static_cast<float>((M_PI / 180) * 180));
-				}
-				else
-				{
-					rot += -1 * (static_cast<float>((M_PI / 180) * 180));
-				}
+				rot += (static_cast<float>((M_PI / 180) * 180));
 			}
+			
+			
+			
 
 
 
@@ -515,7 +522,7 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 
 		before_rot_ = rot / input_count;
 	}
-
+	printfDx("%f\n", rotation);
 	CheckReverseRot(rotation_.y, target_rot_);
 	
 }
