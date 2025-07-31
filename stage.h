@@ -1,7 +1,8 @@
 #pragma once
 
+#include"base_object.h"
+
 class Player;
-class Baseobject;
 
 class Stage : public BaseObject
 {

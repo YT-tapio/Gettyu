@@ -182,7 +182,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
        
         
         
-        player->Update(camera->GetPos(), brain->GetSideRad());
+        player->Update(camera->GetPos(), brain->GetSideRad(),*stage);
 
         if (!(player->GetIsTarget()))
         {

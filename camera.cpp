@@ -31,9 +31,6 @@ void Camera::Update(const VECTOR& target_pos,const VECTOR& velocity)
 {
 	VECTOR vel = velocity;
 
-	// ‚±‚±‚Åbrain‚Ìˆ—(velocity‚Ì’²®)
-
-
 	pos_ = VAdd(pos_, vel);
 
 	Effekseer_Sync3DSetting();

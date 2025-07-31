@@ -6,6 +6,7 @@
 
 class Weapon;
 class Input;
+class Stage;
 
 struct CapsuleData
 {
@@ -16,11 +17,14 @@ struct CapsuleData
 	int div_num;
 };
 
-enum State
+enum class State
 {
-	Stand,
-	Run,
-	Jump
+	kStand,
+	kSlowRun,
+	kWalk,
+	kRun,
+	kJump,
+	kFall
 };
 
 class Player
@@ -53,14 +57,19 @@ private:
 	VECTOR direction_;
 	VECTOR rotation_;
 
+	//カメラのずらし量
+	VECTOR camera_offset_dir;
+
 	CapsuleData capsule_;
 
 	float before_rot_;
 	float target_rot_;
 
+	
 
 	bool is_ground_;					//地面の上にいるとき
 	bool is_target_;					///ターゲットしているかどうか
+	bool is_move_;
 
 	int model_;							//モデル
 
@@ -109,8 +118,8 @@ public:
 	void AttachWeapon(const TCHAR* frame_path, int model, float scale);
 
 
-	void Update(const VECTOR& pos, const float& rotation);
-
+	void Update(const VECTOR& pos, const float& rotation, Stage& stage);
+	
 
 	void InputMovement(const VECTOR& pos, float& rotation);
 
@@ -135,15 +144,26 @@ public:
 	}
 
 
+	void OnHitRoof();
+
+
+	void OnHitFloor();
+
+
 	void TestFunc();
 
 	MATRIX GetFrameMatrix();
 
+	const State& GetNowState() const { return now_state_; }
+
 	const VECTOR& GetPos() const { return pos_; }
 
+	const VECTOR OffsetCameraDirection() const { return camera_offset_dir; }
 
-	VECTOR GetCenterPos() { return { pos_.x,pos_.y + 15,pos_.z }; }
+	VECTOR GetCenterPos() { return { pos_.x,pos_.y + 15.0f,pos_.z }; }
 
+
+	const VECTOR GetVelocity() const { return velocity_; }
 
 	const VECTOR GetDirection() const { return direction_; }
 

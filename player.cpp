@@ -6,7 +6,7 @@
 #include"keyconfig.h"
 #include"weapon.h"
 #include"input.h"
-
+#include"stage.h"
 
 
 Player::Player(VECTOR pos, int model,int pad_num,int div, float r, float vertical_num)
@@ -17,11 +17,12 @@ Player::Player(VECTOR pos, int model,int pad_num,int div, float r, float vertica
 	, now_type_(AnimationType::kNothing)
 	, target_rot_(0.0f)
 	, before_rot_(0.0f)
-	, now_state_(State::Stand)
+	, now_state_(State::kStand)
 {
 	capsule_.r = r;
 	capsule_.div_num = div;
 	capsule_.vertical_num = vertical_num;
+	is_move_ = FALSE;
 	//model_ = model;
 	//pad_input_num_ = pad_num;
 	Init(pos);
@@ -115,7 +116,7 @@ void Player::Draw()
 
 	//MV1SetRotationXYZ(model_, rotation_);
 	DrawSphere3D(VGet(pos_.x, pos_.y + 15, pos_.z), 0.5f, 5, GetColor(0, 255, 0), GetColor(0, 255, 0), FALSE);
-
+	DrawSphere3D(pos_, (capsule_.vertical_num) * 2, 20, GetColor(255, 0, 0), GetColor(255, 0, 0), FALSE);
 	//DrawFormatString(200, 200, GetColor(255, 255, 255), "%f", rotation_.y);
 
 	MV1SetMatrix(model_, model_matrix_);
@@ -190,7 +191,7 @@ void Player::AttachWeapon(const TCHAR* frame_path, int model,float scale)
 }
 
 
-void Player::Update(const VECTOR& pos, const float& rotation)
+void Player::Update(const VECTOR& pos, const float& rotation, Stage& stage)
 {
 
 	// ターゲットを切り替えた時のrotationを色んな奴に持たすわけにはいかないのでplayerに持たせる、
@@ -200,6 +201,14 @@ void Player::Update(const VECTOR& pos, const float& rotation)
 	
 
 	InputMovement(pos, target_rot);
+
+	capsule_.start_pos = VAdd(pos_,velocity_);
+	capsule_.start_pos.y += capsule_.r;
+	capsule_.end_pos = capsule_.start_pos;
+	capsule_.end_pos.y += capsule_.vertical_num;
+
+
+	velocity_ = stage.CheckCollision(*this, velocity_);
 	if (AnimationType::kAttack > now_type_)
 	{
 		pos_ = VAdd(pos_, velocity_);
@@ -217,10 +226,7 @@ void Player::Update(const VECTOR& pos, const float& rotation)
 		weapon_->SetPos(MV1GetFramePosition(model_, frame_num_));
 	}
 
-	capsule_.start_pos = pos_;
-	capsule_.start_pos.y += capsule_.r;
-	capsule_.end_pos = capsule_.start_pos;
-	capsule_.end_pos.y += capsule_.vertical_num;
+	
 
 	//printfDx("%f\n", target_rot);
 
@@ -246,18 +252,21 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 		speed = kDashSpeed;
 
 		now_type_ = AnimationType::kFastRun;
+		now_state_ = State::kRun;
 	}
 	else if (input_->CheckInputKey(KeyConfig::kWalkKey) > InputState::kOff)
 	{
 		speed = kWalkSpeed;
 
 		now_type_ = AnimationType::kWalk;
+		now_state_ = State::kWalk;
 	}
 	else
 	{
 		speed = kNormalSpeed;
 
 		now_type_ = AnimationType::kSlowRun;
+		now_state_ = State::kSlowRun;
 	}
 
 	//回転量からvelocityを出す
@@ -286,6 +295,7 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 	else
 	{
 		now_type_ = AnimationType::kIdle;
+		now_state_ = State::kStand;
 	}
 
 	if (!is_ground_)
@@ -293,10 +303,12 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 		if (velocity_.y > 0)
 		{
 			now_type_ = AnimationType::kJumpUp;
+			now_state_ = State::kJump;
 		}
 		else if(velocity_.y < 0)
 		{
 			now_type_ = AnimationType::kJumpDown;
+			now_state_ = State::kFall;
 		}
 		
 	}
@@ -522,7 +534,10 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 
 		before_rot_ = rot / input_count;
 	}
-	printfDx("%f\n", rotation);
+
+	camera_offset_dir = VGet(direction.x * constant, 0, -direction.x);
+
+	//printfDx("%f\n", rotation);
 	CheckReverseRot(rotation_.y, target_rot_);
 	
 }
@@ -674,6 +689,16 @@ bool Player::CheckGround()
 }
 
 
+void Player::OnHitRoof()
+{
+	velocity_.y = -velocity_.y;
+}
+
+
+void Player::OnHitFloor()
+{
+	velocity_.y = 0.0f;
+}
 
 
 void Player::TestFunc()
