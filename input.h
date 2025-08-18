@@ -1,5 +1,4 @@
 #pragma once
-
 //‚¢‚ë‚ñ‚È“ü—Í‚ğ}‚é
 
 struct InputType

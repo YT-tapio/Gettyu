@@ -28,6 +28,9 @@
     <Filter Include="ソース ファイル\FPS">
       <UniqueIdentifier>{82cee67e-d633-42a9-ba44-b62a51a378ec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\stage">
+      <UniqueIdentifier>{9f3370c4-dc0f-4a3c-a790-8d24b1537a99}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -70,7 +73,7 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="stage.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\stage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -123,7 +126,7 @@
       <Filter>ソース ファイル</Filter>
     </ClInclude>
     <ClInclude Include="stage.h">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\stage</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

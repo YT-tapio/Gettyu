@@ -2,8 +2,8 @@
 #include"DxLib.h"
 #include"camera.h"
 #include"screen.h"
-#include"Calculation.h"
 #include"brain.h"
+
 #include"input.h"
 
 #define _USE_MATH_DEFINES

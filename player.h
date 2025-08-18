@@ -152,7 +152,13 @@ public:
 
 	void TestFunc();
 
+	void ResetFallSpeed() { fall_speed_ = 0.0f; }
+
+	void SetIsGround(bool flag) { is_ground_ = flag; }
+
 	MATRIX GetFrameMatrix();
+
+	const float GetFallSpeed()const { return fall_speed_; }
 
 	const State& GetNowState() const { return now_state_; }
 

@@ -1,6 +1,14 @@
 #pragma once
-
 #include"base_object.h"
+
+/// <summary>
+/// 正射影ベクトルを出す
+/// </summary>
+/// <param name="vector">地面</param>
+/// <param name="vector2">調べたい影</param>
+/// <returns></returns>
+VECTOR GetProjectionVector(const VECTOR& vector, const VECTOR& vector2);
+
 
 class Player;
 
@@ -13,6 +21,7 @@ private:
 	static constexpr float	kHitSlideLength = 5.0f;		// 一度の壁押し出し処理でスライドさせる距離
 
 	VECTOR scale_;	//モデルの大きさ
+
 
 	// HACK: 壁はXZ平面に垂直である前提で成り立っている。それ以外を置くとバグる
 	int							wall_num_;			// 壁ポリゴンと判断されたポリゴンの数

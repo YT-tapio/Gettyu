@@ -116,7 +116,9 @@ void Player::Draw()
 
 	//MV1SetRotationXYZ(model_, rotation_);
 	DrawSphere3D(VGet(pos_.x, pos_.y + 15, pos_.z), 0.5f, 5, GetColor(0, 255, 0), GetColor(0, 255, 0), FALSE);
-	DrawSphere3D(pos_, (capsule_.vertical_num) * 2, 20, GetColor(255, 0, 0), GetColor(255, 0, 0), FALSE);
+
+	//周りにどんだけポリゴンあるかを調べる
+	DrawCapsule3D(capsule_.start_pos, capsule_.end_pos,capsule_.r * 2.0f,20,GetColor(0,255,0),GetColor(0, 255, 0),FALSE);
 	//DrawFormatString(200, 200, GetColor(255, 255, 255), "%f", rotation_.y);
 
 	MV1SetMatrix(model_, model_matrix_);
@@ -127,8 +129,10 @@ void Player::Draw()
 	DrawFormatString(200, 220, GetColor(255, 255, 255), "%f", rotation_.y);
 	
 	*/
+	//当たり判定のカプセル
 	DrawCapsule3D(capsule_.start_pos, capsule_.end_pos, capsule_.r, capsule_.div_num, GetColor(255, 0, 0), GetColor(255, 0, 0), FALSE);
 	MV1DrawModel(model_);
+	//printfDx("x:%.2f,y:%.2f,z:%.2f\n", pos_.x, pos_.y, pos_.z);
 
 
 	if (weapon_ != nullptr)
@@ -138,7 +142,7 @@ void Player::Draw()
 	
 	input_->Draw();
 
-	//animation_.Draw(now_type_);
+	//animation_.Draw(now_type_);+
 	
 
 
@@ -202,17 +206,17 @@ void Player::Update(const VECTOR& pos, const float& rotation, Stage& stage)
 
 	InputMovement(pos, target_rot);
 
-	capsule_.start_pos = VAdd(pos_,velocity_);
-	capsule_.start_pos.y += capsule_.r;
-	capsule_.end_pos = capsule_.start_pos;
-	capsule_.end_pos.y += capsule_.vertical_num;
 
-
-	velocity_ = stage.CheckCollision(*this, velocity_);
 	if (AnimationType::kAttack > now_type_)
 	{
-		pos_ = VAdd(pos_, velocity_);
+		pos_ = stage.CheckCollision(*this, velocity_);
+		capsule_.start_pos = pos_, velocity_;
+		capsule_.start_pos.y += capsule_.r;
+		capsule_.end_pos = capsule_.start_pos;
+		capsule_.end_pos.y += capsule_.vertical_num;
+
 	}
+
 	
 
 	
@@ -649,10 +653,10 @@ void Player::CheckReverseRot(float& now_rot, float target_rot)
 void  Player::JumpAction(VECTOR& velocity)
 {
 	//重力
-	fall_speed_ -= (kGravity * delta_time_);
+	//fall_speed_ -= (kGravity * delta_time_);
 
 	//地面にいるかの判定
-	is_ground_ = CheckGround();
+	//is_ground_ = CheckGround();
 
 
 	if (is_ground_)
@@ -666,7 +670,11 @@ void  Player::JumpAction(VECTOR& velocity)
 			now_type_ = AnimationType::kJumpUp;
 		}
 	}
-
+	else
+	{
+		fall_speed_ -= (kGravity * delta_time_);
+	}
+	
 	VECTOR fall_velocity = VGet(0, fall_speed_, 0);
 	velocity = VAdd(velocity, fall_velocity);
 

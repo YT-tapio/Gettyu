@@ -18,3 +18,5 @@ Type TheNumPower(const Type& num, int power)
 
 	return value;
 }
+
+

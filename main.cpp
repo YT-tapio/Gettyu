@@ -113,7 +113,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     //playerÇê∂ê¨
     std::shared_ptr<Player>player = 
-        std::make_shared<Player>(VGet(0, 0, 100), chara, DX_INPUT_PAD1, 20, 3.0f, 10.0f);
+        std::make_shared<Player>(VGet(0, 10, 100), chara, DX_INPUT_PAD1, 20, 3.0f, 10.0f);
 
     //brainÇê∂ê¨
     std::shared_ptr<Brain>brain = std::make_shared<Brain>();
@@ -123,9 +123,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     //std::vector<std::shared_ptr<BaseObject>>objects;
 
-    int model_data = MV1LoadModel("data/model/map/city/cartoon_circuit.mv1");
+    int model_data = MV1LoadModel("data/model/map/arena/Arena2.mv1");
 
-    std::shared_ptr<Stage>stage = std::make_shared<Stage>(model_data, VGet(0, 0, 0), 0.1f);
+    std::shared_ptr<Stage>stage = std::make_shared<Stage>(model_data, VGet(0, 0, 0), 1.1f);
     //objects.push_back(std::make_shared<StillObject>(VGet(0, 0, 0), MV1LoadModel("data/model/map/block/block.mv1")));
     
     

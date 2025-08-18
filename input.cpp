@@ -1,8 +1,9 @@
 #include"DxLib.h"
 #include<math.h>
 #include"screen.h"
-#include"input.h"
 #include"Calculation.h"
+#include"input.h"
+
 
 Input::Input(const int num)
 	: num_(num)
