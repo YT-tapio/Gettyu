@@ -171,6 +171,7 @@ void Animation::Update(AnimationType type)
         if (type == animation.type)
         {
             animation.play_time += (animation.play_speed * delta_time_);
+            is_play_ = TRUE;
 
             if (animation.play_time >= animation.total_time)
             {
@@ -185,6 +186,7 @@ void Animation::Update(AnimationType type)
                     if (animation.type > kAttack)
                     {
                         animation.play_time = animation.total_time - 0.1f;
+                        is_play_ = FALSE;
                     }
                     else
                     {

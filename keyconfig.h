@@ -12,7 +12,12 @@ struct KeyConfig
     static const int kDashKey = KEY_INPUT_LSHIFT;
     static const int kWalkKey = KEY_INPUT_LCONTROL;
     static const int kJumpKey = KEY_INPUT_SPACE;
+    static const int kAttackKey = MOUSE_INPUT_LEFT;
     //static const int kSwordSlash;
+
+    //“®‚«‚É‚ÍŠÖŒW‚µ‚È‚¢‚à‚Ì
+    static const int kSwitchWeaponKey = KEY_INPUT_R;
+
 };
 
 struct PadConfig
@@ -22,4 +27,9 @@ struct PadConfig
     static const int kUpStick = 0;
     static const int kDownStick = 0;
     static const int kJumpButton = XINPUT_BUTTON_A;
+    static const int kAttackButton = XINPUT_BUTTON_X;
+
+    //“®‚«‚É‚ÍŠÖŒW‚µ‚È‚¢‚à‚Ì
+    static const int kSwitchWeaponButton = XINPUT_BUTTON_RIGHT_SHOULDER;
+
 };

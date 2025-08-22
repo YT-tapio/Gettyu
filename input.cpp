@@ -180,6 +180,8 @@ float Input::GetPadStickVertical(int type)
 		//ŽO•½•û
 		vertical_num = sqrt(TheNumPower((now_type_state_.pad.ThumbLX * 0.01f), 2) +
 			(TheNumPower((now_type_state_.pad.ThumbLY * 0.01f), 2)));
+		//printfDx("%d\n", vertical_num);
+
 	}
 	else if(type == StickType::kRight)
 	{
@@ -338,8 +340,6 @@ float Input::GetMousePercent(int control)
 	{
 		printfDx("error");
 	}
-
-
 
 	return percent_num;
 }

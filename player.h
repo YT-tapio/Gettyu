@@ -10,11 +10,11 @@ class Stage;
 
 struct CapsuleData
 {
-	VECTOR start_pos;
-	VECTOR end_pos;
-	float vertical_num;
-	float r;
-	int div_num;
+	VECTOR start_pos = { 0.f, 0.f, 0.f };
+	VECTOR end_pos = { 0.f, 0.f, 0.f };
+	float vertical_num = 0.f;
+	float r = 0.f;
+	int div_num = 0;
 };
 
 enum class State
@@ -32,9 +32,8 @@ class Player
 private:
 
 	const float kWalkSpeed = 1.0f;
-	const float kNormalSpeed = 2.0f;
-	const float kDashSpeed = 2.8f;
-
+	const float kNormalSpeed = 2.5f;
+	const float kDashSpeed = 3.8f;
 	const float kGravity = 0.75f;		//重力
 	const float kJumpPower = 3.5f;		//ジャンプ力
 
@@ -70,6 +69,8 @@ private:
 	bool is_ground_;					//地面の上にいるとき
 	bool is_target_;					///ターゲットしているかどうか
 	bool is_move_;
+
+	bool is_switch_weapon_;
 
 	int model_;							//モデル
 
@@ -175,6 +176,7 @@ public:
 
 	const bool GetIsTarget() const { return is_target_; }
 
+	const bool GetIsSwitchWeapon() const { return is_switch_weapon_; }
 
 	const Input* GetInput() const { return input_; }
 

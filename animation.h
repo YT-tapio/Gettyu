@@ -60,7 +60,7 @@ private:
     int before_blend_attach_index_;
 
     bool is_blend_ = FALSE;
-    bool is_end_ = FALSE;
+    bool is_play_ = FALSE;
 
     float delta_time_;
 
@@ -124,7 +124,7 @@ public:
 
     void SetIsEnd(bool flag)
     {
-        is_end_ = flag;
+        is_play_ = flag;
     }
 
     /// <summary>
@@ -145,6 +145,7 @@ public:
         return is_blend_;
     }
 
+    const bool IsPlay() const { return is_play_; }
 
     //デバッグ用
     void Draw(const AnimationType& type);

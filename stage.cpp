@@ -1,4 +1,7 @@
 #include<iostream>
+#define _USE_MATH_DEFINES
+#include<math.h>
+
 #include"DxLib.h"
 #include"Player.h"
 #include"stage.h"
@@ -33,7 +36,15 @@ Stage::Stage(int model_handle, VECTOR pos, float scale)
 	, wall_{ nullptr }
 	, floor_{ nullptr }
 {
+	MV1SetupCollInfo(model_, -1);
 
+
+	MATRIX scale_matrix = MGetScale(scale_);
+	//行列を生成
+	MATRIX pos_matrix = MGetTranslate(position_);
+	matrix_ = MMult(scale_matrix, pos_matrix);
+
+	MV1SetMatrix(model_, matrix_);
 }
 
 
@@ -283,7 +294,9 @@ void Stage::Draw()
 		matrix_ = pos_matrix;
 	}
 
-
+	
+	//DrawCapsule3D(next_to_old_cap_.start_pos, next_to_old_cap_.end_pos, next_to_old_cap_.r,
+	//	20, GetColor(255, 255, 255), GetColor(255, 255, 255), FALSE);
 	MV1SetMatrix(model_, matrix_);
 	MV1DrawModel(model_);
 }
@@ -295,23 +308,48 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 	VECTOR offset_vel = velocity;
 	VECTOR next_pos = VAdd(old_pos, offset_vel);
 	
-	auto player_capsule = player.GetCapsuleData();
+	//printfDx("x:%.2f,y:%.2f,z:%.2f\n", old_pos.x, old_pos.y, old_pos.z);
+	//printfDx("y:%.2f\n",old_pos.y);
 
-	//未来のカプセルの座標
-	player_capsule.start_pos = next_pos;
-	player_capsule.start_pos.y += player_capsule.r;
-	player_capsule.end_pos = player_capsule.start_pos;
-	player_capsule.end_pos.y += player_capsule.vertical_num;
+	auto old_player_capsule = player.GetCapsuleData();
+	auto next_player_capsule = old_player_capsule;
+
+	//未来のカプセルの座標を更新
+	next_player_capsule.start_pos = next_pos;
+	next_player_capsule.start_pos.y += next_player_capsule.r;
+	next_player_capsule.end_pos = next_player_capsule.start_pos;
+	next_player_capsule.end_pos.y += next_player_capsule.vertical_num;
+	//printfDx("next_cap_r:%.2f\n", next_player_capsule.r);
+	// ミライのベクトルから現在のベクトルまでのカプセルを作
+		// 各カプセルの中心の座標を検出する
+		// それをCapsuleDataのstart_posとend_posに当てはめる
+		// 半径は(vertical_num + (r * 0.5f))
+
+	//検出するカプセルの更新
+	next_to_old_cap_.start_pos = VScale(VAdd(next_player_capsule.start_pos, next_player_capsule.end_pos), 0.5f);
+	next_to_old_cap_.end_pos = VScale(VAdd(old_player_capsule.start_pos, old_player_capsule.end_pos), 0.5f);
+
+	next_to_old_cap_.r = (old_player_capsule.r + (next_to_old_cap_.vertical_num * 0.5f));
+	next_to_old_cap_.vertical_num = (VSize(VSub(next_player_capsule.end_pos, next_player_capsule.start_pos)));
 
 	// HACK: ステージポリゴンが複数ある場合、ここが繰り返し処理になる
 	{
 		// プレイヤーの周囲にあるステージポリゴンを取得する
 		// ( 検出する範囲は移動距離も考慮する )
 		auto hit_dim = MV1CollCheck_Capsule(model_, 
-			-1, player_capsule.start_pos, player_capsule.end_pos,
-			(player_capsule.r * 2.0f));
+			-1, next_to_old_cap_.start_pos, next_to_old_cap_.end_pos,
+			(next_to_old_cap_.r));
 
-		printfDx("%d\n", hit_dim.HitNum);
+		if (before_hit_num_ != hit_dim.HitNum)
+		{
+			//printfDx("%d\n", hit_dim.HitNum);
+			before_hit_num_ = hit_dim.HitNum;
+		}
+
+		
+		
+
+		//printfDx("r:%.2f\n", next_player_capsule.r);
 
 		// 何も触れていないときに重力判定をする
 		if (hit_dim.HitNum == 0)
@@ -320,27 +358,27 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 			if (player.GetFallSpeed() == 0.f)
 			{
 
-				auto check_capsule = player_capsule;
+				auto check_capsule = next_player_capsule;
 				//少し下を見る
-				check_capsule.start_pos = VAdd(old_pos, VGet(0.f, 0.1f, 0.f));
+				check_capsule.start_pos = VAdd(old_pos, VGet(0.f, -0.1f, 0.f));
 				check_capsule.start_pos.y += check_capsule.r;
 				check_capsule.end_pos = check_capsule.start_pos;
 				check_capsule.end_pos.y += check_capsule.vertical_num;
 
-				hit_dim = MV1CollCheck_Capsule(model_,
+				auto gravity_check_hit_dim = MV1CollCheck_Capsule(model_,
 					-1, check_capsule.start_pos, check_capsule.end_pos,
-					(check_capsule.r * 1.5f));
+					check_capsule.r);
 
 				//下の座標を見た時何にも触れていなかったら重力あり
-				if (hit_dim.HitNum == 0)
+				if (gravity_check_hit_dim.HitNum == 0)
 				{
 					player.SetIsGround(FALSE);
 				}
 				else
 				{
-					for (int i = 0; i < hit_dim.HitNum; i++)
+					for (int i = 0; i < gravity_check_hit_dim.HitNum; i++)
 					{
-						auto poly = hit_dim.Dim[i];
+						auto poly = gravity_check_hit_dim.Dim[i];
 						if (HitCheck_Capsule_Triangle(check_capsule.start_pos, check_capsule.end_pos
 							, check_capsule.r, poly.Position[0], poly.Position[1], poly.Position[2]))
 						{
@@ -353,8 +391,13 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 					}
 				}
 
-				
+				//ポリゴン情報を解放する
+				MV1CollResultPolyDimTerminate(gravity_check_hit_dim);
+
 			}
+
+
+
 		}
 
 		for (int k = 0; k < kHitTryNum; k++)
@@ -366,8 +409,8 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 				
 
 				//衝突しているとき
-				if (HitCheck_Capsule_Triangle(player_capsule.start_pos, player_capsule.end_pos
-					, player_capsule.r, poly.Position[0], poly.Position[1], poly.Position[2]))
+				if (HitCheck_Capsule_Triangle(next_player_capsule.start_pos, next_player_capsule.end_pos
+					, next_player_capsule.r, poly.Position[0], poly.Position[1], poly.Position[2]))
 				{
 
 					//中点を出す
@@ -375,89 +418,175 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 						VGet((poly.Position[0].x + poly.Position[1].x + poly.Position[2].x) / 3,
 							(poly.Position[0].y + poly.Position[1].y + poly.Position[2].y) / 3,
 							(poly.Position[0].z + poly.Position[1].z + poly.Position[2].z) / 3
-							);
+						);
+					
+
+					/*----------ここからはセグメントのやつ(capsuleのstart_posのやつ)------------*/
 
 					//ポリゴンの中点からの距離を見てから、そのあと正射影ベクトルを出す。
 					//センターからの距離
 					VECTOR poly_to_old = VSub(old_pos, poly_center_pos);			//old
-					VECTOR poly_to_next = VSub(next_pos, poly_center_pos);		//next
-
-					VECTOR poly_to_old_proj_vec = GetProjectionVector(poly.Normal, poly_to_old);
-					VECTOR poly_to_next_proj_vec = GetProjectionVector(poly.Normal, poly_to_next);
-
-					// 各ベクターの大きさを出す
-					float poly_to_old_size = fabs((sqrt((poly_to_old_proj_vec.x * poly_to_old_proj_vec.x) +
-						(poly_to_old_proj_vec.y * poly_to_old_proj_vec.y) + (poly_to_old_proj_vec.z * poly_to_old_proj_vec.z))));
-
-					float poly_to_next_size = fabs((sqrt((poly_to_next_proj_vec.x * poly_to_next_proj_vec.x) +
-						(poly_to_next_proj_vec.y * poly_to_next_proj_vec.y) + (poly_to_next_proj_vec.z * poly_to_next_proj_vec.z))));
-
-					// その比をみて、全体の移動量にかける。調べたい比 単体/全体
-					float ratio = poly_to_old_size / (poly_to_old_size + poly_to_next_size);
-
+					VECTOR poly_to_next;
 					
-
-					// vectorにかける
-					offset_vel = VScale(velocity, ratio);
-
-					//地面の判定(法線のY座標が0以下なら)
-					if (poly.Normal.y <= 0.0f)
+					if (FALSE)
 					{
-						player.SetIsGround(FALSE);
+						poly_to_next = VSub(next_player_capsule.start_pos,
+							poly_center_pos);			//next
 					}
 					else
 					{
-						player.SetIsGround(TRUE);
-						player.ResetFallSpeed();
-						//ポリゴンの少し上に押し戻す
-						offset_vel = VAdd(offset_vel, VGet(0.0f, 0.1f, 0.0f));
+						poly_to_next = VSub(next_pos,
+							poly_center_pos);			//next
 					}
-
-					
-					//offset分足したカプセルの座標
-					player_capsule.start_pos = VAdd(old_pos, offset_vel);
-					player_capsule.start_pos.y += player_capsule.r;
-					player_capsule.end_pos = player_capsule.start_pos;
-					player_capsule.end_pos.y += player_capsule.vertical_num;
-
-					//printfDx("x:%f,y:%f,z:%f\n", offset_vel.x, offset_vel.y, offset_vel.z);
-					
-					// 昔の処理(ゴミ)
-					// 法線の方向に押し戻す
-					//offset_vel = VSub(VSub(next_pos, old_pos), VScale(poly.Normal, kHitSlideLength));
-
-					//offset_vel = VGet(0, 0, 0);
-
-					
-					//next_pos = VAdd(next_pos, VScale(poly.Normal, 0.1f));
-					//printfDx("x:%f,y:%f,z:%f\n", poly.Normal.x, poly.Normal.y, poly.Normal.z);
-					//offset_vel = VSub(VSub(next_pos, old_pos),offset_vel);
-					
 					
 
-					//移動後にもう一度何かと当たっているのかを調べる
-					for (int j = 0; j < hit_dim.HitNum; j++)
+					
+
+
+					//正射影ベクトルを出す
+					VECTOR poly_to_old_proj_vec = GetProjectionVector(poly.Normal, poly_to_old);
+					VECTOR poly_to_next_proj_vec = GetProjectionVector(poly.Normal, poly_to_next);
+
+					if (FALSE)
 					{
-						poly = hit_dim.Dim[j];
+						//ポリゴンの正面にあるときは半径分だけの押し込み、その識別
+					//内積でcosシータを出す
 
-						if (HitCheck_Capsule_Triangle(player_capsule.start_pos, player_capsule.end_pos
-							, player_capsule.r, poly.Position[0], poly.Position[1], poly.Position[2]))
+						float cos_num = 0.0f;
+						//内積
 						{
-							is_hit = TRUE;
-							break;
+							// a・b/ size(a)*size(b)
+							//分母
+							float denominator;
+
+							denominator = (poly.Normal.x * poly_to_next_proj_vec.x) +
+								(poly.Normal.y * poly_to_next_proj_vec.y) +
+								(poly.Normal.z * poly_to_next_proj_vec.z);
+
+							//分子
+							float molecule;
+
+							molecule = VSize(poly.Normal) * VSize(poly_to_next_proj_vec);
+
+							cos_num = molecule / denominator;
+
 						}
 
+						if (!((static_cast<float>(M_PI / 180) * 0) < cos_num && cos_num < (static_cast<float>(M_PI / 180) * 90)))
+						{
+							next_pos = VAdd(next_pos, poly_to_next_proj_vec);
+						}
+						
+
+						
+						
+						next_pos = VAdd(next_pos, VScale(poly.Normal, next_player_capsule.r));
+
+
+						offset_vel = VSub(next_pos, old_pos);
+
+						offset_vel = VAdd(offset_vel, VGet(0.f, 0.0f, 0.f));
 					}
-
-
-					//全てのポリゴンと当たっていない場合ループ終了
-					if (!is_hit)
+					else
 					{
-						break;
+						//地面の判定(法線のY座標が0以下なら)
+						if (poly.Normal.y < 0.1f)
+						{
+							//ポリゴンの中点からの距離を見てから、そのあと正射影ベクトルを出す。
+							//センターからの距離
+							poly_to_old = VSub(old_pos, poly_center_pos);			//old
+							poly_to_next = VSub(next_pos, poly_center_pos);			//next
+
+							//正射影ベクトルを出す
+							poly_to_old_proj_vec = GetProjectionVector(poly.Normal, poly_to_old);
+							poly_to_next_proj_vec = GetProjectionVector(poly.Normal, poly_to_next);
+
+
+							offset_vel = VSub(old_pos, VAdd(next_pos, poly_to_next_proj_vec));
+							player.SetIsGround(FALSE);
+						}
+						else
+						{
+
+							//ポリゴンの中点からの距離を見てから、そのあと正射影ベクトルを出す。
+							//センターからの距離
+							poly_to_old = VSub(old_pos, poly_center_pos);			//old
+							poly_to_next = VSub(next_pos, poly_center_pos);			//next
+
+							//正射影ベクトルを出す
+							poly_to_old_proj_vec = GetProjectionVector(poly.Normal, poly_to_old);
+							poly_to_next_proj_vec = GetProjectionVector(poly.Normal, poly_to_next);
+
+							// 各ベクターの大きさを出す
+							float poly_to_old_size = fabs((sqrt((poly_to_old_proj_vec.x * poly_to_old_proj_vec.x) +
+								(poly_to_old_proj_vec.y * poly_to_old_proj_vec.y) + (poly_to_old_proj_vec.z * poly_to_old_proj_vec.z))));
+
+							float poly_to_next_size = fabs((sqrt((poly_to_next_proj_vec.x * poly_to_next_proj_vec.x) +
+								(poly_to_next_proj_vec.y * poly_to_next_proj_vec.y) + (poly_to_next_proj_vec.z * poly_to_next_proj_vec.z))));
+
+							// その比をみて、全体の移動量にかける。調べたい比 単体/全体
+							float ratio = poly_to_old_size / (poly_to_old_size + poly_to_next_size);
+
+
+
+							// vectorにかける
+							offset_vel = VScale(offset_vel, ratio);
+
+							player.SetIsGround(TRUE);
+							player.ResetFallSpeed();
+							//ポリゴンの少し上に押し戻す
+							offset_vel = VAdd(offset_vel, VGet(0.0f, 0.1f, 0.0f));
+						}
+
+
+						//offset分足したカプセルの座標
+						next_player_capsule.start_pos = VAdd(old_pos, offset_vel);
+						next_player_capsule.start_pos.y += next_player_capsule.r;
+						next_player_capsule.end_pos = next_player_capsule.start_pos;
+						next_player_capsule.end_pos.y += next_player_capsule.vertical_num;
+
+						//printfDx("x:%f,y:%f,z:%f\n", offset_vel.x, offset_vel.y, offset_vel.z);
+
+						// 昔の処理(ゴミ)
+						// 法線の方向に押し戻す
+						//offset_vel = VSub(VSub(next_pos, old_pos), VScale(poly.Normal, kHitSlideLength));
+
+						//offset_vel = VGet(0, 0, 0);
+
+
+						//next_pos = VAdd(next_pos, VScale(poly.Normal, 0.1f));
+						//printfDx("x:%f,y:%f,z:%f\n", poly.Normal.x, poly.Normal.y, poly.Normal.z);
+						//offset_vel = VSub(VSub(next_pos, old_pos),offset_vel);
+
+
+
+						//移動後にもう一度何かと当たっているのかを調べる
+						for (int j = 0; j < hit_dim.HitNum; j++)
+						{
+							poly = hit_dim.Dim[j];
+
+							if (HitCheck_Capsule_Triangle(next_player_capsule.start_pos, next_player_capsule.end_pos
+								, next_player_capsule.r, poly.Position[0], poly.Position[1], poly.Position[2]))
+							{
+								is_hit = TRUE;
+								break;
+							}
+
+						}
+
+
+						//全てのポリゴンと当たっていない場合ループ終了
+						if (!is_hit)
+						{
+							break;
+						}
 					}
 
-
+					
+					
 				}
+					
+					
 				
 
 			}
@@ -477,6 +606,8 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 	}
 
 	next_pos = VAdd(old_pos, offset_vel);
+
+	//printfDx("x:%.2f,y:%.2f,z:%.2f\n", offset_vel.x, offset_vel.y, offset_vel.z);
 
 	return next_pos;
 

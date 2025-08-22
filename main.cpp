@@ -16,7 +16,7 @@
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
     SetGraphMode(1280, 832, 32);			//ウィンドウのサイズとカラーモードを決める
-    ChangeWindowMode(TRUE);				//ウィンドウモードにする
+    ChangeWindowMode(FALSE);				//ウィンドウモードにする
     if (DxLib_Init() == -1)        // ＤＸライブラリ初期化処理
     {
         return -1;        // エラーが起きたら直ちに終了
@@ -113,7 +113,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     //playerを生成
     std::shared_ptr<Player>player = 
-        std::make_shared<Player>(VGet(0, 10, 100), chara, DX_INPUT_PAD1, 20, 3.0f, 10.0f);
+        std::make_shared<Player>(VGet(0, 10, 100), chara, DX_INPUT_PAD1, 20, 1.5f, 5.0f);
 
     //brainを生成
     std::shared_ptr<Brain>brain = std::make_shared<Brain>();
@@ -123,9 +123,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     //std::vector<std::shared_ptr<BaseObject>>objects;
 
-    int model_data = MV1LoadModel("data/model/map/arena/Arena2.mv1");
+    int model_data = MV1LoadModel("data/model/map/arena/map.mv1");
 
-    std::shared_ptr<Stage>stage = std::make_shared<Stage>(model_data, VGet(0, 0, 0), 1.1f);
+    std::shared_ptr<Stage>stage = std::make_shared<Stage>(model_data, VGet(0, 0, 0), 1.0f);
     //objects.push_back(std::make_shared<StillObject>(VGet(0, 0, 0), MV1LoadModel("data/model/map/block/block.mv1")));
     
     
@@ -184,6 +184,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         
         player->Update(camera->GetPos(), brain->GetSideRad(),*stage);
 
+        if (player->GetIsSwitchWeapon())
+        {
+            player->AttachWeapon(bone.RIGHT_HAND_THUMB_1,
+                MV1LoadModel("data/model/weapon/use_path/Hammer.mv1"), 8.0f);
+        }
+        else
+        {
+            player->AttachWeapon(bone.RIGHT_HAND,
+                MV1LoadModel("data/model/weapon/use_path/Bat.mv1"), 8.0f);
+        }
+
         if (!(player->GetIsTarget()))
         {
             //マウスでの操作
@@ -232,7 +243,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         //fps->Draw();
 
         
-
+        /*
         DrawString(0, 0, "x", red);
         DrawString(15, 0, "y", green);
         DrawString(30, 0, "z", blue);
@@ -242,11 +253,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         DrawLine3D(VGet(0, 10, 0), VGet(0, -10, 0), green);
         DrawLine3D(VGet(0, 0, 10), VGet(0, 0, -10), blue);
 
+        */
+        
 
-        DrawLine3D(object->GetPos(), player->GetPos(),GetColor(100,240,50));
+        //DrawLine3D(object->GetPos(), player->GetPos(),GetColor(100,240,50));
 
-        DrawLine3D(VGet(player->GetPos().x, 0.0f, player->GetPos().z),
-            VGet(camera->GetPos().x, 0.0f, camera->GetPos().z), GetColor(123, 145, 9));
+        //DrawLine3D(VGet(player->GetPos().x, 0.0f, player->GetPos().z),VGet(camera->GetPos().x, 0.0f, camera->GetPos().z), GetColor(123, 145, 9));
+            
 
         //プレイヤーを中心とした座標軸を描画
         /*
@@ -266,22 +279,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         test_effect1->Draw();
         test_effect2->Draw();
 
-        object->Draw();
+        //object->Draw();
+
+        //DrawCapsule3D(VGet(0, 0, 0), VGet(10, 10, 10), 2, 20, GetColor(255, 255, 255), GetColor(255, 255, 255), FALSE);
+
+        //brain->Draw();
+
+        //fps->DrawTimeScale();
 
         
-
-        brain->Draw();
-
-        fps->DrawTimeScale();
-
-        if (player->GetIsTarget())
-        {
-            DrawFormatString(300, 300, GetColor(255, 255, 255), "target:TRUE");
-        }
-        else
-        {
-            DrawFormatString(300, 300, GetColor(255, 255, 255), "target:FALSE");
-        }
 
         SetUseLighting(TRUE);
 

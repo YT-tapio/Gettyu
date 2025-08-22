@@ -9,8 +9,9 @@
 /// <returns></returns>
 VECTOR GetProjectionVector(const VECTOR& vector, const VECTOR& vector2);
 
-
+struct CapsuleData;
 class Player;
+
 
 class Stage : public BaseObject
 {
@@ -27,9 +28,12 @@ private:
 	int							wall_num_;			// 壁ポリゴンと判断されたポリゴンの数
 	int							floor_num_;			// 床ポリゴンと判断されたポリゴンの数
 
+	int before_hit_num_ = 0;
+
 	MV1_COLL_RESULT_POLY* wall_[kMaxHitColl];	// 壁ポリゴンと判断されたポリゴンの構造体のアドレスを保存しておくためのポインタ配列
 	MV1_COLL_RESULT_POLY* floor_[kMaxHitColl];	// 床ポリゴンと判断されたポリゴンの構造体のアドレスを保存しておくためのポインタ配列
 
+	CapsuleData next_to_old_cap_;
 
 	// 検出されたポリゴンが壁ポリゴン( ＸＺ平面に垂直なポリゴン )か床ポリゴン( ＸＺ平面に垂直ではないポリゴン )かを判断し、保存する
 	void AnalyzeWallAndFloor(MV1_COLL_RESULT_POLY_DIM hit_dim, const VECTOR& check_position);

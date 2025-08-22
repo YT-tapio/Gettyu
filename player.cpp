@@ -23,6 +23,7 @@ Player::Player(VECTOR pos, int model,int pad_num,int div, float r, float vertica
 	capsule_.div_num = div;
 	capsule_.vertical_num = vertical_num;
 	is_move_ = FALSE;
+	is_switch_weapon_ = FALSE;
 	//model_ = model;
 	//pad_input_num_ = pad_num;
 	Init(pos);
@@ -114,11 +115,22 @@ void Player::Draw()
 	model_matrix_ = MMult(MMult(
 		MGetRotY(rotation_.y), MGetScale(VGet(0.01f, 0.01f, 0.01f))),pos_matrix);
 
-	//MV1SetRotationXYZ(model_, rotation_);
-	DrawSphere3D(VGet(pos_.x, pos_.y + 15, pos_.z), 0.5f, 5, GetColor(0, 255, 0), GetColor(0, 255, 0), FALSE);
+	/*
+	DrawFormatString(100, 200, GetColor(255, 255, 255), "x:%.2f,y:%.2f,z:%.2f",
+		capsule_.start_pos.x, capsule_.start_pos.y - capsule_.r, capsule_.start_pos.z);
+	*/
+	
+	//DrawFormatString(100, 220, GetColor(255, 255, 255), "x:%.2f,y:%.2f,z:%.2f",
+	//	pos_.x, pos_.y, pos_.z);
 
-	//周りにどんだけポリゴンあるかを調べる
-	DrawCapsule3D(capsule_.start_pos, capsule_.end_pos,capsule_.r * 2.0f,20,GetColor(0,255,0),GetColor(0, 255, 0),FALSE);
+	
+	
+	//MV1SetRotationXYZ(model_, rotation_);
+	// カメラの見る位置
+	//DrawSphere3D(VGet(pos_.x, pos_.y + 15, pos_.z), 0.5f, 5, GetColor(0, 255, 0), GetColor(0, 255, 0), FALSE);
+
+	//printfDx("play_cap_r:%.2f\n", capsule_.r);
+	
 	//DrawFormatString(200, 200, GetColor(255, 255, 255), "%f", rotation_.y);
 
 	MV1SetMatrix(model_, model_matrix_);
@@ -130,17 +142,35 @@ void Player::Draw()
 	
 	*/
 	//当たり判定のカプセル
+
+	/*
 	DrawCapsule3D(capsule_.start_pos, capsule_.end_pos, capsule_.r, capsule_.div_num, GetColor(255, 0, 0), GetColor(255, 0, 0), FALSE);
+	DrawSphere3D(capsule_.start_pos, capsule_.r, capsule_.div_num, GetColor(255, 255, 255), 
+		GetColor(255, 255, 255),FALSE);
+	DrawSphere3D(capsule_.end_pos, capsule_.r, capsule_.div_num, GetColor(255, 255, 255),
+		GetColor(255, 255, 255), FALSE);
+
+	*/
+	
+	//周りにどんだけポリゴンあるかを調べるカプセルを可視化
+	//DrawCapsule3D(capsule_.start_pos, capsule_.end_pos, capsule_.r + VSize(velocity_), 20, GetColor(0, 255, 0), GetColor(0, 255, 0), FALSE);
+	
+	//キャラクター表示
 	MV1DrawModel(model_);
+	
 	//printfDx("x:%.2f,y:%.2f,z:%.2f\n", pos_.x, pos_.y, pos_.z);
 
 
 	if (weapon_ != nullptr)
 	{
+		auto test = GetFrameMatrix();
+
+		weapon_->SetMatrix(test);
+		weapon_->SetPos(MV1GetFramePosition(model_, frame_num_));
 		weapon_->Draw();
 	}
 	
-	input_->Draw();
+	//input_->Draw();
 
 	//animation_.Draw(now_type_);+
 	
@@ -206,29 +236,21 @@ void Player::Update(const VECTOR& pos, const float& rotation, Stage& stage)
 
 	InputMovement(pos, target_rot);
 
-
+	//printfDx("x:%.2f,y:%.2f,z:%.2f\n", velocity_.x, velocity_.y, velocity_.z);
 	if (AnimationType::kAttack > now_type_)
 	{
 		pos_ = stage.CheckCollision(*this, velocity_);
-		capsule_.start_pos = pos_, velocity_;
+		capsule_.start_pos = pos_;
 		capsule_.start_pos.y += capsule_.r;
 		capsule_.end_pos = capsule_.start_pos;
 		capsule_.end_pos.y += capsule_.vertical_num;
-
 	}
 
 	
 
 	
 
-	//武器を持たない設定にしているときは処理を回さない
-	if (weapon_ != nullptr)
-	{
-		auto test = GetFrameMatrix();
-
-		weapon_->SetMatrix(test);
-		weapon_->SetPos(MV1GetFramePosition(model_, frame_num_));
-	}
+	
 
 	
 
@@ -251,14 +273,14 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 	CheckDirection(pos, rotation);
 
 	/*左スティックの入力量をみる*/
-	if (input_->CheckInputKey(KeyConfig::kDashKey) > InputState::kOff)
+	if (input_->CheckInputKey(KeyConfig::kDashKey) > InputState::kOff || input_->GetPadStickVertical(StickType::kLeft) > 200)
 	{
 		speed = kDashSpeed;
 
 		now_type_ = AnimationType::kFastRun;
 		now_state_ = State::kRun;
 	}
-	else if (input_->CheckInputKey(KeyConfig::kWalkKey) > InputState::kOff)
+	else if (input_->CheckInputKey(KeyConfig::kWalkKey) > InputState::kOff || (input_->GetPadStickVertical(StickType::kLeft) > 50 && input_->GetPadStickVertical(StickType::kLeft) < 150))
 	{
 		speed = kWalkSpeed;
 
@@ -272,6 +294,8 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 		now_type_ = AnimationType::kSlowRun;
 		now_state_ = State::kSlowRun;
 	}
+
+	
 
 	//回転量からvelocityを出す
 	
@@ -304,52 +328,57 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 
 	if (!is_ground_)
 	{
-		if (velocity_.y > 0)
+		if (velocity_.y > 0.0f)
 		{
 			now_type_ = AnimationType::kJumpUp;
 			now_state_ = State::kJump;
 		}
-		else if(velocity_.y < 0)
+		else if(velocity_.y < -0.1f)
 		{
 			now_type_ = AnimationType::kJumpDown;
 			now_state_ = State::kFall;
 		}
+		else
+		{
+			now_type_ = before_type_;
+		}
+
+
 		
 	}
+
+	if ((input_->CheckInputPadButton(PadConfig::kAttackButton) == InputState::kPush) ||
+		(input_->CheckInputMouse(KeyConfig::kAttackKey) == InputState::kPush))
+	{
+		if (is_ground_)
+		{
+			now_type_ = AnimationType::kSwordSlash;
+		}
+	}
+
+	if (before_type_ > kAttack)
+	{
+		if (animation_.IsPlay())
+		{
+			now_type_ = before_type_;
+		}
+	}
+
+	//武器切り替えのやーつ
+	if (!(now_type_ > AnimationType::kAttack))
+	{
+		if (input_->CheckInputPadButton(PadConfig::kSwitchWeaponButton) == InputState::kPush ||
+			input_->CheckInputPadButton(KeyConfig::kSwitchWeaponKey) == InputState::kPush)
+		{
+			is_switch_weapon_ = !is_switch_weapon_;
+		}
+	}
+
+	
 
 
 	//velocity_ = VScale(velocity, delta_time_);
 
-	/*---デバッグ用---*/
-	/*
-	if (key_input_[KEY_INPUT_1])
-	{
-		now_type_ = AnimationType::kIdle;
-	}
-
-	if (key_input_[KEY_INPUT_2])
-	{
-		now_type_ = AnimationType::kWalk;
-	}
-
-	if (key_input_[KEY_INPUT_3])
-	{
-		now_type_ = AnimationType::kSlowRun;
-	}
-
-	if (key_input_[KEY_INPUT_Q])
-	{
-		now_type_ = AnimationType::kSwordSlash;
-	}
-	*/
-	
-
-	/*
-	if (now_type_ != AnimationType::kIdle)
-	{
-		now_type_ = AnimationType::kIdle;
-	}
-	*/
 
 
 	if (before_type_ != now_type_ && !(animation_.GetBlendFlag()))

@@ -114,7 +114,6 @@ public:
 	// 
 	float GetPadStickPercent(int type, int control);
 
-
 	float GetMousePercent(int control);
 
 	const InputType GetNowTypeState() const { return now_type_state_; }
