@@ -1,12 +1,13 @@
 #pragma once
 #include"DxLib.h"
 #include"animation.h"
-
+#include"super_attack.h"
 
 
 class Weapon;
 class Input;
 class Stage;
+
 
 struct CapsuleData
 {
@@ -24,7 +25,8 @@ enum class State
 	kWalk,
 	kRun,
 	kJump,
-	kFall
+	kFall,
+	kAttack
 };
 
 class Player
@@ -37,10 +39,12 @@ private:
 	const float kGravity = 0.75f;		//重力
 	const float kJumpPower = 3.5f;		//ジャンプ力
 
+	
 
 	//クラス関連
 	Weapon* weapon_;
 	Input* input_;
+	SuperAttack* super_attack_;
 
 	State now_state_;
 
@@ -70,6 +74,7 @@ private:
 	bool is_target_;					///ターゲットしているかどうか
 	bool is_move_;
 
+	bool is_super_attack_;
 	bool is_switch_weapon_;
 
 	int model_;							//モデル
@@ -157,7 +162,13 @@ public:
 
 	void SetIsGround(bool flag) { is_ground_ = flag; }
 
+	void SetNowCameraSituation(int num) { super_attack_->SetNowSituatuin(num); }
+
 	MATRIX GetFrameMatrix();
+
+	VECTOR GetWeaponPos();
+
+	int GetNowCameraSituationNum() { return super_attack_->GetNowSituation(); }
 
 	const float GetFallSpeed()const { return fall_speed_; }
 
@@ -170,17 +181,26 @@ public:
 	VECTOR GetCenterPos() { return { pos_.x,pos_.y + 15.0f,pos_.z }; }
 
 
+	const VECTOR GetRotation() const { return rotation_; }
+
+
 	const VECTOR GetVelocity() const { return velocity_; }
 
 	const VECTOR GetDirection() const { return direction_; }
+
+
 
 	const bool GetIsTarget() const { return is_target_; }
 
 	const bool GetIsSwitchWeapon() const { return is_switch_weapon_; }
 
+	const bool GetIsSuperAttack() const { return is_super_attack_; }
+
 	const Input* GetInput() const { return input_; }
 
 	const CapsuleData GetCapsuleData() const { return capsule_; }
+
+	
 };
 
 
@@ -193,5 +213,4 @@ public:
 
 
 
-//おふろ
 

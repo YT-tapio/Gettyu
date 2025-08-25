@@ -1,5 +1,6 @@
 #include<iostream>
 #include"DxLib.h"
+#include"player.h"
 #include"camera.h"
 #include"screen.h"
 #include"brain.h"
@@ -9,9 +10,10 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-Brain::Brain()
+Brain::Brain(const VECTOR& next_target_pos)
 	:pos_(VGet(0,0,0))
-	,next_pos_(VGet(0,0,0))
+	,next_pos_(next_target_pos)
+	,next_target_pos_(VGet(0,0,0))
 	,is_change_(FALSE)
 	,change_type_(ChangeType::Straight)
 {
@@ -56,12 +58,88 @@ void Brain::MakeVertical()
 
 		vertical_rad_ -= static_cast<float>((M_PI / 180) * (constant / 10) * all_sensitivity_) * vertical_sensitivity_;
 	}
-
-	
-
-	
-
 }
+
+
+VECTOR Brain::OffsetPassingVel(const VECTOR& now_pos, const VECTOR& target_pos, const float& speed)
+{
+	VECTOR vel = VGet(0,0,0);
+
+	if (now_pos.x == target_pos.x && now_pos.y == target_pos.y && now_pos.z == target_pos.z)
+	{
+		return vel;
+	}
+
+	//移動量を決める
+	vel = VScale(VNorm(GetFutureToNowPositionVelocity(target_pos, now_pos)), speed);
+
+	VECTOR future_pos = VAdd(now_pos, vel);
+
+	bool is_offset = FALSE;
+
+	//現在のposと未来のposを比べる
+	if (target_pos.x > now_pos.x)
+	{
+		if (target_pos.x < future_pos.x)
+		{
+			vel = GetFutureToNowPositionVelocity(target_pos, now_pos);
+			is_offset = TRUE;
+		}
+	}
+
+	if (target_pos.x < now_pos.x && !is_offset)
+	{
+		if (target_pos.x > future_pos.x)
+		{
+			vel = GetFutureToNowPositionVelocity(target_pos, now_pos);
+			is_offset = TRUE;
+		}
+	}
+
+
+	/*--y--*/
+	if (target_pos.y > now_pos.y && !is_offset)
+	{
+		if (target_pos.y < future_pos.y)
+		{
+			vel = GetFutureToNowPositionVelocity(target_pos, now_pos);
+			is_offset = TRUE;
+		}
+	}
+
+	if (target_pos.y < now_pos.y && !is_offset)
+	{
+		if (target_pos.y > future_pos.y)
+		{
+			vel = GetFutureToNowPositionVelocity(target_pos, now_pos);
+			is_offset = TRUE;
+		}
+	}
+
+
+	/*--z--*/
+	if (target_pos.z > now_pos.z && !is_offset)
+	{
+		if (target_pos.z < future_pos.z)
+		{
+			vel = GetFutureToNowPositionVelocity(target_pos, now_pos);
+			is_offset = TRUE;
+		}
+	}
+
+	if (target_pos.z < now_pos.z && !is_offset)
+	{
+		if (target_pos.z > future_pos.z)
+		{
+			vel = GetFutureToNowPositionVelocity(target_pos, now_pos);
+			is_offset = TRUE;
+		}
+	}
+
+
+	return vel;
+}
+
 
 bool Brain::CheckMousePoint(MousePoint now_point, MousePoint before_point)
 {
@@ -96,9 +174,35 @@ VECTOR Brain::GetVelocityDecidedRad()
 
 /*---------------public---------------*/
 
-void Brain::Update(const VECTOR& target_pos,const VECTOR& camera_pos,const Input* input)
+void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::shared_ptr<Player> player)
 {
-	SphereUpdate(target_pos, camera_pos, input);
+	float speed = 1.0f;
+	//球体上に回る処理のターゲット
+	VECTOR sphere_target_pos = player->GetCenterPos();
+	no_update_ = TRUE;
+
+
+
+	if (player->GetIsSuperAttack())
+	{
+		SuperAttackUpdate(camera_pos, now_target_pos,player);
+		speed = kSuperAttackCameraMoveSpeed;
+		target_velocity_ = OffsetPassingVel(now_target_pos, next_target_pos_, 0.5f);
+	}
+	else
+	{
+		SphereUpdate(sphere_target_pos, camera_pos, player->GetInput());
+		speed = 1.0f;
+		target_velocity_ = VSub(sphere_target_pos, now_target_pos);
+	}
+
+	if (no_update_)
+	{
+		//正面を決めれたので、今のposから次のposまでのオフセットをする
+		velocity_ = OffsetPassingVel(camera_pos, next_pos_, speed);
+	}
+
+	
 }
 
 
@@ -118,64 +222,11 @@ void Brain::SphereUpdate(const VECTOR& target_pos,const VECTOR& camera_pos,const
 	float decide_side_rad_value = 0.0f;
 	float decide_vertical_rad_value = 0.0f;
 
-	if (false)
-	{
-		//マウスポインターの取得
-		GetMousePoint(&now_mouse_pos_.x, &now_mouse_pos_.y);
-
-		//前回と現在のポインターの位置が違うとき
-		if (CheckMousePoint(now_mouse_pos_, before_mouse_pos_))
-		{
-
-
-			//横の回転が360を超えないように
-			if (side_rad_ > (M_PI * 2)) { side_rad_ = 0; }
-
-			//縦の回転を作る
-			MakeVertical();
-
-			//
-			if (now_mouse_pos_.x > before_mouse_pos_.x)
-			{
-				float constant = now_mouse_pos_.x - before_mouse_pos_.x;
-
-				if (constant > kMaxMouseDiff)
-				{
-					constant = kMaxMouseDiff;
-				}
-
-				side_rad_ += static_cast<float>((M_PI / 180) * (constant / 10) * all_sensitivity_) * side_sensitivity_;
-			}
-
-			if (now_mouse_pos_.x < before_mouse_pos_.x)
-			{
-				float constant = before_mouse_pos_.x - now_mouse_pos_.x;
-
-				if (constant > kMaxMouseDiff)
-				{
-					constant = kMaxMouseDiff;
-				}
-
-				side_rad_ -= static_cast<float>((M_PI / 180) * (constant / 10) * all_sensitivity_) * side_sensitivity_;
-			}
-
-
-			//pos_.y = 40;
-
-			int MouseX = (float(kGameWidth) * 0.5f), MouseY = (float(kGameHeight) * 0.5f);
-			SetMousePoint(MouseX, MouseY);
-			GetMousePoint(&now_mouse_pos_.x, &now_mouse_pos_.y);
-			before_mouse_pos_ = now_mouse_pos_;
-		}
-	}
-
-	
-
 	pad_side_rad_value = static_cast<float>((M_PI / 180) * (inp->GetPadStickPercent(StickType::kRight, Control::kX) * kCameraSpeed) * all_sensitivity_) * side_sensitivity_;;
 	pad_vertical_rad_value = -(static_cast<float>((M_PI / 180) * (inp->GetPadStickPercent(StickType::kRight, Control::kY) * kCameraSpeed) * all_sensitivity_) * vertical_sensitivity_);
 
 	//if()
-	mouse_side_rad_value = static_cast<float>((M_PI / 180) * (inp->GetMousePercent(Control::kX) * kCameraSpeed) * all_sensitivity_) * side_sensitivity_;;
+	mouse_side_rad_value = static_cast<float>((M_PI / 180) * (inp->GetMousePercent(Control::kX) * kCameraSpeed) * all_sensitivity_) * side_sensitivity_;
 	mouse_vertical_rad_value = static_cast<float>((M_PI / 180) * (inp->GetMousePercent(Control::kY) * kCameraSpeed) * all_sensitivity_) * vertical_sensitivity_;
 
 	inp->ResetMousePoint();
@@ -191,6 +242,17 @@ void Brain::SphereUpdate(const VECTOR& target_pos,const VECTOR& camera_pos,const
 	{
 		decide_side_rad_value = pad_side_rad_value;
 		decide_vertical_rad_value = pad_vertical_rad_value;
+		
+	}
+
+	if (mouse_side_rad_value == 0.0f && mouse_vertical_rad_value == 0.0f &&
+		pad_side_rad_value == 0.0f && pad_vertical_rad_value == 0.0f)
+	{
+		no_update_ = TRUE;
+	}
+	else
+	{
+		no_update_ = FALSE;
 	}
 
 	//pad対応
@@ -232,9 +294,69 @@ void Brain::SphereUpdate(const VECTOR& target_pos,const VECTOR& camera_pos,const
 	velocity_.x = direction_.x * side_distance_;
 	velocity_.z = direction_.z * side_distance_;
 
-	VECTOR future_pos = VAdd(target_pos, velocity_);
-	//velocityの調整を行う(未来の座標と今の座標の距離を測る)
-	velocity_ = GetFutureToNowPositionVelocity(future_pos, camera_pos);
+	next_pos_ = VAdd(target_pos, velocity_);
+	
+	velocity_ = GetFutureToNowPositionVelocity(next_pos_, camera_pos);
+
+}
+
+
+void Brain::SuperAttackUpdate(const VECTOR& camera_pos, const VECTOR& now_target_pos, std::shared_ptr<Player> player)
+{
+	//条件分岐()
+	switch (player->GetNowCameraSituationNum())
+	{
+	case 0:
+
+		//とりあえずプレイヤーの正面に行く処理
+		VECTOR front_pos;
+
+		//プレイヤーのpos,rotationを受け取る
+		VECTOR pos = VScale(VAdd(player->GetCapsuleData().start_pos, player->GetCapsuleData().end_pos), 0.5f);			//基準のポジション
+		VECTOR rot = player->GetRotation();		//プレイヤーの回転量
+
+		//今角度がわかっている状態、どんだけ離れているのかも位知っている(極座標がわかっている)
+		front_pos = pos;
+
+		//正面にカメラを持ってきたいので180度プラスする
+		rot.y += static_cast<float>((M_PI / 180) * 180);
+
+		if (rot.y > static_cast<float>((M_PI / 180) * 180))
+		{
+			rot.y = rot.y - (static_cast<float>((M_PI / 180) * 360));
+		}
+
+		front_pos.x += (sinf(rot.y) * kSuperAttackDist);
+		front_pos.z += (cosf(rot.y) * kSuperAttackDist);
+
+		next_pos_ = front_pos;
+
+		//ポジションが一致したとき、次のカメラに切り替える
+		if (CheckSamePos(camera_pos, next_pos_))
+		{
+			next_target_pos_ = player->GetWeaponPos();
+
+			player->SetNowCameraSituation(1);
+		}
+
+		break;
+
+	case 1:
+
+		printfDx("case 1\n");
+
+		break;
+
+	case 2:
+
+		break;
+
+	case 3:
+
+		break;
+
+	}
+	
 
 }
 

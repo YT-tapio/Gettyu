@@ -9,6 +9,7 @@
 #include"stage.h"
 
 
+
 Player::Player(VECTOR pos, int model,int pad_num,int div, float r, float vertical_num)
 	: model_(model)
 	, pad_input_num_(pad_num)
@@ -23,10 +24,12 @@ Player::Player(VECTOR pos, int model,int pad_num,int div, float r, float vertica
 	capsule_.div_num = div;
 	capsule_.vertical_num = vertical_num;
 	is_move_ = FALSE;
+	is_super_attack_ = FALSE;
 	is_switch_weapon_ = FALSE;
 	//model_ = model;
 	//pad_input_num_ = pad_num;
 	Init(pos);
+	super_attack_ = new SuperAttack(VGet(0, 0, 0), -1);
 }
 
 Player::~Player()
@@ -236,8 +239,10 @@ void Player::Update(const VECTOR& pos, const float& rotation, Stage& stage)
 
 	InputMovement(pos, target_rot);
 
+
+
 	//printfDx("x:%.2f,y:%.2f,z:%.2f\n", velocity_.x, velocity_.y, velocity_.z);
-	if (AnimationType::kAttack > now_type_)
+	if (AnimationType::kAttack > now_type_  && !is_super_attack_)
 	{
 		pos_ = stage.CheckCollision(*this, velocity_);
 		capsule_.start_pos = pos_;
@@ -356,7 +361,16 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 		}
 	}
 
-	if (before_type_ > kAttack)
+	if (input_->CheckInputKey(KeyConfig::kSuperAttackKey) == InputState::kOn)
+	{
+		is_super_attack_ = TRUE;
+	}
+	else
+	{
+		is_super_attack_ = FALSE;
+	}
+
+	if (before_type_ > AnimationType::kAttack)
 	{
 		if (animation_.IsPlay())
 		{
@@ -368,7 +382,7 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 	if (!(now_type_ > AnimationType::kAttack))
 	{
 		if (input_->CheckInputPadButton(PadConfig::kSwitchWeaponButton) == InputState::kPush ||
-			input_->CheckInputPadButton(KeyConfig::kSwitchWeaponKey) == InputState::kPush)
+			input_->CheckInputKey(KeyConfig::kSwitchWeaponKey) == InputState::kPush)
 		{
 			is_switch_weapon_ = !is_switch_weapon_;
 		}
@@ -377,10 +391,7 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 	
 
 
-	//velocity_ = VScale(velocity, delta_time_);
-
-
-
+	
 	if (before_type_ != now_type_ && !(animation_.GetBlendFlag()))
 	{
 
@@ -483,13 +494,9 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 			{
 				rot += (static_cast<float>((M_PI / 180) * 180));
 			}
-			
-			
-			
-
-
 
 			input_count++;
+		
 		}
 
 	}
@@ -524,7 +531,6 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 
 		//rotation_ = VAdd(rotation_, VGet(0, rotation - static_cast<float>((M_PI / 180) * 90), 0));
 	}
-
 
 	/*---padœŠO----*/
 
@@ -774,5 +780,10 @@ void Player::MakeLine(float& constant, const VECTOR& pos)
 MATRIX Player::GetFrameMatrix()
 {
 	return MV1GetFrameLocalWorldMatrix(model_,frame_num_);
+}
+
+VECTOR Player::GetWeaponPos()
+{
+	return weapon_->GetPos();
 }
 

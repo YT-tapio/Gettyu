@@ -13,6 +13,7 @@ struct KeyConfig
     static const int kWalkKey = KEY_INPUT_LCONTROL;
     static const int kJumpKey = KEY_INPUT_SPACE;
     static const int kAttackKey = MOUSE_INPUT_LEFT;
+    static const int kSuperAttackKey = KEY_INPUT_P;
     //static const int kSwordSlash;
 
     //“®‚«‚É‚ÍŠÖŒW‚µ‚È‚¢‚à‚Ì

@@ -40,7 +40,7 @@ float Input::MakePercent(float value, float min, float max)
 	}
 	else if (value < 0)
 	{
-		return -((value - min) / (-max - min));
+		return -((value - min) / (-(max + min)));
 	}
 
 }
@@ -308,7 +308,7 @@ float Input::GetMousePercent(int control)
 	float center_to_mouse_y = now_type_state_.mouse_y - (kGameHeight * 0.5f);
 
 	/*‰æ–ÊŠO‚És‚Á‚½‚Æ‚«‚Ìˆ—*/
-	if (false)
+	if (true)
 	{
 		if (center_to_mouse_x < -(kGameWidth * 0.5f)) { center_to_mouse_x = -(kGameWidth * 0.5f); }		//¶
 		if (center_to_mouse_x > (kGameWidth * 0.5f)) { center_to_mouse_x = (kGameWidth * 0.5f); }			//‰E

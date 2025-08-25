@@ -16,7 +16,7 @@
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
     SetGraphMode(1280, 832, 32);			//ウィンドウのサイズとカラーモードを決める
-    ChangeWindowMode(FALSE);				//ウィンドウモードにする
+    ChangeWindowMode(TRUE);				//ウィンドウモードにする
     if (DxLib_Init() == -1)        // ＤＸライブラリ初期化処理
     {
         return -1;        // エラーが起きたら直ちに終了
@@ -116,10 +116,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         std::make_shared<Player>(VGet(0, 10, 100), chara, DX_INPUT_PAD1, 20, 1.5f, 5.0f);
 
     //brainを生成
-    std::shared_ptr<Brain>brain = std::make_shared<Brain>();
+    std::shared_ptr<Brain>brain = std::make_shared<Brain>(player->GetCenterPos());
 
     //カメラを生成
-    std::shared_ptr<Camera>camera = std::make_shared<Camera>(brain->GetPositionFromTarget(player->GetCenterPos()), 75.0f * DX_PI_F / 180.0f);
+    std::shared_ptr<Camera>camera = std::make_shared<Camera>(brain->GetPositionFromTarget(player->GetCenterPos()),player->GetCenterPos(), 75.0f * DX_PI_F / 180.0f);
 
     //std::vector<std::shared_ptr<BaseObject>>objects;
 
@@ -147,7 +147,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     MixamoBonePath bone;
 
     player->AttachWeapon(bone.RIGHT_HAND,
-        MV1LoadModel("data/model/weapon/use_path/Bat.mv1"), 8.0f);
+        MV1LoadModel("data/model/weapon/use_path/Bug_Net3.mv1"), 1.0f);
 
 
 
@@ -186,19 +186,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
         if (player->GetIsSwitchWeapon())
         {
-            player->AttachWeapon(bone.RIGHT_HAND_THUMB_1,
-                MV1LoadModel("data/model/weapon/use_path/Hammer.mv1"), 8.0f);
+            player->AttachWeapon(bone.RIGHT_HAND,
+                MV1LoadModel("data/model/weapon/use_path/Bat.mv1"), 8.0f);
         }
         else
         {
             player->AttachWeapon(bone.RIGHT_HAND,
-                MV1LoadModel("data/model/weapon/use_path/Bat.mv1"), 8.0f);
+                MV1LoadModel("data/model/weapon/use_path/Bug_Net3.mv1"),5.0f);
         }
 
         if (!(player->GetIsTarget()))
         {
             //マウスでの操作
-            brain->Update(player->GetCenterPos(), camera->GetPos(), player->GetInput());
+            brain->Update(camera->GetTargetPos(), camera->GetPos(),player);
         }
         else  //カメラは操作できなくとも位置は更新される
         {
@@ -206,7 +206,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
             brain->SetVelocity(player->GetPos(), camera->GetPos());
         }
 
-        camera->Update(player->GetCenterPos(),brain->GetVelocity());
+        camera->Update(brain->GetVelocity(), brain->GetTargetVelocity());
         test_effect1->Update(player->GetPos());
         test_effect2->Update(player->GetPos());
 
@@ -214,7 +214,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         if (CheckHitKey(KEY_INPUT_1))
         {
             time_scale += 0.01;
-            
         }
 
         if (CheckHitKey(KEY_INPUT_2))

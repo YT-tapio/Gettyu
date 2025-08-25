@@ -1,5 +1,21 @@
 #pragma once
 
+enum class WeaponName
+{
+	kNothing,
+	kBat,
+	kBugNet
+};
+
+
+struct Weapondata
+{
+	WeaponName name;
+	TCHAR* bone_path;
+	VECTOR scale;
+	int model;
+};
+
 
 class Weapon
 {
@@ -37,6 +53,9 @@ public:
 
 
 	void SetPos(const VECTOR& pos) { pos_ = pos; }
+
+
+	const VECTOR GetPos() const { return pos_; }
 
 
 	const MATRIX GetMatrix() const { return mat_; }

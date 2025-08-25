@@ -7,6 +7,8 @@ enum ChangeType
 	Straight
 };
 
+
+
 class Camera
 {
 private:
@@ -14,7 +16,8 @@ private:
 	float fov_;		// 今のカメラの視野角(度数)
 	float target_fov_;	// 次のカメラの視野角(度数)
 	
-	VECTOR pos_;	//ポジション
+	VECTOR pos_;				//ポジション
+	VECTOR target_pos_;		//見る場所
 	VECTOR velocity_;
 	VECTOR direction_;
 
@@ -28,7 +31,7 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	Camera(const VECTOR& pos, float fov);
+	Camera(const VECTOR& pos, const VECTOR& target_pos, float fov);
 
 	/// <summary>
 	/// デストラクタ
@@ -38,12 +41,14 @@ public:
 	/// <summary>
 	/// 更新処理
 	/// </summary>
-	void Update(const VECTOR& target_pos, const VECTOR& velocity);
+	void Update(const VECTOR& velocity, const VECTOR& target_velocity);
 
 
 
 	const VECTOR& GetPos() const { return pos_; }
 
+
+	const VECTOR& GetTargetPos()const { return target_pos_; }
 
 	void SetFov(float fov) { fov_ = fov; }
 

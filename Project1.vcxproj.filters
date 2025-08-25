@@ -31,6 +31,9 @@
     <Filter Include="ソース ファイル\stage">
       <UniqueIdentifier>{9f3370c4-dc0f-4a3c-a790-8d24b1537a99}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\super_arts">
+      <UniqueIdentifier>{4999ca3b-8115-4d54-a0a9-b43522d00428}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -74,6 +77,9 @@
     </ClCompile>
     <ClCompile Include="stage.cpp">
       <Filter>ソース ファイル\stage</Filter>
+    </ClCompile>
+    <ClCompile Include="super_attack.cpp">
+      <Filter>ソース ファイル\super_arts</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -127,6 +133,9 @@
     </ClInclude>
     <ClInclude Include="stage.h">
       <Filter>ソース ファイル\stage</Filter>
+    </ClInclude>
+    <ClInclude Include="super_attack.h">
+      <Filter>ソース ファイル\super_arts</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,7 +1,9 @@
 #pragma once
 
-
+class Player;
 class Input;
+
+
 
 struct MousePoint
 {
@@ -19,6 +21,10 @@ private:
 	const float kMaxMoveDistance = 0.0f;
 	const float kCameraSpeed = 1.3f;
 
+	const float kSuperAttackDist = 25.0f;
+	const float kSuperAttackCameraMoveSpeed = 2.0f;
+
+
 	ChangeType change_type_;
 
 	VECTOR velocity_ = { 0,0,0 };
@@ -27,7 +33,12 @@ private:
 	VECTOR pos_;
 	VECTOR next_pos_;
 
+	//Ç›ÇÈÇ€Ç∂ÇµÇÂÇÒÇÃvelocity
+	VECTOR target_velocity_;
+	VECTOR next_target_pos_;	//éüÇ…å©ÇÈèÍèä
+
 	bool is_change_;
+	bool no_update_;
 
 	//âÒì]ó 
 	float vertical_rad_ = 0.0f;
@@ -40,14 +51,33 @@ private:
 	float vertical_sensitivity_ = 0.5f;
 	float all_sensitivity_ = 5.5f;
 
+	float delta_time_ = 0.0f;
+
 	MousePoint now_mouse_pos_;
 	MousePoint before_mouse_pos_;
 
 	MousePoint dead_zone_;
 
+	
+
 	void MakeVertical();
 
+	VECTOR OffsetPassingVel(const VECTOR& now_pos, const VECTOR& target_pos, const float& speed);
+
 	bool CheckMousePoint(MousePoint now_point, MousePoint before_point);
+
+	bool CheckSamePos(const VECTOR& pos1, const VECTOR& pos2)
+	{
+		if (pos1.x == pos2.x && pos1.y == pos2.y && pos1.z == pos2.z)
+		{
+			return TRUE;
+		}
+		else
+		{
+			return FALSE;
+		}
+	}
+
 
 	/// <summary>
 	/// íËÇ‹Ç¡ÇΩäpìxÇÃãóó£ÇéÛÇØéÊÇÈ
@@ -56,13 +86,12 @@ private:
 
 public:
 
-	Brain();
+	Brain(const VECTOR& next_target_pos);
 
 
 	~Brain();
 
-	
-	void Update(const VECTOR& target_pos, const VECTOR& camera_pos, const Input* input);
+	void Update(const VECTOR& target_pos, const VECTOR& camera_pos, std::shared_ptr<Player> player);
 
 
 	/// <summary>
@@ -70,6 +99,8 @@ public:
 	/// </summary>
 	void SphereUpdate(const VECTOR& target_pos, const VECTOR& camera_pos,const Input* input);
 
+
+	void SuperAttackUpdate(const VECTOR& camera_pos, const VECTOR& now_target_pos, std::shared_ptr<Player> player);
 
 	void ChangeCamera();
 
@@ -106,6 +137,9 @@ public:
 
 
 	const VECTOR GetVelocity() const { return velocity_; }
+
+
+	const VECTOR GetTargetVelocity() const { return target_velocity_; }
 
 
 	void Draw();

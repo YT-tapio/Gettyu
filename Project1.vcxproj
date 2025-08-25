@@ -149,6 +149,7 @@
     <ClCompile Include="player.cpp" />
     <ClCompile Include="stage.cpp" />
     <ClCompile Include="still_object.cpp" />
+    <ClCompile Include="super_attack.cpp" />
     <ClCompile Include="turn_camera.cpp" />
     <ClCompile Include="weapon.cpp" />
   </ItemGroup>
@@ -168,6 +169,7 @@
     <ClInclude Include="screen.h" />
     <ClInclude Include="stage.h" />
     <ClInclude Include="still_object.h" />
+    <ClInclude Include="super_attack.h" />
     <ClInclude Include="turn_camera.h" />
     <ClInclude Include="weapon.h" />
   </ItemGroup>

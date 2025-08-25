@@ -295,8 +295,8 @@ void Stage::Draw()
 	}
 
 	
-	//DrawCapsule3D(next_to_old_cap_.start_pos, next_to_old_cap_.end_pos, next_to_old_cap_.r,
-	//	20, GetColor(255, 255, 255), GetColor(255, 255, 255), FALSE);
+	DrawCapsule3D(next_to_old_cap_.start_pos, next_to_old_cap_.end_pos, next_to_old_cap_.r,
+	20, GetColor(255, 255, 255), GetColor(255, 255, 255), FALSE);
 	MV1SetMatrix(model_, matrix_);
 	MV1DrawModel(model_);
 }
