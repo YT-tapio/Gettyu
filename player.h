@@ -188,7 +188,7 @@ public:
 
 	const VECTOR GetDirection() const { return direction_; }
 
-
+	VECTOR GetSuperAttackEffectPosition() { return super_attack_->GetEffectPosition(); }
 
 	const bool GetIsTarget() const { return is_target_; }
 

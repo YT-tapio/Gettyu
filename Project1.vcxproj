@@ -142,6 +142,7 @@
     <ClCompile Include="brain.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="collision.cpp" />
+    <ClCompile Include="effect.cpp" />
     <ClCompile Include="effect_manager.cpp" />
     <ClCompile Include="FPS.cpp" />
     <ClCompile Include="input.cpp" />
@@ -160,6 +161,7 @@
     <ClInclude Include="Calculation.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="collision.h" />
+    <ClInclude Include="effect.h" />
     <ClInclude Include="effect_manager.h" />
     <ClInclude Include="FPS.h" />
     <ClInclude Include="input.h" />

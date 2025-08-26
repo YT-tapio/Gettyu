@@ -29,13 +29,14 @@ Player::Player(VECTOR pos, int model,int pad_num,int div, float r, float vertica
 	//model_ = model;
 	//pad_input_num_ = pad_num;
 	Init(pos);
-	super_attack_ = new SuperAttack(VGet(0, 0, 0), -1);
+	super_attack_ = new SuperAttack(VGet(0, 0, 0), "");
 }
 
 Player::~Player()
 {
 	delete weapon_;
 	delete input_;
+	delete super_attack_;
 }
 
 /*--------------------private--------------------------*/
@@ -160,7 +161,7 @@ void Player::Draw()
 	
 	//キャラクター表示
 	MV1DrawModel(model_);
-	
+	super_attack_->Draw();
 	//printfDx("x:%.2f,y:%.2f,z:%.2f\n", pos_.x, pos_.y, pos_.z);
 
 
@@ -249,6 +250,11 @@ void Player::Update(const VECTOR& pos, const float& rotation, Stage& stage)
 		capsule_.start_pos.y += capsule_.r;
 		capsule_.end_pos = capsule_.start_pos;
 		capsule_.end_pos.y += capsule_.vertical_num;
+	}
+
+	if (is_super_attack_)
+	{
+		super_attack_->SetPos(VAdd(pos_, VGet(0, 50, 0)));
 	}
 
 	

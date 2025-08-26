@@ -34,6 +34,9 @@
     <Filter Include="ソース ファイル\super_arts">
       <UniqueIdentifier>{4999ca3b-8115-4d54-a0a9-b43522d00428}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\effect">
+      <UniqueIdentifier>{1e514953-09da-49bd-99c6-47158c0329a5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -80,6 +83,9 @@
     </ClCompile>
     <ClCompile Include="super_attack.cpp">
       <Filter>ソース ファイル\super_arts</Filter>
+    </ClCompile>
+    <ClCompile Include="effect.cpp">
+      <Filter>ソース ファイル\effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -136,6 +142,9 @@
     </ClInclude>
     <ClInclude Include="super_attack.h">
       <Filter>ソース ファイル\super_arts</Filter>
+    </ClInclude>
+    <ClInclude Include="effect.h">
+      <Filter>ソース ファイル\effect</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

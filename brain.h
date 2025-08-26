@@ -21,8 +21,12 @@ private:
 	const float kMaxMoveDistance = 0.0f;
 	const float kCameraSpeed = 1.3f;
 
-	const float kSuperAttackDist = 25.0f;
+	const float kSuperAttackZeroDist = 25.0f;
 	const float kSuperAttackCameraMoveSpeed = 2.0f;
+
+	const float kSuperAttackFirstDist = 25.0f;
+	const float kSuperAttackFirstCameraMoveSpeed = 2.0f;
+	const float kSuperAttackFirstSideRad = 0;
 
 
 	ChangeType change_type_;
@@ -64,6 +68,7 @@ private:
 
 	VECTOR OffsetPassingVel(const VECTOR& now_pos, const VECTOR& target_pos, const float& speed);
 
+
 	bool CheckMousePoint(MousePoint now_point, MousePoint before_point);
 
 	bool CheckSamePos(const VECTOR& pos1, const VECTOR& pos2)
@@ -77,6 +82,8 @@ private:
 			return FALSE;
 		}
 	}
+
+
 
 
 	/// <summary>

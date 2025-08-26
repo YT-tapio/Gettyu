@@ -13,7 +13,8 @@ private:
 	// エフェクト(座標とパス)
 	VECTOR pos_;
 	int effect_handle_;
-
+	int play_handle_;		//再生するときの箱
+	
 
 	float delta_time_;
 
@@ -28,7 +29,7 @@ private:
 public:
 
 
-	SuperAttack(const VECTOR& pos,int effect_handle);
+	SuperAttack(const VECTOR& pos, const char* file_path);
 
 
 	~SuperAttack();
@@ -40,13 +41,23 @@ public:
 	void SetNowSituatuin(int num) { now_situation_num_ = num; }
 
 
-	void SetPos(const VECTOR& pos) { pos_ = pos; }
+	void SetPos(const VECTOR& pos) 
+	{ 
+		pos_ = pos;
+	}
 
 
 	void SetIsPlay(bool is_play) { is_play_ = is_play; }
 
 
+	void Draw();
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
 	const int GetNowSituation() const { return now_situation_num_; }
+
+	const VECTOR GetEffectPosition() const { return pos_; }
 
 };
 

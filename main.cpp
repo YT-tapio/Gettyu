@@ -79,9 +79,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
    std::shared_ptr<EffectManager>test_effect1 = 
        std::make_shared<EffectManager>("data/effect/Simple_Distortion.efkefc",1.0f,120);
 
-   std::shared_ptr<EffectManager>test_effect2 =
-       std::make_shared<EffectManager>("data/effect/Laser02.efkefc", 1.0f, 240);
-
+   
     char idle_path[256]             = "data/animation/Idle.mv1";
     char walk_path[256]             = "data/animation/Walking.mv1";
     char slow_run_path[256]         = "data/animation/Slow_Run.mv1";
@@ -208,7 +206,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
         camera->Update(brain->GetVelocity(), brain->GetTargetVelocity());
         test_effect1->Update(player->GetPos());
-        test_effect2->Update(player->GetPos());
 
         
         if (CheckHitKey(KEY_INPUT_1))
@@ -276,7 +273,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
         stage->Draw();
         test_effect1->Draw();
-        test_effect2->Draw();
 
         //object->Draw();
 

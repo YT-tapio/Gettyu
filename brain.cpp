@@ -74,68 +74,85 @@ VECTOR Brain::OffsetPassingVel(const VECTOR& now_pos, const VECTOR& target_pos, 
 	vel = VScale(VNorm(GetFutureToNowPositionVelocity(target_pos, now_pos)), speed);
 
 	VECTOR future_pos = VAdd(now_pos, vel);
-
+	VECTOR target_to_now;
 	bool is_offset = FALSE;
 
-	//現在のposと未来のposを比べる
-	if (target_pos.x > now_pos.x)
+	if(TRUE)
 	{
-		if (target_pos.x < future_pos.x)
+		//現在のposとターゲットの関係を調べる
+	/*---x---*/
+
+		//今の座標がターゲットより小さいかつ未来の座標がターゲットより大きい
+		if (now_pos.x < target_pos.x && target_pos.x < future_pos.x)
 		{
-			vel = GetFutureToNowPositionVelocity(target_pos, now_pos);
+			vel.x = target_pos.x - now_pos.x;
+			is_offset = TRUE;
+		}
+
+		//今の座標がターゲットよりもとき大きいかつ未来の座標がターゲットよりも小さいとき
+		if (future_pos.x < target_pos.x && target_pos.x < now_pos.x)
+		{
+			vel.x = target_pos.x - now_pos.x;
+			is_offset = TRUE;
+		}
+
+
+		/*--y--*/
+
+		//今の座標がターゲットより小さいかつ未来の座標がターゲットより大きい
+		if (now_pos.y < target_pos.y && target_pos.y < future_pos.y)
+		{
+			vel.y = target_pos.y - now_pos.y;
+			is_offset = TRUE;
+		}
+
+		//今の座標がターゲットよりもき大きいかつ未来の座標がターゲットよりも小さいとき
+		if (future_pos.y < target_pos.y && target_pos.y < now_pos.y)
+		{
+			vel.y = target_pos.y- now_pos.y;
+			is_offset = TRUE;
+		}
+
+
+		/*--z--*/
+
+		//今の座標がターゲットより小さいかつ未来の座標がターゲットより大きい
+		if (now_pos.z < target_pos.z && target_pos.z < future_pos.z)
+		{
+
+			vel.z = target_pos.z - now_pos.z;
+			is_offset = TRUE;
+		}
+
+		//今の座標がターゲットよりもき大きいかつ未来の座標がターゲットよりも小さいとき
+		if (future_pos.z < target_pos.z && target_pos.z < now_pos.z)
+		{
+			vel.z = target_pos.z - now_pos.z;
 			is_offset = TRUE;
 		}
 	}
-
-	if (target_pos.x < now_pos.x && !is_offset)
+	else
 	{
-		if (target_pos.x > future_pos.x)
+		//外積の値が0なら衝突(|V1*v|)
+
+		target_to_now = GetFutureToNowPositionVelocity(target_pos, now_pos);
+
+		VECTOR product;
+
+		product.x = ((vel.y * target_to_now.z) - (vel.z * target_to_now.y));
+		product.y = ((vel.z * target_to_now.x) - (vel.x * target_to_now.z));
+		product.z = ((vel.x * target_to_now.y) - (vel.y * target_to_now.x));
+
+		if (sqrt((product.x * product.x) + (product.y * product.y) + (product.z * product.z)) == 0)
 		{
 			vel = GetFutureToNowPositionVelocity(target_pos, now_pos);
-			is_offset = TRUE;
 		}
 	}
+	
+	
 
 
-	/*--y--*/
-	if (target_pos.y > now_pos.y && !is_offset)
-	{
-		if (target_pos.y < future_pos.y)
-		{
-			vel = GetFutureToNowPositionVelocity(target_pos, now_pos);
-			is_offset = TRUE;
-		}
-	}
-
-	if (target_pos.y < now_pos.y && !is_offset)
-	{
-		if (target_pos.y > future_pos.y)
-		{
-			vel = GetFutureToNowPositionVelocity(target_pos, now_pos);
-			is_offset = TRUE;
-		}
-	}
-
-
-	/*--z--*/
-	if (target_pos.z > now_pos.z && !is_offset)
-	{
-		if (target_pos.z < future_pos.z)
-		{
-			vel = GetFutureToNowPositionVelocity(target_pos, now_pos);
-			is_offset = TRUE;
-		}
-	}
-
-	if (target_pos.z < now_pos.z && !is_offset)
-	{
-		if (target_pos.z > future_pos.z)
-		{
-			vel = GetFutureToNowPositionVelocity(target_pos, now_pos);
-			is_offset = TRUE;
-		}
-	}
-
+	
 
 	return vel;
 }
@@ -201,7 +218,7 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 		//正面を決めれたので、今のposから次のposまでのオフセットをする
 		velocity_ = OffsetPassingVel(camera_pos, next_pos_, speed);
 	}
-
+	//printfDx("x:%f,y:%f,z:%f\n",now_target_pos.x,now_target_pos.y, now_target_pos.z);
 	
 }
 
@@ -326,8 +343,8 @@ void Brain::SuperAttackUpdate(const VECTOR& camera_pos, const VECTOR& now_target
 			rot.y = rot.y - (static_cast<float>((M_PI / 180) * 360));
 		}
 
-		front_pos.x += (sinf(rot.y) * kSuperAttackDist);
-		front_pos.z += (cosf(rot.y) * kSuperAttackDist);
+		front_pos.x += (sinf(rot.y) * kSuperAttackZeroDist);
+		front_pos.z += (cosf(rot.y) * kSuperAttackZeroDist);
 
 		next_pos_ = front_pos;
 
@@ -335,15 +352,41 @@ void Brain::SuperAttackUpdate(const VECTOR& camera_pos, const VECTOR& now_target
 		if (CheckSamePos(camera_pos, next_pos_))
 		{
 			next_target_pos_ = player->GetWeaponPos();
+			//一緒にはならない、許容の範囲を作る
+			if (VSize(GetFutureToNowPositionVelocity(next_target_pos_,now_target_pos)) < 0.25)
+			{
+				player->SetNowCameraSituation(1);
+			}
 
-			player->SetNowCameraSituation(1);
 		}
+		else
+		{
+			next_target_pos_ = player->GetCenterPos();
+		}
+
+
 
 		break;
 
 	case 1:
 
-		printfDx("case 1\n");
+		//二回目はキャラクターの上を見る
+		next_target_pos_ = player->GetSuperAttackEffectPosition();
+		//見たら座標を移動
+		if (VSize(GetFutureToNowPositionVelocity(next_target_pos_, now_target_pos)) < 0.25)
+		{
+			//エフェクトの少し上へ移動
+			//真上に行くと描画ができなくなるので少しずらす
+
+			VECTOR offset_vel = VGet(0, 0, 0);
+
+			offset_vel.x = (sinf(static_cast<float>((M_PI / 180) * kSuperAttackFirstSideRad)) * kSuperAttackFirstDist);
+			offset_vel.z = (cosf(static_cast<float>((M_PI / 180) * kSuperAttackFirstSideRad)) * kSuperAttackFirstDist);
+
+			offset_vel = VAdd(offset_vel, VGet(0, 20, 0));
+
+			next_pos_ = VAdd(player->GetSuperAttackEffectPosition(), offset_vel);
+		}
 
 		break;
 
