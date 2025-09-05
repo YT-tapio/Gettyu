@@ -1,5 +1,5 @@
 #pragma once
-
+#include"effect.h"
 
 class SuperAttack
 {
@@ -7,6 +7,10 @@ private:
 
 	//ê–Ê•Ï‚í‚è‚ª‰½ŒÂ‚ ‚é‚©
 	const int kSwitchSituationNumMax = 4;
+
+
+	Effect* effect_;
+
 
 	int now_situation_num_ = 0;
 
@@ -47,6 +51,9 @@ public:
 	}
 
 
+	void SetDeltaTime(const float& delta_time) { effect_->SetDeltaTime(delta_time); }
+
+
 	void SetIsPlay(bool is_play) { is_play_ = is_play; }
 
 
@@ -58,6 +65,8 @@ public:
 	const int GetNowSituation() const { return now_situation_num_; }
 
 	const VECTOR GetEffectPosition() const { return pos_; }
+
+	const bool GetEffectIsPlay() const { return effect_->GetIsPlay(); }
 
 };
 

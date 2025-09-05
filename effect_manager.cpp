@@ -44,7 +44,7 @@ void EffectManager::Load()
 
     if (resource_handle_ == -1)
     {
-        printfDx("失敗");
+        printfDx("effect_managerの読み込み失敗");
     }
     //playingEffectHandle = PlayEffekseer3DEffect(effectResourceHandle);
 }
@@ -53,9 +53,9 @@ void EffectManager::Load()
 /// 更新
 /// </summary>
 /// <param name="playPosition">再生座標</param>
-void EffectManager::Update(const VECTOR& playPosition)
+void EffectManager::Update()
 {
-
+    /*
     if (!on_disp_)
     {
         return;
@@ -71,12 +71,7 @@ void EffectManager::Update(const VECTOR& playPosition)
             // エフェクトを再生する。
             playing_handle_ = PlayEffekseer3DEffect(resource_handle_);
         }
-        /*
-        if (playingEffectHandle == -1)
-        {
-            printfDx("失敗");
-        }
-        */
+       
 
         play_type_ = EffectPlayType::kEnd;
         on_disp_ = FALSE;
@@ -108,8 +103,7 @@ void EffectManager::Update(const VECTOR& playPosition)
         // 再生中のエフェクトを移動する。
         SetPosPlayingEffekseer3DEffect(playing_handle_, 0, 0, 0);
     }
-    
-   
+    */
 
     // Effekseerにより再生中のエフェクトを更新する。
     UpdateEffekseer3D();

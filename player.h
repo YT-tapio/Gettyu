@@ -39,8 +39,6 @@ private:
 	const float kGravity = 0.75f;		//重力
 	const float kJumpPower = 3.5f;		//ジャンプ力
 
-	
-
 	//クラス関連
 	Weapon* weapon_;
 	Input* input_;
@@ -115,6 +113,7 @@ public:
 	{
 		delta_time_ = delta_time;
 		animation_.SetDeltaTime(delta_time);
+		super_attack_->SetDeltaTime(delta_time_);
 	}
 
 
@@ -195,6 +194,8 @@ public:
 	const bool GetIsSwitchWeapon() const { return is_switch_weapon_; }
 
 	const bool GetIsSuperAttack() const { return is_super_attack_; }
+
+	const bool GetSuperAttackEffectIsPlay() const { return super_attack_->GetEffectIsPlay(); }
 
 	const Input* GetInput() const { return input_; }
 

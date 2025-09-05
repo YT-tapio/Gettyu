@@ -12,18 +12,27 @@
 
 Brain::Brain(const VECTOR& next_target_pos)
 	:pos_(VGet(0,0,0))
+	,start_pos_(VGet(0,0,0))
 	,next_pos_(next_target_pos)
 	,next_target_pos_(VGet(0,0,0))
 	,is_change_(FALSE)
+	,is_blend_(FALSE)
+	,is_target_blend_(FALSE)
 	,change_type_(ChangeType::Straight)
+	,camera_name_(VirtualCameraName::kNothing)
 {
-	
+	sphere_camera_ = new SphereCamera(VirtualCameraName::kSphere);
+	super_attack_camera_[0] = new SuperAttackCamera(VirtualCameraName::kSuperAttackFirst);
+	super_attack_camera_[1] = new SuperAttackCamera(VirtualCameraName::kSuperAttackSecond);
+	super_attack_camera_[2] = new SuperAttackCamera(VirtualCameraName::kSuperAttackThird);
 }
 
 
 Brain::~Brain()
 {
-
+	delete super_attack_camera_[0];
+	delete super_attack_camera_[1];
+	delete super_attack_camera_[2];
 }
 
 /*----------------private-----------------*/
@@ -61,101 +70,147 @@ void Brain::MakeVertical()
 }
 
 
-VECTOR Brain::OffsetPassingVel(const VECTOR& now_pos, const VECTOR& target_pos, const float& speed)
+VECTOR Brain::OffsetPassingVel(const VECTOR& now_pos, const VECTOR& target_pos,const VECTOR& velocity, bool& flag)
 {
-	VECTOR vel = VGet(0,0,0);
-
-	if (now_pos.x == target_pos.x && now_pos.y == target_pos.y && now_pos.z == target_pos.z)
-	{
-		return vel;
-	}
-
-	//移動量を決める
-	vel = VScale(VNorm(GetFutureToNowPositionVelocity(target_pos, now_pos)), speed);
-
+	VECTOR vel = velocity;
+	
+	//未来の位置
 	VECTOR future_pos = VAdd(now_pos, vel);
-	VECTOR target_to_now;
-	bool is_offset = FALSE;
+	
+	bool offseted = FALSE;
 
-	if(TRUE)
+	//今の座標と未来の座標をtarget_posを基軸に比べる
+
+	//今はtargetより小さく未来がtagetよりも大きいとき
+	if (now_pos.x < target_pos.x && target_pos.x < future_pos.x && !(offseted))
 	{
-		//現在のposとターゲットの関係を調べる
-	/*---x---*/
-
-		//今の座標がターゲットより小さいかつ未来の座標がターゲットより大きい
-		if (now_pos.x < target_pos.x && target_pos.x < future_pos.x)
-		{
-			vel.x = target_pos.x - now_pos.x;
-			is_offset = TRUE;
-		}
-
-		//今の座標がターゲットよりもとき大きいかつ未来の座標がターゲットよりも小さいとき
-		if (future_pos.x < target_pos.x && target_pos.x < now_pos.x)
-		{
-			vel.x = target_pos.x - now_pos.x;
-			is_offset = TRUE;
-		}
-
-
-		/*--y--*/
-
-		//今の座標がターゲットより小さいかつ未来の座標がターゲットより大きい
-		if (now_pos.y < target_pos.y && target_pos.y < future_pos.y)
-		{
-			vel.y = target_pos.y - now_pos.y;
-			is_offset = TRUE;
-		}
-
-		//今の座標がターゲットよりもき大きいかつ未来の座標がターゲットよりも小さいとき
-		if (future_pos.y < target_pos.y && target_pos.y < now_pos.y)
-		{
-			vel.y = target_pos.y- now_pos.y;
-			is_offset = TRUE;
-		}
-
-
-		/*--z--*/
-
-		//今の座標がターゲットより小さいかつ未来の座標がターゲットより大きい
-		if (now_pos.z < target_pos.z && target_pos.z < future_pos.z)
-		{
-
-			vel.z = target_pos.z - now_pos.z;
-			is_offset = TRUE;
-		}
-
-		//今の座標がターゲットよりもき大きいかつ未来の座標がターゲットよりも小さいとき
-		if (future_pos.z < target_pos.z && target_pos.z < now_pos.z)
-		{
-			vel.z = target_pos.z - now_pos.z;
-			is_offset = TRUE;
-		}
-	}
-	else
-	{
-		//外積の値が0なら衝突(|V1*v|)
-
-		target_to_now = GetFutureToNowPositionVelocity(target_pos, now_pos);
-
-		VECTOR product;
-
-		product.x = ((vel.y * target_to_now.z) - (vel.z * target_to_now.y));
-		product.y = ((vel.z * target_to_now.x) - (vel.x * target_to_now.z));
-		product.z = ((vel.x * target_to_now.y) - (vel.y * target_to_now.x));
-
-		if (sqrt((product.x * product.x) + (product.y * product.y) + (product.z * product.z)) == 0)
-		{
-			vel = GetFutureToNowPositionVelocity(target_pos, now_pos);
-		}
+		vel = VGet(0, 0, 0);
+		vel = VSub(target_pos, now_pos);
+		flag = FALSE;
+		offseted = TRUE;
 	}
 	
-	
+	if (now_pos.y < target_pos.y && target_pos.y < future_pos.y && !(offseted))
+	{
+		vel = VSub(target_pos, now_pos);
+		flag = FALSE;
+		offseted = TRUE;
+	}
 
+	if (now_pos.z < target_pos.z && target_pos.z < future_pos.z && !(offseted))
+	{
+		vel = VSub(target_pos, now_pos);
+		flag = FALSE;
+		offseted = TRUE;
+	}
 
-	
+	//今はtargetより大きく未来がtagetよりも小さいとき
+	if (now_pos.x > target_pos.x && target_pos.x > future_pos.x && !(offseted))
+	{
+		vel = VSub(target_pos, now_pos);
+		flag = FALSE;
+		offseted = TRUE;
+
+	}
+
+	if (now_pos.y > target_pos.y && target_pos.y > future_pos.y && !(offseted))
+	{
+		vel = VSub(target_pos, now_pos);
+		flag = FALSE;
+		offseted = TRUE;
+	}
+
+	if (now_pos.z > target_pos.z && target_pos.z > future_pos.z && !(offseted))
+	{
+		vel = VSub(target_pos, now_pos);
+		flag = FALSE;
+		offseted = TRUE;
+	}
+
 
 	return vel;
 }
+
+
+VECTOR Brain::SetSuperAttackFrontPos(std::shared_ptr<Player> player)
+{
+	VECTOR vel = VGet(0, 0, 0);
+	VECTOR front_pos = VGet(0,0,0);
+
+	float rot = (player->GetRotation().y + static_cast<float>((M_PI / 180) * 180));
+
+	if (rot > static_cast<float>((M_PI / 180) * 180))
+	{
+		rot = rot - (static_cast<float>((M_PI / 180) * 360));
+	}
+
+	vel.x = (sinf(rot) * kSuperAttackZeroDist);
+	vel.z = (cosf(rot) * kSuperAttackZeroDist);
+
+
+	//playerの今の位置からvelをたす
+	front_pos = VAdd(player->GetPos(), vel);
+
+
+
+	return front_pos;
+}
+
+
+VECTOR Brain::GetThisDistanceOfffsetPos(const VECTOR& pos, const float& distance, const float& ver_rad, const float& side_rad)
+{
+	VECTOR offset_vel = VGet(0, 0, 0);
+
+	float side_distance = 0.0f;
+
+	/*----横の長さをだす(cos)---*/
+	//高さがどれくらいか
+	//地上の長さがどれくらいか
+	offset_vel.y = sinf(static_cast<float>((M_PI / 180 ) * ver_rad)) * distance;
+	side_distance = cosf(static_cast<float>((M_PI / 180) * ver_rad)) * distance;
+
+	offset_vel.x = sinf(static_cast<float>((M_PI / 180) * side_rad)) * side_distance;
+	offset_vel.z = cosf(static_cast<float>((M_PI / 180) * side_rad)) * side_distance;
+
+	
+	return VAdd(pos, offset_vel);
+}
+
+
+VECTOR Brain::GetSuperAttackEffectBehindPos(const VECTOR& pos)
+{
+	//エフェクトの後ろのポジションを指定する
+	//エフェクトの少し上へ移動
+	//真上に行くと描画ができなくなるので少しずらす
+
+	VECTOR offset_vel = VGet(0, 0, 0);
+
+	offset_vel.x = (sinf(static_cast<float>((M_PI / 180) * kSuperAttackFirstSideRad)) * kSuperAttackFirstDist);
+	offset_vel.z = (cosf(static_cast<float>((M_PI / 180) * kSuperAttackFirstSideRad)) * kSuperAttackFirstDist);
+
+
+
+	offset_vel = VAdd(offset_vel, VGet(0, 20, 0));
+
+
+	return (VAdd(pos, offset_vel));
+}
+
+
+VECTOR Brain::GetSuperAttackWeaponCameraPos(const VECTOR& pos)
+{
+	//weaponの位置
+	VECTOR weapon_pos = pos;
+	
+
+	//wraponの位置からの距離を出す
+	VECTOR offset_vel;
+
+
+
+	return VGet(0,0,0);
+}
+
 
 
 bool Brain::CheckMousePoint(MousePoint now_point, MousePoint before_point)
@@ -198,28 +253,247 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 	VECTOR sphere_target_pos = player->GetCenterPos();
 	no_update_ = TRUE;
 
+	bool next_is_blend = FALSE;
+
+	static int before_camera_name = VirtualCameraName::kNothing;
+
+	//必殺技のカメラを識別
+	static int super_attack_situation_num = 0;
+
+	//移動量のリセット
+	velocity_ = VGet(0.f, 0.f, 0.f);
+	target_velocity_ = VGet(0.f, 0.f, 0.f);
+
+	// バーチャルカメラのUpdate
+	// next_posにsphereの結果やsuperattackの座標を入れる
+	// カメラを切り替えたという情報が欲しい
+	// 切り替えがわかるとblendを行う
+	// バーチャルカメラにアップデート持たせてもいいんじゃない(無しになりました)
+	// そいつがカメラとして設定されているときはそいつのUpdateを回してvelocityを受け取る
 
 
-	if (player->GetIsSuperAttack())
+
+	//switchで管理しておく
+	//各virtual_cameraにname_があるので、それを受け取る
+
+	//何もないとき(kNothing)は、Sphereに切り替える
+	if (camera_name_ == VirtualCameraName::kNothing) 
+	{ 
+		camera_name_ = sphere_camera_->GetCameraName();
+		if (before_camera_name == VirtualCameraName::kNothing)
+		{
+			before_camera_name = camera_name_;
+		}
+	}
+
+	//各カメラに名前を持たせる
+	//もし、kSuperAttack以上なら
+
+	/*
+	if (camera_name_ >= VirtualCameraName::kSuperAttack)
 	{
-		SuperAttackUpdate(camera_pos, now_target_pos,player);
-		speed = kSuperAttackCameraMoveSpeed;
-		target_velocity_ = OffsetPassingVel(now_target_pos, next_target_pos_, 0.5f);
+		if (super_attack_situation_num != player->GetNowCameraSituationNum())
+		{
+			//カメラの名前を入れる
+			camera_name_ = super_attack_camera_[player->GetNowCameraSituationNum()]->GetCameraName();
+
+			super_attack_situation_num = player->GetNowCameraSituationNum();
+		}
 	}
 	else
 	{
-		SphereUpdate(sphere_target_pos, camera_pos, player->GetInput());
-		speed = 1.0f;
-		target_velocity_ = VSub(sphere_target_pos, now_target_pos);
+		
+	}
+	*/
+	
+	//必殺技じゃないときに
+	if (camera_name_ < VirtualCameraName::kSuperAttack)
+	{
+		//必殺中だと
+		if (player->GetIsSuperAttack())
+		{
+			camera_name_ = super_attack_camera_[0]->GetCameraName();
+		}
+		else  //必殺ではないとき
+		{
+			camera_name_ = sphere_camera_->GetCameraName();
+		}
 	}
 
-	if (no_update_)
-	{
-		//正面を決めれたので、今のposから次のposまでのオフセットをする
-		velocity_ = OffsetPassingVel(camera_pos, next_pos_, speed);
-	}
-	//printfDx("x:%f,y:%f,z:%f\n",now_target_pos.x,now_target_pos.y, now_target_pos.z);
 	
+	
+
+
+	//前回と結果が違う(カメラが切り替わる)ときblendさせる
+	if (camera_name_ != before_camera_name)
+	{
+		is_blend_ = TRUE;
+		before_camera_name = camera_name_;
+
+		//今の座標と次のvirtualcameraの座標をとる
+		start_pos_ = camera_pos;
+
+		switch (camera_name_)
+		{
+		case VirtualCameraName::kSphere:
+
+			next_pos_ = sphere_camera_->GetPos();
+			is_target_blend_ = TRUE;
+			sphere_camera_->SetTargetPos(player->GetCenterPos());
+			start_target_pos_ = now_target_pos;
+			next_target_pos_ = player->GetCenterPos();
+			break;
+
+
+		case VirtualCameraName::kSuperAttackFirst:
+
+			//プレイヤーの正面の座標を受け取る
+			super_attack_camera_[0]->SetPos(SetSuperAttackFrontPos(player));
+			super_attack_camera_[0]->SetTargetPos(player->GetSuperAttackEffectPosition());
+			next_pos_ = super_attack_camera_[0]->GetPos();
+			start_target_pos_ = now_target_pos;
+			next_target_pos_ = super_attack_camera_[0]->GetTargetPos();
+			is_target_blend_ = TRUE;
+
+			//blend_speedを入れる
+
+			blend_speed_ = 10.0f;
+
+			//printfDx("\nx:%.2f,y:%.2f,z:%.2f\n", next_pos_.x, next_pos_.y, next_pos_.z);
+			//printfDx("x:%.2f,y:%.2f,z:%.2f\n", player->GetPos().x, player->GetPos().y, player->GetPos().z);
+			break;
+
+
+		case VirtualCameraName::kSuperAttackSecond:
+
+			//エフェクトの後ろに配置する
+			super_attack_camera_[1]->SetPos(GetSuperAttackEffectBehindPos(player->GetSuperAttackEffectPosition()));
+			super_attack_camera_[1]->SetTargetPos(player->GetSuperAttackEffectPosition());
+			next_pos_ = super_attack_camera_[1]->GetPos();
+			start_target_pos_ = now_target_pos;
+			next_target_pos_ = super_attack_camera_[1]->GetTargetPos();
+
+			blend_speed_ = 15.0f;
+
+			//printfDx("aaaaa\n");
+
+			break;
+
+
+		case VirtualCameraName::kSuperAttackThird:
+
+			//武器の場所とに行きたい
+			super_attack_camera_[2]->SetPos(GetThisDistanceOfffsetPos(player->GetWeaponPos(),30,0,180));
+			super_attack_camera_[2]->SetTargetPos(player->GetWeaponPos());
+			next_pos_ = super_attack_camera_[2]->GetPos();
+			start_target_pos_ = now_target_pos;
+			next_target_pos_ = super_attack_camera_[2]->GetTargetPos();
+
+			blend_speed_ = 15.0f;
+
+			is_target_blend_ = TRUE;
+			break;
+
+
+		}
+	}
+
+
+
+	// blend中じゃないときはswitchで管理
+	if (!is_blend_)
+	{
+		switch (camera_name_)
+		{
+		case VirtualCameraName::kSphere:
+
+			SphereUpdate(sphere_target_pos, camera_pos, player->GetInput());
+			speed = 1.0f;
+
+			if (is_target_blend_)
+			{
+				target_velocity_ = GetStartToNextVelocity(start_target_pos_, now_target_pos,
+					next_target_pos_, target_blend_speed_, is_target_blend_);
+			}
+			else
+			{
+				target_velocity_ = VSub(sphere_target_pos, now_target_pos);
+			}
+			
+			break;
+
+		case VirtualCameraName::kSuperAttackFirst:
+
+			if (is_target_blend_)
+			{
+				target_velocity_ = GetStartToNextVelocity(start_target_pos_, now_target_pos,
+					next_target_pos_, target_blend_speed_, is_target_blend_);
+			}
+			//どちらのブレンドも終わったら
+			if (!is_blend_ && !is_target_blend_)
+			{
+				camera_name_++;
+			}
+			//見る位置のoffsetを開始する
+
+			break;
+
+
+		case VirtualCameraName::kSuperAttackSecond:
+
+			//位置のoffsetが終わったら次のに切り替える(ちょっとだけ待ってからのほうが望ましい)
+			if (!(player->GetSuperAttackEffectIsPlay()))
+			{
+				camera_name_++;
+			}
+			else
+			{
+				
+			}
+			
+
+			
+
+
+			break;
+
+
+		case VirtualCameraName::kSuperAttackThird:
+
+			
+			
+			if (is_target_blend_)
+			{
+				target_velocity_ = GetStartToNextVelocity(start_target_pos_, now_target_pos,
+					next_target_pos_, target_blend_speed_, is_target_blend_);
+			}
+
+			break;
+		}
+	}
+	else
+	{
+		//位置をブレンド(滑らかにするために)
+		//関数を呼び出して、velocityに直で入れる
+
+		//関数は引数でブレンドを開始した位置と行きたい位置とどんくらい(speed)で行くかを受け取り、velocityを調整する
+		velocity_ = GetStartToNextVelocity(start_pos_, camera_pos, next_pos_, blend_speed_,is_blend_);
+
+		
+		if (!is_blend_)
+		{
+			if (camera_name_ > VirtualCameraName::kSuperAttack)
+			{
+				player->SetNowCameraSituation(camera_name_ - VirtualCameraName::kSuperAttackFirst);
+			}
+		}
+
+		
+
+
+	}
+
+
 }
 
 
@@ -273,8 +547,8 @@ void Brain::SphereUpdate(const VECTOR& target_pos,const VECTOR& camera_pos,const
 	}
 
 	//pad対応
-	side_rad_ += decide_side_rad_value;
-	vertical_rad_ += decide_vertical_rad_value;	//pad操作の時、カメラを動かすときは上下が反転する
+	side_rad_ += decide_side_rad_value * (delta_time_ * 20);
+	vertical_rad_ += decide_vertical_rad_value * (delta_time_ * 20);	//pad操作の時、カメラを動かすときは上下が反転する
 	
 	//side_radの調整
 	if (side_rad_ > static_cast<float>((M_PI / 180) * 180))
@@ -315,6 +589,13 @@ void Brain::SphereUpdate(const VECTOR& target_pos,const VECTOR& camera_pos,const
 	
 	velocity_ = GetFutureToNowPositionVelocity(next_pos_, camera_pos);
 
+	//カメラの位置を記憶
+	sphere_camera_->SetPos(VAdd(camera_pos, velocity_));
+
+
+	//カメラの位置を記憶
+	pos_ = VAdd(camera_pos, velocity_);
+
 }
 
 
@@ -324,6 +605,9 @@ void Brain::SuperAttackUpdate(const VECTOR& camera_pos, const VECTOR& now_target
 	switch (player->GetNowCameraSituationNum())
 	{
 	case 0:
+
+		//移動量を受け取る
+		VECTOR vel = VGet(0, 0, 0);
 
 		//とりあえずプレイヤーの正面に行く処理
 		VECTOR front_pos;
@@ -343,15 +627,21 @@ void Brain::SuperAttackUpdate(const VECTOR& camera_pos, const VECTOR& now_target
 			rot.y = rot.y - (static_cast<float>((M_PI / 180) * 360));
 		}
 
-		front_pos.x += (sinf(rot.y) * kSuperAttackZeroDist);
-		front_pos.z += (cosf(rot.y) * kSuperAttackZeroDist);
+		vel.x = (sinf(rot.y) * kSuperAttackZeroDist);
+		vel.z = (cosf(rot.y) * kSuperAttackZeroDist);
 
-		next_pos_ = front_pos;
+		front_pos.x += vel.x;
+		front_pos.z += vel.z;
+
+		super_attack_camera_[0]->SetPos(front_pos);
+
+		
 
 		//ポジションが一致したとき、次のカメラに切り替える
 		if (CheckSamePos(camera_pos, next_pos_))
 		{
 			next_target_pos_ = player->GetWeaponPos();
+
 			//一緒にはならない、許容の範囲を作る
 			if (VSize(GetFutureToNowPositionVelocity(next_target_pos_,now_target_pos)) < 0.25)
 			{
@@ -364,6 +654,12 @@ void Brain::SuperAttackUpdate(const VECTOR& camera_pos, const VECTOR& now_target
 			next_target_pos_ = player->GetCenterPos();
 		}
 
+
+		if (is_blend_)
+		{
+			//velocity_ = GetStartToNextVelocity(pos_, camera_pos, super_attack_camera_num_first_->GetPos(), 3.f);
+		}
+		
 
 
 		break;
@@ -383,14 +679,29 @@ void Brain::SuperAttackUpdate(const VECTOR& camera_pos, const VECTOR& now_target
 			offset_vel.x = (sinf(static_cast<float>((M_PI / 180) * kSuperAttackFirstSideRad)) * kSuperAttackFirstDist);
 			offset_vel.z = (cosf(static_cast<float>((M_PI / 180) * kSuperAttackFirstSideRad)) * kSuperAttackFirstDist);
 
+
+
 			offset_vel = VAdd(offset_vel, VGet(0, 20, 0));
 
+
 			next_pos_ = VAdd(player->GetSuperAttackEffectPosition(), offset_vel);
+			
+			//座標が一緒になると次へ
+			if (CheckSamePos(camera_pos, next_pos_))
+			{
+				player->SetNowCameraSituation(2);
+			}
+
+
 		}
+
+		
 
 		break;
 
 	case 2:
+
+		
 
 		break;
 
@@ -463,11 +774,68 @@ void Brain::SetVelocity(const VECTOR& target_pos,const VECTOR& camera_pos)
 	
 	velocity_ = GetVelocityDecidedRad();
 
+	velocity_ = VScale(velocity_, delta_time_);
+
 	VECTOR future_pos = VAdd(target_pos, velocity_);
 
 	velocity_ = GetFutureToNowPositionVelocity(future_pos, camera_pos);
 	
 	velocity_ = OffsetVelocity(velocity_, 3.0f);
+}
+
+
+VECTOR Brain::GetStartToNextVelocity(const VECTOR& start_pos, const VECTOR& now_camera_pos,const VECTOR& next_pos, const float& time,bool& flag)
+{
+	VECTOR vel = VGet(0, 0, 0);
+
+
+	//あれでやってみようvel足す前と足した後でのやつを
+
+	if (FALSE)
+	{
+		// 今の座標が一致しているとき
+		if (CheckSamePos(now_camera_pos, next_pos))
+		{
+			is_blend_ = FALSE;
+			//printfDx("とおだ");
+			return vel;
+		}
+
+		// 各座標のdistance(VECTOR)の量を見る
+		VECTOR this_to_next = GetFutureToNowPositionVelocity(next_pos, start_pos);
+
+		float time_per = (delta_time_ / time);	//時間の比を見る
+
+		vel = VScale(this_to_next, time_per);	//時間の比を全体の移動量にかける
+
+		// 位置の先取りを行う
+		if (CheckSamePos(VAdd(now_camera_pos, vel), next_pos))
+		{
+			printfDx("とおだ");
+			//位置を少し調整
+			is_blend_ = FALSE;
+			return VSub(next_pos, VAdd(now_camera_pos, vel));
+		}
+	}
+	else
+	{
+		// 各座標のdistance(VECTOR)の量を見る
+		VECTOR this_to_next = GetFutureToNowPositionVelocity(next_pos, start_pos);
+
+		float time_per = (delta_time_ / time);	//時間の比を見る
+
+		vel = VScale(this_to_next, time_per);	//時間の比を全体の移動量にかける
+
+		//
+
+		vel = OffsetPassingVel(now_camera_pos, next_pos, vel, flag);
+	}
+
+	
+
+	
+	//時間の比を全体の距離にかける
+	return vel;
 }
 
 

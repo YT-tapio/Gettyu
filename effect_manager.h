@@ -17,7 +17,7 @@ public:
 	~EffectManager();					// デストラクタ
 	void Initialize();					// 初期化
 	void Load();						// 読み込み
-	void Update(const VECTOR& playPosition);	// 更新
+	void Update();	// 更新
 	void Draw();						// 描画
 	void SetOnDisp(bool flag) { on_disp_ = flag; }
 	void SetDeltaTime(const float& delta_time) { delta_time_ = delta_time; }

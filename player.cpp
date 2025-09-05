@@ -255,6 +255,11 @@ void Player::Update(const VECTOR& pos, const float& rotation, Stage& stage)
 	if (is_super_attack_)
 	{
 		super_attack_->SetPos(VAdd(pos_, VGet(0, 50, 0)));
+		super_attack_->Update();
+	}
+	else
+	{
+		//super_attack_->SetNowSituatuin(0);
 	}
 
 	
@@ -367,14 +372,11 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 		}
 	}
 
-	if (input_->CheckInputKey(KeyConfig::kSuperAttackKey) == InputState::kOn)
+	if (input_->CheckInputKey(KeyConfig::kSuperAttackKey) == InputState::kPush)
 	{
 		is_super_attack_ = TRUE;
 	}
-	else
-	{
-		is_super_attack_ = FALSE;
-	}
+	
 
 	if (before_type_ > AnimationType::kAttack)
 	{

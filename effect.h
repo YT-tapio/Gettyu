@@ -5,24 +5,46 @@ class Effect
 private:
 
 	VECTOR pos_;
+	VECTOR rot_;
 	int handle_;			//エフェクトのデータの格納
-	int play_handle_;	//再生中のえふぇくとのデータを格納
+	int playing_handle_;		//再生中のえふぇくとのデータを格納
+
+	float play_count_;
+	float play_count_max_;
+
+	float delta_time_;		//デルタタイム
 
 	float size_;			//エフェクトの大きさ
 
-	bool is_play_;
+	bool is_play_;			//再生かどうか
+	bool loop_;
+	bool is_end_;
 
 public:
 
-	Effect(const char* file_path, const VECTOR& pos, float size);
+	Effect(const char* file_path, const VECTOR& pos, const VECTOR& rot,
+		float size, float count_max,bool loop);
 
 	~Effect();
+
+	
+	void Play();
+
+
+	void End();
+
 
 
 
 	void SetPos(const VECTOR& pos) { pos_ = pos; }
 
+
 	void SetIsPlay(bool flag) { if (flag != is_play_) is_play_ = flag; }
+
+
+	void SetDeltaTime(float delta_time) { delta_time_ = delta_time; }
+
+
 
 	const VECTOR GetPos() const { return pos_; }
 

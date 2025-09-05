@@ -1,3 +1,7 @@
+
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 #include"DxLib.h"
 #include"EffekseerForDxLib.h"
 #include"super_attack.h"
@@ -12,35 +16,28 @@ SuperAttack::SuperAttack(const VECTOR& pos,const char*  file_path)
 	, max_play_count_(0.f)
 	, delta_time_(0.f)
 {
-	// エフェクトのリソースを読み込む
-	effect_handle_ = LoadEffekseerEffect(file_path, 1.0f);
-
-	if (effect_handle_ == -1)
-	{
-		printfDx("失敗");
-	}
+	effect_ = new Effect("data/effect/Laser02.efkefc", pos_, VGet(static_cast<float>((M_PI / 180) * -90),
+		0.0f, 0.0f), 20.0f, 20.0f, FALSE);
 }
 
 
 SuperAttack::~SuperAttack()
 {
-	
+	delete effect_;
 }
 
 
 void SuperAttack::Update()
 {
 
-	play_count_ += (1 * (delta_time_ * 10));
-
-	if (!is_play_)
+	if (now_situation_num_ == 1)
 	{
-		is_play_ = TRUE;
+		effect_->SetPos(pos_);
+		effect_->Play();
 	}
-	else if (max_play_count_ < play_count_)
+	else
 	{
-		play_count_ = 0.f;
-		is_play_ = FALSE;
+		effect_->SetIsPlay(FALSE);
 	}
 
 }

@@ -87,6 +87,15 @@
     <ClCompile Include="effect.cpp">
       <Filter>ソース ファイル\effect</Filter>
     </ClCompile>
+    <ClCompile Include="virtual_camera.cpp">
+      <Filter>ソース ファイル\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="super_attack_camera.cpp">
+      <Filter>ソース ファイル\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="sphere_camera.cpp">
+      <Filter>ソース ファイル\camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="keyconfig.h">
@@ -145,6 +154,15 @@
     </ClInclude>
     <ClInclude Include="effect.h">
       <Filter>ソース ファイル\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="virtual_camera.h">
+      <Filter>ソース ファイル\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="super_attack_camera.h">
+      <Filter>ソース ファイル\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="sphere_camera.h">
+      <Filter>ソース ファイル\camera</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

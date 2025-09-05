@@ -76,9 +76,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     AnimationData jumping_down;
     AnimationData sword_slash_attack;
 
-   std::shared_ptr<EffectManager>test_effect1 = 
-       std::make_shared<EffectManager>("data/effect/Simple_Distortion.efkefc",1.0f,120);
-
+    
+    std::shared_ptr<EffectManager>effect_player = 
+       std::make_shared<EffectManager>("",1.0f,120);
+   
    
     char idle_path[256]             = "data/animation/Idle.mv1";
     char walk_path[256]             = "data/animation/Walking.mv1";
@@ -163,7 +164,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         
         //XVˆ—
         player->SetDeltaTime(fps->GetDeltaTime());
-        test_effect1->SetDeltaTime(fps->GetDeltaTime());
+        brain->SetDeltaTime(fps->GetDeltaTime());
+        //test_effect1->SetDeltaTime(fps->GetDeltaTime());
 
         player->InputState();
 
@@ -205,7 +207,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         }
 
         camera->Update(brain->GetVelocity(), brain->GetTargetVelocity());
-        test_effect1->Update(player->GetPos());
+        effect_player->Update();
 
         
         if (CheckHitKey(KEY_INPUT_1))
@@ -272,7 +274,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         SetUseLighting(FALSE);
 
         stage->Draw();
-        test_effect1->Draw();
+        effect_player->Draw();
 
         //object->Draw();
 
