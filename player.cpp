@@ -24,6 +24,7 @@ Player::Player(VECTOR pos, int model,int pad_num,int div, float r, float vertica
 	capsule_.div_num = div;
 	capsule_.vertical_num = vertical_num;
 	is_move_ = FALSE;
+	is_camera_blend_ = FALSE;
 	is_super_attack_ = FALSE;
 	is_switch_weapon_ = FALSE;
 	//model_ = model;
@@ -119,45 +120,8 @@ void Player::Draw()
 	model_matrix_ = MMult(MMult(
 		MGetRotY(rotation_.y), MGetScale(VGet(0.01f, 0.01f, 0.01f))),pos_matrix);
 
-	/*
-	DrawFormatString(100, 200, GetColor(255, 255, 255), "x:%.2f,y:%.2f,z:%.2f",
-		capsule_.start_pos.x, capsule_.start_pos.y - capsule_.r, capsule_.start_pos.z);
-	*/
 	
-	//DrawFormatString(100, 220, GetColor(255, 255, 255), "x:%.2f,y:%.2f,z:%.2f",
-	//	pos_.x, pos_.y, pos_.z);
-
-	
-	
-	//MV1SetRotationXYZ(model_, rotation_);
-	// カメラの見る位置
-	//DrawSphere3D(VGet(pos_.x, pos_.y + 15, pos_.z), 0.5f, 5, GetColor(0, 255, 0), GetColor(0, 255, 0), FALSE);
-
-	//printfDx("play_cap_r:%.2f\n", capsule_.r);
-	
-	//DrawFormatString(200, 200, GetColor(255, 255, 255), "%f", rotation_.y);
-
 	MV1SetMatrix(model_, model_matrix_);
-	//MV1SetRotationXYZ(model_, rotation_);
-
-	/*
-	DrawFormatString(200, 200, GetColor(255, 255, 255), "%f", target_rot_);
-	DrawFormatString(200, 220, GetColor(255, 255, 255), "%f", rotation_.y);
-	
-	*/
-	//当たり判定のカプセル
-
-	/*
-	DrawCapsule3D(capsule_.start_pos, capsule_.end_pos, capsule_.r, capsule_.div_num, GetColor(255, 0, 0), GetColor(255, 0, 0), FALSE);
-	DrawSphere3D(capsule_.start_pos, capsule_.r, capsule_.div_num, GetColor(255, 255, 255), 
-		GetColor(255, 255, 255),FALSE);
-	DrawSphere3D(capsule_.end_pos, capsule_.r, capsule_.div_num, GetColor(255, 255, 255),
-		GetColor(255, 255, 255), FALSE);
-
-	*/
-	
-	//周りにどんだけポリゴンあるかを調べるカプセルを可視化
-	//DrawCapsule3D(capsule_.start_pos, capsule_.end_pos, capsule_.r + VSize(velocity_), 20, GetColor(0, 255, 0), GetColor(0, 255, 0), FALSE);
 	
 	//キャラクター表示
 	MV1DrawModel(model_);
@@ -170,6 +134,7 @@ void Player::Draw()
 		auto test = GetFrameMatrix();
 
 		weapon_->SetMatrix(test);
+
 		weapon_->SetPos(MV1GetFramePosition(model_, frame_num_));
 		weapon_->Draw();
 	}
@@ -236,11 +201,18 @@ void Player::Update(const VECTOR& pos, const float& rotation, Stage& stage)
 	// updateにはposだけにしといていいと思う(引き数)
 
 	float target_rot = rotation;
-	
 
 	InputMovement(pos, target_rot);
 
 
+	if (is_super_attack_)
+	{
+		super_attack_->SetPos(VAdd(pos_, VGet(0, 100, 0)));
+		super_attack_->Update();
+	}
+
+
+	//必殺技中にweaponが飛んでいく処理を作りたい
 
 	//printfDx("x:%.2f,y:%.2f,z:%.2f\n", velocity_.x, velocity_.y, velocity_.z);
 	if (AnimationType::kAttack > now_type_  && !is_super_attack_)
@@ -252,15 +224,8 @@ void Player::Update(const VECTOR& pos, const float& rotation, Stage& stage)
 		capsule_.end_pos.y += capsule_.vertical_num;
 	}
 
-	if (is_super_attack_)
-	{
-		super_attack_->SetPos(VAdd(pos_, VGet(0, 50, 0)));
-		super_attack_->Update();
-	}
-	else
-	{
-		//super_attack_->SetNowSituatuin(0);
-	}
+	
+	weapon_->Update(this);
 
 	
 
@@ -372,11 +337,17 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 		}
 	}
 
-	if (input_->CheckInputKey(KeyConfig::kSuperAttackKey) == InputState::kPush)
+
+	//必殺技(カメラが動いてない)
+	if (input_->CheckInputKey(KeyConfig::kSuperAttackKey) == InputState::kPush
+		&& !(is_super_attack_) && is_ground_ && !(is_camera_blend_) && !(is_camera_target_blend_))
 	{
 		is_super_attack_ = TRUE;
+		now_type_ = AnimationType::kSuperAttackFirst;
+		super_attack_->Init();
 	}
 	
+
 
 	if (before_type_ > AnimationType::kAttack)
 	{

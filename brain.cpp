@@ -157,7 +157,7 @@ VECTOR Brain::SetSuperAttackFrontPos(std::shared_ptr<Player> player)
 }
 
 
-VECTOR Brain::GetThisDistanceOfffsetPos(const VECTOR& pos, const float& distance, const float& ver_rad, const float& side_rad)
+VECTOR Brain::GetThisDistanceOfffsetPos(const VECTOR& pos, const float& distance, const float& ver_rad, const float& side_rad,std::shared_ptr<Player> player)
 {
 	VECTOR offset_vel = VGet(0, 0, 0);
 
@@ -169,15 +169,17 @@ VECTOR Brain::GetThisDistanceOfffsetPos(const VECTOR& pos, const float& distance
 	offset_vel.y = sinf(static_cast<float>((M_PI / 180 ) * ver_rad)) * distance;
 	side_distance = cosf(static_cast<float>((M_PI / 180) * ver_rad)) * distance;
 
-	offset_vel.x = sinf(static_cast<float>((M_PI / 180) * side_rad)) * side_distance;
-	offset_vel.z = cosf(static_cast<float>((M_PI / 180) * side_rad)) * side_distance;
+	offset_vel.x = sinf(static_cast<float>((M_PI / 180) * side_rad) 
+		+ player->GetRotation().y) * side_distance;
+	offset_vel.z = cosf(static_cast<float>((M_PI / 180) * side_rad)
+		+ player->GetRotation().y) * side_distance;
 
 	
 	return VAdd(pos, offset_vel);
 }
 
 
-VECTOR Brain::GetSuperAttackEffectBehindPos(const VECTOR& pos)
+VECTOR Brain::GetSuperAttackEffectBehindPos(std::shared_ptr<Player> player)
 {
 	//エフェクトの後ろのポジションを指定する
 	//エフェクトの少し上へ移動
@@ -185,15 +187,17 @@ VECTOR Brain::GetSuperAttackEffectBehindPos(const VECTOR& pos)
 
 	VECTOR offset_vel = VGet(0, 0, 0);
 
-	offset_vel.x = (sinf(static_cast<float>((M_PI / 180) * kSuperAttackFirstSideRad)) * kSuperAttackFirstDist);
-	offset_vel.z = (cosf(static_cast<float>((M_PI / 180) * kSuperAttackFirstSideRad)) * kSuperAttackFirstDist);
+	offset_vel.x = (sinf(static_cast<float>((M_PI / 180) * 
+		kSuperAttackFirstSideRad) + player->GetRotation().y) * kSuperAttackFirstDist);
+	offset_vel.z = (cosf(static_cast<float>((M_PI / 180) * 
+		kSuperAttackFirstSideRad) + player->GetRotation().y) * kSuperAttackFirstDist);
 
 
 
-	offset_vel = VAdd(offset_vel, VGet(0, 20, 0));
+	offset_vel = VAdd(offset_vel, VGet(0, 10, 0));
 
-
-	return (VAdd(pos, offset_vel));
+	//エフェクトの後ろに移動
+	return (VAdd(player->GetSuperAttackEffectPosition(), offset_vel));
 }
 
 
@@ -322,6 +326,9 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 
 	
 	
+	//カメラの処理を変える
+	//上に行かないで注視点だけを変えたい
+
 
 
 	//前回と結果が違う(カメラが切り替わる)ときblendさせる
@@ -344,7 +351,7 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 			next_target_pos_ = player->GetCenterPos();
 			break;
 
-
+			//プレイヤーの正面
 		case VirtualCameraName::kSuperAttackFirst:
 
 			//プレイヤーの正面の座標を受け取る
@@ -363,27 +370,27 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 			//printfDx("x:%.2f,y:%.2f,z:%.2f\n", player->GetPos().x, player->GetPos().y, player->GetPos().z);
 			break;
 
-
+			//ここを変える
 		case VirtualCameraName::kSuperAttackSecond:
 
 			//エフェクトの後ろに配置する
-			super_attack_camera_[1]->SetPos(GetSuperAttackEffectBehindPos(player->GetSuperAttackEffectPosition()));
-			super_attack_camera_[1]->SetTargetPos(player->GetSuperAttackEffectPosition());
+			super_attack_camera_[1]->SetPos(GetSuperAttackEffectBehindPos(player));
+			super_attack_camera_[1]->SetTargetPos(VAdd(player->GetSuperAttackEffectPosition(),VGet(0,-50,0)));
 			next_pos_ = super_attack_camera_[1]->GetPos();
 			start_target_pos_ = now_target_pos;
 			next_target_pos_ = super_attack_camera_[1]->GetTargetPos();
 
 			blend_speed_ = 15.0f;
-
+			is_target_blend_ = TRUE;
 			//printfDx("aaaaa\n");
 
 			break;
 
-
+			//またまた正面に戻る
 		case VirtualCameraName::kSuperAttackThird:
 
-			//武器の場所とに行きたい
-			super_attack_camera_[2]->SetPos(GetThisDistanceOfffsetPos(player->GetWeaponPos(),30,0,180));
+			//武器の場所に行きたい
+			super_attack_camera_[2]->SetPos(GetThisDistanceOfffsetPos(player->GetWeaponPos(),30,0, 180,player));
 			super_attack_camera_[2]->SetTargetPos(player->GetWeaponPos());
 			next_pos_ = super_attack_camera_[2]->GetPos();
 			start_target_pos_ = now_target_pos;
@@ -441,19 +448,22 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 
 		case VirtualCameraName::kSuperAttackSecond:
 
-			//位置のoffsetが終わったら次のに切り替える(ちょっとだけ待ってからのほうが望ましい)
-			if (!(player->GetSuperAttackEffectIsPlay()))
+
+			if (is_target_blend_)
 			{
-				camera_name_++;
+				target_velocity_ = GetStartToNextVelocity(start_target_pos_, now_target_pos,
+					next_target_pos_, target_blend_speed_, is_target_blend_);
 			}
 			else
 			{
-				
+				//位置のoffsetが終わったら次のに切り替える(ちょっとだけ待ってからのほうが望ましい)
+				if (!(player->GetSuperAttackEffectIsPlay()))
+				{
+					camera_name_++;
+				}
 			}
-			
 
 			
-
 
 			break;
 
@@ -467,6 +477,11 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 				target_velocity_ = GetStartToNextVelocity(start_target_pos_, now_target_pos,
 					next_target_pos_, target_blend_speed_, is_target_blend_);
 			}
+			else
+			{
+				camera_name_ = VirtualCameraName::kNothing;
+				player->SetIsSuperAttack(FALSE);
+			}
 
 			break;
 		}
@@ -479,7 +494,6 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 		//関数は引数でブレンドを開始した位置と行きたい位置とどんくらい(speed)で行くかを受け取り、velocityを調整する
 		velocity_ = GetStartToNextVelocity(start_pos_, camera_pos, next_pos_, blend_speed_,is_blend_);
 
-		
 		if (!is_blend_)
 		{
 			if (camera_name_ > VirtualCameraName::kSuperAttack)
@@ -487,12 +501,14 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 				player->SetNowCameraSituation(camera_name_ - VirtualCameraName::kSuperAttackFirst);
 			}
 		}
-
-		
-
-
 	}
 
+
+	
+
+
+	player->SetIsBlend(is_blend_);
+	player->SetIsTargetBlend(is_target_blend_);
 
 }
 

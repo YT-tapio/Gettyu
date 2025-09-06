@@ -1,5 +1,7 @@
 #pragma once
 
+#include"player.h"
+
 enum class WeaponName
 {
 	kNothing,
@@ -26,8 +28,11 @@ private:
 	MATRIX mat_;
 
 	VECTOR scale_;
+	VECTOR velocity_;
 
 	int model_;
+
+	bool local_;
 
 public:
 
@@ -36,13 +41,18 @@ public:
 	{
 		pos_ = pos;
 		model_ = model;
+		velocity_ = VGet(0, 0, 0);
 		mat_ = mat;
+		local_ = TRUE;
 	}
 
 	~Weapon()
 	{
 
 	}
+
+
+	void Update(Player* player);
 
 
 	void Draw();
@@ -53,6 +63,9 @@ public:
 
 
 	void SetPos(const VECTOR& pos) { pos_ = pos; }
+
+
+	void SetLocal(bool flag) { local_ = flag; }
 
 
 	const VECTOR GetPos() const { return pos_; }

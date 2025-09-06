@@ -75,7 +75,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     AnimationData jumping_up;
     AnimationData jumping_down;
     AnimationData sword_slash_attack;
-
+    AnimationData super_attack_first;
     
     std::shared_ptr<EffectManager>effect_player = 
        std::make_shared<EffectManager>("",1.0f,120);
@@ -88,6 +88,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     char jumping_up_path[256]       = "data/animation/Jumping_Up.mv1";
     char jumping_down_path[256]     = "data/animation/Jumping_Down.mv1";
     char sword_slash_path[256]      = "data/animation/SwordSlash.mv1";
+    char super_attack_path[256]     = "data/animation/Standing_2H_Cast_Spell_01.mv1";
+
+    //アニメーションのロード
 
     Load(idle, idle_path,
         AnimationType::kIdle, chara,3.0f);
@@ -109,6 +112,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     Load(sword_slash_attack, sword_slash_path,
         AnimationType::kSwordSlash, chara, 4.0f);
+
+    Load(super_attack_first, super_attack_path,
+        AnimationType::kSuperAttackFirst, chara, 2.0f);
 
     //playerを生成
     std::shared_ptr<Player>player = 
@@ -142,6 +148,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     player->AddAnim(jumping_up);
     player->AddAnim(jumping_down);
     player->AddAnim(sword_slash_attack);
+    player->AddAnim(super_attack_first);
 
     MixamoBonePath bone;
 

@@ -71,6 +71,8 @@ private:
 	bool is_ground_;					//地面の上にいるとき
 	bool is_target_;					///ターゲットしているかどうか
 	bool is_move_;
+	bool is_camera_blend_;			//brainのis_blend_の情報を受け取る
+	bool is_camera_target_blend_;	//brainのis_target_blend_の情報を受け取る
 
 	bool is_super_attack_;
 	bool is_switch_weapon_;
@@ -162,6 +164,12 @@ public:
 	void SetIsGround(bool flag) { is_ground_ = flag; }
 
 	void SetNowCameraSituation(int num) { super_attack_->SetNowSituatuin(num); }
+
+	void SetIsSuperAttack(bool flag) { is_super_attack_ = flag; }
+
+	void SetIsBlend(bool flag) { is_camera_blend_ = flag; }
+
+	void SetIsTargetBlend(bool flag) { is_camera_target_blend_ = flag; }
 
 	MATRIX GetFrameMatrix();
 

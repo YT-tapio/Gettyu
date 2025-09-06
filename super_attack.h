@@ -38,6 +38,9 @@ public:
 
 	~SuperAttack();
 
+	void Init();
+
+
 
 	void Update();
 

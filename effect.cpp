@@ -32,21 +32,26 @@ Effect::~Effect()
 }
 
 
+void Effect::Init()
+{
+	play_count_ = 0.0f;
+	is_play_ = FALSE;
+	is_end_ = FALSE;
+}
+
+
 void Effect::Play()
 {
 	
 	//Ä¶‚µ‚Ä‚¢‚È‚¢‚Æ‚«‚ÍÄ¶‚³‚¹‚é
-	if (!is_play_)
+	if (!is_play_ && !is_end_)
 	{
 		playing_handle_ = PlayEffekseer3DEffect(handle_);
 		SetRotationPlayingEffekseer3DEffect(playing_handle_, rot_.x, rot_.y, rot_.z);
 		is_play_ = TRUE;
 		play_count_ = 0.0f;
 	}
-	else
-	{
-
-	}
+	
 
 	if (!is_end_ && is_play_)
 	{
@@ -58,8 +63,6 @@ void Effect::Play()
 	//ƒ‹[ƒv‚È‚µ‚Ìê‡
 	if (!loop_)
 	{
-		printfDx("%f\n",play_count_);
-
 		if (play_count_ > play_count_max_)
 		{
 			StopEffekseer3DEffect(playing_handle_);

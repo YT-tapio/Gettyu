@@ -28,6 +28,9 @@ public:
 	~Effect();
 
 	
+	void Init();
+
+
 	void Play();
 
 

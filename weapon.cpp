@@ -1,6 +1,30 @@
 #include"DxLib.h"
 #include"weapon.h"
 
+void Weapon::Update(Player* player)
+{
+	//必殺中にsituation_camera_numが既定の数字になると変わるようにしたいです
+	
+	
+	if (!local_)
+	{
+		//その位置からの切り離しが必要
+		//とりあえず、動き方を決めよう
+
+		VECTOR offset_vel = VGet(0, 0, 0);	//初期化
+
+		//上に投げているかのような処理を作る(offset_velのy座標をいじる)
+
+		offset_vel = VGet(0, 1, 0);
+
+		velocity_ = VAdd(velocity_, offset_vel);
+
+	}
+
+	
+}
+
+
 void Weapon::Draw()
 {
 	VECTOR scale_rot = VGet(0, 0, 0);
@@ -16,7 +40,10 @@ void Weapon::Draw()
 	//MATRIX model_mat = MMult(mat_, MGetScale(scale_));
 	MATRIX model_mat = MMult(MGetScale(scale_), mat_);
 
-	if (TRUE)
+	
+
+
+	if (local_)
 	{
 		//MV1SetMatrix(model_, mat_);
 		MV1SetMatrix(model_, model_mat);
@@ -24,7 +51,12 @@ void Weapon::Draw()
 	}
 	else
 	{
-		MV1SetPosition(model_, pos_);
+		//ここの中でmatrixを作る
+		MATRIX all_mat = MMult(MGetScale(scale_), 
+			MGetTranslate(VAdd(pos_, velocity_)));
+
+
+		MV1SetMatrix(model_, all_mat);
 	}
 
 	

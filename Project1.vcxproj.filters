@@ -37,15 +37,12 @@
     <Filter Include="ソース ファイル\effect">
       <UniqueIdentifier>{1e514953-09da-49bd-99c6-47158c0329a5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\weapon">
+      <UniqueIdentifier>{9e3922bc-ea56-4d45-a6ac-fee487c98310}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="effect_manager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="weapon.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="turn_camera.cpp">
@@ -96,18 +93,18 @@
     <ClCompile Include="sphere_camera.cpp">
       <Filter>ソース ファイル\camera</Filter>
     </ClCompile>
+    <ClCompile Include="weapon.cpp">
+      <Filter>ソース ファイル\weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="effect_manager.cpp">
+      <Filter>ソース ファイル\effect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="keyconfig.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="screen.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="effect_manager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="weapon.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="mixamo_fram.h">
@@ -163,6 +160,12 @@
     </ClInclude>
     <ClInclude Include="sphere_camera.h">
       <Filter>ソース ファイル\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="weapon.h">
+      <Filter>ソース ファイル\weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="effect_manager.h">
+      <Filter>ソース ファイル\effect</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

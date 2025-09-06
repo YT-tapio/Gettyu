@@ -29,7 +29,7 @@ private:
 	const float kSuperAttackZeroDist = 25.0f;
 	const float kSuperAttackCameraMoveSpeed = 2.0f;
 
-	const float kSuperAttackFirstDist = 25.0f;
+	const float kSuperAttackFirstDist = 50.0f;
 	const float kSuperAttackFirstCameraMoveSpeed = 2.0f;
 	const float kSuperAttackFirstSideRad = 0;
 	
@@ -107,15 +107,16 @@ private:
 	/// <param name="ver_rad">たての角度</param>
 	/// <param name="side_rad">よこの角度</param>
 	/// <returns></returns>
-	VECTOR GetThisDistanceOfffsetPos(const VECTOR& pos, const float& distance, const float& ver_rad, const float& side_rad);
+	VECTOR GetThisDistanceOfffsetPos(const VECTOR& pos, const float& distance, const float& ver_rad, 
+		const float& side_rad,std::shared_ptr<Player> player);
 
 
 	/// <summary>
-	/// 
+	/// エフェクトの後ろの位置
 	/// </summary>
 	/// <param name="pos">エフェクトの位置</param>
 	/// <returns></returns>
-	VECTOR GetSuperAttackEffectBehindPos(const VECTOR& pos);
+	VECTOR GetSuperAttackEffectBehindPos(std::shared_ptr<Player> player);
 
 	/// <summary>
 	/// weaponの位置からのoffset値
