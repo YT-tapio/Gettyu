@@ -43,7 +43,7 @@ public:
 		model_ = model;
 		velocity_ = VGet(0, 0, 0);
 		mat_ = mat;
-		local_ = TRUE;
+		local_ = FALSE;
 	}
 
 	~Weapon()

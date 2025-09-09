@@ -114,7 +114,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         AnimationType::kSwordSlash, chara, 4.0f);
 
     Load(super_attack_first, super_attack_path,
-        AnimationType::kSuperAttackFirst, chara, 2.0f);
+        AnimationType::kSuperAttackFirst, chara, 3.0f);
 
     //playerÇê∂ê¨
     std::shared_ptr<Player>player = 

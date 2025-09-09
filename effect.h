@@ -10,6 +10,7 @@ private:
 	int playing_handle_;		//再生中のえふぇくとのデータを格納
 
 	float play_count_;
+
 	float play_count_max_;
 
 	float delta_time_;		//デルタタイム
@@ -19,6 +20,8 @@ private:
 	bool is_play_;			//再生かどうか
 	bool loop_;
 	bool is_end_;
+
+
 
 public:
 
@@ -52,6 +55,10 @@ public:
 	const VECTOR GetPos() const { return pos_; }
 
 	const bool GetIsPlay() const { return is_play_; }
+
+	const bool GetIsEnd() const { return is_end_; }
+
+	const float GetPlayCount()  const { return play_count_; }
 
 };
 

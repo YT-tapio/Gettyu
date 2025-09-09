@@ -179,6 +179,8 @@ public:
 
 	const float GetFallSpeed()const { return fall_speed_; }
 
+	const float GetSuperAttackEffectPlayCount() const { return super_attack_->GetEffectPlayCount(); }
+
 	const State& GetNowState() const { return now_state_; }
 
 	const VECTOR& GetPos() const { return pos_; }

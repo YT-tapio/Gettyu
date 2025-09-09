@@ -207,7 +207,7 @@ void Player::Update(const VECTOR& pos, const float& rotation, Stage& stage)
 
 	if (is_super_attack_)
 	{
-		super_attack_->SetPos(VAdd(pos_, VGet(0, 100, 0)));
+		super_attack_->SetPos(VAdd(pos_, VGet(0, 150, 0)),pos_);
 		super_attack_->Update();
 	}
 

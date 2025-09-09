@@ -330,6 +330,13 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 	//上に行かないで注視点だけを変えたい
 
 
+	// 今のカメラの処理としては
+	// 1.プレイヤーの正面へ移動
+	// 2.エフェクトの位置を見る
+	// 3.エフェクトの後ろに移動
+	// 4.
+	//
+
 
 	//前回と結果が違う(カメラが切り替わる)ときblendさせる
 	if (camera_name_ != before_camera_name)
@@ -370,20 +377,45 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 			//printfDx("x:%.2f,y:%.2f,z:%.2f\n", player->GetPos().x, player->GetPos().y, player->GetPos().z);
 			break;
 
+
+		case VirtualCameraName::kSuperAttackSecond:
+
+			// カメラの位置は正面のままでok
+			// ターゲットの位置だけ変える
+			// ターゲットの位置はプレイヤーの位置を見る
+
+			super_attack_camera_[1]->SetPos(SetSuperAttackFrontPos(player));
+			super_attack_camera_[1]->SetTargetPos(player->GetCenterPos());
+			next_pos_ = super_attack_camera_[1]->GetPos();
+			start_target_pos_ = now_target_pos;
+			next_target_pos_ = super_attack_camera_[1]->GetTargetPos();
+			
+			//必殺中はblendが切り替わった瞬間にtagをかえているけど、例外としてここでtagを変えておく
+			is_blend_ = FALSE;
+			is_target_blend_ = TRUE;
+
+			player->SetNowCameraSituation(camera_name_ - VirtualCameraName::kSuperAttackFirst);
+
+
+			break;
+		
+			/*
+			
 			//ここを変える
 		case VirtualCameraName::kSuperAttackSecond:
 
-			//エフェクトの後ろに配置する
+			//位置は変えずにターゲットだけ変えたい
 			super_attack_camera_[1]->SetPos(GetSuperAttackEffectBehindPos(player));
-			super_attack_camera_[1]->SetTargetPos(VAdd(player->GetSuperAttackEffectPosition(),VGet(0,-50,0)));
+			super_attack_camera_[1]->SetTargetPos(VAdd(player->GetSuperAttackEffectPosition(), VGet(0, -50, 0)));
 			next_pos_ = super_attack_camera_[1]->GetPos();
 			start_target_pos_ = now_target_pos;
 			next_target_pos_ = super_attack_camera_[1]->GetTargetPos();
 
 			blend_speed_ = 15.0f;
 			is_target_blend_ = TRUE;
-			//printfDx("aaaaa\n");
 
+			
+			
 			break;
 
 			//またまた正面に戻る
@@ -401,6 +433,11 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 			is_target_blend_ = TRUE;
 			break;
 
+			
+			*/
+
+
+			
 
 		}
 	}
@@ -433,6 +470,7 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 
 			if (is_target_blend_)
 			{
+
 				target_velocity_ = GetStartToNextVelocity(start_target_pos_, now_target_pos,
 					next_target_pos_, target_blend_speed_, is_target_blend_);
 			}
@@ -445,8 +483,35 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 
 			break;
 
-
 		case VirtualCameraName::kSuperAttackSecond:
+
+			if (is_target_blend_)
+			{
+				target_velocity_ = GetStartToNextVelocity(start_target_pos_, now_target_pos,
+					next_target_pos_, target_blend_speed_, is_target_blend_);
+			}
+			else
+			{
+
+				//printfDx("%.2f\n", player->GetSuperAttackEffectPlayCount());
+
+				if (CheckHitKey(KEY_INPUT_Y) || player->GetSuperAttackEffectPlayCount() > 18.f)
+				{
+					//たーげっとのブレンドも終わってえふぇくとも終わると切り替える
+					camera_name_ = VirtualCameraName::kNothing;
+					player->SetIsSuperAttack(FALSE);
+				}
+
+				
+			}
+
+
+
+			break;
+
+
+			/*
+			case VirtualCameraName::kSuperAttackSecond:
 
 
 			if (is_target_blend_)
@@ -484,6 +549,8 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 			}
 
 			break;
+			*/
+		
 		}
 	}
 	else
@@ -804,6 +871,13 @@ VECTOR Brain::GetStartToNextVelocity(const VECTOR& start_pos, const VECTOR& now_
 {
 	VECTOR vel = VGet(0, 0, 0);
 
+	if (now_camera_pos.x == next_pos.x &&
+		now_camera_pos.y == next_pos.y &&
+		now_camera_pos.z == next_pos.z)
+	{
+		flag = FALSE;
+		return vel;
+	}
 
 	//あれでやってみようvel足す前と足した後でのやつを
 

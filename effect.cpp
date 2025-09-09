@@ -34,7 +34,7 @@ Effect::~Effect()
 
 void Effect::Init()
 {
-	play_count_ = 0.0f;
+	play_count_ = 0.f;
 	is_play_ = FALSE;
 	is_end_ = FALSE;
 }
@@ -70,6 +70,8 @@ void Effect::Play()
 			is_end_ = TRUE;
 		}
 	}
+
+	//printfDx("%.2f\n", play_count_);
 }
 
 
