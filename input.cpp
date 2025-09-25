@@ -50,7 +50,10 @@ float Input::MakePercent(float value, float min, float max)
 void Input::Update()
 {
 	GetHitKeyStateAll(now_type_state_.key);
-	now_type_state_.mouse = GetMouseInput();
+
+	now_type_state_.atai = GetMouseInputLog2(&now_type_state_.mouse, &now_type_state_.mouse_x,
+		&now_type_state_.mouse_y, &now_type_state_.log, TRUE);
+
 	GetMousePoint(&now_type_state_.mouse_x, &now_type_state_.mouse_y);
 	GetJoypadXInputState(num_,&(now_type_state_.pad));
 }
@@ -73,8 +76,8 @@ void Input::ResetMousePoint()
 InputState Input::CheckInputKey(int key_code)
 {
 
-	InputState state;
-
+	InputState state = InputState::kOff;
+		
 	//‰Ÿ‚µ‚Ä‚¢‚È‚¢
 	if (before_type_state_.key[key_code] == 0 && now_type_state_.key[key_code] == 0) { state = InputState::kOff; }
 	//‰Ÿ‚µ‚½uŠÔ
@@ -92,18 +95,44 @@ InputState Input::CheckInputKey(int key_code)
 
 InputState Input::CheckInputMouse(int mouse)
 {
-	InputState state;
+	InputState state = InputState::kOff;
+	
+	//‰Ÿ‚µ‚½‚Ì‚Æ‰Ÿ‚µ‚Ä‚¢‚È‚¢ó‘Ô‚ğæ‚é
 
-	// ‰Ÿ‚µ‚Ä‚¢‚È‚¢
-	if ((before_type_state_.mouse & mouse) == 0 && (now_type_state_.mouse & mouse) == 0) { state = InputState::kOff; }
-	// ‰Ÿ‚µ‚½uŠÔ
-	if ((before_type_state_.mouse & mouse) == 0 && (now_type_state_.mouse & mouse) == 1) { state = InputState::kPush; }
-	// ‰Ÿ‚µ‘±‚¯‚Ä‚¢‚é‚Æ‚«
-	if ((before_type_state_.mouse & mouse) == 1 && (now_type_state_.mouse & mouse) == 1) { state = InputState::kOn; }
-	// —£‚µ‚½uŠÔ
-	if ((before_type_state_.mouse & mouse) == 1 && (now_type_state_.mouse & mouse) == 0) { state = InputState::kRelease; }
+	if (now_type_state_.atai == 0)
+	{
+		if ((now_type_state_.mouse & mouse) && (now_type_state_.log == MOUSE_INPUT_LOG_DOWN))
+		{
+			state = InputState::kPush;
+		}
+		if ((now_type_state_.mouse & mouse) && (now_type_state_.log == MOUSE_INPUT_LOG_UP))
+		{
+			state = InputState::kRelease;
+		}
+		before_type_state_.input_state = state;
+		
+	}
+	
 
-	before_type_state_.mouse = now_type_state_.mouse;
+	if(now_type_state_.atai == -1)
+	{
+
+		//‘O‰ñ‚Ì“ü—Í‚ğŒ©‚Ä
+		//‘O‰ñ‚ªpush‚È‚ç
+		
+		if (before_type_state_.input_state == InputState::kPush)
+		{
+			state = InputState::kOn;
+		}
+
+		if (before_type_state_.input_state == InputState::kRelease)
+		{
+			state = InputState::kOff;
+		}
+
+	}
+
+	//printfDx("%d\n", now_type_state_.atai);
 
 	return state;
 
@@ -112,7 +141,7 @@ InputState Input::CheckInputMouse(int mouse)
 
 InputState Input::CheckInputPadButton(int pad_button)
 {
-	InputState state;
+	InputState state = InputState::kOff;
 
 	// ‰Ÿ‚µ‚Ä‚¢‚È‚¢
 	if ((before_type_state_.pad.Buttons[pad_button]) == 0 &&

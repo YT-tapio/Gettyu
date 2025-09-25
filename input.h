@@ -1,17 +1,29 @@
 #pragma once
 //いろんな入力を図る
 
+//入力されているなどの状態を表すもの
+enum InputState
+{
+	kOff,			// 押されていない状態
+	kPush,		// 押した瞬間の状態
+	kOn,			// 押し続けている状態
+	kRelease	// 離した瞬間の状態
+};
+
 struct InputType
 {
 	//操作タイプ
+
+	int atai = 0;
+
 	char key[256] = {};
 	int mouse = 0;
 	int mouse_x = 0;
 	int mouse_y = 0;
+	int log = 0;
 	XINPUT_STATE pad = {};
+	InputState input_state = InputState::kOff;
 };
-
-
 
 struct StickType
 {
@@ -25,14 +37,7 @@ struct Control
 	static const int kY = 1;
 };
 
-//入力されているなどの状態を表すもの
-enum InputState
-{
-	kOff,			// 押されていない状態
-	kPush,		// 押した瞬間の状態
-	kOn,			// 押し続けている状態
-	kRelease	// 離した瞬間の状態
-};
+
 
 class Input
 {
@@ -105,7 +110,7 @@ public:
 
 	float GetMouseRad();
 
-	// パッド(スティック)の入力量を返す(直線の長さ) // 左右
+	// パッド(スティック)の入力量を返す(直線の長さ) // 左右 // 最大380くらい
 	float GetPadStickVertical(int type);
 
 	// スティック入力の角度を返す

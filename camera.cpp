@@ -40,6 +40,14 @@ void Camera::Update(const VECTOR& velocity, const VECTOR& target_velocity)
 	SetLightPosition(pos_);
 	
 	SetCameraPositionAndTarget_UpVecY(pos_, target_pos_);
+
+	if (CheckHitKey(KEY_INPUT_T))
+	{
+		// éãñÏäpê›íË
+		SetupCamera_Perspective((DX_PI_F / 180.0f) * 75.0f);
+	}
+	
+
 }
 
 

@@ -5,17 +5,17 @@ struct VirtualCameraName
 {
 	static const int kNothing = 0;	//何もない
 	static const int kSphere = 1;	//球体上のカメラの処理
-	static const int kSuperAttack = 2;	//必殺技のカメラ
-	static const int kSuperAttackFirst = 3;
-	static const int kSuperAttackSecond = 4;
-	static const int kSuperAttackThird = 5;
+	static const int kGet = 2;
+	static const int kSuperAttack = 3;	//必殺技のカメラ
+	static const int kSuperAttackFirst = kSuperAttack + 1;
+	static const int kSuperAttackSecond = kSuperAttack+ 2;
+	static const int kSuperAttackThird = kSuperAttack + 3;
 };
 
 
 class BaseVirtualCamera
 {
 private:
-
 	//このバーチャルカメラの名前
 	int name_;
 

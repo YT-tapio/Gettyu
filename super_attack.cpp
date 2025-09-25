@@ -18,13 +18,13 @@ SuperAttack::SuperAttack(const VECTOR& pos,const char*  file_path)
 	, max_play_count_(0.f)
 	, delta_time_(0.f)
 {
-	effect_ = new Effect("data/effect/Laser02.efkefc", effect_pos_, VGet(static_cast<float>((M_PI / 180) * -90),
+	effect_ = new Effect("data/effect/Effekseer01/Laser02.efkefc", effect_pos_, VGet(static_cast<float>((M_PI / 180) * -90),
 		0.0f, 0.0f),5.0f, 20.0f, FALSE);
 
-	effect_start_ = new Effect("data/effect/MagicTornade.efkefc", effect_pos_, VGet(0.0f,
+	effect_start_ = new Effect("data/effect/NextSoft01/MagicTornade.efkefc", effect_pos_, VGet(0.0f,
 		0.0f, 0.0f), 5.0f, 20.0f, FALSE);
 
-	effect_end_ = new Effect("data/effect/Flame.efkefc", effect_pos_, VGet(0.0f,
+	effect_end_ = new Effect("data/effect/Pierre01/Flame.efkefc", effect_pos_, VGet(0.0f,
 		0.0f, 0.0f), 5.0f, 20.0f, FALSE);
 
 }
@@ -89,13 +89,8 @@ void SuperAttack::Draw()
 {
 	if (effect_handle_ == -1)
 	{
-		DrawSphere3D(effect_pos_, 10, 20, GetColor(255, 255, 255), GetColor(255, 255, 255), FALSE);
+		//DrawSphere3D(effect_pos_, 10, 20, GetColor(255, 255, 255), GetColor(255, 255, 255), FALSE);
 	}
-	else
-	{
-
-	}
-
 
 }
 

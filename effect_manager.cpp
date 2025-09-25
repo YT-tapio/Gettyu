@@ -44,7 +44,7 @@ void EffectManager::Load()
 
     if (resource_handle_ == -1)
     {
-        printfDx("effect_manager‚Ì“Ç‚İ‚İ¸”s");
+        //printfDx("effect_manager‚Ì“Ç‚İ‚İ¸”s");
     }
     //playingEffectHandle = PlayEffekseer3DEffect(effectResourceHandle);
 }

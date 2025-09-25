@@ -2,6 +2,7 @@
 #include"virtual_camera.h"
 #include"super_attack_camera.h"
 #include"sphere_camera.h"
+#include"get_camera.h"
 class Player;
 class Input;
 
@@ -36,9 +37,11 @@ private:
 	//カメラの見る位置をoffsetするときのスピード
 	const float kSuperAttackCameraTargetPosSpeed = 1.3f;
 
-
 	//球体上に動くカメラ
 	BaseVirtualCamera* sphere_camera_;
+
+	//
+	BaseVirtualCamera* get_camera_;
 
 	//必殺技のカメラ
 	BaseVirtualCamera* super_attack_camera_[3];
@@ -60,6 +63,9 @@ private:
 	//int群
 	//現在のvirtualcameraの名前を保存
 	int camera_name_;
+
+	int vibration_count_;
+	int super_attack_vibration_power_;
 
 	bool is_change_;
 	bool no_update_;
@@ -177,10 +183,17 @@ public:
 
 	void SuperAttackUpdate(const VECTOR& camera_pos, const VECTOR& now_target_pos, std::shared_ptr<Player> player);
 
+	/// <summary>
+	/// ゲットしたときのカメラの更新処理
+	/// </summary>
+	void GetCameraUpdate(const VECTOR& pos,const VECTOR& camera_pos, const VECTOR& dir);
+
 
 	void ChangeCamera();
 
 	
+	void Vibration();
+
 	void SetRad(const VECTOR& target_pos, const VECTOR& player_pos);
 
 

@@ -1,0 +1,88 @@
+
+#include"base_enemy.h"
+
+
+BaseEnemy::BaseEnemy(const int model, const VECTOR& pos,
+	const VECTOR& scale, const VECTOR& dir)
+{
+	//モデルのダウンロード
+	model_ = model;
+	if (model_ == -1)
+	{
+		printfDx("enemyのモデル読み込み失敗\n");
+	}
+
+	//VECTOR
+	pos_ = pos;
+	dir_ = VGet(0.f, 0.f, 0.f);
+	rot_ = VGet(0.f, 0.f, 0.f);
+	velocity_ = VGet(0.f, 0.f, 0.f);
+	scale_ = scale;
+	dir_ = dir;
+	mat_ = MMult(MMult(MGetRotY(0.0f), MGetScale(scale_)), 
+		MGetTranslate(pos_));
+
+	is_get_ = FALSE;
+	delta_time_ = 0.0f;
+
+
+}
+
+BaseEnemy::~BaseEnemy()
+{
+
+}
+
+
+void BaseEnemy::Draw()
+{
+	if (!is_get_)
+	{
+		if (model_ == -1)
+		{
+
+			switch (collision_data_.name)
+			{
+
+			case CollisionName::kSphere:
+
+				DrawSphere3D(pos_, 3.f, 15, GetColor(255, 255, 255),
+					GetColor(255, 255, 255), FALSE);
+
+				break;
+
+			case CollisionName::kCapsule:
+
+				DrawCapsule3D(collision_data_.pos, VGet(collision_data_.pos.x, (collision_data_.pos.y - collision_data_.ver),
+					collision_data_.pos.z), collision_data_.r, 15, GetColor(255, 255, 255), GetColor(255, 255, 255), FALSE);
+				break;
+			}
+
+			
+		}
+		else
+		{
+			MV1SetPosition(model_, pos_);
+			MV1DrawModel(model_);
+		}
+		//いろいろなデバッグの作業をしていきます
+		//キャラクターの向いているところを表示
+		//dirに準ずる
+
+		DrawLine3D(pos_, VAdd(pos_, dir_), GetColor(255, 255, 255));
+	}
+
+	
+
+	
+}
+
+void BaseEnemy::SetDeltaTime(float delta_time)
+{
+	delta_time_ = delta_time;
+}
+
+void BaseEnemy::SetIsGet(bool flag)
+{
+	is_get_ = flag;
+}

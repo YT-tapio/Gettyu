@@ -40,6 +40,18 @@
     <Filter Include="ソース ファイル\weapon">
       <UniqueIdentifier>{9e3922bc-ea56-4d45-a6ac-fee487c98310}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\enemy">
+      <UniqueIdentifier>{edc88656-5f50-44ac-a378-29828ac12672}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\enemy\base_enemy">
+      <UniqueIdentifier>{4c493c1e-3181-4de2-89f4-ad01247d07fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\enemy\normal_enemy">
+      <UniqueIdentifier>{e3bfe9dc-8f8b-40fa-aafd-0afe999bd427}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\enemy\enemy_manager">
+      <UniqueIdentifier>{9bb5588a-3959-43e4-a8b0-fb797750e1e0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -72,9 +84,6 @@
     <ClCompile Include="FPS.cpp">
       <Filter>ソース ファイル\FPS</Filter>
     </ClCompile>
-    <ClCompile Include="collision.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="stage.cpp">
       <Filter>ソース ファイル\stage</Filter>
     </ClCompile>
@@ -93,11 +102,32 @@
     <ClCompile Include="sphere_camera.cpp">
       <Filter>ソース ファイル\camera</Filter>
     </ClCompile>
-    <ClCompile Include="weapon.cpp">
+    <ClCompile Include="weapon_base.cpp">
       <Filter>ソース ファイル\weapon</Filter>
     </ClCompile>
     <ClCompile Include="effect_manager.cpp">
       <Filter>ソース ファイル\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="bat.cpp">
+      <Filter>ソース ファイル\weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="warp_rod.cpp">
+      <Filter>ソース ファイル\weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="wizard_staff.cpp">
+      <Filter>ソース ファイル\weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="get_camera.cpp">
+      <Filter>ソース ファイル\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="enemy_manager.cpp">
+      <Filter>ソース ファイル\enemy\enemy_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="base_enemy.cpp">
+      <Filter>ソース ファイル\enemy\base_enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="normal_enemy.cpp">
+      <Filter>ソース ファイル\enemy\normal_enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -140,9 +170,6 @@
     <ClInclude Include="FPS.h">
       <Filter>ソース ファイル\FPS</Filter>
     </ClInclude>
-    <ClInclude Include="collision.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="stage.h">
       <Filter>ソース ファイル\stage</Filter>
     </ClInclude>
@@ -161,11 +188,35 @@
     <ClInclude Include="sphere_camera.h">
       <Filter>ソース ファイル\camera</Filter>
     </ClInclude>
-    <ClInclude Include="weapon.h">
+    <ClInclude Include="weapon_base.h">
       <Filter>ソース ファイル\weapon</Filter>
     </ClInclude>
     <ClInclude Include="effect_manager.h">
       <Filter>ソース ファイル\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="bat.h">
+      <Filter>ソース ファイル\weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="warp_rod.h">
+      <Filter>ソース ファイル\weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="wizard_staff.h">
+      <Filter>ソース ファイル\weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="get_camera.h">
+      <Filter>ソース ファイル\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="enemy_manager.h">
+      <Filter>ソース ファイル\enemy\enemy_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="base_enemy.h">
+      <Filter>ソース ファイル\enemy\base_enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="normal_enemy.h">
+      <Filter>ソース ファイル\enemy\normal_enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="collision_data.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

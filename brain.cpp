@@ -1,6 +1,7 @@
 #include<iostream>
 #include"DxLib.h"
 #include"player.h"
+#include"weapon_base.h"
 #include"camera.h"
 #include"screen.h"
 #include"brain.h"
@@ -20,8 +21,13 @@ Brain::Brain(const VECTOR& next_target_pos)
 	,is_target_blend_(FALSE)
 	,change_type_(ChangeType::Straight)
 	,camera_name_(VirtualCameraName::kNothing)
+	,vibration_count_(0)
+	,super_attack_vibration_power_(500)
+	,side_rad_(static_cast<float>(M_PI / 180) * 0.f)
+	,vertical_rad_(static_cast<float>(M_PI / 180) * 10.f)
 {
 	sphere_camera_ = new SphereCamera(VirtualCameraName::kSphere);
+	get_camera_ = new GetCamera(VirtualCameraName::kGet);
 	super_attack_camera_[0] = new SuperAttackCamera(VirtualCameraName::kSuperAttackFirst);
 	super_attack_camera_[1] = new SuperAttackCamera(VirtualCameraName::kSuperAttackSecond);
 	super_attack_camera_[2] = new SuperAttackCamera(VirtualCameraName::kSuperAttackThird);
@@ -30,6 +36,8 @@ Brain::Brain(const VECTOR& next_target_pos)
 
 Brain::~Brain()
 {
+	delete sphere_camera_;
+	delete get_camera_;
 	delete super_attack_camera_[0];
 	delete super_attack_camera_[1];
 	delete super_attack_camera_[2];
@@ -293,22 +301,7 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 	//各カメラに名前を持たせる
 	//もし、kSuperAttack以上なら
 
-	/*
-	if (camera_name_ >= VirtualCameraName::kSuperAttack)
-	{
-		if (super_attack_situation_num != player->GetNowCameraSituationNum())
-		{
-			//カメラの名前を入れる
-			camera_name_ = super_attack_camera_[player->GetNowCameraSituationNum()]->GetCameraName();
-
-			super_attack_situation_num = player->GetNowCameraSituationNum();
-		}
-	}
-	else
-	{
-		
-	}
-	*/
+	
 	
 	//必殺技じゃないときに
 	if (camera_name_ < VirtualCameraName::kSuperAttack)
@@ -320,7 +313,7 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 		}
 		else  //必殺ではないとき
 		{
-			camera_name_ = sphere_camera_->GetCameraName();
+			//camera_name_ = sphere_camera_->GetCameraName();
 		}
 	}
 
@@ -346,6 +339,11 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 
 		//今の座標と次のvirtualcameraの座標をとる
 		start_pos_ = camera_pos;
+
+		if (camera_name_ == VirtualCameraName::kGet)
+		{
+			is_blend_ = FALSE;
+		}
 
 		switch (camera_name_)
 		{
@@ -394,47 +392,13 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 			is_blend_ = FALSE;
 			is_target_blend_ = TRUE;
 
+			
+
 			player->SetNowCameraSituation(camera_name_ - VirtualCameraName::kSuperAttackFirst);
 
 
 			break;
 		
-			/*
-			
-			//ここを変える
-		case VirtualCameraName::kSuperAttackSecond:
-
-			//位置は変えずにターゲットだけ変えたい
-			super_attack_camera_[1]->SetPos(GetSuperAttackEffectBehindPos(player));
-			super_attack_camera_[1]->SetTargetPos(VAdd(player->GetSuperAttackEffectPosition(), VGet(0, -50, 0)));
-			next_pos_ = super_attack_camera_[1]->GetPos();
-			start_target_pos_ = now_target_pos;
-			next_target_pos_ = super_attack_camera_[1]->GetTargetPos();
-
-			blend_speed_ = 15.0f;
-			is_target_blend_ = TRUE;
-
-			
-			
-			break;
-
-			//またまた正面に戻る
-		case VirtualCameraName::kSuperAttackThird:
-
-			//武器の場所に行きたい
-			super_attack_camera_[2]->SetPos(GetThisDistanceOfffsetPos(player->GetWeaponPos(),30,0, 180,player));
-			super_attack_camera_[2]->SetTargetPos(player->GetWeaponPos());
-			next_pos_ = super_attack_camera_[2]->GetPos();
-			start_target_pos_ = now_target_pos;
-			next_target_pos_ = super_attack_camera_[2]->GetTargetPos();
-
-			blend_speed_ = 15.0f;
-
-			is_target_blend_ = TRUE;
-			break;
-
-			
-			*/
 
 
 			
@@ -456,21 +420,38 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 
 			if (is_target_blend_)
 			{
-				target_velocity_ = GetStartToNextVelocity(start_target_pos_, now_target_pos,
-					next_target_pos_, target_blend_speed_, is_target_blend_);
+				target_velocity_ = GetStartToNextVelocity(start_target_pos_, now_target_pos, next_target_pos_, target_blend_speed_, is_target_blend_);
+					
 			}
 			else
 			{
 				target_velocity_ = VSub(sphere_target_pos, now_target_pos);
 			}
 			
+			if (CheckHitKey(KEY_INPUT_0))
+			{
+				camera_name_ = VirtualCameraName::kGet;
+			}
+
+			break;
+
+		case VirtualCameraName::kGet:
+
+
+
+			GetCameraUpdate(player->GetPos(), camera_pos, VGet(0, 0, 0));
+
+			if (CheckHitKey(KEY_INPUT_9))
+			{
+				camera_name_ = VirtualCameraName::kSphere;
+			}
+
 			break;
 
 		case VirtualCameraName::kSuperAttackFirst:
 
 			if (is_target_blend_)
 			{
-
 				target_velocity_ = GetStartToNextVelocity(start_target_pos_, now_target_pos,
 					next_target_pos_, target_blend_speed_, is_target_blend_);
 			}
@@ -494,7 +475,9 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 			{
 
 				//printfDx("%.2f\n", player->GetSuperAttackEffectPlayCount());
-
+				player->AttachWeapon(WeaponName::kWizardStaff);
+				//player->Vibration(super_attack_vibration_power_,10);
+				Vibration();
 				if (CheckHitKey(KEY_INPUT_Y) || player->GetSuperAttackEffectPlayCount() > 18.f)
 				{
 					//たーげっとのブレンドも終わってえふぇくとも終わると切り替える
@@ -508,48 +491,6 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 
 
 			break;
-
-
-			/*
-			case VirtualCameraName::kSuperAttackSecond:
-
-
-			if (is_target_blend_)
-			{
-				target_velocity_ = GetStartToNextVelocity(start_target_pos_, now_target_pos,
-					next_target_pos_, target_blend_speed_, is_target_blend_);
-			}
-			else
-			{
-				//位置のoffsetが終わったら次のに切り替える(ちょっとだけ待ってからのほうが望ましい)
-				if (!(player->GetSuperAttackEffectIsPlay()))
-				{
-					camera_name_++;
-				}
-			}
-
-			
-
-			break;
-
-
-		case VirtualCameraName::kSuperAttackThird:
-
-			
-			
-			if (is_target_blend_)
-			{
-				target_velocity_ = GetStartToNextVelocity(start_target_pos_, now_target_pos,
-					next_target_pos_, target_blend_speed_, is_target_blend_);
-			}
-			else
-			{
-				camera_name_ = VirtualCameraName::kNothing;
-				player->SetIsSuperAttack(FALSE);
-			}
-
-			break;
-			*/
 		
 		}
 	}
@@ -576,7 +517,7 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 
 	player->SetIsBlend(is_blend_);
 	player->SetIsTargetBlend(is_target_blend_);
-
+	
 }
 
 
@@ -596,8 +537,8 @@ void Brain::SphereUpdate(const VECTOR& target_pos,const VECTOR& camera_pos,const
 	float decide_side_rad_value = 0.0f;
 	float decide_vertical_rad_value = 0.0f;
 
-	pad_side_rad_value = static_cast<float>((M_PI / 180) * (inp->GetPadStickPercent(StickType::kRight, Control::kX) * kCameraSpeed) * all_sensitivity_) * side_sensitivity_;;
-	pad_vertical_rad_value = -(static_cast<float>((M_PI / 180) * (inp->GetPadStickPercent(StickType::kRight, Control::kY) * kCameraSpeed) * all_sensitivity_) * vertical_sensitivity_);
+	pad_side_rad_value = static_cast<float>(((M_PI / 180) * (inp->GetPadStickPercent(StickType::kRight, Control::kX) * kCameraSpeed) * all_sensitivity_) * side_sensitivity_) * 0.5f;
+	pad_vertical_rad_value = -(static_cast<float>((M_PI / 180) * ((inp->GetPadStickPercent(StickType::kRight, Control::kY) * kCameraSpeed) * all_sensitivity_) * vertical_sensitivity_)) * 0.5f;
 
 	//if()
 	mouse_side_rad_value = static_cast<float>((M_PI / 180) * (inp->GetMousePercent(Control::kX) * kCameraSpeed) * all_sensitivity_) * side_sensitivity_;
@@ -630,8 +571,8 @@ void Brain::SphereUpdate(const VECTOR& target_pos,const VECTOR& camera_pos,const
 	}
 
 	//pad対応
-	side_rad_ += decide_side_rad_value * (delta_time_ * 20);
-	vertical_rad_ += decide_vertical_rad_value * (delta_time_ * 20);	//pad操作の時、カメラを動かすときは上下が反転する
+	//side_rad_ += decide_side_rad_value * (delta_time_ * 20);
+	//vertical_rad_ += decide_vertical_rad_value * (delta_time_ * 20);	//pad操作の時、カメラを動かすときは上下が反転する
 	
 	//side_radの調整
 	if (side_rad_ > static_cast<float>((M_PI / 180) * 180))
@@ -798,6 +739,38 @@ void Brain::SuperAttackUpdate(const VECTOR& camera_pos, const VECTOR& now_target
 }
 
 
+void Brain::GetCameraUpdate(const VECTOR& pos, const VECTOR& camera_pos,const VECTOR& dir)
+{
+	//ゲットじの処理を行います
+	//球体上に回す
+	//ゲットした対象を基軸に一定の距離分離す
+
+	
+
+	//とりあえず中心からの位置を出す
+	static float rad = 30;
+	const float kDist = 20.f;
+	
+	//中心からの距離
+	VECTOR dist_pos = VAdd(pos,VGet(cosf(static_cast<float>((M_PI / 180) * rad)) * kDist, 0.f, 
+		sinf(static_cast<float>((M_PI / 180) * rad)) * kDist));
+
+	//距離を出す
+
+	rad = rad + 5;
+
+	velocity_ = VSub(dist_pos, camera_pos);
+
+
+
+
+
+	//とりあえず回る処理を作っていきたいです
+	
+
+
+}
+
 void Brain::ChangeCamera()
 {
 	switch (change_type_)
@@ -818,6 +791,32 @@ void Brain::ChangeCamera()
 
 	}
 }
+
+
+void Brain::Vibration()
+{
+	//左右を決めるやつ
+	float side = 0.f;
+	//とりあえず横にずらす
+	vibration_count_++;
+
+	//偶数
+	if (vibration_count_ % 2 == 0)
+	{
+		vibration_count_ = 0;
+		side = -0.1f;
+	}
+	else //奇数
+	{
+		side = 0.1f;
+	}
+
+	velocity_ = VAdd(velocity_, VGet(0.f, side, 0.f));
+	target_velocity_ = VAdd(target_velocity_, VGet(0.f, side *10, 0.f));
+
+
+}
+
 
 
 void Brain::SetRad(const VECTOR& target_pos, const VECTOR& player_pos)

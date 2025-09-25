@@ -2,12 +2,18 @@
 #include"DxLib.h"
 #include"animation.h"
 #include"super_attack.h"
+#include"base_enemy.h"
 
 
-class Weapon;
+struct MixamoBonePath;
+class WeaponBase;
 class Input;
 class Stage;
-
+class Bat;
+class WarpRod;
+class WizardStaff;
+class BaseEnemy;
+enum class WeaponName;
 
 struct CapsuleData
 {
@@ -39,8 +45,13 @@ private:
 	const float kGravity = 0.75f;		//重力
 	const float kJumpPower = 3.5f;		//ジャンプ力
 
+	//MixamoBonePath bone_;
+
+	//今何の武器を持っているかを持たせておく
+	WeaponName now_weapon_name_;
+
 	//クラス関連
-	Weapon* weapon_;
+	WeaponBase* weapon_;
 	Input* input_;
 	SuperAttack* super_attack_;
 
@@ -74,11 +85,11 @@ private:
 	bool is_camera_blend_;			//brainのis_blend_の情報を受け取る
 	bool is_camera_target_blend_;	//brainのis_target_blend_の情報を受け取る
 
+	bool is_attack_;
 	bool is_super_attack_;
 	bool is_switch_weapon_;
 
 	int model_;							//モデル
-
 	int pad_input_num_;					//入力するパッドの番号
 
 	//操作タイプ
@@ -122,7 +133,7 @@ public:
 	void InputState();
 
 
-	void AttachWeapon(const TCHAR* frame_path, int model, float scale);
+	void AttachWeapon(WeaponName name);
 
 
 	void Update(const VECTOR& pos, const float& rotation, Stage& stage);
@@ -143,6 +154,12 @@ public:
 
 
 	void MakeLine(float& constant, const VECTOR& pos);
+
+
+	//敵を捕まえたかどうかの処理を行う
+	void IsHitEnemy(BaseEnemy* enemy);
+	
+	void Vibration(int power, int time);
 
 
 	void SetIsTarget(bool flag)
@@ -169,7 +186,7 @@ public:
 
 	void SetIsBlend(bool flag) { is_camera_blend_ = flag; }
 
-	void SetIsTargetBlend(bool flag) { is_camera_target_blend_ = flag; }
+    void SetIsTargetBlend(bool flag) { is_camera_target_blend_ = flag; }
 
 	MATRIX GetFrameMatrix();
 

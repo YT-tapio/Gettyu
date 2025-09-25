@@ -1,5 +1,6 @@
 #include<iostream>
 #include<vector>
+#include<memory>
 #include"DxLib.h"
 #include"EffekseerForDxLib.h"
 #include"animation.h"
@@ -7,11 +8,11 @@
 #include"camera.h"
 #include"effect_manager.h"
 #include"FPS.h"
-#include"mixamo_fram.h"
 #include"base_object.h"
 #include"still_object.h"
 #include"brain.h"
 #include"stage.h"
+#include"enemy_manager.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -81,6 +82,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
        std::make_shared<EffectManager>("",1.0f,120);
    
    
+   
     char idle_path[256]             = "data/animation/Idle.mv1";
     char walk_path[256]             = "data/animation/Walking.mv1";
     char slow_run_path[256]         = "data/animation/Slow_Run.mv1";
@@ -124,7 +126,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     std::shared_ptr<Brain>brain = std::make_shared<Brain>(player->GetCenterPos());
 
     //カメラを生成
-    std::shared_ptr<Camera>camera = std::make_shared<Camera>(brain->GetPositionFromTarget(player->GetCenterPos()),player->GetCenterPos(), 75.0f * DX_PI_F / 180.0f);
+    std::shared_ptr<Camera>camera = std::make_shared<Camera>(brain->GetPositionFromTarget(player->GetCenterPos()),
+        player->GetCenterPos(), (DX_PI_F / 180.0f) * 75.0f);
 
     //std::vector<std::shared_ptr<BaseObject>>objects;
 
@@ -133,7 +136,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     std::shared_ptr<Stage>stage = std::make_shared<Stage>(model_data, VGet(0, 0, 0), 1.0f);
     //objects.push_back(std::make_shared<StillObject>(VGet(0, 0, 0), MV1LoadModel("data/model/map/block/block.mv1")));
     
-    
+    std::shared_ptr<StillObject>enemy = std::make_shared<StillObject>(VGet(0, 0, 0), -1, 5.0);
 
     //オブジェクトを生成
     std::shared_ptr<BaseObject>object = 
@@ -150,13 +153,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     player->AddAnim(sword_slash_attack);
     player->AddAnim(super_attack_first);
 
-    MixamoBonePath bone;
 
-    player->AttachWeapon(bone.RIGHT_HAND,
-        MV1LoadModel("data/model/weapon/use_path/Bug_Net3.mv1"), 1.0f);
+    std::shared_ptr<EnemyManager>enemy_manager =
+        std::make_shared<EnemyManager>();
 
-
-
+    enemy_manager->Init();   
 
     //高精度タイマーでフレーム管理
    std::shared_ptr<FPS>fps = std::make_shared<FPS>();
@@ -172,25 +173,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         //更新処理
         player->SetDeltaTime(fps->GetDeltaTime());
         brain->SetDeltaTime(fps->GetDeltaTime());
+        enemy_manager->SetDeltaTime(fps->GetDeltaTime());
         //test_effect1->SetDeltaTime(fps->GetDeltaTime());
 
         player->InputState();
-
-        if (GetMouseInput() & MOUSE_INPUT_RIGHT)
-        {
-            player->SetIsTarget(TRUE);
-        }
-        else
-        {
-            player->SetIsTarget(FALSE);
-        }
-       
-
        
         
         
         player->Update(camera->GetPos(), brain->GetSideRad(),*stage);
 
+        /*
         if (player->GetIsSwitchWeapon())
         {
             player->AttachWeapon(bone.RIGHT_HAND,
@@ -201,6 +193,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
             player->AttachWeapon(bone.RIGHT_HAND,
                 MV1LoadModel("data/model/weapon/use_path/Bug_Net3.mv1"),5.0f);
         }
+        */
+        
 
         if (!(player->GetIsTarget()))
         {
@@ -215,14 +209,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
         camera->Update(brain->GetVelocity(), brain->GetTargetVelocity());
         effect_player->Update();
-
+        enemy_manager->Update(player);
         
-        if (CheckHitKey(KEY_INPUT_1))
+        if (CheckHitKey(KEY_INPUT_RIGHT))
         {
             time_scale += 0.01;
         }
 
-        if (CheckHitKey(KEY_INPUT_2))
+        if (CheckHitKey(KEY_INPUT_LEFT))
         {
             time_scale -= 0.01f;
             if (time_scale < 0.0f)
@@ -243,46 +237,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         /*-----------------描画処理------------------*/
 
         /*----デルタタイム表示----*/
-        //DrawFormatString(100, 100, GetColor(255, 255, 255), "%f", fps->GetDeltaTime());
         
-        //fps->Draw();
-
-        
-        /*
-        DrawString(0, 0, "x", red);
-        DrawString(15, 0, "y", green);
-        DrawString(30, 0, "z", blue);
-
-        //中心をわかりやすくするため
-        DrawLine3D(VGet(10, 0, 0), VGet(-10, 0, 0), red);
-        DrawLine3D(VGet(0, 10, 0), VGet(0, -10, 0), green);
-        DrawLine3D(VGet(0, 0, 10), VGet(0, 0, -10), blue);
-
-        */
-        
-
-        //DrawLine3D(object->GetPos(), player->GetPos(),GetColor(100,240,50));
-
-        //DrawLine3D(VGet(player->GetPos().x, 0.0f, player->GetPos().z),VGet(camera->GetPos().x, 0.0f, camera->GetPos().z), GetColor(123, 145, 9));
-            
-
-        //プレイヤーを中心とした座標軸を描画
-        /*
-        DrawLine3D(VGet((player->GetPos().x), 0, 0), VGet(-10, 0, 0), red);
-        DrawLine3D(VGet(0, 10, 0), VGet(0, -10, 0), green);
-        DrawLine3D(VGet(0, 0, 10), VGet(0, 0, -10), blue);
-        */
         
 
         player->Draw();
-
+        enemy_manager->Draw();
         
 
         SetUseLighting(FALSE);
 
         stage->Draw();
         effect_player->Draw();
-
+        //enemy->Draw();
         //object->Draw();
 
         //DrawCapsule3D(VGet(0, 0, 0), VGet(10, 10, 10), 2, 20, GetColor(255, 255, 255), GetColor(255, 255, 255), FALSE);

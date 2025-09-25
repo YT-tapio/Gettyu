@@ -1,12 +1,19 @@
 #include<iostream>
+#include<vector>
+#include<string>
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+//#include"mixamo_fram.h"
 #include"player.h"
 #include"keyconfig.h"
-#include"weapon.h"
+#include"weapon_base.h"
 #include"input.h"
 #include"stage.h"
+#include"bat.h"
+#include"warp_rod.h"
+#include"wizard_staff.h"
+
 
 
 
@@ -25,12 +32,22 @@ Player::Player(VECTOR pos, int model,int pad_num,int div, float r, float vertica
 	capsule_.vertical_num = vertical_num;
 	is_move_ = FALSE;
 	is_camera_blend_ = FALSE;
+	is_attack_ = FALSE;
 	is_super_attack_ = FALSE;
 	is_switch_weapon_ = FALSE;
-	//model_ = model;
-	//pad_input_num_ = pad_num;
 	Init(pos);
 	super_attack_ = new SuperAttack(VGet(0, 0, 0), "");
+
+	MATRIX pos_matrix = MGetTranslate(pos_);
+
+	MATRIX rotation_matrix = MGetRotY(rotation_.y);
+
+	model_matrix_ = MMult(MMult(
+		MGetRotY(rotation_.y), MGetScale(VGet(0.01f, 0.01f, 0.01f))), pos_matrix);
+
+
+	MV1SetMatrix(model_, model_matrix_);
+
 }
 
 Player::~Player()
@@ -67,12 +84,12 @@ void Player::MakeTargetRot(const VECTOR& target_pos, float& target_rot)
 	else
 	{
 		tan_num = rot_vec.z / rot_vec.x;
-
 		target_rot = atanf(tan_num);
 	}
 	
 	
 	///printfDx("%f", target_rot);
+
 
 }
 
@@ -107,26 +124,28 @@ void Player::Init(VECTOR pos)
 	//bool
 	is_ground_ = TRUE;
 	is_target_ = FALSE;
+	
+	now_weapon_name_ = WeaponName::kBat;
+	AttachWeapon(now_weapon_name_);
+
 }
 
 
 void Player::Draw()
 {
-	//MV1SetPosition(model_, pos_);
-
 	MATRIX pos_matrix = MGetTranslate(pos_);
 	MATRIX rotation_matrix = MGetRotY(rotation_.y);
 
 	model_matrix_ = MMult(MMult(
-		MGetRotY(rotation_.y), MGetScale(VGet(0.01f, 0.01f, 0.01f))),pos_matrix);
+		MGetRotY(rotation_.y), MGetScale(VGet(0.01f, 0.01f, 0.01f))), pos_matrix);
 
-	
+
 	MV1SetMatrix(model_, model_matrix_);
-	
 	//キャラクター表示
 	MV1DrawModel(model_);
 	super_attack_->Draw();
 	//printfDx("x:%.2f,y:%.2f,z:%.2f\n", pos_.x, pos_.y, pos_.z);
+
 
 
 	if (weapon_ != nullptr)
@@ -138,14 +157,7 @@ void Player::Draw()
 		weapon_->SetPos(MV1GetFramePosition(model_, frame_num_));
 		weapon_->Draw();
 	}
-	
-	//input_->Draw();
 
-	//animation_.Draw(now_type_);+
-	
-
-
-	//TestFunc();
 }
 
 
@@ -166,13 +178,14 @@ void Player::InputState()
 }
 
 
-void Player::AttachWeapon(const TCHAR* frame_path, int model,float scale)
+void Player::AttachWeapon(WeaponName name)
 {
 	if (weapon_ != nullptr)
 	{
 		weapon_ = nullptr;
 	}
 	
+
 
 	MATRIX pos_matrix = MGetTranslate(pos_);
 	MATRIX rotation_matrix = MGetRotY(rotation_.y);
@@ -182,21 +195,49 @@ void Player::AttachWeapon(const TCHAR* frame_path, int model,float scale)
 
 	MV1SetMatrix(model_, model_matrix_);
 	
-	frame_num_ = MV1SearchFrame(model_, frame_path);
+	frame_num_ = MV1SearchFrame(model_, "mixamorig:RightHand");
 
 	MATRIX frame_mat = 
 		MV1GetFrameLocalWorldMatrix(model_, frame_num_);
 
-	weapon_ = new Weapon(
-		frame_mat, model,scale, 
-		MV1GetFramePosition(model_, frame_num_));
 
+	//名前によってかえる
+
+	switch (name)
+	{
+
+	case WeaponName::kBat:
+
+		weapon_ = new Bat();
+
+		break;
+
+	case WeaponName::kBugNet:
+
+		weapon_ = new WarpRod();
+
+		break;
+
+	case WeaponName::kWizardStaff:
+
+		weapon_ = new WizardStaff();
+
+		break;
+	}
+
+	now_weapon_name_ = name;
+
+	if (weapon_ != nullptr)
+	{
+		weapon_->SetMatrix(frame_mat);
+	}
+	
 }
 
 
 void Player::Update(const VECTOR& pos, const float& rotation, Stage& stage)
 {
-
+	//AttachWeapon(frame_path_->RIGHT_HAND);
 	// ターゲットを切り替えた時のrotationを色んな奴に持たすわけにはいかないのでplayerに持たせる、
 	// updateにはposだけにしといていいと思う(引き数)
 
@@ -212,9 +253,6 @@ void Player::Update(const VECTOR& pos, const float& rotation, Stage& stage)
 	}
 
 
-	//必殺技中にweaponが飛んでいく処理を作りたい
-
-	//printfDx("x:%.2f,y:%.2f,z:%.2f\n", velocity_.x, velocity_.y, velocity_.z);
 	if (AnimationType::kAttack > now_type_  && !is_super_attack_)
 	{
 		pos_ = stage.CheckCollision(*this, velocity_);
@@ -224,20 +262,11 @@ void Player::Update(const VECTOR& pos, const float& rotation, Stage& stage)
 		capsule_.end_pos.y += capsule_.vertical_num;
 	}
 
+	if (weapon_ != nullptr)
+	{
+		weapon_->Update();
+	}
 	
-	weapon_->Update(this);
-
-	
-
-	
-
-	
-
-	
-
-	//printfDx("%f\n", target_rot);
-
-	//rotation_.y = target_rot;
 
 }
 
@@ -251,42 +280,37 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 
 	/*(PadConfig::kLeftButton)*/
 
+	
+	
+
 	CheckDirection(pos, rotation);
 
-	/*左スティックの入力量をみる*/
-	if (input_->CheckInputKey(KeyConfig::kDashKey) > InputState::kOff || input_->GetPadStickVertical(StickType::kLeft) > 200)
+	if (!is_super_attack_ && now_type_ < AnimationType::kAttack)
 	{
-		speed = kDashSpeed;
+		/*左スティックの入力量をみる*/
+		if (input_->CheckInputKey(KeyConfig::kDashKey) > InputState::kOff || input_->GetPadStickVertical(StickType::kLeft) > 200)
+		{
+			speed = kDashSpeed;
 
-		now_type_ = AnimationType::kFastRun;
-		now_state_ = State::kRun;
+			now_type_ = AnimationType::kFastRun;
+			now_state_ = State::kRun;
+		}
+		else if (input_->CheckInputKey(KeyConfig::kWalkKey) > InputState::kOff || (input_->GetPadStickVertical(StickType::kLeft) > 50 && input_->GetPadStickVertical(StickType::kLeft) < 150))
+		{
+			speed = kWalkSpeed;
+
+			now_type_ = AnimationType::kWalk;
+			now_state_ = State::kWalk;
+		}
+		else
+		{
+			speed = kNormalSpeed;
+
+			now_type_ = AnimationType::kSlowRun;
+			now_state_ = State::kSlowRun;
+		}
+
 	}
-	else if (input_->CheckInputKey(KeyConfig::kWalkKey) > InputState::kOff || (input_->GetPadStickVertical(StickType::kLeft) > 50 && input_->GetPadStickVertical(StickType::kLeft) < 150))
-	{
-		speed = kWalkSpeed;
-
-		now_type_ = AnimationType::kWalk;
-		now_state_ = State::kWalk;
-	}
-	else
-	{
-		speed = kNormalSpeed;
-
-		now_type_ = AnimationType::kSlowRun;
-		now_state_ = State::kSlowRun;
-	}
-
-	
-
-	//回転量からvelocityを出す
-	
-	/*
-	if (VSize(direction_) > 0)
-	{
-		velocity.x = (cosf(target_rot_) * speed);
-		velocity.z = (sinf(target_rot_) * speed);
-	}
-	*/
 	
 
 	
@@ -295,17 +319,12 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 	JumpAction(velocity);
 
 
-	
+	if (is_super_attack_)
+	{
+		velocity_ = VGet(0.f, 0.f, 0.f);
+	}
 
-	if (VSize(velocity) != 0)
-	{
-		direction_ = VNorm(velocity);
-	}
-	else
-	{
-		now_type_ = AnimationType::kIdle;
-		now_state_ = State::kStand;
-	}
+	
 
 	if (!is_ground_)
 	{
@@ -328,26 +347,50 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 		
 	}
 
+	//必殺技(カメラが動いてない)
+	//攻撃
+
+	
+
+	
+
+	
+	//棒を振る系のやつ
 	if ((input_->CheckInputPadButton(PadConfig::kAttackButton) == InputState::kPush) ||
 		(input_->CheckInputMouse(KeyConfig::kAttackKey) == InputState::kPush))
 	{
 		if (is_ground_)
 		{
 			now_type_ = AnimationType::kSwordSlash;
+			now_state_ = State::kAttack;
 		}
 	}
 
-
-	//必殺技(カメラが動いてない)
-	if (input_->CheckInputKey(KeyConfig::kSuperAttackKey) == InputState::kPush
-		&& !(is_super_attack_) && is_ground_ && !(is_camera_blend_) && !(is_camera_target_blend_))
+	
+	if ((input_->CheckInputPadButton(PadConfig::kSuperAttackButton) == InputState::kPush ||
+		input_->CheckInputMouse(KeyConfig::kSuperAttackKey) == InputState::kPush) &&
+		!(is_super_attack_) && is_ground_ && !(is_camera_blend_) && !(is_camera_target_blend_) && 
+		(now_weapon_name_ == WeaponName::kBugNet))
 	{
 		is_super_attack_ = TRUE;
 		now_type_ = AnimationType::kSuperAttackFirst;
 		super_attack_->Init();
 	}
 	
-
+	if (VSize(velocity) != 0)
+	{
+		direction_ = VNorm(velocity);
+	}
+	else
+	{
+		if (now_type_ < AnimationType::kAttack)
+		{
+			now_type_ = AnimationType::kIdle;
+			now_state_ = State::kStand;
+		}
+		
+	}
+	
 
 	if (before_type_ > AnimationType::kAttack)
 	{
@@ -355,37 +398,76 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 		{
 			now_type_ = before_type_;
 		}
+		else
+		{
+			is_attack_ = FALSE;
+			now_type_ = AnimationType::kIdle;
+		}
 	}
+
+	
 
 	//武器切り替えのやーつ
-	if (!(now_type_ > AnimationType::kAttack))
+	if (!(now_type_ > AnimationType::kAttack) || ! is_super_attack_)
 	{
-		if (input_->CheckInputPadButton(PadConfig::kSwitchWeaponButton) == InputState::kPush ||
-			input_->CheckInputKey(KeyConfig::kSwitchWeaponKey) == InputState::kPush)
+		WeaponName next_name = WeaponName::kNothing;
+
+		if (input_->CheckInputPadButton(PadConfig::kSwitchWarpRodButton) == InputState::kPush ||
+			input_->CheckInputKey(KeyConfig::kSwicthBatKey) == InputState::kPush)
 		{
-			is_switch_weapon_ = !is_switch_weapon_;
+			next_name = WeaponName::kBugNet;
 		}
+
+		if (input_->CheckInputPadButton(PadConfig::kSwitchBatButton) == InputState::kPush ||
+			input_->CheckInputKey(KeyConfig::kSwicthWarpRodKey) == InputState::kPush)
+		{
+			next_name = WeaponName::kBat;
+		}
+
+		if (now_weapon_name_ != next_name && next_name != WeaponName::kNothing)
+		{
+			AttachWeapon(next_name);
+		}
+
 	}
 
 	
 
 
 	
-	if (before_type_ != now_type_ && !(animation_.GetBlendFlag()))
+	if (before_type_ != now_type_)
 	{
-
-		if (!(before_type_ == AnimationType::kNothing))
+		
+		if (!(animation_.GetBlendFlag()))
 		{
-			animation_.InitBlend(now_type_, before_type_);
+			if (!(before_type_ == AnimationType::kNothing))
+			{
+				animation_.InitBlend(now_type_, before_type_);
+			}
+
+			animation_.Attach(now_type_);
+
+			before_before_type_ = before_type_;
+			before_type_ = now_type_;
+
+			animation_.SetBlend(TRUE);
+
+		}
+		else
+		{
+			if (now_type_ == AnimationType::kSuperAttackFirst)
+			{
+				animation_.Detach(before_type_);
+				animation_.Attach(now_type_);
+				before_before_type_ = before_type_;
+				before_type_ = now_type_;
+
+			}
 		}
 
-		animation_.Attach(now_type_);
+		
 
-		before_before_type_ = before_type_;
-		before_type_ = now_type_;
-
-		animation_.SetBlend(TRUE);
-
+		
 	}
 
 	animation_.Update(now_type_);
@@ -435,108 +517,140 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 
 	/*--------プレイヤーの操作--------*/
 
-	//前
-	if (input_->CheckInputKey(KeyConfig::kUpKey))
+	if (!is_super_attack_ && !is_attack_)
 	{
-		direction_ = VAdd(direction_, VGet(direction.x, 0, direction.x * constant));
-		//rotation_ = VGet(0, rotation, 0);
-
-		/*---例外処理(行列使ったらこんなことしなくて済んだかも)---*/
-
-		if (!(input_->CheckInputKey(KeyConfig::kDownKey) > InputState::kOff))
+		//前
+		if (input_->CheckInputKey(KeyConfig::kUpKey))
 		{
-			rot += (static_cast<float>((M_PI / 180) * 0));
+			direction_ = VAdd(direction_, VGet(direction.x, 0, direction.x * constant));
+			//rotation_ = VGet(0, rotation, 0);
+
+			/*---例外処理(行列使ったらこんなことしなくて済んだかも)---*/
+
+			if (!(input_->CheckInputKey(KeyConfig::kDownKey) > InputState::kOff))
+			{
+				rot += (static_cast<float>((M_PI / 180) * 0));
+
+				input_count++;
+			}
+
+		}
+
+		//後ろ
+		if ((input_->CheckInputKey(KeyConfig::kDownKey) > InputState::kOff))
+		{
+			direction_ = VAdd(direction_, VGet(-1.0f * (direction.x), 0, -1.0f * (direction.x * constant)));
+
+			/*---例外処理---*/
+			if (!(input_->CheckInputKey(KeyConfig::kUpKey) > InputState::kOff))
+			{
+
+				if ((input_->CheckInputKey(KeyConfig::kRightKey) > InputState::kOff))
+				{
+					rot += (static_cast<float>((M_PI / 180) * 180));
+				}
+				else if ((input_->CheckInputKey(KeyConfig::kLeftKey) > InputState::kOff))
+				{
+					rot += -1 * (static_cast<float>((M_PI / 180) * 180));
+				}
+				else
+				{
+					rot += (static_cast<float>((M_PI / 180) * 180));
+				}
+
+				input_count++;
+
+			}
+
+		}
+
+
+		//右
+		if ((input_->CheckInputKey(KeyConfig::kRightKey) > InputState::kOff))
+		{
+			direction_ = VAdd(direction_, VGet(direction.x * constant, 0, -direction.x));
+
+			/*---例外処理---*/
+			if (!((input_->CheckInputKey(KeyConfig::kLeftKey) > InputState::kOff)))
+			{
+				rot += (static_cast<float>((M_PI / 180) * 90));
+				input_count++;
+			}
+			//rotation_ = VAdd(rotation_,VGet(0, rotation + static_cast<float>((M_PI / 180) * 90), 0));
+		}
+
+		//左
+		if ((input_->CheckInputKey(KeyConfig::kLeftKey) > InputState::kOff))
+		{
+			direction_ = VAdd(direction_, VGet(-(direction.x * constant), 0, direction.x));
+
+			/*---例外処理---*/
+			if (!((input_->CheckInputKey(KeyConfig::kRightKey) > InputState::kOff)))
+			{
+				rot += -1 * static_cast<float>((M_PI / 180) * 90);
+
+				input_count++;
+			}
+
+			//rotation_ = VAdd(rotation_, VGet(0, rotation - static_cast<float>((M_PI / 180) * 90), 0));
+		}
+
+		/*---pad除外----*/
+
+		if (input_->GetPadStickVertical(StickType::kLeft) > 50.0f)
+		{
+			rot += input_->GetPadStickRad(StickType::kLeft);
+
+			direction_ = VAdd(direction_,
+				VGet(-sinf(rot + rotation), 0.0f, -cosf(rot + rotation)));
 
 			input_count++;
 		}
 
+		//回転からdirectionを出すことができる
+		//direction_.x = cosf(rot) * 1.0f;
+		//direction_.z = sinf(rot) * 1.0f;
+
+		//正規化
+		if (VSquareSize(direction_) > 0)
+		{
+			direction_ = VNorm(direction_);
+		}
+
 	}
 
-	//後ろ
-	if ((input_->CheckInputKey(KeyConfig::kDownKey) > InputState::kOff))
-	{
-		direction_ = VAdd(direction_, VGet(-1.0f * (direction.x), 0, -1.0f * (direction.x * constant)));
+	/*---棒を振る--*/
 
-		/*---例外処理---*/
-		if (!(input_->CheckInputKey(KeyConfig::kUpKey) > InputState::kOff))
+	//とりあえず右スティックの入力量を受け取る
+	if (input_->GetPadStickVertical(StickType::kRight) > 150.f && !is_attack_)
+	{
+
+		if (is_ground_ && !is_attack_)
 		{
 			
-			if ((input_->CheckInputKey(KeyConfig::kRightKey) > InputState::kOff))
+			target_rot_ = rotation + input_->GetPadStickRad(StickType::kRight);
+			now_type_ = AnimationType::kSwordSlash;
+			now_state_ = State::kAttack;
+			is_attack_ = TRUE;
+			if (target_rot_ > (static_cast<float>((M_PI / 180) * 180)))
 			{
-				rot += (static_cast<float>((M_PI / 180) * 180));
-			}
-			else if((input_->CheckInputKey(KeyConfig::kLeftKey) > InputState::kOff))
-			{
-				rot +=  -1 * (static_cast<float>((M_PI / 180) *  180));
-			}
-			else
-			{
-				rot += (static_cast<float>((M_PI / 180) * 180));
+				target_rot_ = target_rot_ - (static_cast<float>((M_PI / 180) * 360));
 			}
 
-			input_count++;
+			if (target_rot_ < -(static_cast<float>((M_PI / 180) * 180)))
+			{
+				target_rot_ = target_rot_ + (static_cast<float>((M_PI / 180) * 360));
+			}
+
+			before_rot_ = target_rot_;
+		}
 		
-		}
-
 	}
-
-
-	//右
-	if ((input_->CheckInputKey(KeyConfig::kRightKey) > InputState::kOff))
-	{
-		direction_ = VAdd(direction_, VGet(direction.x * constant, 0, -direction.x));
-
-		/*---例外処理---*/
-		if (!((input_->CheckInputKey(KeyConfig::kLeftKey) > InputState::kOff)))
-		{
-			rot += (static_cast<float>((M_PI / 180) * 90));
-			input_count++;
-		}
-		//rotation_ = VAdd(rotation_,VGet(0, rotation + static_cast<float>((M_PI / 180) * 90), 0));
-	}
-
-	//左
-	if ((input_->CheckInputKey(KeyConfig::kLeftKey) > InputState::kOff))
-	{
-		direction_ = VAdd(direction_, VGet(-(direction.x * constant), 0, direction.x));
-
-		/*---例外処理---*/
-		if (!((input_->CheckInputKey(KeyConfig::kRightKey) > InputState::kOff)))
-		{
-			rot += -1 * static_cast<float>((M_PI / 180) * 90);
-
-			input_count++;
-		}
-
-		//rotation_ = VAdd(rotation_, VGet(0, rotation - static_cast<float>((M_PI / 180) * 90), 0));
-	}
-
-	/*---pad除外----*/
-
-	if (input_->GetPadStickVertical(StickType::kLeft) > 50.0f)
-	{
-		rot += input_->GetPadStickRad(StickType::kLeft);
-		
-		direction_ = VAdd(direction_,
-			VGet(-sinf(rot + rotation), 0.0f, -cosf(rot + rotation)));
-
-		input_count++;
-	}
-
-	//回転からdirectionを出すことができる
-	//direction_.x = cosf(rot) * 1.0f;
-	//direction_.z = sinf(rot) * 1.0f;
-
-	//正規化
-	if (VSquareSize(direction_) > 0)
-	{
-		direction_ = VNorm(direction_);
-	}
-
+	
 	//
 	SetLightDirection(VGet(direction.x, 0, direction.x * constant));
 
-	if (input_count != 0)
+	if (input_count != 0 && !is_attack_)
 	{
 		target_rot_ = (rotation + (rot / input_count));
 
@@ -578,7 +692,7 @@ void Player::CheckReverseRot(float& now_rot, float target_rot)
 	float rot_distance = 0.0f;
 
 	//回転量
-	float rot_num = (static_cast<float>((M_PI / 180) * 5.5f)) * (delta_time_ * 10);
+	float rot_num = (static_cast<float>((M_PI / 180) * 10.f)) * (delta_time_ * 10);
 
 	// 同じときは先にはじくようにしているので大丈夫
 	// どちらが小さいかを見て小さいほうから大きいほうを引く
@@ -730,10 +844,8 @@ void Player::TestFunc()
 
 	for (int i = 0; i < frame_num_; i++)
 	{
-
 		// フレーム名の描画
 		DrawFormatString(0, i * 15, GetColor(255, 255, 255), "Name         %s", MV1GetFrameName(model_, i));
-
 	}
 
 
@@ -755,6 +867,29 @@ void Player::MakeLine(float& constant, const VECTOR& pos)
 	}
 
 }
+
+
+void Player::IsHitEnemy(BaseEnemy* enemy)
+{
+
+	if (now_state_ == State::kAttack)
+	{
+		// 武器の当たり判定を検出
+
+		
+
+	}
+	
+	
+}
+
+void Player::Vibration(int power,int time)
+{
+	//ほしいのは時間と、振動の強さ
+	//パッドしんどう
+	StartJoypadVibration(input_->GetPadNom(), power, time, -1);
+}
+
 
 MATRIX Player::GetFrameMatrix()
 {

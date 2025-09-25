@@ -1,12 +1,15 @@
 #pragma once
+#include"collision_data.h"
+//#include"player.h"
 
-#include"player.h"
+//struct CollisionData;
 
 enum class WeaponName
 {
 	kNothing,
 	kBat,
-	kBugNet
+	kBugNet,
+	kWizardStaff
 };
 
 
@@ -19,10 +22,15 @@ struct Weapondata
 };
 
 
-class Weapon
+class WeaponBase
 {
 private:
 
+	
+
+protected:
+
+	int model_;
 
 	VECTOR pos_;
 	MATRIX mat_;
@@ -30,29 +38,23 @@ private:
 	VECTOR scale_;
 	VECTOR velocity_;
 
-	int model_;
-
 	bool local_;
+
+	float r_;
+
+	//ìñÇΩÇËîªíËÇ™ë∂ç›Ç∑ÇÈÉ{Å[ÉìÇÃà íuÇÃî‘çÜ
+	int bone_path_;
+
+	CollisionData collision_data_;
 
 public:
 
-	Weapon(const MATRIX& mat,int model,float scale,const VECTOR& pos)
-		: scale_(VGet(scale,scale,scale))
-	{
-		pos_ = pos;
-		model_ = model;
-		velocity_ = VGet(0, 0, 0);
-		mat_ = mat;
-		local_ = FALSE;
-	}
-
-	~Weapon()
-	{
-
-	}
+	WeaponBase();
 
 
-	void Update(Player* player);
+	virtual ~WeaponBase();
+
+	virtual void Update();
 
 
 	void Draw();
