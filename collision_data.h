@@ -15,3 +15,4 @@ struct CollisionData
 	float r;						// ”¼Œa
 	float ver;					// c‚Ì’·‚³
 };
+

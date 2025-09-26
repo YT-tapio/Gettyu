@@ -143,6 +143,7 @@
     <ClCompile Include="bat.cpp" />
     <ClCompile Include="brain.cpp" />
     <ClCompile Include="camera.cpp" />
+    <ClCompile Include="collision.cpp" />
     <ClCompile Include="effect.cpp" />
     <ClCompile Include="effect_manager.cpp" />
     <ClCompile Include="enemy_manager.cpp" />
@@ -171,6 +172,7 @@
     <ClInclude Include="brain.h" />
     <ClInclude Include="Calculation.h" />
     <ClInclude Include="camera.h" />
+    <ClInclude Include="collision.h" />
     <ClInclude Include="collision_data.h" />
     <ClInclude Include="effect.h" />
     <ClInclude Include="effect_manager.h" />

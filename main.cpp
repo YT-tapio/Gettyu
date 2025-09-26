@@ -162,8 +162,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     //高精度タイマーでフレーム管理
    std::shared_ptr<FPS>fps = std::make_shared<FPS>();
 
-
-
     while (ScreenFlip() == 0 && ProcessMessage() == 0 && ClearDrawScreen() == 0 && !CheckHitKey(KEY_INPUT_ESCAPE))
     {
         //現在の時間を取得

@@ -74,4 +74,6 @@ public:
 
 
 	const MATRIX GetMatrix() const { return mat_; }
+
+	const CollisionData GetCollisionData() const { return collision_data_; }
 };

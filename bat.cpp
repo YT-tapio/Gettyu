@@ -8,6 +8,10 @@ Bat::Bat()
 	scale_ = VGet(kScale, kScale, kScale);
 	r_ = 3.0f;
 	bone_path_ = 0;
+
+	collision_data_.name = CollisionName::kSphere;
+	collision_data_.r = 3.0f;
+	collision_data_.ver = 0.0f;
 }
 
 Bat::~Bat()

@@ -4,7 +4,7 @@
 NormalEnemy::NormalEnemy(const char* path,const VECTOR& pos,const VECTOR& scale,const VECTOR& dir)
 	:BaseEnemy(MV1LoadModel(path),pos,scale,dir)
 {
-	collision_data_.name = CollisionName::kCapsule;
+	collision_data_.name = CollisionName::kSphere;
 	collision_data_.pos = pos;
 	collision_data_.r = 3.f;
 	collision_data_.ver = 0.0;
@@ -32,7 +32,13 @@ void NormalEnemy::Update(std::shared_ptr<Player> player)
 	// ƒƒ‚‘ã‚í‚è
 	// •ß‚Ü‚é‚©‚Ç‚¤‚©‚Ìˆ—‚ð‚·‚éplayer‘¤‚Éthis‚ð‘—‚ê‚Î‚æ‚³‚»‚¤‚â‚Ë
 	
-	player->IsHitEnemy(this);
+	//‚·‚Å‚ÉƒQƒbƒg‚à‚µ‚­‚ÍAhit‚µ‚Ä‚¢‚é‚È‚ç‚±‚ÌŠÖ”‚Í‰ñ‚³‚È‚¢
+	
+	if (!is_get_)
+	{
+		player->IsHitEnemy(this);
+	}
+	
 
 
 
@@ -40,7 +46,7 @@ void NormalEnemy::Update(std::shared_ptr<Player> player)
 	{
 		VECTOR vel = VGet(0.f, 0.f, 0.f);
 		vel = VScale(VNorm(dir_), 2.0f);
-		velocity_ = VScale(vel, delta_time_);
+		//velocity_ = VScale(vel, delta_time_);
 
 		collision_data_.pos = VAdd(collision_data_.pos, velocity_);
 

@@ -13,6 +13,7 @@
 #include"bat.h"
 #include"warp_rod.h"
 #include"wizard_staff.h"
+#include"collision.h"
 
 
 
@@ -871,11 +872,35 @@ void Player::MakeLine(float& constant, const VECTOR& pos)
 
 void Player::IsHitEnemy(BaseEnemy* enemy)
 {
-
+	
 	if (now_state_ == State::kAttack)
 	{
-		// 武器の当たり判定を検出
+		// 武器と敵の当たり判定をします
+		if (SphereCapsuleCollision(weapon_->GetCollisionData(), enemy->GetCollisionData()))
+		{
+			printfDx("当たっています\n");
+			enemy->SetIsGet(TRUE);
 
+			//武器が違うときは違う結果にしたい
+
+			//ワープポイの時
+
+
+
+			//batの時
+
+
+
+			// 当たっているときにカメラの処理も一緒にしたい
+			// posを取得しといて、次のアップデートの処理の時にはじめるのか、それともRateUpdateというものを作り、ゲットしていたら、その時の処理を行う専用のものを用意するのか
+
+
+		}
+		else
+		{
+			printfDx("当たってません\n");
+		}
+		
 		
 
 	}

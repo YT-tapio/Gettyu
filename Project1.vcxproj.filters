@@ -52,6 +52,9 @@
     <Filter Include="ソース ファイル\enemy\enemy_manager">
       <UniqueIdentifier>{9bb5588a-3959-43e4-a8b0-fb797750e1e0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\collision">
+      <UniqueIdentifier>{71da9952-793b-499b-ad24-f24749d7433d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -128,6 +131,9 @@
     </ClCompile>
     <ClCompile Include="normal_enemy.cpp">
       <Filter>ソース ファイル\enemy\normal_enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="collision.cpp">
+      <Filter>ソース ファイル\collision</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -215,8 +221,11 @@
     <ClInclude Include="normal_enemy.h">
       <Filter>ソース ファイル\enemy\normal_enemy</Filter>
     </ClInclude>
+    <ClInclude Include="collision.h">
+      <Filter>ソース ファイル\collision</Filter>
+    </ClInclude>
     <ClInclude Include="collision_data.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ソース ファイル\collision</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

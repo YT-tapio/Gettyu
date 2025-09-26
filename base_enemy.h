@@ -53,5 +53,7 @@ public:
 	void SetIsGet(bool flag);
 
 	const VECTOR GetPos() const { return pos_; }
+
+	const CollisionData GetCollisionData() const { return collision_data_; }
 };
 
