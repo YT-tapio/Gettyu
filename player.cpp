@@ -878,10 +878,30 @@ void Player::IsHitEnemy(BaseEnemy* enemy)
 		// 武器と敵の当たり判定をします
 		if (SphereCapsuleCollision(weapon_->GetCollisionData(), enemy->GetCollisionData()))
 		{
-			printfDx("当たっています\n");
-			enemy->SetIsGet(TRUE);
+			
+			
 
 			//武器が違うときは違う結果にしたい
+
+			switch (weapon_->GetName())
+			{
+			case WeaponName::kBat:
+
+				printfDx("bat");
+				printfDx("に当たっています\n");
+
+				break;
+
+			case WeaponName::kBugNet:
+
+				printfDx("WarpRod");
+				printfDx("に当たっています\n");
+				break;
+
+
+			}
+
+			
 
 			//ワープポイの時
 
@@ -895,10 +915,6 @@ void Player::IsHitEnemy(BaseEnemy* enemy)
 			// posを取得しといて、次のアップデートの処理の時にはじめるのか、それともRateUpdateというものを作り、ゲットしていたら、その時の処理を行う専用のものを用意するのか
 
 
-		}
-		else
-		{
-			printfDx("当たってません\n");
 		}
 		
 		

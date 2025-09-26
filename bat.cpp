@@ -12,6 +12,7 @@ Bat::Bat()
 	collision_data_.name = CollisionName::kSphere;
 	collision_data_.r = 3.0f;
 	collision_data_.ver = 0.0f;
+	name_ = WeaponName::kBat;
 }
 
 Bat::~Bat()

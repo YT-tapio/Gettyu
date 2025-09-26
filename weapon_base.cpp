@@ -75,3 +75,9 @@ void WeaponBase::Draw()
 
 
 }
+
+
+void WeaponBase::SetWeaponName(int name)
+{
+
+}

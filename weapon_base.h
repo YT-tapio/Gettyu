@@ -42,6 +42,8 @@ protected:
 
 	float r_;
 
+	WeaponName name_;
+
 	//“–‚½‚è”»’è‚ª‘¶İ‚·‚éƒ{[ƒ“‚ÌˆÊ’u‚Ì”Ô†
 	int bone_path_;
 
@@ -56,9 +58,10 @@ public:
 
 	virtual void Update();
 
-
 	void Draw();
 
+
+	void SetWeaponName(int name);
 
 	//void SetMatrix(const MATRIX& mat) { mat_ = mat; }
 	void SetMatrix(const MATRIX& mat) { mat_ = mat; }
@@ -68,6 +71,8 @@ public:
 
 
 	void SetLocal(bool flag) { local_ = flag; }
+
+	const WeaponName GetName() const { return name_; }
 
 
 	const VECTOR GetPos() const { return pos_; }
