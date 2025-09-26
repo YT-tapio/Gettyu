@@ -8,7 +8,7 @@ class BaseEnemy;
 class NormalEnemy : public BaseEnemy
 {
 private:
-
+	float asian;
 	
 
 public:
