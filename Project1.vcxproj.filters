@@ -55,6 +55,12 @@
     <Filter Include="ソース ファイル\collision">
       <UniqueIdentifier>{71da9952-793b-499b-ad24-f24749d7433d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Singleton">
+      <UniqueIdentifier>{f371f4b4-16f3-4e3b-9773-bb8c53407f83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Singleton\situation">
+      <UniqueIdentifier>{c266bbd9-12cc-4e9a-bc4c-9240a897981b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -134,6 +140,9 @@
     </ClCompile>
     <ClCompile Include="collision.cpp">
       <Filter>ソース ファイル\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="situation.cpp">
+      <Filter>ソース ファイル\Singleton\situation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -226,6 +235,9 @@
     </ClInclude>
     <ClInclude Include="collision_data.h">
       <Filter>ソース ファイル\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="situation.h">
+      <Filter>ソース ファイル\Singleton\situation</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

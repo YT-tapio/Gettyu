@@ -14,6 +14,7 @@
 #include"warp_rod.h"
 #include"wizard_staff.h"
 #include"collision.h"
+#include"situation.h"
 
 
 
@@ -885,17 +886,27 @@ void Player::IsHitEnemy(BaseEnemy* enemy)
 
 			switch (weapon_->GetName())
 			{
+				//batの時
 			case WeaponName::kBat:
 
 				printfDx("bat");
 				printfDx("に当たっています\n");
 
+				//ここでsituationを切り替える
+
+
 				break;
 
+				//ワープポイの時
 			case WeaponName::kBugNet:
 
 				printfDx("WarpRod");
 				printfDx("に当たっています\n");
+
+				//ここでsituationを切り替える(getにする)
+
+				Situation::GetInstance().SetSituation(SituationName::kGet);
+
 				break;
 
 
@@ -903,11 +914,7 @@ void Player::IsHitEnemy(BaseEnemy* enemy)
 
 			
 
-			//ワープポイの時
 
-
-
-			//batの時
 
 
 

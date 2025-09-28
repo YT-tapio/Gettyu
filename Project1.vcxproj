@@ -153,6 +153,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="normal_enemy.cpp" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="situation.cpp" />
     <ClCompile Include="sphere_camera.cpp" />
     <ClCompile Include="stage.cpp" />
     <ClCompile Include="still_object.cpp" />
@@ -185,6 +186,7 @@
     <ClInclude Include="normal_enemy.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="screen.h" />
+    <ClInclude Include="situation.h" />
     <ClInclude Include="sphere_camera.h" />
     <ClInclude Include="stage.h" />
     <ClInclude Include="still_object.h" />
