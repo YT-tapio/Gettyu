@@ -122,12 +122,7 @@ public:
 	void AddAnim(const AnimationData& animation_data);
 
 
-	void SetDeltaTime(float delta_time)
-	{
-		delta_time_ = delta_time;
-		animation_.SetDeltaTime(delta_time);
-		super_attack_->SetDeltaTime(delta_time_);
-	}
+	void SetDeltaTime(float delta_time);
 
 
 	void InputState();

@@ -1,15 +1,16 @@
 #include<iostream>
+
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 #include"DxLib.h"
 #include"player.h"
 #include"weapon_base.h"
 #include"camera.h"
 #include"screen.h"
 #include"brain.h"
-
 #include"input.h"
-
-#define _USE_MATH_DEFINES
-#include <math.h>
+#include"situation.h"
 
 Brain::Brain(const VECTOR& next_target_pos)
 	:pos_(VGet(0,0,0))
@@ -323,12 +324,13 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 	//上に行かないで注視点だけを変えたい
 
 
-	// 今のカメラの処理としては
-	// 1.プレイヤーの正面へ移動
-	// 2.エフェクトの位置を見る
-	// 3.エフェクトの後ろに移動
-	// 4.
-	//
+	//situationがゲットの時にvirtualcameraを切り替える
+
+	if (Situation::GetInstance().GetSituationName() == SituationName::kGet)
+	{
+		//getカメラに切り替える
+		camera_name_ = VirtualCameraName::kGet;
+	}
 
 
 	//前回と結果が違う(カメラが切り替わる)ときblendさせる
@@ -428,10 +430,7 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 				target_velocity_ = VSub(sphere_target_pos, now_target_pos);
 			}
 			
-			if (CheckHitKey(KEY_INPUT_0))
-			{
-				camera_name_ = VirtualCameraName::kGet;
-			}
+			
 
 			break;
 
@@ -440,11 +439,6 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 
 
 			GetCameraUpdate(player->GetPos(), camera_pos, VGet(0, 0, 0));
-
-			if (CheckHitKey(KEY_INPUT_9))
-			{
-				camera_name_ = VirtualCameraName::kSphere;
-			}
 
 			break;
 

@@ -13,6 +13,7 @@
 #include"brain.h"
 #include"stage.h"
 #include"enemy_manager.h"
+#include"situation.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -169,6 +170,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         //camera->GetPos();
         
         //更新処理
+
+        //デルタタイムのアップデートはゲット時はplayerとenemyのだけ0にする
+
         player->SetDeltaTime(fps->GetDeltaTime());
         brain->SetDeltaTime(fps->GetDeltaTime());
         enemy_manager->SetDeltaTime(fps->GetDeltaTime());
@@ -180,18 +184,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         
         player->Update(camera->GetPos(), brain->GetSideRad(),*stage);
 
-        /*
-        if (player->GetIsSwitchWeapon())
-        {
-            player->AttachWeapon(bone.RIGHT_HAND,
-                MV1LoadModel("data/model/weapon/use_path/Bat.mv1"), 8.0f);
-        }
-        else
-        {
-            player->AttachWeapon(bone.RIGHT_HAND,
-                MV1LoadModel("data/model/weapon/use_path/Bug_Net3.mv1"),5.0f);
-        }
-        */
         
 
         if (!(player->GetIsTarget()))

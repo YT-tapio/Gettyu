@@ -169,6 +169,27 @@ void Player::AddAnim(const AnimationData& animation_data)
 	animation_.Add(animation_data);
 }
 
+void Player::SetDeltaTime(float delta_time)
+{
+
+	//ゲット時はデルタタイムをゼロにする
+	if (Situation::GetInstance().GetSituationName() == SituationName::kGet)
+	{
+		delta_time_ = 0.0f;
+		animation_.SetDeltaTime(delta_time_);
+		super_attack_->SetDeltaTime(delta_time_);
+
+	}
+	else
+	{
+		delta_time_ = delta_time;
+		animation_.SetDeltaTime(delta_time);
+		super_attack_->SetDeltaTime(delta_time_);
+	}
+
+	
+}
+
 
 void Player::InputState()
 {
@@ -326,6 +347,7 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 		velocity_ = VGet(0.f, 0.f, 0.f);
 	}
 
+	velocity_ = VScale(velocity, delta_time_);
 	
 
 	if (!is_ground_)
@@ -478,7 +500,7 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 		animation_.Update(before_type_);
 	}
 
-	velocity_ = VScale(velocity,delta_time_);
+	
 }
 
 
