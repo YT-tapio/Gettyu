@@ -18,7 +18,7 @@ bool SphereCapsuleCollision(const CollisionData& one, const CollisionData& two)
 
 		//それの大きさを出します
 		float dist = VSize(vel);
-
+		//printfDx("dist%.2f\n", dist);
 		//そのサイズが二つの半径分だと当たったとします
 
 		if (dist <= (one.r + two.r))

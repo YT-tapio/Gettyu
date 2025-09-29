@@ -9,7 +9,7 @@ BaseEnemy::BaseEnemy(const int model, const VECTOR& pos,
 	model_ = model;
 	if (model_ == -1)
 	{
-		printfDx("enemyのモデル読み込み失敗\n");
+		//printfDx("enemyのモデル読み込み失敗\n");
 	}
 
 	//VECTOR
@@ -34,46 +34,49 @@ BaseEnemy::~BaseEnemy()
 }
 
 
-void BaseEnemy::Draw()
+void BaseEnemy::Draw(int i)
 {
 	if (!is_get_)
 	{
-		if (model_ == -1)
-		{
-
-			switch (collision_data_.name)
-			{
-
-			case CollisionName::kSphere:
-
-				DrawSphere3D(pos_, 3.f, 15, GetColor(255, 255, 255),
-					GetColor(255, 255, 255), FALSE);
-
-				break;
-
-			case CollisionName::kCapsule:
-
-				DrawCapsule3D(collision_data_.pos, VGet(collision_data_.pos.x, (collision_data_.pos.y - collision_data_.ver),
-					collision_data_.pos.z), collision_data_.r, 15, GetColor(255, 255, 255), GetColor(255, 255, 255), FALSE);
-				break;
-			}
-
-			
-		}
-		else
-		{
-			MV1SetPosition(model_, pos_);
-			MV1DrawModel(model_);
-		}
-		//いろいろなデバッグの作業をしていきます
-		//キャラクターの向いているところを表示
-		//dirに準ずる
-
-		DrawLine3D(pos_, VAdd(pos_, dir_), GetColor(255, 255, 255));
+		
 	}
 
-	
+	if (model_ == -1)
+	{
 
+		switch (collision_data_.name)
+		{
+
+		case CollisionName::kSphere:
+
+			DrawSphere3D(pos_, 3.f, 15, GetColor(100 * (i), 255 - (70 * i), 100 - (0 * i)),
+				GetColor(50 * (i), 255 - (50 * i), 255), FALSE);
+
+			break;
+
+		case CollisionName::kCapsule:
+
+			DrawCapsule3D(collision_data_.pos, VGet(collision_data_.pos.x, (collision_data_.pos.y - collision_data_.ver),
+				collision_data_.pos.z), collision_data_.r, 15, GetColor(255, 255, 255), GetColor(255, 255, 255), FALSE);
+			break;
+		}
+
+
+	}
+	else
+	{
+		MV1SetPosition(model_, pos_);
+		MV1DrawModel(model_);
+	}
+	//いろいろなデバッグの作業をしていきます
+	//キャラクターの向いているところを表示
+	//dirに準ずる
+
+	DrawLine3D(pos_, VAdd(pos_, dir_), GetColor(255, 255, 255));
+
+	//座標表示
+	DrawFormatString(0, 15 + (15 * i), GetColor(100 * (i), 255 - (50 * i), 100 - (0 * i)), "enemy%d_collision_pos:: x:%.2f,x:%.2f,x:%.2f", i, collision_data_.pos.x,
+		collision_data_.pos.y, collision_data_.pos.z);
 	
 }
 
@@ -85,4 +88,9 @@ void BaseEnemy::SetDeltaTime(float delta_time)
 void BaseEnemy::SetIsGet(bool flag)
 {
 	is_get_ = flag;
+}
+
+void BaseEnemy::SetPos(const VECTOR& pos)
+{
+	pos_ = pos;
 }

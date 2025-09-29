@@ -152,7 +152,7 @@ public:
 
 
 	//“G‚ğ•ß‚Ü‚¦‚½‚©‚Ç‚¤‚©‚Ìˆ—‚ğs‚¤
-	void IsHitEnemy(BaseEnemy* enemy);
+	void IsHitEnemy(BaseEnemy* enemy, bool& got);
 	
 	void Vibration(int power, int time);
 

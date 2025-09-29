@@ -27,7 +27,7 @@ void NormalEnemy::Init(const VECTOR& pos, const VECTOR scale)
 	delta_time_ = 0.0f;
 }
 
-void NormalEnemy::Update(std::shared_ptr<Player> player)
+void NormalEnemy::Update(std::shared_ptr<Player> player, bool& got)
 {
 	// ƒƒ‚‘ã‚í‚è
 	// •ß‚Ü‚é‚©‚Ç‚¤‚©‚Ìˆ—‚ğ‚·‚éplayer‘¤‚Éthis‚ğ‘—‚ê‚Î‚æ‚³‚»‚¤‚â‚Ë
@@ -36,10 +36,10 @@ void NormalEnemy::Update(std::shared_ptr<Player> player)
 	
 	if (!is_get_)
 	{
-		player->IsHitEnemy(this);
+		player->IsHitEnemy(this,got);
 	}
 	
-
+	
 
 
 	if (!is_get_)
@@ -51,12 +51,12 @@ void NormalEnemy::Update(std::shared_ptr<Player> player)
 		collision_data_.pos = VAdd(collision_data_.pos, velocity_);
 
 		pos_ = collision_data_.pos;
-		pos_.y = collision_data_.pos.y - collision_data_.r;
+		//pos_.y = collision_data_.pos.y - collision_data_.r;
 		//“–‚½‚è”»’è‚ÌˆÊ’u‚ğXV
 
 	}
 
 
-
+	collision_data_.pos = pos_;
 	
 }

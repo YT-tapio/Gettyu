@@ -337,8 +337,7 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 	if (camera_name_ != before_camera_name)
 	{
 		is_blend_ = TRUE;
-		before_camera_name = camera_name_;
-
+		
 		//今の座標と次のvirtualcameraの座標をとる
 		start_pos_ = camera_pos;
 
@@ -356,6 +355,28 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 			sphere_camera_->SetTargetPos(player->GetCenterPos());
 			start_target_pos_ = now_target_pos;
 			next_target_pos_ = player->GetCenterPos();
+
+
+			//getからsphereに代わるときは違う処理にする
+			
+			if (before_camera_name == VirtualCameraName::kGet)
+			{
+				is_blend_ = FALSE;
+				is_target_blend_ = FALSE;
+			}
+
+
+			break;
+
+
+		case VirtualCameraName::kGet:
+
+			// 初期化の処理を行います
+			// situationから受け取る
+
+
+
+
 			break;
 
 			//プレイヤーの正面
@@ -400,12 +421,14 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 
 
 			break;
-		
 
 
 			
 
 		}
+
+		before_camera_name = camera_name_;
+
 	}
 
 
@@ -436,9 +459,7 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 
 		case VirtualCameraName::kGet:
 
-
-
-			GetCameraUpdate(player->GetPos(), camera_pos, VGet(0, 0, 0));
+			GetCameraUpdate(Situation::GetInstance().GetSituationPos(), camera_pos, now_target_pos);
 
 			break;
 
@@ -733,33 +754,49 @@ void Brain::SuperAttackUpdate(const VECTOR& camera_pos, const VECTOR& now_target
 }
 
 
-void Brain::GetCameraUpdate(const VECTOR& pos, const VECTOR& camera_pos,const VECTOR& dir)
+void Brain::GetCameraUpdate(const VECTOR& pos, const VECTOR& camera_pos,const VECTOR& target_pos)
 {
+
+	//とりあえず回る処理を作っていきたいです
 	//ゲットじの処理を行います
 	//球体上に回す
 	//ゲットした対象を基軸に一定の距離分離す
 
-	
+
 
 	//とりあえず中心からの位置を出す
 	static float rad = 30;
 	const float kDist = 20.f;
+
+
+	//回転量が定数以上行くときradも初期化する
+	if (rad > 390.0f)
+	{
+		Situation::GetInstance().SetSituation(SituationName::kNothing);
+		//カメラの切り替え
+		camera_name_ = VirtualCameraName::kNothing;
+		rad = 30;
+	}
+
 	
 	//中心からの距離
-	VECTOR dist_pos = VAdd(pos,VGet(cosf(static_cast<float>((M_PI / 180) * rad)) * kDist, 0.f, 
+	VECTOR dist_pos = VAdd(pos, VGet(cosf(static_cast<float>((M_PI / 180) * rad)) * kDist, 0.f,
 		sinf(static_cast<float>((M_PI / 180) * rad)) * kDist));
 
 	//距離を出す
 
-	rad = rad + 5;
+	rad = rad + (15 * delta_time_);
 
 	velocity_ = VSub(dist_pos, camera_pos);
+	//注視点を変える
+	target_velocity_ = VSub(pos, target_pos);
 
 
+	//radが一定数に行くと切り替わる
 
+	
+	//カメラのターゲットをsituaionからターゲットを持ってくる
 
-
-	//とりあえず回る処理を作っていきたいです
 	
 
 

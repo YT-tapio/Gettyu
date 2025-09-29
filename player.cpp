@@ -135,28 +135,12 @@ void Player::Init(VECTOR pos)
 
 void Player::Draw()
 {
-	MATRIX pos_matrix = MGetTranslate(pos_);
-	MATRIX rotation_matrix = MGetRotY(rotation_.y);
 
-	model_matrix_ = MMult(MMult(
-		MGetRotY(rotation_.y), MGetScale(VGet(0.01f, 0.01f, 0.01f))), pos_matrix);
-
-
-	MV1SetMatrix(model_, model_matrix_);
 	//キャラクター表示
 	MV1DrawModel(model_);
 	super_attack_->Draw();
-	//printfDx("x:%.2f,y:%.2f,z:%.2f\n", pos_.x, pos_.y, pos_.z);
-
-
-
 	if (weapon_ != nullptr)
 	{
-		auto test = GetFrameMatrix();
-
-		weapon_->SetMatrix(test);
-
-		weapon_->SetPos(MV1GetFramePosition(model_, frame_num_));
 		weapon_->Draw();
 	}
 
@@ -288,6 +272,31 @@ void Player::Update(const VECTOR& pos, const float& rotation, Stage& stage)
 	if (weapon_ != nullptr)
 	{
 		weapon_->Update();
+	}
+
+
+	//ここで位置の更新もしておく
+
+	MATRIX pos_matrix = MGetTranslate(pos_);
+	MATRIX rotation_matrix = MGetRotY(rotation_.y);
+
+	model_matrix_ = MMult(MMult(
+		MGetRotY(rotation_.y), MGetScale(VGet(0.01f, 0.01f, 0.01f))), pos_matrix);
+
+	if (Situation::GetInstance().GetSituationName() == SituationName::kNothing)
+	{
+		MV1SetMatrix(model_, model_matrix_);
+	}
+
+
+	if (weapon_ != nullptr)
+	{
+		auto test = GetFrameMatrix();
+
+
+		//matの更新をやめる
+		weapon_->SetMatrix(test);
+		weapon_->SetPos(MV1GetFramePosition(model_, frame_num_));
 	}
 	
 
@@ -893,9 +902,10 @@ void Player::MakeLine(float& constant, const VECTOR& pos)
 }
 
 
-void Player::IsHitEnemy(BaseEnemy* enemy)
+void Player::IsHitEnemy(BaseEnemy* enemy, bool& got)
 {
-	
+	//他のものが攻撃にあたっている時は処理を回さない
+
 	if (now_state_ == State::kAttack)
 	{
 		// 武器と敵の当たり判定をします
@@ -903,7 +913,6 @@ void Player::IsHitEnemy(BaseEnemy* enemy)
 		{
 			
 			
-
 			//武器が違うときは違う結果にしたい
 
 			switch (weapon_->GetName())
@@ -922,12 +931,20 @@ void Player::IsHitEnemy(BaseEnemy* enemy)
 				//ワープポイの時
 			case WeaponName::kBugNet:
 
-				printfDx("WarpRod");
-				printfDx("に当たっています\n");
+				//printfDx("WarpRod");
+				//printfDx("に当たっています\n");
+
+				//位置の調整を行う。武器の位置に沿わす
+				enemy->SetPos(weapon_->GetCollisionData().pos);
 
 				//ここでsituationを切り替える(getにする)
-
 				Situation::GetInstance().SetSituation(SituationName::kGet);
+				Situation::GetInstance().SetGetSituationPos(enemy->GetPos());
+				enemy->SetIsGet(TRUE);
+				got = TRUE;
+
+				
+				
 
 				break;
 

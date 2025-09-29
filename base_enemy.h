@@ -43,14 +43,17 @@ public:
 
 
 
-	virtual void Update(std::shared_ptr<Player> player) = 0;
+	virtual void Update(std::shared_ptr<Player> player,bool& got) = 0;
 
 
-	void Draw();
+	void Draw(int i);
 
 	void SetDeltaTime(float delta_time);
 
 	void SetIsGet(bool flag);
+
+
+	void SetPos(const VECTOR& pos);
 
 	const VECTOR GetPos() const { return pos_; }
 

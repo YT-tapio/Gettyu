@@ -186,7 +186,7 @@ public:
 	/// <summary>
 	/// ゲットしたときのカメラの更新処理
 	/// </summary>
-	void GetCameraUpdate(const VECTOR& pos,const VECTOR& camera_pos, const VECTOR& dir);
+	void GetCameraUpdate(const VECTOR& pos,const VECTOR& camera_pos, const VECTOR& target_pos);
 
 
 	void ChangeCamera();
