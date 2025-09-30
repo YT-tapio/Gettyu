@@ -181,25 +181,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         player->InputState();
        
         
-        
+        enemy_manager->Update(player);
         player->Update(camera->GetPos(), brain->GetSideRad(),*stage);
-
         
-
-        if (!(player->GetIsTarget()))
-        {
-            //マウスでの操作
-            brain->Update(camera->GetTargetPos(), camera->GetPos(),player);
-        }
-        else  //カメラは操作できなくとも位置は更新される
-        {
-            brain->SetRad(object->GetPos(), player->GetPos());
-            brain->SetVelocity(player->GetPos(), camera->GetPos());
-        }
-
+        
+        //マウスでの操作
+        brain->Update(camera->GetTargetPos(), camera->GetPos(), player);
+       
         camera->Update(brain->GetVelocity(), brain->GetTargetVelocity());
         effect_player->Update();
-        enemy_manager->Update(player);
+        
         
         if (CheckHitKey(KEY_INPUT_RIGHT))
         {

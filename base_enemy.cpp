@@ -41,31 +41,38 @@ void BaseEnemy::Draw(int i)
 		
 	}
 
+
+	mat_ = MMult(MGetScale(scale_), MGetTranslate(pos_));
+
+	
+
+	switch (collision_data_.name)
+	{
+
+	case CollisionName::kSphere:
+
+		DrawSphere3D(collision_data_.pos, 3.f, 15, GetColor(100 * (i), 255 - (70 * i), 100 - (0 * i)),
+			GetColor(50 * (i), 255 - (50 * i), 255), FALSE);
+
+		break;
+
+	case CollisionName::kCapsule:
+
+		DrawCapsule3D(collision_data_.pos, VGet(collision_data_.pos.x, (collision_data_.pos.y - collision_data_.ver),
+			collision_data_.pos.z), collision_data_.r, 15, GetColor(255, 255, 255), GetColor(255, 255, 255), FALSE);
+		break;
+	}
+
 	if (model_ == -1)
 	{
 
-		switch (collision_data_.name)
-		{
-
-		case CollisionName::kSphere:
-
-			DrawSphere3D(pos_, 3.f, 15, GetColor(100 * (i), 255 - (70 * i), 100 - (0 * i)),
-				GetColor(50 * (i), 255 - (50 * i), 255), FALSE);
-
-			break;
-
-		case CollisionName::kCapsule:
-
-			DrawCapsule3D(collision_data_.pos, VGet(collision_data_.pos.x, (collision_data_.pos.y - collision_data_.ver),
-				collision_data_.pos.z), collision_data_.r, 15, GetColor(255, 255, 255), GetColor(255, 255, 255), FALSE);
-			break;
-		}
+		
 
 
 	}
 	else
 	{
-		MV1SetPosition(model_, pos_);
+		MV1SetMatrix(model_, mat_);
 		MV1DrawModel(model_);
 	}
 	//いろいろなデバッグの作業をしていきます
@@ -93,4 +100,10 @@ void BaseEnemy::SetIsGet(bool flag)
 void BaseEnemy::SetPos(const VECTOR& pos)
 {
 	pos_ = pos;
+}
+
+void BaseEnemy::SetPosIsGot(const VECTOR& pos)
+{
+	pos_ = pos;
+	pos_.y -= collision_data_.r;
 }

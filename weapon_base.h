@@ -1,4 +1,8 @@
 #pragma once
+#include<iostream>
+#include<vector>
+#include<list>
+
 #include"collision_data.h"
 //#include"player.h"
 
@@ -41,6 +45,7 @@ protected:
 	bool local_;
 
 	float r_;
+	float delta_time_;
 
 	WeaponName name_;
 
@@ -48,6 +53,9 @@ protected:
 	int bone_path_;
 
 	CollisionData collision_data_;
+
+	std::vector<VECTOR> rem_poss_;
+
 
 public:
 
@@ -58,7 +66,7 @@ public:
 
 	virtual void Update();
 
-	void Draw();
+	void Draw(float delta_time);
 
 
 	void SetWeaponName(int name);
@@ -66,6 +74,8 @@ public:
 	//void SetMatrix(const MATRIX& mat) { mat_ = mat; }
 	void SetMatrix(const MATRIX& mat) { mat_ = mat; }
 
+
+	void SetModelMatrix(const MATRIX& mat) { MV1SetMatrix(model_, MMult(MGetScale(scale_), mat)); }
 
 	void SetPos(const VECTOR& pos) { pos_ = pos; }
 

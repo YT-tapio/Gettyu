@@ -1,4 +1,5 @@
 #include"normal_enemy.h"
+#include"situation.h"
 
 
 NormalEnemy::NormalEnemy(const char* path,const VECTOR& pos,const VECTOR& scale,const VECTOR& dir)
@@ -33,14 +34,18 @@ void NormalEnemy::Update(std::shared_ptr<Player> player, bool& got)
 	// 捕まるかどうかの処理をするplayer側にthisを送ればよさそうやね
 	
 	//すでにゲットもしくは、hitしているならこの関数は回さない
-	
+
 	if (!is_get_)
 	{
-		player->IsHitEnemy(this,got);
+		player->IsHitEnemy(this, got);
+	}
+	else
+	{
 	}
 	
 	
-
+	
+	
 
 	if (!is_get_)
 	{
@@ -50,13 +55,14 @@ void NormalEnemy::Update(std::shared_ptr<Player> player, bool& got)
 
 		collision_data_.pos = VAdd(collision_data_.pos, velocity_);
 
-		pos_ = collision_data_.pos;
+		//pos_ = collision_data_.pos;
 		//pos_.y = collision_data_.pos.y - collision_data_.r;
 		//当たり判定の位置を更新
 
 	}
 
-
+	//当たり判定の位置は半径分上げる
 	collision_data_.pos = pos_;
+	collision_data_.pos.y += collision_data_.r;
 	
 }

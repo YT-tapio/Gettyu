@@ -1,3 +1,5 @@
+#include<iostream>
+#include<list>
 #include"DxLib.h"
 #include"weapon_base.h"
 #include"situation.h"
@@ -26,10 +28,10 @@ void WeaponBase::Update()
 }
 
 
-void WeaponBase::Draw()
+void WeaponBase::Draw(float delta_time)
 {
 	
-
+	static float timer = 0.0f;
 	
 	MATRIX model_mat = MMult(MGetScale(scale_), mat_);
 
@@ -41,8 +43,8 @@ void WeaponBase::Draw()
 	
 	if (local_)
 	{
-		mat_ = model_mat;
-		MV1SetMatrix(model_, model_mat);
+		//mat_ = model_mat;
+		//MV1SetMatrix(model_, model_mat);
 	}
 	else
 	{
@@ -65,6 +67,32 @@ void WeaponBase::Draw()
 	DrawSphere3D(collision_data_.pos, collision_data_.r, 20, GetColor(30 * bone_path_, (255 - 50 * bone_path_), 255),
 		GetColor(30 * bone_path_, (255 - 50 * bone_path_), 255), FALSE);
 
+	
+	if (FALSE)
+	{
+		timer += delta_time;
+
+		if (timer >= 0.0f)
+		{
+			rem_poss_.push_back(collision_data_.pos);
+			timer = 0.0f;
+		}
+
+		int i = 0;
+		for (auto& rem_pos : rem_poss_)
+		{
+
+			DrawSphere3D(rem_pos, 1, 20, GetColor(255, 0, 255),
+				GetColor(255, 0, 255), TRUE);
+			i++;
+		}
+
+
+		if (i > 15)
+		{
+			//rem_poss_.clear();
+		}
+	}
 	
 
 

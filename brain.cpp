@@ -371,10 +371,6 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 
 		case VirtualCameraName::kGet:
 
-			// 初期化の処理を行います
-			// situationから受け取る
-
-
 
 
 			break;
@@ -586,8 +582,8 @@ void Brain::SphereUpdate(const VECTOR& target_pos,const VECTOR& camera_pos,const
 	}
 
 	//pad対応
-	//side_rad_ += decide_side_rad_value * (delta_time_ * 20);
-	//vertical_rad_ += decide_vertical_rad_value * (delta_time_ * 20);	//pad操作の時、カメラを動かすときは上下が反転する
+	side_rad_ += decide_side_rad_value * (delta_time_ * 20);
+	vertical_rad_ += decide_vertical_rad_value * (delta_time_ * 20);	//pad操作の時、カメラを動かすときは上下が反転する
 	
 	//side_radの調整
 	if (side_rad_ > static_cast<float>((M_PI / 180) * 180))
@@ -785,7 +781,7 @@ void Brain::GetCameraUpdate(const VECTOR& pos, const VECTOR& camera_pos,const VE
 
 	//距離を出す
 
-	rad = rad + (15 * delta_time_);
+	rad = rad + (40 * delta_time_);
 
 	velocity_ = VSub(dist_pos, camera_pos);
 	//注視点を変える

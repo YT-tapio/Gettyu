@@ -55,6 +55,9 @@ public:
 
 	void SetPos(const VECTOR& pos);
 
+	//ƒQƒbƒg‚³‚ê‚½‚ÌˆÊ’u’²®
+	void SetPosIsGot(const VECTOR& pos);
+
 	const VECTOR GetPos() const { return pos_; }
 
 	const CollisionData GetCollisionData() const { return collision_data_; }

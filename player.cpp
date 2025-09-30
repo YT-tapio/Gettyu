@@ -141,8 +141,13 @@ void Player::Draw()
 	super_attack_->Draw();
 	if (weapon_ != nullptr)
 	{
-		weapon_->Draw();
+		weapon_->Draw(delta_time_);
+		//Situation::GetInstance().SetGetSituationPos(weapon_->GetCollisionData().pos);
 	}
+
+	
+
+	
 
 }
 
@@ -244,6 +249,7 @@ void Player::AttachWeapon(WeaponName name)
 
 void Player::Update(const VECTOR& pos, const float& rotation, Stage& stage)
 {
+
 	//AttachWeapon(frame_path_->RIGHT_HAND);
 	// ターゲットを切り替えた時のrotationを色んな奴に持たすわけにはいかないのでplayerに持たせる、
 	// updateにはposだけにしといていいと思う(引き数)
@@ -277,28 +283,27 @@ void Player::Update(const VECTOR& pos, const float& rotation, Stage& stage)
 
 	//ここで位置の更新もしておく
 
-	MATRIX pos_matrix = MGetTranslate(pos_);
-	MATRIX rotation_matrix = MGetRotY(rotation_.y);
-
-	model_matrix_ = MMult(MMult(
-		MGetRotY(rotation_.y), MGetScale(VGet(0.01f, 0.01f, 0.01f))), pos_matrix);
-
+	//ここでのsetをやめる(ゲット時)
+	
 	if (Situation::GetInstance().GetSituationName() == SituationName::kNothing)
 	{
+		MATRIX pos_matrix = MGetTranslate(pos_);
+		MATRIX rotation_matrix = MGetRotY(rotation_.y);
+
+		model_matrix_ = MMult(MMult(
+			MGetRotY(rotation_.y), MGetScale(VGet(0.01f, 0.01f, 0.01f))), pos_matrix);
+
 		MV1SetMatrix(model_, model_matrix_);
+
+		if (weapon_ != nullptr)
+		{
+			auto test = GetFrameMatrix();
+			//matの更新やめません
+			weapon_->SetModelMatrix(test);
+			weapon_->SetPos(MV1GetFramePosition(model_, frame_num_));
+		}
+
 	}
-
-
-	if (weapon_ != nullptr)
-	{
-		auto test = GetFrameMatrix();
-
-
-		//matの更新をやめる
-		weapon_->SetMatrix(test);
-		weapon_->SetPos(MV1GetFramePosition(model_, frame_num_));
-	}
-	
 
 }
 
@@ -933,18 +938,20 @@ void Player::IsHitEnemy(BaseEnemy* enemy, bool& got)
 
 				//printfDx("WarpRod");
 				//printfDx("に当たっています\n");
-
 				//位置の調整を行う。武器の位置に沿わす
-				enemy->SetPos(weapon_->GetCollisionData().pos);
-
+				enemy->SetPosIsGot(weapon_->GetCollisionData().pos);
+				
 				//ここでsituationを切り替える(getにする)
 				Situation::GetInstance().SetSituation(SituationName::kGet);
 				Situation::GetInstance().SetGetSituationPos(enemy->GetPos());
 				enemy->SetIsGet(TRUE);
 				got = TRUE;
 
+				SetDeltaTime(0.f);
+				enemy->SetDeltaTime(0.f);
 				
-				
+				//もうここらへんでストップさせなきゃいけない1f遅れているのが何かおかしい
+
 
 				break;
 
