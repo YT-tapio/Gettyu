@@ -41,10 +41,8 @@ void NormalEnemy::Update(std::shared_ptr<Player> player, bool& got)
 	}
 	else
 	{
+		PlayGetEffect();
 	}
-	
-	
-	
 	
 
 	if (!is_get_)

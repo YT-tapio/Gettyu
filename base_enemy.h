@@ -50,12 +50,15 @@ public:
 	virtual void Update(std::shared_ptr<Player> player,bool& got) = 0;
 
 
+	void PlayGetEffect();
+
 	void Draw(int i);
 
 	void SetDeltaTime(float delta_time);
 
 	void SetIsGet(bool flag);
 
+	void SetGetEffectPos(const VECTOR& pos);
 
 	void SetPos(const VECTOR& pos);
 

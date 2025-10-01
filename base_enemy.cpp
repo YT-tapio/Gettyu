@@ -37,13 +37,14 @@ BaseEnemy::~BaseEnemy()
 }
 
 
+void BaseEnemy::PlayGetEffect()
+{
+	get_effect_->Play();
+}
+
+
 void BaseEnemy::Draw(int i)
 {
-	if (!is_get_)
-	{
-		
-	}
-
 
 	mat_ = MMult(MGetScale(scale_), MGetTranslate(pos_));
 
@@ -87,7 +88,7 @@ void BaseEnemy::Draw(int i)
 	//座標表示
 	DrawFormatString(0, 15 + (15 * i), GetColor(100 * (i), 255 - (50 * i), 100 - (0 * i)), "enemy%d_collision_pos:: x:%.2f,x:%.2f,x:%.2f", i, collision_data_.pos.x,
 		collision_data_.pos.y, collision_data_.pos.z);
-	
+
 }
 
 void BaseEnemy::SetDeltaTime(float delta_time)
@@ -100,6 +101,11 @@ void BaseEnemy::SetIsGet(bool flag)
 	is_get_ = flag;
 }
 
+void BaseEnemy::SetGetEffectPos(const VECTOR& pos)
+{
+	get_effect_->SetPos(pos);
+}
+
 void BaseEnemy::SetPos(const VECTOR& pos)
 {
 	pos_ = pos;
@@ -107,6 +113,8 @@ void BaseEnemy::SetPos(const VECTOR& pos)
 
 void BaseEnemy::SetPosIsGot(const VECTOR& pos)
 {
+	//collisionの位置更新も行うsetposとなります
 	pos_ = pos;
+	collision_data_.pos = pos;
 	pos_.y -= collision_data_.r;
 }

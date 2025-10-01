@@ -52,7 +52,7 @@ void Effect::Play()
 		play_count_ = 0.0f;
 	}
 	
-
+	//Ä¶’†
 	if (!is_end_ && is_play_)
 	{
 		play_count_ += 1 * delta_time_;

@@ -943,9 +943,13 @@ void Player::IsHitEnemy(BaseEnemy* enemy, bool& got)
 				
 				//ここでsituationを切り替える(getにする)
 				Situation::GetInstance().SetSituation(SituationName::kGet);
-				Situation::GetInstance().SetGetSituationPos(enemy->GetPos());
+				Situation::GetInstance().SetGetSituationPos(enemy->GetCollisionData().pos);
+				enemy->SetGetEffectPos(enemy->GetPos());
 				enemy->SetIsGet(TRUE);
 				got = TRUE;
+
+				//effectをセッティング
+				enemy->SetGetEffectPos(enemy->GetPos());
 
 				SetDeltaTime(0.f);
 				enemy->SetDeltaTime(0.f);
