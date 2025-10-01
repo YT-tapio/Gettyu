@@ -762,7 +762,7 @@ void Brain::GetCameraUpdate(const VECTOR& pos, const VECTOR& camera_pos,const VE
 
 	//とりあえず中心からの位置を出す
 	static float rad = 30;
-	const float kDist = 20.f;
+	const float kDist = 30.f;
 
 
 	//回転量が定数以上行くときradも初期化する

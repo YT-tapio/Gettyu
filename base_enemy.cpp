@@ -3,7 +3,7 @@
 
 
 BaseEnemy::BaseEnemy(const int model, const VECTOR& pos,
-	const VECTOR& scale, const VECTOR& dir)
+	const VECTOR& scale, const VECTOR& dir, Effect* effect)
 {
 	//モデルのダウンロード
 	model_ = model;
@@ -25,9 +25,7 @@ BaseEnemy::BaseEnemy(const int model, const VECTOR& pos,
 	is_get_ = FALSE;
 	delta_time_ = 0.0f;
 
-
-
-
+	get_effect_ = effect;
 
 }
 
@@ -43,12 +41,16 @@ void BaseEnemy::PlayGetEffect()
 }
 
 
+void BaseEnemy::EndGetEffect()
+{
+	get_effect_->End();
+}
+
+
 void BaseEnemy::Draw(int i)
 {
 
 	mat_ = MMult(MGetScale(scale_), MGetTranslate(pos_));
-
-	
 
 	switch (collision_data_.name)
 	{
@@ -70,9 +72,6 @@ void BaseEnemy::Draw(int i)
 	if (model_ == -1)
 	{
 
-		
-
-
 	}
 	else
 	{
@@ -86,7 +85,7 @@ void BaseEnemy::Draw(int i)
 	DrawLine3D(pos_, VAdd(pos_, dir_), GetColor(255, 255, 255));
 
 	//座標表示
-	DrawFormatString(0, 15 + (15 * i), GetColor(100 * (i), 255 - (50 * i), 100 - (0 * i)), "enemy%d_collision_pos:: x:%.2f,x:%.2f,x:%.2f", i, collision_data_.pos.x,
+	DrawFormatString(0, 15 + (15 * i), GetColor(100 * (i), 255 - (50 * i), 100 - (0 * i)), "enemy%d_collision_pos:: x:%.2f,y:%.2f,z:%.2f", i, collision_data_.pos.x,
 		collision_data_.pos.y, collision_data_.pos.z);
 
 }
@@ -94,6 +93,7 @@ void BaseEnemy::Draw(int i)
 void BaseEnemy::SetDeltaTime(float delta_time)
 {
 	delta_time_ = delta_time;
+	get_effect_->SetDeltaTime(delta_time);
 }
 
 void BaseEnemy::SetIsGet(bool flag)

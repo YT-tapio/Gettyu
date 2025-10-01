@@ -16,6 +16,10 @@ private:
 	//ステージごとに何体のサルかを切り替えたい
 	std::list<std::shared_ptr<BaseEnemy>> enemys;
 
+	//baseにeffectを渡してあげる
+	Effect* get_effect_ = new Effect("data/effect/MAGICALxSPIRAL/A_Salamander4.efkefc", VGet(0.f, 0.f, 0.f), VGet(0.f, 0.f, 0.f), 10.f, 20.f, FALSE);
+
+
 public:
 
 

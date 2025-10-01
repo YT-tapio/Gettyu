@@ -2,8 +2,8 @@
 #include"situation.h"
 
 
-NormalEnemy::NormalEnemy(const char* path,const VECTOR& pos,const VECTOR& scale,const VECTOR& dir)
-	:BaseEnemy(MV1LoadModel(path),pos,scale,dir)
+NormalEnemy::NormalEnemy(const char* path,const VECTOR& pos,const VECTOR& scale,const VECTOR& dir,Effect* effect)
+	:BaseEnemy(MV1LoadModel(path),pos,scale,dir,effect)
 {
 	collision_data_.name = CollisionName::kSphere;
 	collision_data_.pos = pos;
@@ -41,9 +41,18 @@ void NormalEnemy::Update(std::shared_ptr<Player> player, bool& got)
 	}
 	else
 	{
+		return;
+	}
+
+	
+	if (Situation::GetInstance().GetSituationName() == SituationName::kGet)
+	{
 		PlayGetEffect();
 	}
-	
+	else
+	{
+		EndGetEffect();
+	}
 
 	if (!is_get_)
 	{

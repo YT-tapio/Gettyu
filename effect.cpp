@@ -77,9 +77,6 @@ void Effect::Play()
 
 void Effect::End()
 {
-	if (is_play_)
-	{
-		StopEffekseer3DEffect(playing_handle_);
-	}
-	
+	Init();
+	StopEffekseer3DEffect(playing_handle_);
 }

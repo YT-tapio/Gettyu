@@ -12,8 +12,7 @@ class BaseEnemy
 {
 private:
 	
-	//ゲット時のリアクションは敵今日いつとなっているのでbase側で管理をする
-	Effect* get_effect_ = new Effect("", VGet(0.f, 0.f, 0.f), VGet(0.f, 0.f, 0.f), 1.f, 20.f, FALSE);
+	Effect* get_effect_;
 
 protected:
 
@@ -37,7 +36,7 @@ protected:
 public:
 
 	BaseEnemy(const int model, const VECTOR& pos,
-		const VECTOR& scale, const VECTOR& dir);
+		const VECTOR& scale, const VECTOR& dir,Effect* effect);
 
 
 	virtual ~BaseEnemy() = 0;
@@ -51,6 +50,8 @@ public:
 
 
 	void PlayGetEffect();
+
+	void EndGetEffect();
 
 	void Draw(int i);
 
