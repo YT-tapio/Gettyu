@@ -26,6 +26,9 @@ BaseEnemy::BaseEnemy(const int model, const VECTOR& pos,
 	delta_time_ = 0.0f;
 
 
+
+
+
 }
 
 BaseEnemy::~BaseEnemy()

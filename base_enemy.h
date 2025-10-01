@@ -2,6 +2,7 @@
 #include<iostream>
 #include"Dxlib.h"
 #include"player.h"
+#include"effect.h"
 #include"collision_data.h"
 
 class Player;
@@ -11,6 +12,9 @@ class BaseEnemy
 {
 private:
 	
+	//ゲット時のリアクションは敵今日いつとなっているのでbase側で管理をする
+	Effect* get_effect_ = new Effect("", VGet(0.f, 0.f, 0.f), VGet(0.f, 0.f, 0.f), 1.f, 20.f, FALSE);
+
 protected:
 
 	CollisionData collision_data_;
