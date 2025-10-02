@@ -22,11 +22,28 @@ WeaponBase::~WeaponBase()
 
 }
 
-void WeaponBase::Update()
+void WeaponBase::Update(BaseEnemy* enemy)
 {
 	
 }
 
+
+bool WeaponBase::IsInRange(const VECTOR& vel, float range)
+{
+	bool flag = FALSE;
+
+	//どんくらいの範囲にいるか
+
+	float size = VSize(vel);
+
+	if (size <= range)
+	{
+		flag = TRUE;
+	}
+
+	return flag;
+
+}
 
 void WeaponBase::Draw(float delta_time)
 {
@@ -46,13 +63,6 @@ void WeaponBase::Draw(float delta_time)
 		//mat_ = model_mat;
 		//MV1SetMatrix(model_, model_mat);
 	}
-	else
-	{
-		//ここの中でmatrixを作る
-		MATRIX all_mat = MMult(mat_, MGetTranslate(VGet(0, 10, 0)));
-		MV1SetMatrix(model_, all_mat);
-	}
-
 	
 	
 	//デバック用
@@ -102,4 +112,8 @@ void WeaponBase::Draw(float delta_time)
 void WeaponBase::SetWeaponName(int name)
 {
 
+}
+void WeaponBase::SetDeltaTime(float delta_time)
+{
+	delta_time_ = delta_time;
 }

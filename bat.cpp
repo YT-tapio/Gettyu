@@ -21,7 +21,7 @@ Bat::~Bat()
 }
 
 
-void Bat::Update()
+void Bat::Update(BaseEnemy* enemy)
 {
 
 }

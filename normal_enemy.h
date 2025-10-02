@@ -14,7 +14,7 @@ private:
 public:
 
 	NormalEnemy(const char* path, const VECTOR& pos,
-		const VECTOR& scale, const VECTOR& dir, Effect* effect);
+		const VECTOR& scale, const VECTOR& dir, Effect* get_effect, Effect* got_effect);
 
 
 	~NormalEnemy() override;

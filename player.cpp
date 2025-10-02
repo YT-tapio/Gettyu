@@ -167,13 +167,14 @@ void Player::SetDeltaTime(float delta_time)
 		delta_time_ = 0.0f;
 		animation_.SetDeltaTime(delta_time_);
 		super_attack_->SetDeltaTime(delta_time_);
-
+		weapon_->SetDeltaTime(delta_time_);
 	}
 	else
 	{
 		delta_time_ = delta_time;
 		animation_.SetDeltaTime(delta_time);
 		super_attack_->SetDeltaTime(delta_time_);
+		weapon_->SetDeltaTime(delta_time_);
 	}
 
 	
@@ -241,7 +242,8 @@ void Player::AttachWeapon(WeaponName name)
 
 	if (weapon_ != nullptr)
 	{
-		weapon_->SetMatrix(frame_mat);
+		weapon_->SetModelMatrix(frame_mat);
+		weapon_->SetPos(MV1GetFramePosition(model_, frame_num_));
 	}
 	
 }
@@ -265,7 +267,6 @@ void Player::Update(const VECTOR& pos, const float& rotation, Stage& stage)
 		super_attack_->Update();
 	}
 
-
 	if (AnimationType::kAttack > now_type_  && !is_super_attack_)
 	{
 		pos_ = stage.CheckCollision(*this, velocity_);
@@ -274,18 +275,10 @@ void Player::Update(const VECTOR& pos, const float& rotation, Stage& stage)
 		capsule_.end_pos = capsule_.start_pos;
 		capsule_.end_pos.y += capsule_.vertical_num;
 	}
-
-	if (weapon_ != nullptr)
-	{
-		weapon_->Update();
-	}
-
-
 	//ここで位置の更新もしておく
-
 	//ここでのsetをやめる(ゲット時)
 	
-	if (Situation::GetInstance().GetSituationName() == SituationName::kNothing)
+	if (Situation::GetInstance().GetSituationName() != SituationName::kGet)
 	{
 		MATRIX pos_matrix = MGetTranslate(pos_);
 		MATRIX rotation_matrix = MGetRotY(rotation_.y);
@@ -297,6 +290,8 @@ void Player::Update(const VECTOR& pos, const float& rotation, Stage& stage)
 
 		if (weapon_ != nullptr)
 		{
+			//あれの時なんかおかしいです
+			//ひっさつわざのweaponに切り替えた時
 			auto test = GetFrameMatrix();
 			//matの更新やめません
 			weapon_->SetModelMatrix(test);
@@ -304,6 +299,8 @@ void Player::Update(const VECTOR& pos, const float& rotation, Stage& stage)
 		}
 
 	}
+	//
+
 
 }
 
@@ -461,6 +458,18 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 		{
 			next_name = WeaponName::kBat;
 		}
+
+		if (FALSE)
+		{
+			//デバック用
+			if (input_->CheckInputPadButton(PadConfig::kSwitchBatButton) == InputState::kPush ||
+				input_->CheckInputKey(KEY_INPUT_3) == InputState::kPush)
+			{
+				next_name = WeaponName::kWizardStaff;
+			}
+		}
+		
+
 
 		if (now_weapon_name_ != next_name && next_name != WeaponName::kNothing)
 		{
@@ -909,6 +918,18 @@ void Player::MakeLine(float& constant, const VECTOR& pos)
 
 void Player::IsHitEnemy(BaseEnemy* enemy, bool& got)
 {
+
+	//ここでweaponのアップデートをする
+
+	if (weapon_->GetName() == WeaponName::kWizardStaff)
+	{
+		weapon_->Update(enemy);
+
+		
+
+	}
+
+
 	//他のものが攻撃にあたっている時は処理を回さない
 
 	if (now_state_ == State::kAttack)
@@ -945,6 +966,7 @@ void Player::IsHitEnemy(BaseEnemy* enemy, bool& got)
 				Situation::GetInstance().SetSituation(SituationName::kGet);
 				Situation::GetInstance().SetGetSituationPos(enemy->GetCollisionData().pos);
 				enemy->SetGetEffectPos(enemy->GetPos());
+				enemy->SetGotEffectPos(enemy->GetPos());
 				enemy->SetIsGet(TRUE);
 				got = TRUE;
 
@@ -962,22 +984,20 @@ void Player::IsHitEnemy(BaseEnemy* enemy, bool& got)
 
 			}
 
-			
-
-
-
-
-
 			// 当たっているときにカメラの処理も一緒にしたい
 			// posを取得しといて、次のアップデートの処理の時にはじめるのか、それともRateUpdateというものを作り、ゲットしていたら、その時の処理を行う専用のものを用意するのか
 
 
 		}
-		
-		
-
 	}
 	
+	//いまis_super_attackは変身になっている<-良くない。解釈が違う
+	//ぷれいやーが必殺技中ならば処理を変えたい
+	//武器が何かによって変えようかな
+	if (weapon_->GetName() > WeaponName::kSuperAttack)
+	{
+		//printfDx("必殺weapon");
+	}
 	
 }
 

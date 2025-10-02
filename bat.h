@@ -25,7 +25,7 @@ public:
 	~Bat() override;
 
 
-	void Update() override;
+	void Update(BaseEnemy* enemy) override;
 
 
 

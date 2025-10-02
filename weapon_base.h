@@ -4,6 +4,7 @@
 #include<list>
 
 #include"collision_data.h"
+#include"base_enemy.h"
 //#include"player.h"
 
 //struct CollisionData;
@@ -13,7 +14,8 @@ enum class WeaponName
 	kNothing,
 	kBat,
 	kBugNet,
-	kWizardStaff
+	kWizardStaff,
+	kSuperAttack
 };
 
 
@@ -24,6 +26,8 @@ struct Weapondata
 	VECTOR scale;
 	int model;
 };
+
+//class BaseEnemy;
 
 
 class WeaponBase
@@ -64,12 +68,19 @@ public:
 
 	virtual ~WeaponBase();
 
-	virtual void Update();
+	virtual void Update(BaseEnemy* enemy);
+
+	/// <summary>
+	/// ”ÍˆÍ“à‚É‚¢‚é‚Æ‚«
+	/// </summary>
+	bool IsInRange(const VECTOR& vel,float range);
 
 	void Draw(float delta_time);
 
 
 	void SetWeaponName(int name);
+
+	void SetDeltaTime(float delta_time);
 
 	//void SetMatrix(const MATRIX& mat) { mat_ = mat; }
 	void SetMatrix(const MATRIX& mat) { mat_ = mat; }
@@ -81,6 +92,7 @@ public:
 
 
 	void SetLocal(bool flag) { local_ = flag; }
+
 
 	const WeaponName GetName() const { return name_; }
 

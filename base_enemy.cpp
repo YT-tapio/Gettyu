@@ -1,9 +1,9 @@
 
 #include"base_enemy.h"
-
+#include"situation.h"
 
 BaseEnemy::BaseEnemy(const int model, const VECTOR& pos,
-	const VECTOR& scale, const VECTOR& dir, Effect* effect)
+	const VECTOR& scale, const VECTOR& dir, Effect* get_effect,Effect* got_effect)
 {
 	//モデルのダウンロード
 	model_ = model;
@@ -25,8 +25,8 @@ BaseEnemy::BaseEnemy(const int model, const VECTOR& pos,
 	is_get_ = FALSE;
 	delta_time_ = 0.0f;
 
-	get_effect_ = effect;
-
+	get_effect_ = get_effect;
+	got_effect_ = got_effect;
 }
 
 BaseEnemy::~BaseEnemy()
@@ -34,6 +34,27 @@ BaseEnemy::~BaseEnemy()
 
 }
 
+
+void BaseEnemy::EffectUpdate()
+{
+	if (Situation::GetInstance().GetSituationName() == SituationName::kGet)
+	{
+		got_effect_->End();
+		PlayGetEffect();
+	}
+	else
+	{
+		EndGetEffect();
+		//すでにゲットされているなら
+		if (is_get_)
+		{
+			got_effect_->Play();
+		}
+	}
+
+	
+
+}
 
 void BaseEnemy::PlayGetEffect()
 {
@@ -101,9 +122,24 @@ void BaseEnemy::SetIsGet(bool flag)
 	is_get_ = flag;
 }
 
+void BaseEnemy::SetVelocity(const VECTOR& vel)
+{
+	velocity_ = vel;
+}
+
+void BaseEnemy::AddVelocity(const VECTOR& vel)
+{
+	velocity_ = VAdd(velocity_, vel);
+}
+
 void BaseEnemy::SetGetEffectPos(const VECTOR& pos)
 {
 	get_effect_->SetPos(pos);
+}
+
+void BaseEnemy::SetGotEffectPos(const VECTOR& pos)
+{
+	got_effect_->SetPos(pos);
 }
 
 void BaseEnemy::SetPos(const VECTOR& pos)

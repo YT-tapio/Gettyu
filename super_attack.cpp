@@ -22,7 +22,7 @@ SuperAttack::SuperAttack(const VECTOR& pos,const char*  file_path)
 		0.0f, 0.0f),5.0f, 20.0f, FALSE);
 
 	effect_start_ = new Effect("data/effect/NextSoft01/MagicTornade.efkefc", effect_pos_, VGet(0.0f,
-		0.0f, 0.0f), 5.0f, 20.0f, FALSE);
+		0.0f, 0.0f), 5.0f, 30.0f, FALSE);
 
 	effect_end_ = new Effect("data/effect/Pierre01/Flame.efkefc", effect_pos_, VGet(0.0f,
 		0.0f, 0.0f), 5.0f, 20.0f, FALSE);

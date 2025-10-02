@@ -20,7 +20,8 @@ WarpRod::~WarpRod()
 
 }
 
-void WarpRod::Update()
+void WarpRod::Update(BaseEnemy* enemy)
 {
+	
 
 }

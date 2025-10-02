@@ -68,6 +68,7 @@ void Effect::Play()
 			StopEffekseer3DEffect(playing_handle_);
 			is_play_ = FALSE;
 			is_end_ = TRUE;
+			Init();
 		}
 	}
 

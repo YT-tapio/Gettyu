@@ -13,6 +13,7 @@ class BaseEnemy
 private:
 	
 	Effect* get_effect_;
+	Effect* got_effect_;
 
 protected:
 
@@ -36,7 +37,7 @@ protected:
 public:
 
 	BaseEnemy(const int model, const VECTOR& pos,
-		const VECTOR& scale, const VECTOR& dir,Effect* effect);
+		const VECTOR& scale, const VECTOR& dir,Effect* effect, Effect* got_effect);
 
 
 	virtual ~BaseEnemy() = 0;
@@ -48,6 +49,7 @@ public:
 
 	virtual void Update(std::shared_ptr<Player> player,bool& got) = 0;
 
+	void EffectUpdate();
 
 	void PlayGetEffect();
 
@@ -59,7 +61,13 @@ public:
 
 	void SetIsGet(bool flag);
 
+	void SetVelocity(const VECTOR& vel);
+
+	void AddVelocity(const VECTOR& vel);
+
 	void SetGetEffectPos(const VECTOR& pos);
+
+	void SetGotEffectPos(const VECTOR& pos);
 
 	void SetPos(const VECTOR& pos);
 

@@ -2,8 +2,8 @@
 #include"situation.h"
 
 
-NormalEnemy::NormalEnemy(const char* path,const VECTOR& pos,const VECTOR& scale,const VECTOR& dir,Effect* effect)
-	:BaseEnemy(MV1LoadModel(path),pos,scale,dir,effect)
+NormalEnemy::NormalEnemy(const char* path,const VECTOR& pos,const VECTOR& scale,const VECTOR& dir,Effect* get_effect, Effect* got_effect)
+	:BaseEnemy(MV1LoadModel(path),pos,scale,dir,get_effect,got_effect)
 {
 	collision_data_.name = CollisionName::kSphere;
 	collision_data_.pos = pos;
@@ -30,6 +30,9 @@ void NormalEnemy::Init(const VECTOR& pos, const VECTOR scale)
 
 void NormalEnemy::Update(std::shared_ptr<Player> player, bool& got)
 {
+
+	velocity_ = VGet(0, 0, 0);
+
 	// ÉÅÉÇë„ÇÌÇË
 	// ïﬂÇ‹ÇÈÇ©Ç«Ç§Ç©ÇÃèàóùÇÇ∑ÇÈplayerë§Ç…thisÇëóÇÍÇŒÇÊÇ≥ÇªÇ§Ç‚ÇÀ
 	
@@ -37,21 +40,13 @@ void NormalEnemy::Update(std::shared_ptr<Player> player, bool& got)
 
 	if (!is_get_)
 	{
+		//Ç±Ç±Ç≈Ç‹ÇæïﬂÇ‹Ç¡ÇƒÇ¢Ç»Ç¢Ç∆Ç´ÇÕ
+
 		player->IsHitEnemy(this, got);
 	}
 	else
 	{
 		return;
-	}
-
-	
-	if (Situation::GetInstance().GetSituationName() == SituationName::kGet)
-	{
-		PlayGetEffect();
-	}
-	else
-	{
-		EndGetEffect();
 	}
 
 	if (!is_get_)
@@ -60,7 +55,8 @@ void NormalEnemy::Update(std::shared_ptr<Player> player, bool& got)
 		vel = VScale(VNorm(dir_), 2.0f);
 		//velocity_ = VScale(vel, delta_time_);
 
-		collision_data_.pos = VAdd(collision_data_.pos, velocity_);
+		pos_ = VAdd(pos_, velocity_);
+		//collision_data_.pos = VAdd(collision_data_.pos, velocity_);
 
 		//pos_ = collision_data_.pos;
 		//pos_.y = collision_data_.pos.y - collision_data_.r;
