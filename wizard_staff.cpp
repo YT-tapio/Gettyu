@@ -29,12 +29,13 @@ void WizardStaff::Update(BaseEnemy* enemy)
 	if (!IsInRange(vel,30.f))
 	{
 		rem_vel = VGet(0.f, 0.f, 0.f);
+		enemy->SetVelocity(rem_vel);
 		return;
 	}
 
 	//‚±‚±‚©‚ç‚Í‚»‚Ì”ÍˆÍ“à‚É‚¢‚é‚Æ‚«
 	//enemy‚Ìvelocity‚É‹zû•ª‚Ìvelocity‚ğadd‚·‚é
-	printfDx("‚Ğ‚Á‚¿‚ã‚¤—Ìˆæ‚Å‚·\n");
+	//printfDx("‚Ğ‚Á‚¿‚ã‚¤—Ìˆæ‚Å‚·\n");
 
 
 	//vel‚ğ³‹K‰»‚·‚é
