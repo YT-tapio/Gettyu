@@ -238,7 +238,6 @@ float Input::GetPadStickRad(int type)
 			VGet(0.0f, 0.0f, 0.0f));
 
 		rad = atan2f(rad_vec.x, rad_vec.y);
-		now_type_state_.left_stick_rad = rad;
 
 	}
 	else if(type == StickType::kRight)
@@ -247,7 +246,6 @@ float Input::GetPadStickRad(int type)
 			VGet(0.0f, 0.0f, 0.0f));
 
 		rad = atan2f(rad_vec.x, rad_vec.y);
-		now_type_state_.right_stick_rad = rad;
 	}
 	else
 	{
@@ -376,7 +374,7 @@ float Input::GetMousePercent(int control)
 	return percent_num;
 }
 
-
+/*
 float Input::GetStickSpinRad(float move_rad,const int type)
 {
 	//now‚Æbefore‚ð”ä‚×‚é
@@ -403,6 +401,8 @@ float Input::GetStickSpinRad(float move_rad,const int type)
 	return rad;
 
 }
+*/
+
 
 
 void Input::Draw()

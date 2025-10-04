@@ -76,6 +76,9 @@
     <Filter Include="ソース ファイル\input">
       <UniqueIdentifier>{65f0a8d7-0912-4c49-9331-a1a767538ac8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Singleton\debug">
+      <UniqueIdentifier>{5283eb33-c945-4946-929e-fe8c2402b82a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -158,6 +161,9 @@
     </ClCompile>
     <ClCompile Include="input.cpp">
       <Filter>ソース ファイル\input</Filter>
+    </ClCompile>
+    <ClCompile Include="debug.cpp">
+      <Filter>ソース ファイル\Singleton\debug</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -253,6 +259,9 @@
     </ClInclude>
     <ClInclude Include="input.h">
       <Filter>ソース ファイル\input</Filter>
+    </ClInclude>
+    <ClInclude Include="debug.h">
+      <Filter>ソース ファイル\Singleton\debug</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

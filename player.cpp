@@ -920,10 +920,12 @@ void Player::IsHitEnemy(BaseEnemy* enemy, bool& got)
 	if (weapon_->GetName() == WeaponName::kWizardStaff)
 	{
 
+		/*
 		if (input_->GetStickSpinRad(30.f, StickType::kRight))
 		{
 			printfDx("回ってる\n");
 		}
+		*/
 
 		//前回と今回のスティックの入力量を比べ、0.fではないならアップデートを回す
 		weapon_->Update(enemy);

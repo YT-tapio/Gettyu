@@ -31,8 +31,8 @@ BaseEnemy::BaseEnemy(const int model, const VECTOR& pos,
 
 BaseEnemy::~BaseEnemy()
 {
-	delete get_effect_;
-	delete got_effect_;
+	//delete get_effect_;
+	//delete got_effect_;
 }
 
 
@@ -118,6 +118,11 @@ void BaseEnemy::Draw(int i)
 			collision_data_.pos.y, collision_data_.pos.z);
 	}
 
+}
+
+void BaseEnemy::Debug()
+{
+	//でばっくのシングルトンから今までのデバックのログ数を受け取りその量を受け取る
 }
 
 void BaseEnemy::SetDeltaTime(float delta_time)

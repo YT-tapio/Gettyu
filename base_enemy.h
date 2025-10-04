@@ -57,6 +57,8 @@ public:
 
 	void Draw(int i);
 
+	void Debug();
+
 	void SetDeltaTime(float delta_time);
 
 	void SetIsGet(bool flag);
