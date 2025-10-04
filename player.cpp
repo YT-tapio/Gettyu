@@ -401,11 +401,11 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 		}
 	}
 
-	
+	//必殺技による武器替え
 	if ((input_->CheckInputPadButton(PadConfig::kSuperAttackButton) == InputState::kPush ||
 		input_->CheckInputMouse(KeyConfig::kSuperAttackKey) == InputState::kPush) &&
 		!(is_super_attack_) && is_ground_ && !(is_camera_blend_) && !(is_camera_target_blend_) && 
-		(now_weapon_name_ == WeaponName::kBugNet))
+		(now_weapon_name_ == WeaponName::kBugNet) && !(now_type_ >= AnimationType::kAttack))
 	{
 		is_super_attack_ = TRUE;
 		now_type_ = AnimationType::kSuperAttackFirst;
@@ -511,10 +511,6 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 
 			}
 		}
-
-		
-
-		
 	}
 
 	animation_.Update(now_type_);
@@ -669,7 +665,7 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 	/*---棒を振る--*/
 
 	//とりあえず右スティックの入力量を受け取る
-	if (input_->GetPadStickVertical(StickType::kRight) > 150.f && !is_attack_)
+	if (input_->GetPadStickVertical(StickType::kRight) > 150.f && !is_attack_ && now_weapon_name_ != WeaponName::kWizardStaff)
 	{
 
 		if (is_ground_ && !is_attack_)
@@ -918,15 +914,19 @@ void Player::MakeLine(float& constant, const VECTOR& pos)
 
 void Player::IsHitEnemy(BaseEnemy* enemy, bool& got)
 {
-
+	
 	//ここでweaponのアップデートをする
 
 	if (weapon_->GetName() == WeaponName::kWizardStaff)
 	{
+
+		if (input_->GetStickSpinRad(20.f, StickType::kRight))
+		{
+			printfDx("回ってる\n");
+		}
+
+		//前回と今回のスティックの入力量を比べ、0.fではないならアップデートを回す
 		weapon_->Update(enemy);
-
-		
-
 	}
 
 
@@ -956,6 +956,7 @@ void Player::IsHitEnemy(BaseEnemy* enemy, bool& got)
 
 				//ワープポイの時
 			case WeaponName::kBugNet:
+			case WeaponName::kWizardStaff:
 
 				//printfDx("WarpRod");
 				//printfDx("に当たっています\n");

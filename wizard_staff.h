@@ -10,8 +10,9 @@ class WizardStaff : public WeaponBase
 
 private:
 
-
-
+	//吸い込み範囲
+	const float kVacuumRange = 30.f;
+	const float kVaccuumSpeed = 10.f;
 	//モデルのデータやボーンのパスがあって
 
 	const float kScale = 5.0f;

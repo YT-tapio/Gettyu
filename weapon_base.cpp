@@ -71,12 +71,17 @@ void WeaponBase::Draw(float delta_time)
 	MV1DrawModel(model_);
 	
 	int frame_num = MV1GetFrameNum(model_);
-	//DrawFormatString(100, 100, GetColor(255, 255, 255), "%d", frame_num);
-	DrawFormatString(0, 0, GetColor(255, 255, 255), "weapon_collision_pos:: x:%.2f,x:%.2f,x:%.2f", collision_data_.pos.x, collision_data_.pos.y, collision_data_.pos.z);
-	//“–‚½‚è”»’è‚ð•\Ž¦
-	DrawSphere3D(collision_data_.pos, collision_data_.r, 20, GetColor(30 * bone_path_, (255 - 50 * bone_path_), 255),
-		GetColor(30 * bone_path_, (255 - 50 * bone_path_), 255), FALSE);
+	if (FALSE)
+	{
+		//DrawFormatString(100, 100, GetColor(255, 255, 255), "%d", frame_num);
+		DrawFormatString(0, 0, GetColor(255, 255, 255), "weapon_collision_pos:: x:%.2f,x:%.2f,x:%.2f", collision_data_.pos.x, collision_data_.pos.y, collision_data_.pos.z);
+		//“–‚½‚è”»’è‚ð•\Ž¦
+		DrawSphere3D(collision_data_.pos, collision_data_.r, 20, GetColor(30 * bone_path_, (255 - 50 * bone_path_), 255),
+			GetColor(30 * bone_path_, (255 - 50 * bone_path_), 255), FALSE);
 
+	}
+
+	
 	
 	if (FALSE)
 	{

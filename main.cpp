@@ -18,7 +18,7 @@
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
     SetGraphMode(1280, 832, 32);			//ウィンドウのサイズとカラーモードを決める
-    ChangeWindowMode(TRUE);				//ウィンドウモードにする
+    ChangeWindowMode(FALSE);				//ウィンドウモードにする
     if (DxLib_Init() == -1)        // ＤＸライブラリ初期化処理
     {
         return -1;        // エラーが起きたら直ちに終了

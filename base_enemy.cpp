@@ -73,22 +73,26 @@ void BaseEnemy::Draw(int i)
 
 	mat_ = MMult(MGetScale(scale_), MGetTranslate(pos_));
 
-	switch (collision_data_.name)
+	if (FALSE)
 	{
+		switch (collision_data_.name)
+		{
 
-	case CollisionName::kSphere:
+		case CollisionName::kSphere:
 
-		DrawSphere3D(collision_data_.pos, 3.f, 15, GetColor(100 * (i), 255 - (70 * i), 100 - (0 * i)),
-			GetColor(50 * (i), 255 - (50 * i), 255), FALSE);
+			DrawSphere3D(collision_data_.pos, 3.f, 15, GetColor(100 * (i), 255 - (70 * i), 100 - (0 * i)),
+				GetColor(50 * (i), 255 - (50 * i), 255), FALSE);
 
-		break;
+			break;
 
-	case CollisionName::kCapsule:
+		case CollisionName::kCapsule:
 
-		DrawCapsule3D(collision_data_.pos, VGet(collision_data_.pos.x, (collision_data_.pos.y - collision_data_.ver),
-			collision_data_.pos.z), collision_data_.r, 15, GetColor(255, 255, 255), GetColor(255, 255, 255), FALSE);
-		break;
+			DrawCapsule3D(collision_data_.pos, VGet(collision_data_.pos.x, (collision_data_.pos.y - collision_data_.ver),
+				collision_data_.pos.z), collision_data_.r, 15, GetColor(255, 255, 255), GetColor(255, 255, 255), FALSE);
+			break;
+		}
 	}
+	
 
 	if (model_ == -1)
 	{
@@ -103,11 +107,15 @@ void BaseEnemy::Draw(int i)
 	//キャラクターの向いているところを表示
 	//dirに準ずる
 
-	DrawLine3D(pos_, VAdd(pos_, dir_), GetColor(255, 255, 255));
+	
 
 	//座標表示
-	DrawFormatString(0, 15 + (15 * i), GetColor(100 * (i), 255 - (50 * i), 100 - (0 * i)), "enemy%d_collision_pos:: x:%.2f,y:%.2f,z:%.2f", i, collision_data_.pos.x,
-		collision_data_.pos.y, collision_data_.pos.z);
+	if (FALSE)
+	{
+		DrawLine3D(pos_, VAdd(pos_, dir_), GetColor(255, 255, 255));
+		DrawFormatString(0, 15 + (15 * i), GetColor(100 * (i), 255 - (50 * i), 100 - (0 * i)), "enemy%d_collision_pos:: x:%.2f,y:%.2f,z:%.2f", i, collision_data_.pos.x,
+			collision_data_.pos.y, collision_data_.pos.z);
+	}
 
 }
 

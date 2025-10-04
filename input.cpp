@@ -238,6 +238,7 @@ float Input::GetPadStickRad(int type)
 			VGet(0.0f, 0.0f, 0.0f));
 
 		rad = atan2f(rad_vec.x, rad_vec.y);
+		now_type_state_.left_stick_rad = rad;
 
 	}
 	else if(type == StickType::kRight)
@@ -246,12 +247,14 @@ float Input::GetPadStickRad(int type)
 			VGet(0.0f, 0.0f, 0.0f));
 
 		rad = atan2f(rad_vec.x, rad_vec.y);
+		now_type_state_.right_stick_rad = rad;
 	}
 	else
 	{
 		printfDx("error");
 		return rad;
 	}
+
 
 	return rad;
 }
@@ -371,6 +374,34 @@ float Input::GetMousePercent(int control)
 	}
 
 	return percent_num;
+}
+
+
+float Input::GetStickSpinRad(float move_rad,const int type)
+{
+	//now‚Æbefore‚ğ”ä‚×‚é
+	//”ä‚×‚Ä‰½“x•ª‰ñ“]‚µ‚Ä‚¢‚é‚Ì‚©‚ğ’²‚×‚Ä‚»‚ê‚ğ•Ô‚·
+	float rad = 0.f;
+	//‚Ü‚¦‚Ìrad‚Æ¡‰ñ‚Ìrad‚ğ”ä‚×‚é
+	//‰ñ“]—Ê‚ğ‚Æ‚è‚ ‚¦‚¸’²‚×‚æ‚¤
+
+	if (type == StickType::kLeft)
+	{
+		rad = before_type_state_.left_stick_rad - now_type_state_.left_stick_rad;
+	}
+	else if(type == StickType::kRight)
+	{
+		rad = before_type_state_.right_stick_rad - now_type_state_.right_stick_rad;
+	}
+
+	//Å’á‚ÌˆÚ“®—Ê‚ğ‰z‚¦‚È‚¯‚ê‚Î‹­§“I‚É0
+	if (fabs(rad) <= move_rad)
+	{
+		rad = 0.0f;
+	}
+
+	return rad;
+
 }
 
 

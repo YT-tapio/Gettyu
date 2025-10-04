@@ -566,8 +566,8 @@ void Brain::SphereUpdate(const VECTOR& target_pos,const VECTOR& camera_pos,const
 
 	if (mouse_side_rad_value == 0.0f && mouse_vertical_rad_value == 0.0f)
 	{
-		decide_side_rad_value = pad_side_rad_value;
-		decide_vertical_rad_value = pad_vertical_rad_value;
+		//decide_side_rad_value = pad_side_rad_value;
+		//decide_vertical_rad_value = pad_vertical_rad_value;
 		
 	}
 
