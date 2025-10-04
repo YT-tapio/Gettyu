@@ -920,7 +920,7 @@ void Player::IsHitEnemy(BaseEnemy* enemy, bool& got)
 	if (weapon_->GetName() == WeaponName::kWizardStaff)
 	{
 
-		if (input_->GetStickSpinRad(20.f, StickType::kRight))
+		if (input_->GetStickSpinRad(30.f, StickType::kRight))
 		{
 			printfDx("‰ñ‚Á‚Ä‚é\n");
 		}

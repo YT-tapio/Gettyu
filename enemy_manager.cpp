@@ -13,6 +13,7 @@ EnemyManager::EnemyManager()
 EnemyManager::~EnemyManager()
 {
 	delete get_effect_;
+	delete got_effect_;
 }
 
 void EnemyManager::Init()

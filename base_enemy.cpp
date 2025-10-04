@@ -31,7 +31,8 @@ BaseEnemy::BaseEnemy(const int model, const VECTOR& pos,
 
 BaseEnemy::~BaseEnemy()
 {
-
+	delete get_effect_;
+	delete got_effect_;
 }
 
 
