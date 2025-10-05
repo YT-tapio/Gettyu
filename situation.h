@@ -21,6 +21,9 @@ private:
     //相手を捕まえた時のポジションを保持
     VECTOR get_situation_pos_ = VGet(0.f,0.f,0.f);
 
+    //何番目の敵を捕まえたかの記憶
+    int rem_num_ = 0;
+
     // コンストラクタを非公開にする
     Situation() {}
 
@@ -55,8 +58,16 @@ public:
         get_situation_pos_ = pos;
     }
 
+	void SetRemNum(const int num)
+	{
+		rem_num_ = num;
+	}
+
     const SituationName GetSituationName() const { return now_situation_; }
 
 
     const VECTOR GetSituationPos() const { return get_situation_pos_; }
+
+	const int GetRemNum() const { return rem_num_; }
+
 };

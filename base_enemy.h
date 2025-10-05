@@ -76,6 +76,8 @@ public:
 	//ƒQƒbƒg‚³‚ê‚½‚ÌˆÊ’u’²®
 	void SetPosIsGot(const VECTOR& pos);
 
+	const bool GetIsGet() const { return is_get_; }
+
 	const VECTOR GetPos() const { return pos_; }
 
 	const CollisionData GetCollisionData() const { return collision_data_; }

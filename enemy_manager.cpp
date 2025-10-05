@@ -34,6 +34,13 @@ void EnemyManager::Update(std::shared_ptr<Player> player)
 {
 	//
 	bool got = FALSE;
+
+	static bool erase = FALSE;
+	//bool erased = FALSE;
+	static int i = 0;
+
+	
+
 	for (auto& enemy : enemys)
 	{
 		//もうすでに何かを捕まえている状況なら回さない
@@ -42,16 +49,46 @@ void EnemyManager::Update(std::shared_ptr<Player> player)
 			if (!got)
 			{
 				enemy->Update(player, got);
+
+				//ゲットした対象を消去する
+
+				if (got)
+				{
+					erase = TRUE;
+					Situation::GetInstance().SetRemNum(i);
+				}
+				else
+				{
+					//まだゲットしていないときはカウントさせる
+					i++;
+				}
+
 			}
 
-			if (got)
-			{
-				//printfDx("got\n");
-			}
 		}
 		
 		enemy->EffectUpdate();
+
 	}
+
+	
+
+	if (erase)
+	{
+		if (Situation::GetInstance().GetSituationName() != SituationName::kGet)
+		{
+			erase = FALSE;
+
+			enemys.erase(enemys.begin());
+			printfDx("%d\n", enemys.begin());
+			i = 0;
+		}
+	}
+	else
+	{
+		i = 0;
+	}
+
 }
 
 void EnemyManager::Draw()
@@ -60,8 +97,6 @@ void EnemyManager::Draw()
 	for (auto& enemy : enemys)
 	{
 		enemy->Draw(i);
-
-		
 		i++;
 	}
 }
