@@ -1,5 +1,8 @@
 #pragma once
 
+#include<vector>
+#include<list>
+
 #include"DxLib.h"
 #include"base_enemy.h"
 #include"normal_enemy.h"
@@ -14,11 +17,11 @@ class EnemyManager
 private:
 
 	//ステージごとに何体のサルかを切り替えたい
-	std::vector<std::shared_ptr<BaseEnemy>> enemys;
+	std::list<std::shared_ptr<BaseEnemy>> enemys;
 
 	//baseにeffectを渡してあげる
-	Effect* get_effect_ = new Effect("data/effect/MAGICALxSPIRAL/A_Salamander4.efkefc", VGet(0.f, 0.f, 0.f), VGet(0.f, 0.f, 0.f), 10.f, 30.f, FALSE);
-	Effect* got_effect_ = new Effect("data/effect/NitoriBox/Explosion.efkefc", VGet(0.f, 0.f, 0.f), VGet(0.f, 0.f, 0.f), 10.f, 20.f, FALSE);
+	Effect* get_effect_ = new Effect("data/effect/MAGICALxSPIRAL/A_Salamander4.efkefc", VGet(0.f, 0.f, 0.f), VGet(0.f, 0.f, 0.f), 7.0f, 10.f, 300.f, FALSE);
+	Effect* got_effect_ = new Effect("data/effect/NitoriBox/Explosion.efkefc", VGet(0.f, 0.f, 0.f), VGet(0.f, 0.f, 0.f), 10.0f, 10.f, 200.f, FALSE);
 
 public:
 

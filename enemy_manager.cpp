@@ -1,7 +1,5 @@
 #include<iostream>
 #include<memory>
-#include<vector>
-#include<list>
 #include"enemy_manager.h"
 #include"situation.h"
 
@@ -65,22 +63,19 @@ void EnemyManager::Update(std::shared_ptr<Player> player)
 
 			}
 
+			
+
 		}
 		
 		enemy->EffectUpdate();
 
 	}
 
-	
-
 	if (erase)
 	{
 		if (Situation::GetInstance().GetSituationName() != SituationName::kGet)
 		{
 			erase = FALSE;
-
-			enemys.erase(enemys.begin());
-			printfDx("%d\n", enemys.begin());
 			i = 0;
 		}
 	}

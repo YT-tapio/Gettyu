@@ -442,7 +442,6 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 			if (is_target_blend_)
 			{
 				target_velocity_ = GetStartToNextVelocity(start_target_pos_, now_target_pos, next_target_pos_, target_blend_speed_, is_target_blend_);
-					
 			}
 			else
 			{
@@ -489,7 +488,7 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 				player->AttachWeapon(WeaponName::kWizardStaff);
 				//player->Vibration(super_attack_vibration_power_,10);
 				Vibration();
-				if (CheckHitKey(KEY_INPUT_Y) || player->GetSuperAttackEffectPlayCount() > 18.f)
+				if (CheckHitKey(KEY_INPUT_Y) || player->GetSuperAttackEffectPlayCount() > 130.f)
 				{
 					//たーげっとのブレンドも終わってえふぇくとも終わると切り替える
 					camera_name_ = VirtualCameraName::kNothing;

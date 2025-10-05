@@ -49,7 +49,7 @@ void BaseEnemy::EffectUpdate()
 		//‚·‚Å‚ÉƒQƒbƒg‚³‚ê‚Ä‚¢‚é‚È‚ç
 		if (is_get_)
 		{
-			got_effect_->Play();
+			got_effect_->Play();			
 		}
 	}
 
@@ -129,6 +129,7 @@ void BaseEnemy::SetDeltaTime(float delta_time)
 {
 	delta_time_ = delta_time;
 	get_effect_->SetDeltaTime(delta_time);
+	got_effect_->SetDeltaTime(delta_time);
 }
 
 void BaseEnemy::SetIsGet(bool flag)

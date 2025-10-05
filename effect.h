@@ -15,6 +15,8 @@ private:
 
 	float delta_time_;		//デルタタイム
 
+	float speed_;
+
 	float size_;			//エフェクトの大きさ
 
 	bool is_play_;			//再生かどうか
@@ -26,7 +28,7 @@ private:
 public:
 
 	Effect(const char* file_path, const VECTOR& pos, const VECTOR& rot,
-		float size, float count_max,bool loop);
+		float speed,float size, float count_max,bool loop);
 
 	~Effect();
 

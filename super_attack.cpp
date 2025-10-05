@@ -19,13 +19,13 @@ SuperAttack::SuperAttack(const VECTOR& pos,const char*  file_path)
 	, delta_time_(0.f)
 {
 	effect_ = new Effect("data/effect/Effekseer01/Laser02.efkefc", effect_pos_, VGet(static_cast<float>((M_PI / 180) * -90),
-		0.0f, 0.0f),5.0f, 20.0f, FALSE);
+		0.0f, 0.0f),7.0f,5.0f, 200.0f, FALSE);
 
 	effect_start_ = new Effect("data/effect/NextSoft01/MagicTornade.efkefc", effect_pos_, VGet(0.0f,
-		0.0f, 0.0f), 5.0f, 30.0f, FALSE);
+		0.0f, 0.0f), 7.0f, 5.0f, 300.0f, FALSE);
 
 	effect_end_ = new Effect("data/effect/Pierre01/Flame.efkefc", effect_pos_, VGet(0.0f,
-		0.0f, 0.0f), 5.0f, 20.0f, FALSE);
+		0.0f, 0.0f), 7.5f, 5.0f, 200.0f, FALSE);
 
 }
 

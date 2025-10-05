@@ -4,7 +4,7 @@
 
 
 Effect::Effect(const char* file_path, const VECTOR& pos, const VECTOR& rot, 
-	float size, float count_max, bool loop)
+	float speed, float size, float count_max, bool loop)
 	: pos_(pos)
 	, rot_(rot)
 	,handle_(-1)
@@ -12,6 +12,7 @@ Effect::Effect(const char* file_path, const VECTOR& pos, const VECTOR& rot,
 	,play_count_(0.f)
 	,play_count_max_(count_max)
 	,delta_time_(0.f)
+	,speed_(speed)
 	,size_(size)
 	,is_play_(FALSE)
 	,loop_(loop)
@@ -55,9 +56,10 @@ void Effect::Play()
 	//再生中
 	if (!is_end_ && is_play_)
 	{
-		play_count_ += 1 * delta_time_;
+		play_count_ += speed_ * delta_time_;
 		// 再生中のエフェクトを移動する。
 		SetPosPlayingEffekseer3DEffect(playing_handle_, pos_.x, pos_.y, pos_.z);
+		SetSpeedPlayingEffekseer3DEffect(playing_handle_, (speed_ * delta_time_));
 	}
 	
 	//ループなしの場合
@@ -65,10 +67,10 @@ void Effect::Play()
 	{
 		if (play_count_ > play_count_max_)
 		{
+			play_count_ = 0.0f;
 			StopEffekseer3DEffect(playing_handle_);
 			is_play_ = FALSE;
 			is_end_ = TRUE;
-			Init();
 		}
 	}
 
