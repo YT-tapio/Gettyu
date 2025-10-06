@@ -15,7 +15,7 @@
 #include"wizard_staff.h"
 #include"collision.h"
 #include"situation.h"
-
+#include"debug.h"
 
 
 
@@ -443,7 +443,7 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 	
 
 	//武器切り替えのやーつ
-	if (!(now_type_ > AnimationType::kAttack) || ! is_super_attack_)
+	if (!(now_type_ > AnimationType::kAttack) && !is_super_attack_)
 	{
 		WeaponName next_name = WeaponName::kNothing;
 
@@ -467,6 +467,7 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 			{
 				next_name = WeaponName::kWizardStaff;
 			}
+
 		}
 		
 
@@ -547,6 +548,9 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 	float rot = 0.0f;
 
 	bool flag = FALSE;
+
+	//振っているかの判断
+	static bool rejected = FALSE;
 
 	if (pos_.x > pos.x)
 	{
@@ -665,10 +669,13 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 	/*---棒を振る--*/
 
 	//とりあえず右スティックの入力量を受け取る
-	if (input_->GetPadStickVertical(StickType::kRight) > 150.f && !is_attack_ && now_weapon_name_ != WeaponName::kWizardStaff)
+	//今連続でふれるようになってしまっている
+	if (input_->GetPadStickVertical(StickType::kRight) > 150.f && now_weapon_name_ != WeaponName::kWizardStaff)
 	{
 
-		if (is_ground_ && !is_attack_)
+
+		//元から振っているときはダメにする
+		if (is_ground_ && !is_attack_ && !rejected)
 		{
 			
 			target_rot_ = rotation + input_->GetPadStickRad(StickType::kRight);
@@ -686,8 +693,13 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 			}
 
 			before_rot_ = target_rot_;
+			rejected = TRUE;
 		}
 		
+	}
+	else
+	{
+		rejected = FALSE;
 	}
 	
 	//
@@ -833,7 +845,7 @@ void  Player::JumpAction(VECTOR& velocity)
 	if (is_ground_)
 	{
 
-		if (input_->CheckInputKey(KeyConfig::kJumpKey) == InputState::kPush || pad_input_.Buttons[PadConfig::kJumpButton])
+		if (input_->CheckInputKey(KeyConfig::kJumpKey) == InputState::kPush || input_->CheckInputPadButton(PadConfig::kJumpButton) == InputState::kPush)
 		{
 			//ジャンプの処理
 			fall_speed_ = kJumpPower;
@@ -919,15 +931,17 @@ void Player::IsHitEnemy(BaseEnemy* enemy, bool& got)
 
 	if (weapon_->GetName() == WeaponName::kWizardStaff)
 	{
-
+		printfDx("%.2f\n", input_->GetStickSpin(StickType::kRight));
 		/*
-		if (input_->GetStickSpinRad(30.f, StickType::kRight))
+		if ()
 		{
 			printfDx("回ってる\n");
 		}
 		*/
 
 		//前回と今回のスティックの入力量を比べ、0.fではないならアップデートを回す
+		
+
 		weapon_->Update(enemy);
 	}
 

@@ -21,6 +21,9 @@ struct InputType
 	int mouse_x = 0;
 	int mouse_y = 0;
 	int log = 0;
+
+	float left_stick_rad = 0;
+	float right_stick_rad = 0;
 	XINPUT_STATE pad = {};
 	InputState input_state = InputState::kOff;
 };
@@ -120,6 +123,8 @@ public:
 	float GetPadStickPercent(int type, int control);
 
 	float GetMousePercent(int control);
+
+	float GetStickSpin(int type);
 
 	const InputType GetNowTypeState() const { return now_type_state_; }
 	const InputType GetBeforeTypeState() const { return before_type_state_; }

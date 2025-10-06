@@ -1,5 +1,6 @@
 #pragma once
 #include<iostream>
+#include"DxLib.h"
 
 class Debug
 {
@@ -8,9 +9,28 @@ private:
 	//今のデバック数
 	
 	int current_num_ = 0;
+	//表示
+	bool disp_ = FALSE;
 
 	//コンストラクタを非公開
 	Debug(){}
+
+	
+	void CheckChangeDisp()
+	{
+
+		if (CheckHitKey(KEY_INPUT_P))
+		{
+			disp_ = TRUE;
+		}
+
+		if (CheckHitKey(KEY_INPUT_O))
+		{
+			disp_ = FALSE;
+		}
+
+	}
+
 
 public:
 
@@ -40,10 +60,18 @@ public:
 		current_num_++;
 	}
 
+	void Change()
+	{
+		CheckChangeDisp();
+	}
+
 	/// <summary>
 	/// デバックしてきた数を取得
 	/// </summary>
 	/// <returns></returns>
 	const int GetCurrentNum() const { return current_num_; }
+
+
+	const bool GetDisp() const { return disp_; }
 
 };
