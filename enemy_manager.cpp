@@ -64,13 +64,25 @@ void EnemyManager::Update(std::shared_ptr<Player> player)
 					i++;
 				}
 			}
+			
+			//ƒQƒbƒg‚µ‚Ä‚¢‚é‚Ì‚É
+			if ((*itr)->GetIsGet())
+			{
+				if (Situation::GetInstance().GetSituationName() == SituationName::kNothing && !erase)
+				{
+					it = itr;
+					erase = TRUE;
+				}
+			}
+
+
 		}
 		(*itr)->EffectUpdate();
 	}
 	
 	
 
-
+	//printfDx("%d", i);
 
 	if (erase)
 	{
@@ -78,7 +90,6 @@ void EnemyManager::Update(std::shared_ptr<Player> player)
 		{
 			erase = FALSE;
 			enemies_.erase(it);
-
 			i = 0;
 		}
 	}

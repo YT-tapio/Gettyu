@@ -931,7 +931,7 @@ void Player::IsHitEnemy(BaseEnemy* enemy, bool& got)
 
 	if (weapon_->GetName() == WeaponName::kWizardStaff)
 	{
-		//printfDx("%.2f\n", input_->GetStickSpin(StickType::kRight));
+		printfDx("%.2f\n", input_->GetStickSpin(StickType::kRight));
 		/*
 		if ()
 		{
