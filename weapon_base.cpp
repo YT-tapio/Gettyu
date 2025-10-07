@@ -22,7 +22,7 @@ WeaponBase::~WeaponBase()
 
 }
 
-void WeaponBase::Update(BaseEnemy* enemy)
+void WeaponBase::Update(BaseEnemy* enemy, const float spin_rad)
 {
 	
 }

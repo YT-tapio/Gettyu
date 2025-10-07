@@ -931,18 +931,21 @@ void Player::IsHitEnemy(BaseEnemy* enemy, bool& got)
 
 	if (weapon_->GetName() == WeaponName::kWizardStaff)
 	{
-		printfDx("%.2f\n", input_->GetStickSpin(StickType::kRight));
-		/*
-		if ()
+		//回しているradの値を受け取る
+		float stick_spin_rad = input_->GetStickSpin(StickType::kRight);
+
+
+		if (stick_spin_rad != 0.f && (input_->GetPadStickVertical(StickType::kRight) > kPadSpinMin))
 		{
-			printfDx("回ってる\n");
+			weapon_->Update(enemy,fabs(stick_spin_rad));
+			now_state_ = State::kAttack;
 		}
-		*/
+		
 
 		//前回と今回のスティックの入力量を比べ、0.fではないならアップデートを回す
 		
 
-		weapon_->Update(enemy);
+		
 	}
 
 

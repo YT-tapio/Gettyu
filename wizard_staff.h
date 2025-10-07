@@ -28,7 +28,7 @@ public:
 	~WizardStaff() override;
 
 
-	void Update(BaseEnemy* enemy) override;
+	void Update(BaseEnemy* enemy, const float spin_rad) override;
 
 
 

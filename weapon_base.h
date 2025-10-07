@@ -68,7 +68,7 @@ public:
 
 	virtual ~WeaponBase();
 
-	virtual void Update(BaseEnemy* enemy);
+	virtual void Update(BaseEnemy* enemy,const float spin_rad);
 
 	/// <summary>
 	/// ”ÍˆÍ“à‚É‚¢‚é‚Æ‚«
