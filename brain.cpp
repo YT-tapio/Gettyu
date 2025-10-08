@@ -371,6 +371,7 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 
 		case VirtualCameraName::kGet:
 
+			player->Vibration(500, 1000);
 
 
 			break;
@@ -493,6 +494,12 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 					//たーげっとのブレンドも終わってえふぇくとも終わると切り替える
 					camera_name_ = VirtualCameraName::kNothing;
 					player->SetIsSuperAttack(FALSE);
+
+					player->Vibration(1000, 100);
+				}
+				else
+				{
+					player->Vibration(500, 300);
 				}
 
 				
