@@ -394,7 +394,7 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 	if ((input_->CheckInputPadButton(PadConfig::kAttackButton) == InputState::kPush) ||
 		(input_->CheckInputMouse(KeyConfig::kAttackKey) == InputState::kPush))
 	{
-		if (is_ground_)
+		if (is_ground_ && weapon_->GetName() != WeaponName::kWizardStaff)
 		{
 			now_type_ = AnimationType::kSwordSlash;
 			now_state_ = State::kAttack;
