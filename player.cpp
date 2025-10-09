@@ -391,8 +391,7 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 
 	
 	//–_‚ðU‚éŒn‚Ì‚â‚Â
-	if ((input_->CheckInputPadButton(PadConfig::kAttackButton) == InputState::kPush) ||
-		(input_->CheckInputMouse(KeyConfig::kAttackKey) == InputState::kPush))
+	if ((input_->CheckInputMouse(KeyConfig::kAttackKey) == InputState::kPush))
 	{
 		if (is_ground_ && weapon_->GetName() != WeaponName::kWizardStaff)
 		{
