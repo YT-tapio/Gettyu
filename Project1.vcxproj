@@ -160,6 +160,7 @@
     <ClCompile Include="still_object.cpp" />
     <ClCompile Include="super_attack_camera.cpp" />
     <ClCompile Include="super_attack.cpp" />
+    <ClCompile Include="tracking.cpp" />
     <ClCompile Include="turn_camera.cpp" />
     <ClCompile Include="virtual_camera.cpp" />
     <ClCompile Include="warp_rod.cpp" />
@@ -194,6 +195,7 @@
     <ClInclude Include="still_object.h" />
     <ClInclude Include="super_attack.h" />
     <ClInclude Include="super_attack_camera.h" />
+    <ClInclude Include="tracking.h" />
     <ClInclude Include="turn_camera.h" />
     <ClInclude Include="virtual_camera.h" />
     <ClInclude Include="weapon_base.h" />

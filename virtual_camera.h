@@ -6,7 +6,8 @@ struct VirtualCameraName
 	static const int kNothing = 0;	//‰½‚à‚È‚¢
 	static const int kSphere = 1;	//‹…‘Ìã‚ÌƒJƒƒ‰‚Ìˆ—
 	static const int kGet = 2;
-	static const int kSuperAttack = 3;	//•KE‹Z‚ÌƒJƒƒ‰
+	static const int kTracking = 3;
+	static const int kSuperAttack = 4;	//•KE‹Z‚ÌƒJƒƒ‰
 	static const int kSuperAttackFirst = kSuperAttack + 1;
 	static const int kSuperAttackSecond = kSuperAttack+ 2;
 	static const int kSuperAttackThird = kSuperAttack + 3;
@@ -27,7 +28,7 @@ protected:
 public:
 
 
-	BaseVirtualCamera(const VECTOR& pos,const int name);
+	BaseVirtualCamera(const VECTOR& pos, const int name);
 
 	virtual ~BaseVirtualCamera();
 

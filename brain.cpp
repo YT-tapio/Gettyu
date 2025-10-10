@@ -11,6 +11,7 @@
 #include"brain.h"
 #include"input.h"
 #include"situation.h"
+#include"tracking.h"
 
 Brain::Brain(const VECTOR& next_target_pos)
 	:pos_(VGet(0,0,0))
@@ -32,6 +33,7 @@ Brain::Brain(const VECTOR& next_target_pos)
 	super_attack_camera_[0] = new SuperAttackCamera(VirtualCameraName::kSuperAttackFirst);
 	super_attack_camera_[1] = new SuperAttackCamera(VirtualCameraName::kSuperAttackSecond);
 	super_attack_camera_[2] = new SuperAttackCamera(VirtualCameraName::kSuperAttackThird);
+	tracking_camera_ = new Tracking(VirtualCameraName::kTracking);
 }
 
 
@@ -346,6 +348,9 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 			is_blend_ = FALSE;
 		}
 
+		//Initする
+		//ここでblendなどの調整する
+		//位置補正の調整など
 		switch (camera_name_)
 		{
 		case VirtualCameraName::kSphere:
@@ -372,6 +377,16 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 		case VirtualCameraName::kGet:
 
 			player->Vibration(500, 1000);
+
+
+			break;
+
+
+
+		case VirtualCameraName::kTracking:
+			
+			// ついてくるカメラですこれは
+			// プレイヤーの正面には
 
 
 			break;
@@ -500,12 +515,8 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 				else
 				{
 					player->Vibration(500, 300);
-				}
-
-				
+				}	
 			}
-
-
 
 			break;
 		

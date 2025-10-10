@@ -46,6 +46,9 @@ private:
 	//•KE‹Z‚ÌƒJƒƒ‰
 	BaseVirtualCamera* super_attack_camera_[3];
 
+	//‚Â‚¢‚Ä‚­‚éƒJƒƒ‰
+	BaseVirtualCamera* tracking_camera_;
+
 	ChangeType change_type_;
 
 	VECTOR velocity_ = { 0,0,0 };

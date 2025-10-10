@@ -79,6 +79,30 @@
     <Filter Include="ソース ファイル\Singleton\debug">
       <UniqueIdentifier>{5283eb33-c945-4946-929e-fe8c2402b82a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\camera\brain">
+      <UniqueIdentifier>{ed48946d-e6c9-4919-b4aa-9e4b9df8ed7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\camera\virtual_camera">
+      <UniqueIdentifier>{fa706251-f122-4ac8-afd1-5aff87042bb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\camera\main_camera">
+      <UniqueIdentifier>{7904e0c3-038e-4725-bb80-2400a5a3e162}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\camera\virtual_camera\get">
+      <UniqueIdentifier>{7cb84b6d-e01a-4a95-9d77-da4c6e2629e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\camera\virtual_camera\base">
+      <UniqueIdentifier>{76310c51-9f8a-4f61-a9c6-d05d7ffe65a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\camera\virtual_camera\super_attack">
+      <UniqueIdentifier>{edd82d93-98f0-4994-b958-07d53023478c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\camera\virtual_camera\sphere">
+      <UniqueIdentifier>{49e7e668-e4e3-4adf-9cae-fefc6c0dba6c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\camera\virtual_camera\tracking">
+      <UniqueIdentifier>{da29ebf3-84b9-4076-a488-199f8ff5d655}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -99,12 +123,6 @@
     <ClCompile Include="still_object.cpp">
       <Filter>ソース ファイル\object</Filter>
     </ClCompile>
-    <ClCompile Include="camera.cpp">
-      <Filter>ソース ファイル\camera</Filter>
-    </ClCompile>
-    <ClCompile Include="brain.cpp">
-      <Filter>ソース ファイル\camera</Filter>
-    </ClCompile>
     <ClCompile Include="FPS.cpp">
       <Filter>ソース ファイル\FPS</Filter>
     </ClCompile>
@@ -117,20 +135,8 @@
     <ClCompile Include="effect.cpp">
       <Filter>ソース ファイル\effect</Filter>
     </ClCompile>
-    <ClCompile Include="virtual_camera.cpp">
-      <Filter>ソース ファイル\camera</Filter>
-    </ClCompile>
-    <ClCompile Include="super_attack_camera.cpp">
-      <Filter>ソース ファイル\camera</Filter>
-    </ClCompile>
-    <ClCompile Include="sphere_camera.cpp">
-      <Filter>ソース ファイル\camera</Filter>
-    </ClCompile>
     <ClCompile Include="effect_manager.cpp">
       <Filter>ソース ファイル\effect</Filter>
-    </ClCompile>
-    <ClCompile Include="get_camera.cpp">
-      <Filter>ソース ファイル\camera</Filter>
     </ClCompile>
     <ClCompile Include="enemy_manager.cpp">
       <Filter>ソース ファイル\enemy\enemy_manager</Filter>
@@ -165,6 +171,27 @@
     <ClCompile Include="debug.cpp">
       <Filter>ソース ファイル\Singleton\debug</Filter>
     </ClCompile>
+    <ClCompile Include="brain.cpp">
+      <Filter>ソース ファイル\camera\brain</Filter>
+    </ClCompile>
+    <ClCompile Include="camera.cpp">
+      <Filter>ソース ファイル\camera\main_camera</Filter>
+    </ClCompile>
+    <ClCompile Include="get_camera.cpp">
+      <Filter>ソース ファイル\camera\virtual_camera\get</Filter>
+    </ClCompile>
+    <ClCompile Include="virtual_camera.cpp">
+      <Filter>ソース ファイル\camera\virtual_camera\base</Filter>
+    </ClCompile>
+    <ClCompile Include="super_attack_camera.cpp">
+      <Filter>ソース ファイル\camera\virtual_camera\super_attack</Filter>
+    </ClCompile>
+    <ClCompile Include="sphere_camera.cpp">
+      <Filter>ソース ファイル\camera\virtual_camera\sphere</Filter>
+    </ClCompile>
+    <ClCompile Include="tracking.cpp">
+      <Filter>ソース ファイル\camera\virtual_camera\tracking</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="keyconfig.h">
@@ -194,12 +221,6 @@
     <ClInclude Include="still_object.h">
       <Filter>ソース ファイル\object</Filter>
     </ClInclude>
-    <ClInclude Include="camera.h">
-      <Filter>ソース ファイル\camera</Filter>
-    </ClInclude>
-    <ClInclude Include="brain.h">
-      <Filter>ソース ファイル\camera</Filter>
-    </ClInclude>
     <ClInclude Include="FPS.h">
       <Filter>ソース ファイル\FPS</Filter>
     </ClInclude>
@@ -212,20 +233,8 @@
     <ClInclude Include="effect.h">
       <Filter>ソース ファイル\effect</Filter>
     </ClInclude>
-    <ClInclude Include="virtual_camera.h">
-      <Filter>ソース ファイル\camera</Filter>
-    </ClInclude>
-    <ClInclude Include="super_attack_camera.h">
-      <Filter>ソース ファイル\camera</Filter>
-    </ClInclude>
-    <ClInclude Include="sphere_camera.h">
-      <Filter>ソース ファイル\camera</Filter>
-    </ClInclude>
     <ClInclude Include="effect_manager.h">
       <Filter>ソース ファイル\effect</Filter>
-    </ClInclude>
-    <ClInclude Include="get_camera.h">
-      <Filter>ソース ファイル\camera</Filter>
     </ClInclude>
     <ClInclude Include="enemy_manager.h">
       <Filter>ソース ファイル\enemy\enemy_manager</Filter>
@@ -262,6 +271,27 @@
     </ClInclude>
     <ClInclude Include="debug.h">
       <Filter>ソース ファイル\Singleton\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="brain.h">
+      <Filter>ソース ファイル\camera\brain</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>ソース ファイル\camera\main_camera</Filter>
+    </ClInclude>
+    <ClInclude Include="get_camera.h">
+      <Filter>ソース ファイル\camera\virtual_camera\get</Filter>
+    </ClInclude>
+    <ClInclude Include="virtual_camera.h">
+      <Filter>ソース ファイル\camera\virtual_camera\base</Filter>
+    </ClInclude>
+    <ClInclude Include="super_attack_camera.h">
+      <Filter>ソース ファイル\camera\virtual_camera\super_attack</Filter>
+    </ClInclude>
+    <ClInclude Include="sphere_camera.h">
+      <Filter>ソース ファイル\camera\virtual_camera\sphere</Filter>
+    </ClInclude>
+    <ClInclude Include="tracking.h">
+      <Filter>ソース ファイル\camera\virtual_camera\tracking</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
