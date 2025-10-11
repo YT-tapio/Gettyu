@@ -47,8 +47,8 @@ void Effect::Play()
 	//再生していないときは再生させる
 	if (!is_play_ && !is_end_)
 	{
+		SetPosPlayingEffekseer3DEffect(playing_handle_, pos_.x, pos_.y, pos_.z);
 		playing_handle_ = PlayEffekseer3DEffect(handle_);
-		SetRotationPlayingEffekseer3DEffect(playing_handle_, rot_.x, rot_.y, rot_.z);
 		is_play_ = TRUE;
 		play_count_ = 0.0f;
 	}
@@ -59,9 +59,12 @@ void Effect::Play()
 		play_count_ += speed_ * delta_time_;
 		// 再生中のエフェクトを移動する。
 		SetPosPlayingEffekseer3DEffect(playing_handle_, pos_.x, pos_.y, pos_.z);
+		SetRotationPlayingEffekseer3DEffect(playing_handle_, rot_.x, rot_.y, rot_.z);
 		SetSpeedPlayingEffekseer3DEffect(playing_handle_, (speed_ * delta_time_));
 	}
 	
+	
+
 	//ループなしの場合
 	if (!loop_)
 	{
@@ -71,6 +74,15 @@ void Effect::Play()
 			StopEffekseer3DEffect(playing_handle_);
 			is_play_ = FALSE;
 			is_end_ = TRUE;
+		}
+	}
+	else
+	{
+		if (play_count_ > play_count_max_)
+		{
+			play_count_ = 0.0f;
+			StopEffekseer3DEffect(playing_handle_);
+			playing_handle_ = PlayEffekseer3DEffect(handle_);
 		}
 	}
 

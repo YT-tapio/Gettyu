@@ -137,6 +137,7 @@ void Player::Draw()
 {
 
 	//キャラクター表示
+	//MV1SetDifColorScale(model_, GetColorF(1.0f, 0.0f, 0.0f, 1.0f));
 	MV1DrawModel(model_);
 	super_attack_->Draw();
 	if (weapon_ != nullptr)
@@ -145,8 +146,8 @@ void Player::Draw()
 		//Situation::GetInstance().SetGetSituationPos(weapon_->GetCollisionData().pos);
 	}
 
-	
-
+	DrawFormatString(100, 100, GetColor(255, 255, 255), "x:%.2f,y:%.2f,z:%.2f", super_weapon_spin_effect_->GetPos().x, super_weapon_spin_effect_->GetPos().y, super_weapon_spin_effect_->GetPos().z);
+		
 	
 
 }
@@ -168,6 +169,7 @@ void Player::SetDeltaTime(float delta_time)
 		animation_.SetDeltaTime(delta_time_);
 		super_attack_->SetDeltaTime(delta_time_);
 		weapon_->SetDeltaTime(delta_time_);
+		super_weapon_spin_effect_->SetDeltaTime(delta_time_);
 	}
 	else
 	{
@@ -175,6 +177,7 @@ void Player::SetDeltaTime(float delta_time)
 		animation_.SetDeltaTime(delta_time);
 		super_attack_->SetDeltaTime(delta_time_);
 		weapon_->SetDeltaTime(delta_time_);
+		super_weapon_spin_effect_->SetDeltaTime(delta_time_);
 	}
 
 	
@@ -299,8 +302,7 @@ void Player::Update(const VECTOR& pos, const float& rotation, Stage& stage)
 		}
 
 	}
-	//
-
+	
 
 }
 
@@ -938,6 +940,10 @@ void Player::IsHitEnemy(BaseEnemy* enemy, bool& got)
 		{
 			weapon_->Update(enemy,fabs(stick_spin_rad));
 			now_state_ = State::kAttack;
+		}
+		else
+		{
+			super_weapon_spin_effect_->End();
 		}
 		
 

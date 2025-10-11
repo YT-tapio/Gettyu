@@ -18,6 +18,7 @@ Brain::Brain(const VECTOR& next_target_pos)
 	,start_pos_(VGet(0,0,0))
 	,next_pos_(next_target_pos)
 	,next_target_pos_(VGet(0,0,0))
+	,get_camera_center_pos_(VGet(0,0,0))
 	,is_change_(FALSE)
 	,is_blend_(FALSE)
 	,is_target_blend_(FALSE)
@@ -272,7 +273,7 @@ void Brain::Init(const VECTOR& camera_pos,const VECTOR& player_pos)
 
 	//side_radとvertical_radをきめて
 
-
+	//だんだんとdistを小さくしていくそしてゲットになる
 
 	VECTOR next_pos = VGet(0.f, 0.f, 0.f);
 	float side_dist = 0.f;				//地面のdist
@@ -292,6 +293,53 @@ void Brain::Init(const VECTOR& camera_pos,const VECTOR& player_pos)
 	next_pos = VAdd(player_pos, velocity_);
 
 	velocity_ = VSub(next_pos, camera_pos);
+}
+
+
+void Brain::GetInit(const VECTOR& camera_pos, const VECTOR& target_dir)
+{
+	//ここでゲットした時のinitを行う
+	//enemyの正面に行きたい
+
+
+	//うけとったdirのdist分をtarget_posにします
+
+	float enemy_dist = 10.0f;
+
+
+	//2つのポジションを地面に添わせる
+	VECTOR front_pos = VScale(target_dir, enemy_dist);
+
+	VECTOR cam_on_the_line_pos = VGet(camera_pos.x, 0.f, camera_pos.z);
+	VECTOR front_on_the_line_pos = VGet(front_pos.x, 0.f, front_pos.z);
+
+	
+
+	VECTOR camera_to_enemy_vel = VSub(cam_on_the_line_pos, front_on_the_line_pos);
+
+	//camera_posからfront_posを引きどんくらいはなれているかをみてsizeを取得する
+	camera_to_enemy_dist_ = VSize(camera_to_enemy_vel);
+
+	//どのくらいの距離(高さ)も取得
+	camera_to_enemy_height_ = camera_pos.y - front_pos.y;
+
+	//センターのポジションを決めなきゃ
+	//distの半分
+
+	//cameraからenemyのvelの半分をcamera_posに足せばok
+	get_camera_center_pos_ = VAdd(camera_pos, VScale(camera_to_enemy_vel, 0.5f));
+
+	//アークタンジェントによって求める
+	get_camera_init_rad_ = atan2f(front_pos.z, front_pos.x);
+
+
+
+	printfDx("%.2f\n", get_camera_init_rad_);
+
+	//求められたやつを180どぶん足してあげる
+
+	
+
 }
 
 
@@ -411,6 +459,10 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 		case VirtualCameraName::kGet:
 
 			player->Vibration(500, 1000);
+
+
+			//ここでdistを決めたりする
+			GetInit(camera_pos,VGet(-30.f,0.f,-10.f));
 
 
 			break;
@@ -859,8 +911,28 @@ void Brain::SuperAttackUpdate(const VECTOR& camera_pos, const VECTOR& now_target
 
 void Brain::GetCameraUpdate(const VECTOR& pos, const VECTOR& camera_pos,const VECTOR& target_pos)
 {
+	if (FALSE)
+	{
 
-	//とりあえず回る処理を作っていきたいです
+		const int kCountMax = 10;
+		static int  now_count = 0;
+		//かめらのさいしょのrad
+		get_camera_init_rad_;
+		camera_to_enemy_dist_;
+		//カメラと中心のポジション
+		get_camera_center_pos_;
+		//高さ
+		camera_to_enemy_height_;
+
+
+		//条件満たしたらcount初期化
+
+
+
+	}
+	else
+	{
+		//とりあえず回る処理を作っていきたいです
 	//ゲットじの処理を行います
 	//球体上に回す
 	//ゲットした対象を基軸に一定の距離分離す
@@ -868,39 +940,39 @@ void Brain::GetCameraUpdate(const VECTOR& pos, const VECTOR& camera_pos,const VE
 
 
 	//とりあえず中心からの位置を出す
-	static float rad = 30;
-	const float kDist = 30.f;
+		static float rad = 30;
+		const float kDist = 30.f;
 
 
-	//回転量が定数以上行くときradも初期化する
-	if (rad > 390.0f)
-	{
-		Situation::GetInstance().SetSituation(SituationName::kNothing);
-		//カメラの切り替え
-		camera_name_ = VirtualCameraName::kNothing;
-		rad = 30;
-	}
-
-	
-	//中心からの距離
-	VECTOR dist_pos = VAdd(pos, VGet(cosf(static_cast<float>((M_PI / 180) * rad)) * kDist, 0.f,
-		sinf(static_cast<float>((M_PI / 180) * rad)) * kDist));
-
-	//距離を出す
-
-	rad = rad + (40 * delta_time_);
-
-	velocity_ = VSub(dist_pos, camera_pos);
-	//注視点を変える
-	target_velocity_ = VSub(pos, target_pos);
+		//回転量が定数以上行くときradも初期化する
+		if (rad > 390.0f)
+		{
+			Situation::GetInstance().SetSituation(SituationName::kNothing);
+			//カメラの切り替え
+			camera_name_ = VirtualCameraName::kNothing;
+			rad = 30;
+		}
 
 
-	//radが一定数に行くと切り替わる
+		//中心からの距離
+		VECTOR dist_pos = VAdd(pos, VGet(cosf(static_cast<float>((M_PI / 180) * rad)) * kDist, 0.f,
+			sinf(static_cast<float>((M_PI / 180) * rad)) * kDist));
 
-	
-	//カメラのターゲットをsituaionからターゲットを持ってくる
+		//距離を出す
 
-	
+		rad = rad + (40 * delta_time_);
+
+		velocity_ = VSub(dist_pos, camera_pos);
+		//注視点を変える
+		target_velocity_ = VSub(pos, target_pos);
+
+
+		//radが一定数に行くと切り替わる
+
+
+		//カメラのターゲットをsituaionからターゲットを持ってくる
+
+	}	
 
 
 }

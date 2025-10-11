@@ -63,6 +63,8 @@ private:
 	VECTOR start_target_pos_;	//
 	VECTOR next_target_pos_;	//Ÿ‚ÉŒ©‚éêŠ
 
+	VECTOR get_camera_center_pos_;
+
 	//intŒQ
 	//Œ»İ‚Ìvirtualcamera‚Ì–¼‘O‚ğ•Û‘¶
 	int camera_name_;
@@ -78,6 +80,8 @@ private:
 	//‰ñ“]—Ê
 	float vertical_rad_ = 0.0f;
 	float side_rad_ = 0.0f;
+	
+	float camera_to_enemy_height_ = 0.f;
 
 	float side_distance_ = 0.0f;
 	float distance_ = 30.0f;
@@ -88,6 +92,9 @@ private:
 
 	float delta_time_ = 0.0f;
 
+	float get_camera_init_rad_ = 0.f;
+
+	float camera_to_enemy_dist_ = 0.f;
 
 	float blend_speed_ = 10.f;
 	float target_blend_speed_ = 10.f;
@@ -177,6 +184,9 @@ public:
 
 
 	void Init(const VECTOR& camera_pos, const VECTOR& player_pos);
+
+	//virttual_camera‚ÌInit
+	void GetInit(const VECTOR& camera_pos,const VECTOR& target_dir);
 
 	void Update(const VECTOR& target_pos, const VECTOR& camera_pos, std::shared_ptr<Player> player);
 
