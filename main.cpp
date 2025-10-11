@@ -144,8 +144,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         std::make_shared<StillObject>(VGet(50, 0, 10), -1,1.0f);
 
 
-    //brain->Init(camera->GetPos(), player->GetPos());
-    //camera->Init(brain->GetVelocity());
+    brain->Init(camera->GetPos(), player->GetPos());
+    camera->Init(brain->GetVelocity());
 
     /*---プレイヤーにアニメーションを追加---*/
 
@@ -233,6 +233,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
         stage->Draw();
         effect_player->Draw();
+        camera->Draw();
         //enemy->Draw();
         //object->Draw();
 

@@ -47,6 +47,8 @@ public:
 	/// </summary>
 	void Update(const VECTOR& velocity, const VECTOR& target_velocity);
 
+	
+	void Draw();
 
 
 	const VECTOR& GetPos() const { return pos_; }

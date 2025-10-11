@@ -296,7 +296,7 @@ void Brain::Init(const VECTOR& camera_pos,const VECTOR& player_pos)
 }
 
 
-void Brain::GetInit(const VECTOR& camera_pos, const VECTOR& target_dir)
+void Brain::GetInit(const VECTOR& camera_pos, const VECTOR& target_dir,const VECTOR& enemy_pos)
 {
 	//ここでゲットした時のinitを行う
 	//enemyの正面に行きたい
@@ -308,7 +308,7 @@ void Brain::GetInit(const VECTOR& camera_pos, const VECTOR& target_dir)
 
 
 	//2つのポジションを地面に添わせる
-	VECTOR front_pos = VScale(target_dir, enemy_dist);
+	VECTOR front_pos = VAdd(enemy_pos,VScale(target_dir, enemy_dist));
 
 	VECTOR cam_on_the_line_pos = VGet(camera_pos.x, 0.f, camera_pos.z);
 	VECTOR front_on_the_line_pos = VGet(front_pos.x, 0.f, front_pos.z);
@@ -316,12 +316,16 @@ void Brain::GetInit(const VECTOR& camera_pos, const VECTOR& target_dir)
 	
 
 	VECTOR camera_to_enemy_vel = VSub(cam_on_the_line_pos, front_on_the_line_pos);
-
+	//camera_to_enemy_vel = VGet(,,);
 	//camera_posからfront_posを引きどんくらいはなれているかをみてsizeを取得する
 	camera_to_enemy_dist_ = VSize(camera_to_enemy_vel);
 
+	//printfDx("%.2f\n", camera_to_enemy_dist_);
+
 	//どのくらいの距離(高さ)も取得
 	camera_to_enemy_height_ = camera_pos.y - front_pos.y;
+
+	printfDx("x:%.2f,y:%.2f,z:%.2f\n", camera_to_enemy_vel.x, camera_to_enemy_vel.y, camera_to_enemy_vel.z);
 
 	//センターのポジションを決めなきゃ
 	//distの半分
@@ -334,7 +338,7 @@ void Brain::GetInit(const VECTOR& camera_pos, const VECTOR& target_dir)
 
 
 
-	printfDx("%.2f\n", get_camera_init_rad_);
+	//printfDx("%.2f\n", get_camera_init_rad_);
 
 	//求められたやつを180どぶん足してあげる
 
@@ -376,7 +380,7 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 	//何もないとき(kNothing)は、Trackingに切り替える
 	if (camera_name_ == VirtualCameraName::kNothing) 
 	{ 
-		camera_name_ = sphere_camera_->GetCameraName();
+		camera_name_ = tracking_camera_->GetCameraName();
 		if (before_camera_name == VirtualCameraName::kNothing)
 		{
 			before_camera_name = camera_name_;
@@ -462,7 +466,7 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 
 
 			//ここでdistを決めたりする
-			GetInit(camera_pos,VGet(-30.f,0.f,-10.f));
+			GetInit(camera_pos,VGet(0.f,0.f,0.f),Situation::GetInstance().GetSituationPos());
 
 
 			break;
@@ -750,7 +754,6 @@ void Brain::TrackingUpdate(const VECTOR& now_camera_pos,std::shared_ptr<Player> 
 	
 	//引数にカメラの現在のポジションとplayerをそのまま持ってくる
 
-
 	//ここで追尾の更新をする
 
 	//サルゲッチュの追尾のカメラは
@@ -911,11 +914,13 @@ void Brain::SuperAttackUpdate(const VECTOR& camera_pos, const VECTOR& now_target
 
 void Brain::GetCameraUpdate(const VECTOR& pos, const VECTOR& camera_pos,const VECTOR& target_pos)
 {
+
+	
 	if (FALSE)
 	{
-
-		const int kCountMax = 10;
+		const int kCountMax = 100;
 		static int  now_count = 0;
+		static float rad = 0;
 		//かめらのさいしょのrad
 		get_camera_init_rad_;
 		camera_to_enemy_dist_;
@@ -924,14 +929,47 @@ void Brain::GetCameraUpdate(const VECTOR& pos, const VECTOR& camera_pos,const VE
 		//高さ
 		camera_to_enemy_height_;
 
-
 		//条件満たしたらcount初期化
 
+		//とりあえず1カウント分のradを計算
+		rad += static_cast<float>((M_PI / 180) * (180 / kCountMax));
+
+		// これからはradとinitのradをいい感じにします
+		// 中心のposから回転量分引き離したポジション
+		VECTOR center_to_pull = VGet(0.f,0.f,0.f);
 
 
+
+		center_to_pull.x = camera_to_enemy_dist_ * cosf(rad + get_camera_init_rad_);
+		center_to_pull.z = camera_to_enemy_dist_ * sinf(rad + get_camera_init_rad_);
+		center_to_pull.y = camera_to_enemy_height_ / kCountMax;
+		
+		//printfDx("x:%.2f,y:%.2f,z:%.2f\n",center_to_pull.x, center_to_pull.y, center_to_pull.z);
+
+		//velocityをcenter_posにアドする。
+		VECTOR next_camera_pos = VAdd(get_camera_center_pos_, center_to_pull);
+
+
+		printfDx("x:%.2f,y:%.2f,z:%.2f\n", next_camera_pos.x, next_camera_pos.y, next_camera_pos.z);
+
+		velocity_ = VSub(camera_pos, next_camera_pos);
+		//printfDx("x:%.2f,y:%.2f,z:%.2f\n", velocity_.x, velocity_.y, velocity_.z);
+		now_count++;
+		if (now_count >= kCountMax)
+		{
+			//カメラを切り替える
+			Situation::GetInstance().SetSituation(SituationName::kNothing);
+			//カメラの切り替え
+			camera_name_ = VirtualCameraName::kNothing;
+			now_count = 0;
+		}
+
+		
+	
 	}
 	else
 	{
+
 		//とりあえず回る処理を作っていきたいです
 	//ゲットじの処理を行います
 	//球体上に回す
@@ -1183,6 +1221,8 @@ VECTOR Brain::GetPositionFromTarget(const VECTOR& target_pos)
 
 void Brain::Draw()
 {
+
+	/*
 	DrawFormatString(200, 200, GetColor(255, 0, 0), "%f", side_rad_);
 	DrawFormatString(200, 220, GetColor(255, 0, 0), "%f", vertical_rad_);
 
@@ -1191,4 +1231,6 @@ void Brain::Draw()
 
 	DrawFormatString(200, 240, GetColor(255, 0, 0), "%f", side_rad_not_pi);
 	DrawFormatString(200, 260, GetColor(255, 0, 0), "%f", vertical_rad_not_pi);
+	*/
+	DrawFormatString(200, 260, GetColor(255, 0, 0), "%.2f", get_camera_init_rad_);
 }

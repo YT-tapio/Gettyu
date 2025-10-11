@@ -186,7 +186,7 @@ public:
 	void Init(const VECTOR& camera_pos, const VECTOR& player_pos);
 
 	//virttual_camera‚ÌInit
-	void GetInit(const VECTOR& camera_pos,const VECTOR& target_dir);
+	void GetInit(const VECTOR& camera_pos,const VECTOR& target_dir,const VECTOR& enemy_pos);
 
 	void Update(const VECTOR& target_pos, const VECTOR& camera_pos, std::shared_ptr<Player> player);
 

@@ -56,4 +56,9 @@ void Camera::Update(const VECTOR& velocity, const VECTOR& target_velocity)
 
 }
 
+void Camera::Draw()
+{
+	DrawFormatString(100, 120, GetColor(255, 255, 255), "x:%.2f,y:%.2f,z:%.2f",pos_.x, pos_.y, pos_.z);
+}
+
 

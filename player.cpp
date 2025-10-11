@@ -146,7 +146,8 @@ void Player::Draw()
 		//Situation::GetInstance().SetGetSituationPos(weapon_->GetCollisionData().pos);
 	}
 
-	DrawFormatString(100, 100, GetColor(255, 255, 255), "x:%.2f,y:%.2f,z:%.2f", super_weapon_spin_effect_->GetPos().x, super_weapon_spin_effect_->GetPos().y, super_weapon_spin_effect_->GetPos().z);
+	DrawFormatString(100, 100, GetColor(255, 255, 255), "x:%.2f,y:%.2f,z:%.2f", 
+		super_weapon_spin_effect_->GetPos().x, super_weapon_spin_effect_->GetPos().y, super_weapon_spin_effect_->GetPos().z);
 		
 	
 
