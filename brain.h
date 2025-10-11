@@ -175,6 +175,9 @@ public:
 
 	~Brain();
 
+
+	void Init(const VECTOR& camera_pos, const VECTOR& player_pos);
+
 	void Update(const VECTOR& target_pos, const VECTOR& camera_pos, std::shared_ptr<Player> player);
 
 
@@ -182,6 +185,9 @@ public:
 	/// カメラが球体上に回る処理
 	/// </summary>
 	void SphereUpdate(const VECTOR& target_pos, const VECTOR& camera_pos,const Input* input);
+
+	//追尾のアップデート
+	void TrackingUpdate(const VECTOR& now_camera_pos, std::shared_ptr<Player> player);
 
 
 	void SuperAttackUpdate(const VECTOR& camera_pos, const VECTOR& now_target_pos, std::shared_ptr<Player> player);

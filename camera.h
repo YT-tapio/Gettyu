@@ -38,6 +38,10 @@ public:
 	/// </summary>
 	~Camera();
 
+
+	//
+	void Init(const VECTOR& velocity);
+
 	/// <summary>
 	/// XVˆ—
 	/// </summary>

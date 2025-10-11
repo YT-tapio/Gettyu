@@ -261,6 +261,40 @@ VECTOR Brain::GetVelocityDecidedRad()
 
 /*---------------public---------------*/
 
+
+void Brain::Init(const VECTOR& camera_pos,const VECTOR& player_pos)
+{
+
+	//ここで最初のカメラのポジションの指定をする
+	
+
+	//sphereのようなことをします
+
+	//side_radとvertical_radをきめて
+
+
+
+	VECTOR next_pos = VGet(0.f, 0.f, 0.f);
+	float side_dist = 0.f;				//地面のdist
+
+
+	//directionを決めてからにしましょう
+
+	direction_.x = sinf(side_rad_);
+	direction_.z = cosf(side_rad_);
+
+	velocity_.y = distance_ * sinf(vertical_rad_);
+	side_dist= distance_ * cosf(vertical_rad_);
+
+	velocity_.x = direction_.x * side_distance_;
+	velocity_.z = direction_.z * side_distance_;
+
+	next_pos = VAdd(player_pos, velocity_);
+
+	velocity_ = VSub(next_pos, camera_pos);
+}
+
+
 void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::shared_ptr<Player> player)
 {
 	float speed = 1.0f;
@@ -291,7 +325,7 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 	//switchで管理しておく
 	//各virtual_cameraにname_があるので、それを受け取る
 
-	//何もないとき(kNothing)は、Sphereに切り替える
+	//何もないとき(kNothing)は、Trackingに切り替える
 	if (camera_name_ == VirtualCameraName::kNothing) 
 	{ 
 		camera_name_ = sphere_camera_->GetCameraName();
@@ -474,6 +508,14 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 
 			break;
 
+
+		case VirtualCameraName::kTracking:
+
+			TrackingUpdate(camera_pos, player);
+
+			break;
+
+
 		case VirtualCameraName::kSuperAttackFirst:
 
 			if (is_target_blend_)
@@ -649,6 +691,54 @@ void Brain::SphereUpdate(const VECTOR& target_pos,const VECTOR& camera_pos,const
 	pos_ = VAdd(camera_pos, velocity_);
 
 }
+
+
+void Brain::TrackingUpdate(const VECTOR& now_camera_pos,std::shared_ptr<Player> player)
+{
+	
+	//引数にカメラの現在のポジションとplayerをそのまま持ってくる
+
+
+	//ここで追尾の更新をする
+
+	//サルゲッチュの追尾のカメラは
+	//カメラの正面に移動するならそのままついてくる
+	//横移動の時はついてこなくなる
+	//斜めの時はdir分はついてくる
+	//playerとcameraが一定距離離れてしまうのならそのままのvelocity分追尾する
+	//
+
+	//maxのdistを決めておく
+	const float kMaxDist = 50.f;
+
+	//cameraとplayerの距離を見る
+	
+	VECTOR dist_vec = VGet(0.f, 0.f, 0.f);
+
+
+	dist_vec = VSub(now_camera_pos, player->GetPos());
+
+	//とりあえずそのままついてくるようにする,target_velocityも
+	velocity_ = player->GetVelocity();
+	target_velocity_ = player->GetVelocity();
+	return;
+
+	//マックスの距離離れるならそのままplayerのvelocityを渡してあげる
+	if (VSize(dist_vec) >= kMaxDist)
+	{
+
+		//playerのvelocityを受け取る
+		velocity_ = player->GetVelocity();
+		return;
+	}
+
+
+
+	//playerのvelocityをもらう
+
+
+}
+
 
 
 void Brain::SuperAttackUpdate(const VECTOR& camera_pos, const VECTOR& now_target_pos, std::shared_ptr<Player> player)

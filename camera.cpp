@@ -29,6 +29,12 @@ Camera::~Camera()
 }
 
 
+void Camera::Init(const VECTOR& velocity)
+{
+	//pos_ = VGet(pos_,velocity)
+}
+
+
 void Camera::Update(const VECTOR& velocity, const VECTOR& target_velocity)
 {
 	VECTOR vel = velocity;
