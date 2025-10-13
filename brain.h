@@ -86,7 +86,7 @@ private:
 	float camera_to_enemy_height_ = 0.f;
 
 	float side_distance_ = 0.0f;
-	float distance_ = 30.0f;
+	float distance_ = 40.0f;
 
 	float side_sensitivity_ = 1.0f;
 	float vertical_sensitivity_ = 0.5f;

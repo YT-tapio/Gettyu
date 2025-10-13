@@ -364,6 +364,15 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 	//必殺技のカメラを識別
 	static int super_attack_situation_num = 0;
 
+	auto input = player->GetInput();
+
+	Input* inp = new Input(input->GetPadNom());
+	inp->SetTypeState(input->GetNowTypeState(), input->GetBeforeTypeState());
+
+	
+
+
+
 	//移動量のリセット
 	velocity_ = VGet(0.f, 0.f, 0.f);
 	target_velocity_ = VGet(0.f, 0.f, 0.f);
@@ -411,10 +420,10 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 
 	
 	
+
+
 	//カメラの処理を変える
 	//上に行かないで注視点だけを変えたい
-
-
 	//situationがゲットの時にvirtualcameraを切り替える
 
 	if (Situation::GetInstance().GetSituationName() == SituationName::kGet)
@@ -548,9 +557,6 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 
 			break;
 
-
-			
-
 		}
 
 		before_camera_name = camera_name_;
@@ -566,7 +572,7 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 		{
 		case VirtualCameraName::kSphere:
 
-			SphereUpdate(sphere_target_pos, camera_pos, player->GetInput());
+			SphereUpdate(sphere_target_pos, camera_pos, inp);
 			speed = 1.0f;
 
 			if (is_target_blend_)
@@ -673,7 +679,6 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 
 void Brain::SphereUpdate(const VECTOR& target_pos,const VECTOR& camera_pos,const Input* input)
 {
-
 	Input* inp = new Input(input->GetPadNom());
 	inp->SetTypeState(input->GetNowTypeState(), input->GetBeforeTypeState());
 
@@ -787,7 +792,8 @@ void Brain::TrackingUpdate(const VECTOR& now_camera_pos,std::shared_ptr<Player> 
 	//
 
 	//maxのdistを決めておく
-	const float kMaxDist = 50.f;
+	const float kMaxDist = 40.f;
+	const float kMinDist = 20.f;
 
 	//cameraとplayerの距離を見る
 	
@@ -797,16 +803,19 @@ void Brain::TrackingUpdate(const VECTOR& now_camera_pos,std::shared_ptr<Player> 
 	dist_vec = VSub(now_camera_pos, player->GetCenterPos());
 
 	//とりあえずそのままついてくるようにする,target_velocityも
-	velocity_ = player->GetVelocity();
+	//velocity_ = player->GetVelocity();
+	target_velocity_ = player->GetVelocity();
+	tracking_camera_->SetPos(VAdd(now_camera_pos,velocity_));
 	target_velocity_ = player->GetVelocity();
 
-	tracking_camera_->SetPos(VAdd(now_camera_pos,velocity_));
-	return;
+	// ここらへんでかめらのradを作ってあげてみる
+	// プレイヤーとカメラの位置を見てあげてそのradを返すような感じ時かな
+	// atan2fでかえしてあげる
+	side_rad_ = atan2f(dist_vec.x, dist_vec.z);
 
 	//マックスの距離離れるならそのままplayerのvelocityを渡してあげる
-	if (VSize(dist_vec) >= kMaxDist)
+	if (VSize(dist_vec) >= kMaxDist || VSize(dist_vec) <= kMinDist)
 	{
-
 		//playerのvelocityを受け取る
 		velocity_ = player->GetVelocity();
 		return;
