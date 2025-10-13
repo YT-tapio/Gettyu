@@ -273,12 +273,16 @@ void Player::Update(const VECTOR& pos, const float& rotation, Stage& stage)
 
 	if (AnimationType::kAttack > now_type_  && !is_super_attack_)
 	{
+		VECTOR before_pos = pos_;
 		pos_ = stage.CheckCollision(*this, velocity_);
+
+		velocity_ = VSub(pos_,before_pos);
 		capsule_.start_pos = pos_;
 		capsule_.start_pos.y += capsule_.r;
 		capsule_.end_pos = capsule_.start_pos;
 		capsule_.end_pos.y += capsule_.vertical_num;
 	}
+
 	//ここで位置の更新もしておく
 	//ここでのsetをやめる(ゲット時)
 	

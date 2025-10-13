@@ -144,7 +144,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         std::make_shared<StillObject>(VGet(50, 0, 10), -1,1.0f);
 
 
-    brain->Init(camera->GetPos(), player->GetPos());
+    brain->Init(camera->GetPos(), player->GetCenterPos());
     camera->Init(brain->GetVelocity());
 
     /*---プレイヤーにアニメーションを追加---*/

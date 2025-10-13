@@ -77,6 +77,8 @@ private:
 	bool is_blend_;			// 座標のブレンド
 	bool is_target_blend_;	// 見る座標のブレンド
 
+	bool is_init = FALSE;
+
 	//回転量
 	float vertical_rad_ = 0.0f;
 	float side_rad_ = 0.0f;
