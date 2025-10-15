@@ -19,7 +19,7 @@ Brain::Brain(const VECTOR& next_target_pos)
 	,start_pos_(VGet(0,0,0))
 	,next_pos_(next_target_pos)
 	,next_target_pos_(VGet(0,0,0))
-	,get_camera_center_pos_(VGet(0,0,0))
+	,get_camera_target_pos_(VGet(0,0,0))
 	,is_change_(FALSE)
 	,is_blend_(FALSE)
 	,is_target_blend_(FALSE)
@@ -29,6 +29,7 @@ Brain::Brain(const VECTOR& next_target_pos)
 	,super_attack_vibration_power_(500)
 	,side_rad_(static_cast<float>(M_PI / 180) * 0.f)
 	,vertical_rad_(static_cast<float>(M_PI / 180) * 10.f)
+	,get_dist_(0.f)
 {
 	sphere_camera_ = new SphereCamera(VirtualCameraName::kSphere);
 	get_camera_ = new GetCamera(VirtualCameraName::kGet);
@@ -296,57 +297,24 @@ void Brain::Init(const VECTOR& camera_pos,const VECTOR& player_pos)
 	next_pos = VAdd(player_pos, velocity_);
 
 	velocity_ = GetFutureToNowPositionVelocity(next_pos, camera_pos);
+	get_dist_ = 0.f;
 
 }
 
 
-void Brain::GetInit(const VECTOR& camera_pos, const VECTOR& target_dir,const VECTOR& enemy_pos)
+void Brain::GetInit(const VECTOR& camera_pos,const VECTOR& enemy_pos)
 {
-	//ここでゲットした時のinitを行う
-	//enemyの正面に行きたい
+	// ゲット時のinitを行います
 
-
-	//うけとったdirのdist分をtarget_posにします
-
-	float enemy_dist = 10.0f;
-
-
-	//2つのポジションを地面に添わせる
-	VECTOR front_pos = VAdd(enemy_pos,VScale(target_dir, enemy_dist));
-
-	VECTOR cam_on_the_line_pos = VGet(camera_pos.x, 0.f, camera_pos.z);
-	VECTOR front_on_the_line_pos = VGet(front_pos.x, 0.f, front_pos.z);
-
+	// cameraとゲットされたenemyの距離を出す
+	VECTOR dist_vec = VSub(camera_pos,enemy_pos);
+	get_dist_ = VSize(dist_vec);
 	
+	// enemyのポジションをセンターとするposを保存する
 
-	VECTOR camera_to_enemy_vel = VSub(cam_on_the_line_pos, front_on_the_line_pos);
-	//camera_to_enemy_vel = VGet(,,);
-	//camera_posからfront_posを引きどんくらいはなれているかをみてsizeを取得する
-	camera_to_enemy_dist_ = VSize(camera_to_enemy_vel);
-
-	//printfDx("%.2f\n", camera_to_enemy_dist_);
-
-	//どのくらいの距離(高さ)も取得
-	camera_to_enemy_height_ = camera_pos.y - front_pos.y;
-
-	printfDx("x:%.2f,y:%.2f,z:%.2f\n", camera_to_enemy_vel.x, camera_to_enemy_vel.y, camera_to_enemy_vel.z);
-
-	//センターのポジションを決めなきゃ
-	//distの半分
-
-	//cameraからenemyのvelの半分をcamera_posに足せばok
-	get_camera_center_pos_ = VAdd(camera_pos, VScale(camera_to_enemy_vel, 0.5f));
-
-	//アークタンジェントによって求める
-	get_camera_init_rad_ = atan2f(front_pos.z, front_pos.x);
-
-
-
-	//printfDx("%.2f\n", get_camera_init_rad_);
-
-	//求められたやつを180どぶん足してあげる
-
-	
+	get_camera_vertical_rad_ = atan2f(sqrt((dist_vec.x * dist_vec.x) + (dist_vec.z * dist_vec.z)), dist_vec.y);
+	get_camera_side_rad_ = atan2f(dist_vec.z, dist_vec.x);
+	get_camera_target_pos_ = enemy_pos;
 
 }
 
@@ -479,7 +447,7 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 
 
 			//ここでdistを決めたりする
-			//GetInit(camera_pos,VGet(0.f,0.f,0.f),Situation::GetInstance().GetSituationPos());
+			GetInit(camera_pos,Situation::GetInstance().GetSituationPos());
 
 
 			break;
@@ -792,11 +760,14 @@ void Brain::TrackingUpdate(const VECTOR& now_camera_pos,std::shared_ptr<Player> 
 	//playerとcameraが一定距離離れてしまうのならそのままのvelocity分追尾する
 	//
 
+	//勝手にブレンドするやつ
+	const float kSmoothBlendSpeed = 0.3f;
+
 	//maxのdistを決めておく
 	const float kMaxDist = 40.f;
 	const float kMinDist = 20.f;
 	//ブレンドするまでにかける時間
-	const float kMaxBlendStartTime = 1.5f;
+	const float kMaxBlendStartTime = 3.5f;
 	static float timer = 0.f;
 
 	//カメラの自然なブレンド
@@ -819,7 +790,7 @@ void Brain::TrackingUpdate(const VECTOR& now_camera_pos,std::shared_ptr<Player> 
 
 		if (timer > kMaxBlendStartTime)
 		{
-			//playerの後ろに勝手にいくように調整して行くぜ
+			// playerの後ろに勝手にいくように調整して行くぜ
 			// playerのrotをうけとって調整する
 
 			VECTOR player_rot = player->GetRotation();
@@ -832,40 +803,38 @@ void Brain::TrackingUpdate(const VECTOR& now_camera_pos,std::shared_ptr<Player> 
 			float diff_rad = player_rot.y - side_rad_;
 
 			//ここでじゃあradの最短距離を取るやつをやります
-
-			CheckReverseRotFunc(side_rad_, player_rot.y, delta_time_);
+			//ブレンド回転の
+			CheckReverseRotFunc(side_rad_, player_rot.y, delta_time_,kSmoothBlendSpeed);
 
 
 			float decide_rad;
 
-			{	
-				//時間によって変化するように
+			decide_rad = side_rad_;
 
-				//タイマーを用意、カウントを用意そのタイマー
-				blend_timer = (delta_time_ / 10);
+			//printfDx("%.2f\n", decide_rad);
 
-				//調整した値
-				float offset_rad;
-				if (!(blend_timer >= kMaxBlendSpeed))
-				{
-					offset_rad = diff_rad * ((delta_time_ / 10) / kMaxBlendSpeed);
-				}
-				else
-				{
-					offset_rad = diff_rad;
-					blend_timer = 0.f;
-				}
+			// vertical_rad_はそのままにしといて
+			// こいつによって地面の長さを作る
 
-				decide_rad = side_rad_;
-			}
+			//verticalradを指定するぞatn2fで
+			//dist_vecを見る
+			//地面のdist
+			float side_dist = sqrt((dist_vec.x * dist_vec.x) + (dist_vec.z * dist_vec.z));
+			
+			vertical_rad_ = atan2f(side_dist, dist_vec.y);
 
-			printfDx("%.2f\n", decide_rad);
+
 
 			VECTOR next_pos = VGet(0, 0, 0);
-			next_pos.x = VSize(dist_vec) * sinf(decide_rad);
-			next_pos.z = VSize(dist_vec) * cosf(decide_rad);
+
+			// 地面の回転量
+			next_pos.x = side_dist * sinf(decide_rad);
+			next_pos.z = side_dist * cosf(decide_rad);
+
+			
 
 			next_pos = VAdd(player->GetCenterPos(), next_pos);
+			next_pos.y = now_camera_pos.y;
 			//next_pos.y = now_camera_pos.y;
 			
 			velocity_ = VSub(next_pos, now_camera_pos);
@@ -914,8 +883,12 @@ void Brain::TrackingUpdate(const VECTOR& now_camera_pos,std::shared_ptr<Player> 
 	// ここらへんでかめらのradを作ってあげてみる
 	// プレイヤーとカメラの位置を見てあげてそのradを返すような感じ時かな
 	// atan2fでかえしてあげる
-	side_rad_ = atan2f(dist_vec.x, dist_vec.z);
+	// atanc2fにdistはわかっているのでplayerのy座標とカメラの座標の差を見つける
 
+	//asinは一つの変数しか無理なので先に値を作ります
+	float sin_num = (tracking_camera_->GetPos().y - player->GetCenterPos().y) / VSize(dist_vec);
+
+	side_rad_ = atan2f(dist_vec.x, dist_vec.z);
 	//マックスの距離離れるならそのままplayerのvelocityを渡してあげる
 	if (VSize(dist_vec) >= kMaxDist || VSize(dist_vec) <= kMinDist)
 	{
@@ -1050,59 +1023,55 @@ void Brain::SuperAttackUpdate(const VECTOR& camera_pos, const VECTOR& now_target
 
 
 void Brain::GetCameraUpdate(const VECTOR& pos, const VECTOR& camera_pos,const VECTOR& target_pos)
-{
-
-	
-	if (FALSE)
+{	
+	if (TRUE)
 	{
-		const int kCountMax = 100;
-		static int  now_count = 0;
-		static float rad = 0;
-		//かめらのさいしょのrad
-		get_camera_init_rad_;
-		camera_to_enemy_dist_;
-		//カメラと中心のポジション
-		get_camera_center_pos_;
-		//高さ
-		camera_to_enemy_height_;
+		//新しいゲットしたカメラの処理
 
-		//条件満たしたらcount初期化
+		VECTOR next_pos = VGet(0, 0, 0);
 
-		//とりあえず1カウント分のradを計算
-		rad += static_cast<float>((M_PI / 180) * (180 / kCountMax));
+		VECTOR vel = VGet(0, 0, 0);
 
-		// これからはradとinitのradをいい感じにします
-		// 中心のposから回転量分引き離したポジション
-		VECTOR center_to_pull = VGet(0.f,0.f,0.f);
+		//仮想のget_camera_rad_を調整しないといけない
 
+		// radの初期値から360ど回っていないときは調整をする
+		// 決められた回転量
+		// だんだんと回転量を増やしていく
+		const float kOffsetRad = 2.5f;
+		const float kPiOffset = static_cast<float>(M_PI / 180);		//一度分にする
+		const float kPi = kPiOffset * 180;		//Pi
+		const float kMaxTurnRad = kPi + (kPiOffset * 100);					//回転するときの最大値(これで変わる)
+		static float add_rad = 0.f;
 
+		add_rad += kPiOffset * kOffsetRad * (delta_time_ * 10);
 
-		center_to_pull.x = camera_to_enemy_dist_ * cosf(rad + get_camera_init_rad_);
-		center_to_pull.z = camera_to_enemy_dist_ * sinf(rad + get_camera_init_rad_);
-		center_to_pull.y = camera_to_enemy_height_ / kCountMax;
-		
-		//printfDx("x:%.2f,y:%.2f,z:%.2f\n",center_to_pull.x, center_to_pull.y, center_to_pull.z);
+		// だんだんとdistを変えていくようにする
+		 get_dist_ -= get_dist_ * ((kPiOffset * kOffsetRad * (delta_time_ * 10)) / (kPi + kPi));
 
-		//velocityをcenter_posにアドする。
-		VECTOR next_camera_pos = VAdd(get_camera_center_pos_, center_to_pull);
-
-
-		printfDx("x:%.2f,y:%.2f,z:%.2f\n", next_camera_pos.x, next_camera_pos.y, next_camera_pos.z);
-
-		velocity_ = VSub(camera_pos, next_camera_pos);
-		//printfDx("x:%.2f,y:%.2f,z:%.2f\n", velocity_.x, velocity_.y, velocity_.z);
-		now_count++;
-		if (now_count >= kCountMax)
+		 
+		if (add_rad >= kMaxTurnRad)
 		{
-			//カメラを切り替える
+			add_rad = kMaxTurnRad;
 			Situation::GetInstance().SetSituation(SituationName::kNothing);
-			//カメラの切り替え
 			camera_name_ = VirtualCameraName::kNothing;
-			now_count = 0;
+			add_rad = 0.f;
 		}
 
 		
-	
+
+		vel.y = get_dist_ * cosf(get_camera_vertical_rad_);
+		float side_dist = get_dist_ * sinf(get_camera_vertical_rad_);
+		float decide_rad = get_camera_side_rad_ + add_rad;
+
+		vel.x = side_dist * cosf(decide_rad);
+		vel.z = side_dist * sinf(decide_rad);
+
+		next_pos = VAdd(get_camera_target_pos_, vel);
+
+		velocity_ = VSub(next_pos,camera_pos);
+		//注視点を変える
+		target_velocity_ = VSub(pos, target_pos);
+
 	}
 	else
 	{
@@ -1140,13 +1109,6 @@ void Brain::GetCameraUpdate(const VECTOR& pos, const VECTOR& camera_pos,const VE
 		velocity_ = VSub(dist_pos, camera_pos);
 		//注視点を変える
 		target_velocity_ = VSub(pos, target_pos);
-
-
-		//radが一定数に行くと切り替わる
-
-
-		//カメラのターゲットをsituaionからターゲットを持ってくる
-
 	}	
 
 
@@ -1369,5 +1331,5 @@ void Brain::Draw()
 	DrawFormatString(200, 240, GetColor(255, 0, 0), "%f", side_rad_not_pi);
 	DrawFormatString(200, 260, GetColor(255, 0, 0), "%f", vertical_rad_not_pi);
 	*/
-	DrawFormatString(200, 260, GetColor(255, 0, 0), "%.2f", get_camera_init_rad_);
+	//DrawFormatString(200, 260, GetColor(255, 0, 0), "%.2f", get_camera_init_rad_);
 }

@@ -945,6 +945,8 @@ void Player::IsHitEnemy(BaseEnemy* enemy, bool& got)
 		{
 			weapon_->Update(enemy,fabs(stick_spin_rad));
 			now_state_ = State::kAttack;
+			super_weapon_spin_effect_->SetPos(weapon_->GetPos());
+			super_weapon_spin_effect_->Play();
 		}
 		else
 		{

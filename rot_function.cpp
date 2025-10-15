@@ -4,7 +4,7 @@
 
 #include"rot_function.h"
 
-void CheckReverseRotFunc(float& now_rot, float target_rot,float delta_time)
+void CheckReverseRotFunc(float& now_rot, float target_rot,float delta_time,float speed)
 {
 	//“¯‚¶‚Æ‚«‚Í‘ŠúƒŠƒ^[ƒ“
 	if (now_rot == target_rot) { return; }
@@ -21,7 +21,7 @@ void CheckReverseRotFunc(float& now_rot, float target_rot,float delta_time)
 	float rot_distance = 0.0f;
 
 	//‰ñ“]—Ê
-	float rot_num = (static_cast<float>((M_PI / 180) * 10.f)) * (delta_time * 10);
+	float rot_num = (static_cast<float>((M_PI / 180) * speed)) * (delta_time * 10);
 
 	// “¯‚¶‚Æ‚«‚Íæ‚É‚Í‚¶‚­‚æ‚¤‚É‚µ‚Ä‚¢‚é‚Ì‚Å‘åä•v
 	// ‚Ç‚¿‚ç‚ª¬‚³‚¢‚©‚ğŒ©‚Ä¬‚³‚¢‚Ù‚¤‚©‚ç‘å‚«‚¢‚Ù‚¤‚ğˆø‚­

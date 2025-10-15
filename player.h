@@ -55,7 +55,7 @@ private:
 	Input* input_;
 	SuperAttack* super_attack_;
 
-	Effect* super_weapon_spin_effect_ = new Effect("data/effect/MAGICALxSPIRAL/AquaPoint.efkefc", VGet(0.f,30.f,0.f), VGet(0.f, 0.f, 0.f), 7.f, 7.f, 150.f, TRUE);
+	Effect* super_weapon_spin_effect_ = new Effect("data/effect/NextSoft01/MagicTornade.efkefc", VGet(0.f,0.f,0.f), VGet(0.f, 0.f, 0.f), 7.f, 7.f, 300.f, TRUE);
 
 
 	State now_state_;

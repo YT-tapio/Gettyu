@@ -22,7 +22,7 @@ private:
 	
 	
 
-	const int kMaxMouseDiff = 35.0f;
+	const float kMaxMouseDiff = 35.0f;
 
 	const float kMaxMoveDistance = 0.0f;
 	const float kCameraSpeed = 1.3f;
@@ -63,7 +63,8 @@ private:
 	VECTOR start_target_pos_;	//
 	VECTOR next_target_pos_;	//次に見る場所
 
-	VECTOR get_camera_center_pos_;
+	//ゲットしたときにターゲットとなるpos
+	VECTOR get_camera_target_pos_;
 
 	//int群
 	//現在のvirtualcameraの名前を保存
@@ -94,12 +95,16 @@ private:
 
 	float delta_time_ = 0.0f;
 
-	float get_camera_init_rad_ = 0.f;
+	float get_camera_vertical_rad_ = 0.f;
+	float get_camera_side_rad_ = 0.f;
+
 
 	float camera_to_enemy_dist_ = 0.f;
 
 	float blend_speed_ = 10.f;
 	float target_blend_speed_ = 10.f;
+
+	float get_dist_ = 0.f;
 
 
 	MousePoint now_mouse_pos_;
@@ -188,7 +193,7 @@ public:
 	void Init(const VECTOR& camera_pos, const VECTOR& player_pos);
 
 	//virttual_cameraのInit
-	void GetInit(const VECTOR& camera_pos,const VECTOR& target_dir,const VECTOR& enemy_pos);
+	void GetInit(const VECTOR& camera_pos, const VECTOR& enemy_pos);
 
 	void Update(const VECTOR& target_pos, const VECTOR& camera_pos, std::shared_ptr<Player> player);
 
