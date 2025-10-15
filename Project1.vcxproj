@@ -154,6 +154,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="normal_enemy.cpp" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="rot_function.cpp" />
     <ClCompile Include="situation.cpp" />
     <ClCompile Include="sphere_camera.cpp" />
     <ClCompile Include="stage.cpp" />
@@ -188,6 +189,7 @@
     <ClInclude Include="mixamo_fram.h" />
     <ClInclude Include="normal_enemy.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="rot_function.h" />
     <ClInclude Include="screen.h" />
     <ClInclude Include="situation.h" />
     <ClInclude Include="sphere_camera.h" />

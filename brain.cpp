@@ -12,6 +12,7 @@
 #include"input.h"
 #include"situation.h"
 #include"tracking.h"
+#include"rot_function.h"
 
 Brain::Brain(const VECTOR& next_target_pos)
 	:pos_(VGet(0,0,0))
@@ -794,19 +795,121 @@ void Brain::TrackingUpdate(const VECTOR& now_camera_pos,std::shared_ptr<Player> 
 	//maxのdistを決めておく
 	const float kMaxDist = 40.f;
 	const float kMinDist = 20.f;
+	//ブレンドするまでにかける時間
+	const float kMaxBlendStartTime = 1.5f;
+	static float timer = 0.f;
+
+	//カメラの自然なブレンド
+	const float kMaxBlendSpeed = 1.0f;
+	static float blend_timer = 0.f;
+
 
 	//cameraとplayerの距離を見る
-	
 	VECTOR dist_vec = VGet(0.f, 0.f, 0.f);
-
-
 	dist_vec = VSub(now_camera_pos, player->GetCenterPos());
+
+	static bool blend = FALSE;
+
+	if (!(VSize(player->GetVelocity()) != 0))
+	{
+		//ここでカウントさせる
+
+		timer += (delta_time_ / 10.f);
+
+
+		if (timer > kMaxBlendStartTime)
+		{
+			//playerの後ろに勝手にいくように調整して行くぜ
+			// playerのrotをうけとって調整する
+
+			VECTOR player_rot = player->GetRotation();
+
+			//printfDx("%.2f\n", player_rot.y);
+			//一回プレイヤーの目の前に行くように調整してみます
+			
+
+			//ここでradの調整する
+			float diff_rad = player_rot.y - side_rad_;
+
+			//ここでじゃあradの最短距離を取るやつをやります
+
+			CheckReverseRotFunc(side_rad_, player_rot.y, delta_time_);
+
+
+			float decide_rad;
+
+			{	
+				//時間によって変化するように
+
+				//タイマーを用意、カウントを用意そのタイマー
+				blend_timer = (delta_time_ / 10);
+
+				//調整した値
+				float offset_rad;
+				if (!(blend_timer >= kMaxBlendSpeed))
+				{
+					offset_rad = diff_rad * ((delta_time_ / 10) / kMaxBlendSpeed);
+				}
+				else
+				{
+					offset_rad = diff_rad;
+					blend_timer = 0.f;
+				}
+
+				decide_rad = side_rad_;
+			}
+
+			printfDx("%.2f\n", decide_rad);
+
+			VECTOR next_pos = VGet(0, 0, 0);
+			next_pos.x = VSize(dist_vec) * sinf(decide_rad);
+			next_pos.z = VSize(dist_vec) * cosf(decide_rad);
+
+			next_pos = VAdd(player->GetCenterPos(), next_pos);
+			//next_pos.y = now_camera_pos.y;
+			
+			velocity_ = VSub(next_pos, now_camera_pos);
+			
+			//ブレンドの処理を少ししようと思います
+			if(FALSE)
+			{
+				//タイマーを用意、カウントを用意そのタイマー
+				blend_timer = (delta_time_ / 10);
+
+				velocity_ = VScale(velocity_, ((delta_time_ / 10) / kMaxBlendSpeed));
+				
+				if (blend_timer >= kMaxBlendSpeed)
+				{
+					blend_timer = 0.f;
+					
+					//velocity_ = VSub(next_pos, now_camera_pos);
+
+				}
+
+			}
+			
+			
+
+		}
+
+		return;
+	}
+	else
+	{
+		timer = 0.f;
+		blend = FALSE;
+	}
+
+	
 
 	//とりあえずそのままついてくるようにする,target_velocityも
 	//velocity_ = player->GetVelocity();
 	target_velocity_ = player->GetVelocity();
 	tracking_camera_->SetPos(VAdd(now_camera_pos,velocity_));
 	target_velocity_ = player->GetVelocity();
+
+	
+
 
 	// ここらへんでかめらのradを作ってあげてみる
 	// プレイヤーとカメラの位置を見てあげてそのradを返すような感じ時かな

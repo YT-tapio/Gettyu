@@ -192,6 +192,9 @@
     <ClCompile Include="tracking.cpp">
       <Filter>ソース ファイル\camera\virtual_camera\tracking</Filter>
     </ClCompile>
+    <ClCompile Include="rot_function.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="keyconfig.h">
@@ -292,6 +295,9 @@
     </ClInclude>
     <ClInclude Include="tracking.h">
       <Filter>ソース ファイル\camera\virtual_camera\tracking</Filter>
+    </ClInclude>
+    <ClInclude Include="rot_function.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
