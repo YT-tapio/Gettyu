@@ -42,7 +42,7 @@ void EnemyManager::Update(std::shared_ptr<Player> player)
 	for (auto itr = enemies_.begin(); itr != enemies_.end(); ++itr)
 	{
 		//‚à‚¤‚·‚Å‚É‰½‚©‚ğ•ß‚Ü‚¦‚Ä‚¢‚éó‹µ‚È‚ç‰ñ‚³‚È‚¢
-		if (Situation::GetInstance().GetSituationName() == SituationName::kNothing)
+		if (Situation::GetInstance().GetSituationName() != SituationName::kGet)
 		{
 			if (!got)
 			{

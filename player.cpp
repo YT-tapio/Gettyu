@@ -570,7 +570,7 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 
 	/*--------プレイヤーの操作--------*/
 
-	if (!is_super_attack_ && !is_attack_)
+	if (!is_super_attack_ && !is_attack_ && !is_camera_blend_)
 	{
 		//前
 		if (input_->CheckInputKey(KeyConfig::kUpKey))
@@ -947,17 +947,18 @@ void Player::IsHitEnemy(BaseEnemy* enemy, bool& got)
 			now_state_ = State::kAttack;
 			super_weapon_spin_effect_->SetPos(weapon_->GetPos());
 			super_weapon_spin_effect_->Play();
+			Situation::GetInstance().SetSituation(SituationName::kVacuum);
 		}
 		else
 		{
 			super_weapon_spin_effect_->End();
+			if (Situation::GetInstance().GetSituationName() == SituationName::kVacuum)
+			{
+				Situation::GetInstance().SetSituation(SituationName::kNothing);
+				//printfDx("1");
+			}
+
 		}
-		
-
-		//前回と今回のスティックの入力量を比べ、0.fではないならアップデートを回す
-		
-
-		
 	}
 
 

@@ -2,7 +2,7 @@
 //‚¢‚ë‚ñ‚È“ü—Í‚ğ}‚é
 
 
-const float kPadSpinMin = 150.f;
+const float kPadSpinMin = 50.f;
 
 //“ü—Í‚³‚ê‚Ä‚¢‚é‚È‚Ç‚Ìó‘Ô‚ğ•\‚·‚à‚Ì
 enum InputState

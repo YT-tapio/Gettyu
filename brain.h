@@ -1,4 +1,8 @@
 #pragma once
+#include<iostream>
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 #include"virtual_camera.h"
 #include"super_attack_camera.h"
 #include"sphere_camera.h"
@@ -37,6 +41,10 @@ private:
 	
 	//カメラの見る位置をoffsetするときのスピード
 	const float kSuperAttackCameraTargetPosSpeed = 1.3f;
+
+	//vacuumの定数
+	const float kVacuumDist = 80.f;			//vacuumの時の距離
+	const float kVacuumVerticalRad = (1 * static_cast<float>((M_PI / 180) * 45));
 
 	//球体上に動くカメラ
 	BaseVirtualCamera* sphere_camera_;
@@ -83,6 +91,8 @@ private:
 	bool is_target_blend_;	// 見る座標のブレンド
 
 	bool is_init = FALSE;
+
+	bool is_blend_tracking_ = FALSE;//かめらを切り替えたブレンド中でもちゃんと動く奴はこのフラグをTRUEに
 
 	//回転量
 	float vertical_rad_ = 0.0f;
@@ -199,8 +209,15 @@ public:
 
 	void Init(const VECTOR& camera_pos, const VECTOR& player_pos);
 
-	//virttual_cameraのInit
+	/*----------virttual_cameraのInit-----------*/
+
+
+
 	void GetInit(const VECTOR& camera_pos, const VECTOR& enemy_pos);
+
+	//ついびのinit
+	void TrackingInit(const VECTOR& center_pos);
+
 
 	void Update(const VECTOR& target_pos, const VECTOR& camera_pos, std::shared_ptr<Player> player);
 

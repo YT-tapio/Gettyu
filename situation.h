@@ -5,9 +5,10 @@
 //enumを作る
 enum class SituationName
 {
-    kNothing,       //何もない
-    kGet,             //ゲット時
-    kAttack          //
+    kNothing,                //何もない
+    kGet,                      //ゲット時
+    kAttack,                  //
+    kVacuum                 //吸引中
 };
 
 //ゲームの今起きている現象を管理する
