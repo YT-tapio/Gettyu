@@ -156,6 +156,7 @@
     <ClCompile Include="player.cpp" />
     <ClCompile Include="rot_function.cpp" />
     <ClCompile Include="situation.cpp" />
+    <ClCompile Include="sky_dom.cpp" />
     <ClCompile Include="sphere_camera.cpp" />
     <ClCompile Include="stage.cpp" />
     <ClCompile Include="still_object.cpp" />
@@ -163,6 +164,7 @@
     <ClCompile Include="super_attack.cpp" />
     <ClCompile Include="tracking.cpp" />
     <ClCompile Include="turn_camera.cpp" />
+    <ClCompile Include="vacuum_camera.cpp" />
     <ClCompile Include="virtual_camera.cpp" />
     <ClCompile Include="warp_rod.cpp" />
     <ClCompile Include="weapon_base.cpp" />
@@ -192,6 +194,7 @@
     <ClInclude Include="rot_function.h" />
     <ClInclude Include="screen.h" />
     <ClInclude Include="situation.h" />
+    <ClInclude Include="sky_dom.h" />
     <ClInclude Include="sphere_camera.h" />
     <ClInclude Include="stage.h" />
     <ClInclude Include="still_object.h" />
@@ -199,6 +202,7 @@
     <ClInclude Include="super_attack_camera.h" />
     <ClInclude Include="tracking.h" />
     <ClInclude Include="turn_camera.h" />
+    <ClInclude Include="vacuum_camera.h" />
     <ClInclude Include="virtual_camera.h" />
     <ClInclude Include="weapon_base.h" />
     <ClInclude Include="warp_rod.h" />

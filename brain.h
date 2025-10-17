@@ -3,6 +3,7 @@
 #include"super_attack_camera.h"
 #include"sphere_camera.h"
 #include"get_camera.h"
+#include"vacuum_camera.h"
 class Player;
 class Input;
 
@@ -40,7 +41,7 @@ private:
 	//球体上に動くカメラ
 	BaseVirtualCamera* sphere_camera_;
 
-	//
+	//敵をゲットしたときのかめら
 	BaseVirtualCamera* get_camera_;
 
 	//必殺技のカメラ
@@ -48,6 +49,9 @@ private:
 
 	//ついてくるカメラ
 	BaseVirtualCamera* tracking_camera_;
+
+	//吸い込んでいるときのカメラ
+	BaseVirtualCamera* vacuum_camera_;
 
 	ChangeType change_type_;
 
@@ -101,11 +105,11 @@ private:
 
 	float camera_to_enemy_dist_ = 0.f;
 
-	float blend_speed_ = 10.f;
+	float blend_speed_ = 0.f;
 	float target_blend_speed_ = 10.f;
 
 	float get_dist_ = 0.f;
-
+	float offset_line_timer_ = 0.f;
 
 	MousePoint now_mouse_pos_;
 	MousePoint before_mouse_pos_;
@@ -115,6 +119,9 @@ private:
 	
 
 	void MakeVertical();
+
+	//受け取った引数のポジションから指定したdist分のradの位置を返す
+	VECTOR GetRotatedByTheDistanceFromThePos(const float ver_rad, const float side_rad, const float dist,const VECTOR& center_pos);
 
 	VECTOR OffsetPassingVel(const VECTOR& now_pos, const VECTOR& target_pos, const VECTOR& velocity,bool& flag);
 
@@ -198,6 +205,12 @@ public:
 	void Update(const VECTOR& target_pos, const VECTOR& camera_pos, std::shared_ptr<Player> player);
 
 
+	//
+	void ChangeCameraInit(int& before_camera_name, const VECTOR& camera_pos, std::shared_ptr<Player>player, const VECTOR& now_target_pos);
+
+	//
+	void VirtualCameraUpdate(std::shared_ptr<Player>player, const VECTOR& camera_pos, const VECTOR& now_target_pos);
+
 	/// <summary>
 	/// カメラが球体上に回る処理
 	/// </summary>
@@ -206,6 +219,8 @@ public:
 	//追尾のアップデート
 	void TrackingUpdate(const VECTOR& now_camera_pos, std::shared_ptr<Player> player);
 
+	//吸引時のカメラのアプデ
+	void VacuumUpdate(std::shared_ptr<Player>player);
 
 	void SuperAttackUpdate(const VECTOR& camera_pos, const VECTOR& now_target_pos, std::shared_ptr<Player> player);
 

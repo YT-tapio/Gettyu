@@ -103,6 +103,12 @@
     <Filter Include="ソース ファイル\camera\virtual_camera\tracking">
       <UniqueIdentifier>{da29ebf3-84b9-4076-a488-199f8ff5d655}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\camera\virtual_camera\super_attack_vacuum">
+      <UniqueIdentifier>{21d6830d-86d2-474d-a9c0-1f8e546f1daa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\sky_dom">
+      <UniqueIdentifier>{519557b4-47f3-4452-b3e6-c87a00e5893c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -194,6 +200,12 @@
     </ClCompile>
     <ClCompile Include="rot_function.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="vacuum_camera.cpp">
+      <Filter>ソース ファイル\camera\virtual_camera\super_attack_vacuum</Filter>
+    </ClCompile>
+    <ClCompile Include="sky_dom.cpp">
+      <Filter>ソース ファイル\sky_dom</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -298,6 +310,12 @@
     </ClInclude>
     <ClInclude Include="rot_function.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="vacuum_camera.h">
+      <Filter>ソース ファイル\camera\virtual_camera\super_attack_vacuum</Filter>
+    </ClInclude>
+    <ClInclude Include="sky_dom.h">
+      <Filter>ソース ファイル\sky_dom</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

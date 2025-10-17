@@ -37,6 +37,7 @@ Brain::Brain(const VECTOR& next_target_pos)
 	super_attack_camera_[1] = new SuperAttackCamera(VirtualCameraName::kSuperAttackSecond);
 	super_attack_camera_[2] = new SuperAttackCamera(VirtualCameraName::kSuperAttackThird);
 	tracking_camera_ = new Tracking(VirtualCameraName::kTracking);
+	vacuum_camera_ = new VacuumCamera(VirtualCameraName::kVacuum);
 }
 
 
@@ -81,6 +82,27 @@ void Brain::MakeVertical()
 
 		vertical_rad_ -= static_cast<float>((M_PI / 180) * (constant / 10) * all_sensitivity_) * vertical_sensitivity_;
 	}
+}
+
+
+VECTOR Brain::GetRotatedByTheDistanceFromThePos(const float ver_rad, const float side_rad, const float dist, const VECTOR& center_pos)
+{
+	VECTOR return_pos = VGet(0, 0, 0);			//この変数に値を代入して返す
+	VECTOR vel = VGet(0, 0, 0);						//radやdist分の距離のようなもの
+	float side_dist = 0.f;									//地面のdist
+	
+	//立ての位置、地面のdistを決める
+	vel.y = dist * cosf(ver_rad);
+	side_dist = dist * sinf(ver_rad);
+
+	//地面の位置を決める
+	vel.x = side_dist * cosf(side_rad);
+	vel.z = side_dist * sinf(side_rad);
+
+	//center_posからの距離を出す
+	return_pos = VAdd(center_pos, vel);
+
+	return return_pos;
 }
 
 
@@ -321,9 +343,6 @@ void Brain::GetInit(const VECTOR& camera_pos,const VECTOR& enemy_pos)
 
 void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::shared_ptr<Player> player)
 {
-	float speed = 1.0f;
-	//球体上に回る処理のターゲット
-	VECTOR sphere_target_pos = player->GetCenterPos();
 	no_update_ = TRUE;
 
 	bool next_is_blend = FALSE;
@@ -333,10 +352,7 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 	//必殺技のカメラを識別
 	static int super_attack_situation_num = 0;
 
-	auto input = player->GetInput();
 
-	Input* inp = new Input(input->GetPadNom());
-	inp->SetTypeState(input->GetNowTypeState(), input->GetBeforeTypeState());
 
 	
 
@@ -401,12 +417,27 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 		camera_name_ = VirtualCameraName::kGet;
 	}
 
+	ChangeCameraInit(before_camera_name, camera_pos, player, now_target_pos);
+	
+
+
+	VirtualCameraUpdate(player, camera_pos, now_target_pos);
+
+
+	player->SetIsBlend(is_blend_);
+	player->SetIsTargetBlend(is_target_blend_);
+	
+}
+
+
+void Brain::ChangeCameraInit(int& before_camera_name,const VECTOR& camera_pos,std::shared_ptr<Player>player,const VECTOR& now_target_pos)
+{
 
 	//前回と結果が違う(カメラが切り替わる)ときblendさせる
 	if (camera_name_ != before_camera_name)
 	{
 		is_blend_ = TRUE;
-		
+		offset_line_timer_ = 0.f;
 		//今の座標と次のvirtualcameraの座標をとる
 		start_pos_ = camera_pos;
 
@@ -430,7 +461,7 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 
 
 			//getからsphereに代わるときは違う処理にする
-			
+
 			if (before_camera_name == VirtualCameraName::kGet)
 			{
 				is_blend_ = FALSE;
@@ -447,7 +478,7 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 
 
 			//ここでdistを決めたりする
-			GetInit(camera_pos,Situation::GetInstance().GetSituationPos());
+			GetInit(camera_pos, Situation::GetInstance().GetSituationPos());
 
 
 			break;
@@ -455,7 +486,7 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 
 
 		case VirtualCameraName::kTracking:
-			
+
 			// ついてくるカメラですこれは
 			// プレイヤーの正面には
 
@@ -478,10 +509,24 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 				is_init = TRUE;
 			}
 
-			
+
 
 
 			break;
+
+
+		case VirtualCameraName::kVacuum:
+
+			// ここでradなどの指定をします。位置は常にアップデートされます
+			// radは変わらないのでそのままにする。
+			// distを指定するそのdist分離す。
+			// 角度も指定できるように
+
+
+			vertical_rad_;
+
+			break;
+
 
 			//プレイヤーの正面
 		case VirtualCameraName::kSuperAttackFirst:
@@ -496,8 +541,8 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 
 			//blend_speedを入れる
 
-			blend_speed_ = 10.0f;
-
+			blend_speed_ = 1.0f;
+			target_blend_speed_ = 1.f;
 			//printfDx("\nx:%.2f,y:%.2f,z:%.2f\n", next_pos_.x, next_pos_.y, next_pos_.z);
 			//printfDx("x:%.2f,y:%.2f,z:%.2f\n", player->GetPos().x, player->GetPos().y, player->GetPos().z);
 			break;
@@ -514,12 +559,14 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 			next_pos_ = super_attack_camera_[1]->GetPos();
 			start_target_pos_ = now_target_pos;
 			next_target_pos_ = super_attack_camera_[1]->GetTargetPos();
-			
+
 			//必殺中はblendが切り替わった瞬間にtagをかえているけど、例外としてここでtagを変えておく
 			is_blend_ = FALSE;
 			is_target_blend_ = TRUE;
 
-			
+			blend_speed_ = 1.0f;
+			target_blend_speed_ = 1.f;
+
 
 			player->SetNowCameraSituation(camera_name_ - VirtualCameraName::kSuperAttackFirst);
 
@@ -533,6 +580,18 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 	}
 
 
+}
+
+void Brain::VirtualCameraUpdate(std::shared_ptr<Player>player,const VECTOR& camera_pos,const VECTOR& now_target_pos)
+{
+	float speed = 1.0f;
+	//球体上に回る処理のターゲット
+	VECTOR sphere_target_pos = player->GetCenterPos();
+
+	auto input = player->GetInput();
+
+	Input* inp = new Input(input->GetPadNom());
+	inp->SetTypeState(input->GetNowTypeState(), input->GetBeforeTypeState());
 
 	// blend中じゃないときはswitchで管理
 	if (!is_blend_)
@@ -552,8 +611,8 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 			{
 				target_velocity_ = VSub(sphere_target_pos, now_target_pos);
 			}
-			
-			
+
+
 
 			break;
 
@@ -570,6 +629,11 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 
 			break;
 
+		case VirtualCameraName::kVacuum:
+
+			VacuumUpdate(player);
+
+			break;
 
 		case VirtualCameraName::kSuperAttackFirst:
 
@@ -611,11 +675,13 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 				else
 				{
 					player->Vibration(500, 300);
-				}	
+				}
+
+
 			}
 
 			break;
-		
+
 		}
 	}
 	else
@@ -624,7 +690,7 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 		//関数を呼び出して、velocityに直で入れる
 
 		//関数は引数でブレンドを開始した位置と行きたい位置とどんくらい(speed)で行くかを受け取り、velocityを調整する
-		velocity_ = GetStartToNextVelocity(start_pos_, camera_pos, next_pos_, blend_speed_,is_blend_);
+		velocity_ = GetStartToNextVelocity(start_pos_, camera_pos, next_pos_, blend_speed_, is_blend_);
 
 		if (!is_blend_)
 		{
@@ -634,16 +700,7 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 			}
 		}
 	}
-
-
-	
-
-
-	player->SetIsBlend(is_blend_);
-	player->SetIsTargetBlend(is_target_blend_);
-	
 }
-
 
 
 void Brain::SphereUpdate(const VECTOR& target_pos,const VECTOR& camera_pos,const Input* input)
@@ -904,6 +961,15 @@ void Brain::TrackingUpdate(const VECTOR& now_camera_pos,std::shared_ptr<Player> 
 
 }
 
+void Brain::VacuumUpdate(std::shared_ptr<Player>player)
+{
+	//プレイヤーの真上に行って
+	//radとdist渡したら一を出したら位置をだしてくれるやつ
+	GetRotatedByTheDistanceFromThePos(vertical_rad_,side_rad_,dist,)
+
+
+
+}
 
 
 void Brain::SuperAttackUpdate(const VECTOR& camera_pos, const VECTOR& now_target_pos, std::shared_ptr<Player> player)
@@ -1057,16 +1123,10 @@ void Brain::GetCameraUpdate(const VECTOR& pos, const VECTOR& camera_pos,const VE
 			add_rad = 0.f;
 		}
 
-		
-
-		vel.y = get_dist_ * cosf(get_camera_vertical_rad_);
-		float side_dist = get_dist_ * sinf(get_camera_vertical_rad_);
 		float decide_rad = get_camera_side_rad_ + add_rad;
-
-		vel.x = side_dist * cosf(decide_rad);
-		vel.z = side_dist * sinf(decide_rad);
-
-		next_pos = VAdd(get_camera_target_pos_, vel);
+		
+		
+		next_pos = GetRotatedByTheDistanceFromThePos(get_camera_vertical_rad_, decide_rad, get_dist_, get_camera_target_pos_);
 
 		velocity_ = VSub(next_pos,camera_pos);
 		//注視点を変える
@@ -1211,43 +1271,55 @@ void Brain::SetVelocity(const VECTOR& target_pos,const VECTOR& camera_pos)
 
 VECTOR Brain::GetStartToNextVelocity(const VECTOR& start_pos, const VECTOR& now_camera_pos,const VECTOR& next_pos, const float& time,bool& flag)
 {
-	VECTOR vel = VGet(0, 0, 0);
+	VECTOR return_vel = VGet(0, 0, 0);
 
 	if (now_camera_pos.x == next_pos.x &&
 		now_camera_pos.y == next_pos.y &&
 		now_camera_pos.z == next_pos.z)
 	{
 		flag = FALSE;
-		return vel;
+		return return_vel;
 	}
 
 	//あれでやってみようvel足す前と足した後でのやつを
 
-	if (FALSE)
+	if (TRUE)
 	{
-		// 今の座標が一致しているとき
-		if (CheckSamePos(now_camera_pos, next_pos))
+		//線形補完
+
+		// はじめの位置から次の位置までのdist(vel)を見る
+		// distを見た後に、時間の比を見てその比をかける
+		VECTOR dist_vec = VSub(next_pos, start_pos);
+		VECTOR vel = VGet(0, 0, 0);
+		VECTOR next_pos = VGet(0, 0, 0);
+
+		//タイマーをカウント
+		offset_line_timer_ += (delta_time_ * 0.1f);
+
+		//指定時間をこえたらtimerをマックスに
+		if (offset_line_timer_ >= time)
 		{
-			is_blend_ = FALSE;
-			//printfDx("とおだ");
-			return vel;
+			offset_line_timer_ = time;
+			//時間のひをかける
+			vel = VScale(dist_vec, (offset_line_timer_ / time));
+			offset_line_timer_ = 0.f;
+			flag = FALSE;
+		}
+		else
+		{
+			//時間のひをかける
+			vel = VScale(dist_vec, (offset_line_timer_ / time));
 		}
 
-		// 各座標のdistance(VECTOR)の量を見る
-		VECTOR this_to_next = GetFutureToNowPositionVelocity(next_pos, start_pos);
 
-		float time_per = (delta_time_ / time);	//時間の比を見る
 
-		vel = VScale(this_to_next, time_per);	//時間の比を全体の移動量にかける
 
-		// 位置の先取りを行う
-		if (CheckSamePos(VAdd(now_camera_pos, vel), next_pos))
-		{
-			printfDx("とおだ");
-			//位置を少し調整
-			is_blend_ = FALSE;
-			return VSub(next_pos, VAdd(now_camera_pos, vel));
-		}
+		//調整されたvelをstart_posにたす
+		next_pos = VAdd(start_pos, vel);
+
+		//now_posからnext_posをひいてvelocityを出す
+		return_vel = VSub(next_pos, now_camera_pos);
+
 	}
 	else
 	{
@@ -1256,18 +1328,18 @@ VECTOR Brain::GetStartToNextVelocity(const VECTOR& start_pos, const VECTOR& now_
 
 		float time_per = (delta_time_ / time);	//時間の比を見る
 
-		vel = VScale(this_to_next, time_per);	//時間の比を全体の移動量にかける
+		return_vel = VScale(this_to_next, time_per);	//時間の比を全体の移動量にかける
 
 		//
 
-		vel = OffsetPassingVel(now_camera_pos, next_pos, vel, flag);
+		return_vel = OffsetPassingVel(now_camera_pos, next_pos, return_vel, flag);
 	}
 
 	
 
 	
 	//時間の比を全体の距離にかける
-	return vel;
+	return return_vel;
 }
 
 

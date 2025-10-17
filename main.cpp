@@ -14,6 +14,7 @@
 #include"stage.h"
 #include"enemy_manager.h"
 #include"situation.h"
+#include"sky_dom.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -164,6 +165,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     enemy_manager->Init();   
 
+    std::shared_ptr<SkyDom> sky_dom = std::make_shared<SkyDom>("data/skydome/Dome_SS601.mv1", VGet(0, 0, 0));
+
     //高精度タイマーでフレーム管理
    std::shared_ptr<FPS>fps = std::make_shared<FPS>();
 
@@ -195,7 +198,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         camera->Update(brain->GetVelocity(), brain->GetTargetVelocity());
         effect_player->Update();
         
-        
+        sky_dom->SetPos(player->GetVelocity());
         if (CheckHitKey(KEY_INPUT_RIGHT))
         {
             time_scale += 0.01;
@@ -223,7 +226,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
         /*----デルタタイム表示----*/
         
-        
+        sky_dom->Draw();
 
         player->Draw();
         enemy_manager->Draw();
@@ -234,6 +237,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         stage->Draw();
         effect_player->Draw();
         camera->Draw();
+
         //enemy->Draw();
         //object->Draw();
 
