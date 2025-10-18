@@ -1066,17 +1066,20 @@ void Brain::VacuumUpdate(std::shared_ptr<Player>player)
 	velocity_ = player->GetVelocity();
 	target_velocity_ = player->GetVelocity();
 
+	//吸引が発動したらここで発動
+
 
 	// 今の処理はただ単にplayerのvelocityを受け取っているだけなのでそこからだんだん吸収されているような
 	// playerのvelocityをnormしてそこからだんだんと足していく
 
-
+	//playerのvelocityを正規化する
+	VECTOR norm_vec = VNorm(player->GetVelocity());
 
 	// ここでvelocityにaddするような形でだんだんと吸引されているのを表現する
 	static VECTOR offset_vel = VGet(0, 0, 0);
 
+	//offset_velのVsizeを見て、その大きさが既定の量を超えるようであるならそれ以上の大きさはたさない
 	
-
 
 
 	//velocityにoffset分を足す

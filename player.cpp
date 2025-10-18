@@ -490,6 +490,22 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 	
 
 
+	/*----------------•Ší‚ª‹zˆø‹@‚Ì‚Æ‚«‚ÍƒJƒƒ‰‚ð“K‰ž‚³‚¹‚é---------------*/
+
+	if ((Situation::GetInstance().GetSituationName() != SituationName::kGet))
+	{
+		if (now_weapon_name_ >= WeaponName::kWizardStaff)
+		{
+			Situation::GetInstance().SetSituation(SituationName::kVacuum);
+		}
+		else
+		{
+			Situation::GetInstance().SetSituation(SituationName::kNothing);
+		}
+	}
+
+	
+
 	
 	if (before_type_ != now_type_)
 	{
@@ -949,8 +965,6 @@ void Player::IsHitEnemy(BaseEnemy* enemy, bool& got)
 			now_state_ = State::kAttack;
 			super_weapon_spin_effect_->SetPos(weapon_->GetPos());
 			super_weapon_spin_effect_->Play();
-			Situation::GetInstance().SetSituation(SituationName::kVacuum);
-
 			Vibration(kVacuumVibration);
 		}
 		else
