@@ -252,6 +252,9 @@ public:
 	
 	void Vibration();
 
+
+	void VacuumVibration();
+
 	void SetRad(const VECTOR& target_pos, const VECTOR& player_pos);
 
 

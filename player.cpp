@@ -150,6 +150,9 @@ void Player::Draw()
 		super_weapon_spin_effect_->GetPos().x, super_weapon_spin_effect_->GetPos().y, super_weapon_spin_effect_->GetPos().z);
 		
 	
+	DrawFormatString(100, 140, GetColor(0, 0, 0), "%.2f",
+		super_weapon_spin_effect_->GetPlayCount());
+
 
 }
 
@@ -170,7 +173,6 @@ void Player::SetDeltaTime(float delta_time)
 		animation_.SetDeltaTime(delta_time_);
 		super_attack_->SetDeltaTime(delta_time_);
 		weapon_->SetDeltaTime(delta_time_);
-		super_weapon_spin_effect_->SetDeltaTime(delta_time_);
 	}
 	else
 	{
@@ -178,9 +180,9 @@ void Player::SetDeltaTime(float delta_time)
 		animation_.SetDeltaTime(delta_time);
 		super_attack_->SetDeltaTime(delta_time_);
 		weapon_->SetDeltaTime(delta_time_);
-		super_weapon_spin_effect_->SetDeltaTime(delta_time_);
+		
 	}
-
+	super_weapon_spin_effect_->SetDeltaTime(delta_time);
 	
 }
 

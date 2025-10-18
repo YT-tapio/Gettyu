@@ -593,7 +593,17 @@ void Brain::ChangeCameraInit(int& before_camera_name,const VECTOR& camera_pos,st
 
 			is_blend_tracking_ = TRUE;
 
-			Vibration();
+			// getしたあとtarget_posがずれているので修正
+			if (before_camera_name == VirtualCameraName::kGet)
+			{
+				printfDx("aaa");
+
+				if (TRUE)
+				{
+					target_velocity_ = VSub(vacuum_camera_->GetTargetPos(), now_target_pos);
+				}
+			}
+
 
 			break;
 
@@ -734,12 +744,11 @@ void Brain::VirtualCameraUpdate(std::shared_ptr<Player>player,const VECTOR& came
 			}
 			else
 			{
-
 				//printfDx("%.2f\n", player->GetSuperAttackEffectPlayCount());
 				player->AttachWeapon(WeaponName::kWizardStaff);
 				//player->Vibration(super_attack_vibration_power_,10);
 				Vibration();
-				if (CheckHitKey(KEY_INPUT_Y) || player->GetSuperAttackEffectPlayCount() > 130.f)
+				if (player->GetSuperAttackEffectPlayCount() > 130.f)
 				{
 					//たーげっとのブレンドも終わってえふぇくとも終わると切り替える
 					camera_name_ = VirtualCameraName::kNothing;
@@ -750,8 +759,6 @@ void Brain::VirtualCameraUpdate(std::shared_ptr<Player>player,const VECTOR& came
 				{
 					player->Vibration(kQuakeVibration);
 				}
-
-
 			}
 
 			break;
@@ -1048,13 +1055,32 @@ void Brain::TrackingUpdate(const VECTOR& now_camera_pos,std::shared_ptr<Player> 
 
 void Brain::VacuumUpdate(std::shared_ptr<Player>player)
 {
+	// constの宣言です
+	const float vacuum_dist = 10.f;
+
 	// プレイヤーの真上に行って
 	// constでどんくらいの距離かを指定しとく
 	// radとdist渡したら一を出したら位置をだしてくれるやつ
-	//GetRotatedByTheDistanceFromThePos(vertical_rad_, side_rad_, kVacuumDist, player->GetPos());
+	// GetRotatedByTheDistanceFromThePos(vertical_rad_, side_rad_, kVacuumDist, player->GetPos());
 
 	velocity_ = player->GetVelocity();
 	target_velocity_ = player->GetVelocity();
+
+
+	// 今の処理はただ単にplayerのvelocityを受け取っているだけなのでそこからだんだん吸収されているような
+	// playerのvelocityをnormしてそこからだんだんと足していく
+
+
+
+	// ここでvelocityにaddするような形でだんだんと吸引されているのを表現する
+	static VECTOR offset_vel = VGet(0, 0, 0);
+
+	
+
+
+
+	//velocityにoffset分を足す
+	velocity_ = VAdd(velocity_, offset_vel);
 }
 
 
@@ -1305,6 +1331,8 @@ void Brain::Vibration()
 
 
 }
+
+
 
 
 
