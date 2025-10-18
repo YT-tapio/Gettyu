@@ -501,6 +501,7 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 		else
 		{
 			Situation::GetInstance().SetSituation(SituationName::kNothing);
+			is_vacuum_ = FALSE;
 		}
 	}
 
@@ -966,6 +967,7 @@ void Player::IsHitEnemy(BaseEnemy* enemy, bool& got)
 			super_weapon_spin_effect_->SetPos(weapon_->GetPos());
 			super_weapon_spin_effect_->Play();
 			Vibration(kVacuumVibration);
+			is_vacuum_ = TRUE;
 		}
 		else
 		{
@@ -975,7 +977,7 @@ void Player::IsHitEnemy(BaseEnemy* enemy, bool& got)
 				Situation::GetInstance().SetSituation(SituationName::kNothing);
 				//printfDx("1");
 			}
-
+			is_vacuum_ = FALSE;
 		}
 	}
 

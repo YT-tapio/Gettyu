@@ -95,6 +95,8 @@ private:
 	bool is_super_attack_;
 	bool is_switch_weapon_;
 
+	bool is_vacuum_ = FALSE;
+
 	int model_;							//モデル
 	int pad_input_num_;					//入力するパッドの番号
 
@@ -225,6 +227,8 @@ public:
 	const bool GetIsSuperAttack() const { return is_super_attack_; }
 
 	const bool GetSuperAttackEffectIsPlay() const { return super_attack_->GetEffectIsPlay(); }
+
+	const bool GetIsVacuum() const { return is_vacuum_; }
 
 	const Input* GetInput() const { return input_; }
 
