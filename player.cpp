@@ -410,7 +410,7 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 	//必殺技による武器替え
 	if ((input_->CheckInputPadButton(PadConfig::kSuperAttackButton) == InputState::kPush ||
 		input_->CheckInputMouse(KeyConfig::kSuperAttackKey) == InputState::kPush) &&
-		!(is_super_attack_) && is_ground_ && !(is_camera_blend_) && !(is_camera_target_blend_) && 
+		!(is_super_attack_) && is_ground_ && !(is_camera_blend_) &&
 		(now_weapon_name_ == WeaponName::kBugNet) && !(now_type_ >= AnimationType::kAttack))
 	{
 		is_super_attack_ = TRUE;
@@ -570,7 +570,7 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 
 	/*--------プレイヤーの操作--------*/
 
-	if (!is_super_attack_ && !is_attack_ && !is_camera_blend_)
+	if (!is_super_attack_ && !is_attack_)
 	{
 		//前
 		if (input_->CheckInputKey(KeyConfig::kUpKey))
@@ -948,6 +948,8 @@ void Player::IsHitEnemy(BaseEnemy* enemy, bool& got)
 			super_weapon_spin_effect_->SetPos(weapon_->GetPos());
 			super_weapon_spin_effect_->Play();
 			Situation::GetInstance().SetSituation(SituationName::kVacuum);
+
+			Vibration(kVacuumVibration);
 		}
 		else
 		{
@@ -1034,11 +1036,11 @@ void Player::IsHitEnemy(BaseEnemy* enemy, bool& got)
 	
 }
 
-void Player::Vibration(int power,int time)
+void Player::Vibration(const VibrationData& data)
 {
 	//ほしいのは時間と、振動の強さ
 	//パッドしんどう
-	StartJoypadVibration(input_->GetPadNom(), power, time, -1);
+	StartJoypadVibration(input_->GetPadNom(), data.power, data.time, -1);
 }
 
 

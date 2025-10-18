@@ -505,8 +505,7 @@ void Brain::ChangeCameraInit(int& before_camera_name,const VECTOR& camera_pos,st
 
 		case VirtualCameraName::kGet:
 
-			player->Vibration(500, 1000);
-
+			player->Vibration(kGetVibration);
 
 			//ここでdistを決めたりする
 			GetInit(camera_pos, Situation::GetInstance().GetSituationPos());
@@ -529,6 +528,7 @@ void Brain::ChangeCameraInit(int& before_camera_name,const VECTOR& camera_pos,st
 				tracking_camera_->SetTargetPos(player->GetCenterPos());
 				start_target_pos_ = now_target_pos;
 				next_target_pos_ = player->GetCenterPos();
+				is_blend_tracking_ = TRUE;
 			}
 			else if(before_camera_name == VirtualCameraName::kGet)
 			{
@@ -538,7 +538,7 @@ void Brain::ChangeCameraInit(int& before_camera_name,const VECTOR& camera_pos,st
 				target_blend_speed_ = 0.f;
 
 				target_velocity_ = VSub(tracking_camera_->GetTargetPos(), now_target_pos);
-
+				//is_blend_tracking_ = TRUE;
 				is_init = TRUE;
 				/*
 				next_pos_ = tracking_camera_->GetPos();
@@ -592,6 +592,8 @@ void Brain::ChangeCameraInit(int& before_camera_name,const VECTOR& camera_pos,st
 			target_blend_speed_ = 0.f;
 
 			is_blend_tracking_ = TRUE;
+
+			Vibration();
 
 			break;
 
@@ -742,11 +744,11 @@ void Brain::VirtualCameraUpdate(std::shared_ptr<Player>player,const VECTOR& came
 					//たーげっとのブレンドも終わってえふぇくとも終わると切り替える
 					camera_name_ = VirtualCameraName::kNothing;
 					player->SetIsSuperAttack(FALSE);
-					player->Vibration(1000, 100);
+					player->Vibration(kBombVibration);
 				}
 				else
 				{
-					player->Vibration(500, 300);
+					player->Vibration(kQuakeVibration);
 				}
 
 
@@ -768,6 +770,7 @@ void Brain::VirtualCameraUpdate(std::shared_ptr<Player>player,const VECTOR& came
 		if (is_blend_tracking_)
 		{
 			next_pos_ = VAdd(next_pos_, player->GetVelocity());
+			target_velocity_ = player->GetVelocity();
 		}
 
 		//関数は引数でブレンドを開始した位置と行きたい位置とどんくらい(speed)で行くかを受け取り、velocityを調整する

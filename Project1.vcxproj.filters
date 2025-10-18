@@ -109,6 +109,9 @@
     <Filter Include="ソース ファイル\sky_dom">
       <UniqueIdentifier>{519557b4-47f3-4452-b3e6-c87a00e5893c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\input\vibration">
+      <UniqueIdentifier>{4c44d59d-76ab-46ca-a183-465268f3358e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -206,6 +209,9 @@
     </ClCompile>
     <ClCompile Include="sky_dom.cpp">
       <Filter>ソース ファイル\sky_dom</Filter>
+    </ClCompile>
+    <ClCompile Include="vibration.cpp">
+      <Filter>ソース ファイル\input\vibration</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -316,6 +322,9 @@
     </ClInclude>
     <ClInclude Include="sky_dom.h">
       <Filter>ソース ファイル\sky_dom</Filter>
+    </ClInclude>
+    <ClInclude Include="vibration.h">
+      <Filter>ソース ファイル\input\vibration</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

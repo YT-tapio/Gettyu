@@ -3,7 +3,7 @@
 #include"animation.h"
 #include"super_attack.h"
 #include"base_enemy.h"
-
+#include"vibration.h"
 
 struct MixamoBonePath;
 class WeaponBase;
@@ -41,7 +41,7 @@ private:
 
 	const float kWalkSpeed = 1.0f;
 	const float kNormalSpeed = 2.5f;
-	const float kDashSpeed = 3.8f;
+	const float kDashSpeed = 5.5f;
 	const float kGravity = 0.75f;		//重力
 	const float kJumpPower = 3.5f;		//ジャンプ力
 
@@ -76,6 +76,9 @@ private:
 	VECTOR camera_offset_dir;
 
 	CapsuleData capsule_;
+
+	//const VibrationData kVacuumVibration = { 500,700 };
+
 
 	float before_rot_;
 	float target_rot_;
@@ -157,7 +160,8 @@ public:
 	//敵を捕まえたかどうかの処理を行う
 	void IsHitEnemy(BaseEnemy* enemy, bool& got);
 
-	void Vibration(int power, int time);
+
+	void Vibration(const VibrationData& data);
 
 
 	void SetIsTarget(bool flag)

@@ -165,6 +165,7 @@
     <ClCompile Include="tracking.cpp" />
     <ClCompile Include="turn_camera.cpp" />
     <ClCompile Include="vacuum_camera.cpp" />
+    <ClCompile Include="vibration.cpp" />
     <ClCompile Include="virtual_camera.cpp" />
     <ClCompile Include="warp_rod.cpp" />
     <ClCompile Include="weapon_base.cpp" />
@@ -203,6 +204,7 @@
     <ClInclude Include="tracking.h" />
     <ClInclude Include="turn_camera.h" />
     <ClInclude Include="vacuum_camera.h" />
+    <ClInclude Include="vibration.h" />
     <ClInclude Include="virtual_camera.h" />
     <ClInclude Include="weapon_base.h" />
     <ClInclude Include="warp_rod.h" />

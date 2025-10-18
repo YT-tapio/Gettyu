@@ -43,8 +43,6 @@ struct Control
 	static const int kY = 1;
 };
 
-
-
 class Input
 {
 
