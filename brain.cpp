@@ -363,7 +363,7 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 	//必殺技のカメラを識別
 	static int super_attack_situation_num = 0;
 
-
+	bool is_init = FALSE;
 
 	
 
@@ -448,10 +448,15 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 
 	
 
-	ChangeCameraInit(before_camera_name, camera_pos, player, now_target_pos);
+	ChangeCameraInit(before_camera_name, camera_pos, player, now_target_pos,is_init);
 	
 
-	VirtualCameraUpdate(player, camera_pos, now_target_pos);
+	if (!is_init)
+	{
+		VirtualCameraUpdate(player, camera_pos, now_target_pos);
+	}
+
+	
 
 
 	player->SetIsBlend(is_blend_);
@@ -460,7 +465,7 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 }
 
 
-void Brain::ChangeCameraInit(int& before_camera_name,const VECTOR& camera_pos,std::shared_ptr<Player>player,const VECTOR& now_target_pos)
+void Brain::ChangeCameraInit(int& before_camera_name,const VECTOR& camera_pos,std::shared_ptr<Player>player,const VECTOR& now_target_pos,bool& is_init)
 {
 
 	//前回と結果が違う(カメラが切り替わる)ときblendさせる
@@ -468,6 +473,7 @@ void Brain::ChangeCameraInit(int& before_camera_name,const VECTOR& camera_pos,st
 	{
 		is_blend_			= TRUE;
 		offset_line_timer_	= 0.f;
+		is_init = TRUE;
 		//今の座標と次のvirtualcameraの座標をとる
 		start_pos_ = camera_pos;
 
@@ -563,12 +569,6 @@ void Brain::ChangeCameraInit(int& before_camera_name,const VECTOR& camera_pos,st
 			}
 			//getからsphereに代わるときは違う処理にする
 
-			
-
-			
-
-
-
 			break;
 
 
@@ -592,16 +592,17 @@ void Brain::ChangeCameraInit(int& before_camera_name,const VECTOR& camera_pos,st
 
 			is_blend_tracking_ = TRUE;
 
-			// getしたあとtarget_posがずれているので修正
+			
 			if (before_camera_name == VirtualCameraName::kGet)
 			{
-				printfDx("aaa");
-
-				if (TRUE)
-				{
-					target_velocity_ = VSub(vacuum_camera_->GetTargetPos(), now_target_pos);
-				}
+				next_pos_ = vacuum_camera_->GetPos();
 			}
+
+
+			target_velocity_ = VSub(player->GetCenterPos(), now_target_pos);
+
+			// getしたあとtarget_posがずれているので修正
+			
 
 
 			break;
@@ -714,7 +715,7 @@ void Brain::VirtualCameraUpdate(std::shared_ptr<Player>player,const VECTOR& came
 
 		case VirtualCameraName::kVacuum:
 
-			VacuumUpdate(player);
+			VacuumUpdate(player,camera_pos);
 
 			break;
 
@@ -1052,16 +1053,21 @@ void Brain::TrackingUpdate(const VECTOR& now_camera_pos,std::shared_ptr<Player> 
 
 }
 
-void Brain::VacuumUpdate(std::shared_ptr<Player>player)
+void Brain::VacuumUpdate(std::shared_ptr<Player>player,const VECTOR& camera_pos)
 {
 	// constの宣言です
-	const float kVacuumed	= 1.f;
-	const float kMaxTime	= 1.f;
-	const float kAccelSpeed = 0.5f;
+	const float kVacuumed		= 1.f;
+	const float kMaxTime			= 1.f;
+	const float kAccelSpeed		= 0.5f;
+	const float kOffsetMax			= 30.f;
+	const float kOffsetSpeed		= 1.f;
 
-	static float now_dist	= 0.f;
-	static float timer		= 0.f;
-	static float accel		= 0.f;
+	static float offset_dist			= 0.f;
+	static float timer					= 0.f;
+	static float accel					= 0.f;
+
+	float decide_dist					= 0.f;
+	float side_dist						= 0.f;							//地上の距離
 
 	// プレイヤーの真上に行って
 	// constでどんくらいの距離かを指定しとく
@@ -1071,73 +1077,65 @@ void Brain::VacuumUpdate(std::shared_ptr<Player>player)
 	velocity_			= player->GetVelocity();
 	target_velocity_	= player->GetVelocity();
 
+	// target_velocity_を足した値がもともとのと一致しない場合は
+
+
+
 	//吸引が発動したらここで発動
 
 
 	// 今の処理はただ単にplayerのvelocityを受け取っているだけなのでそこからだんだん吸収されているような
 	// playerのvelocityをnormしてそこからだんだんと足していく
 
-	// cameraのdirにそわす
+	//offset_distにどんくらい吸引されているかを足して
 
-	VECTOR dir = VGet(0, 0, 0);
+	//今等速
+	//加速にする
 
-
-	dir.x -= sinf(side_rad_);
-	dir.z -= cosf(side_rad_);
-
-	// ここでvelocityにaddするような形でだんだんと吸引されているのを表現する
-	VECTOR offset_vel = VGet(0, 0, 0);
-
-	// offset_velのVsizeを見て、その大きさが既定の量を超えるようであるならそれ以上の大きさはたさない
-
+	//offset_dist以外にも補完しておくものが必要
 
 	if (player->GetIsVacuum())
 	{
+		//offset_distをだんだんと大きくしていく
+		//加速度
 
-		if (timer != kMaxTime)
+		//offsetmaxいじょうじゃないなら
+		if (!(offset_dist >=  kOffsetMax))
 		{
-			accel += kAccelSpeed;
-			timer += ((delta_time_ / 10.f));
+			offset_dist += (offset_dist + ((delta_time_ / 10.f) * kOffsetSpeed));
 
-			if (timer >= kMaxTime)
+
+			if (offset_dist > kOffsetMax)
 			{
-				timer = kMaxTime;
+				offset_dist = kOffsetMax;
 			}
-			
-			offset_vel = VScale(dir, (kVacuumed * (kMaxTime / kMaxTime)));
-			
 		}
-
-		
-
-		
-
 	}
 	else
 	{
-		if (TRUE)
+		//offset_distをだんだん小さく
+		//減速
+		
+		if (offset_dist > 0.f)
 		{
-
-			timer -= (delta_time_ / 10.f);
-			if (timer <= 0.f)
-			{
-				timer = 0.f;
-			}
-			else
-			{
-				offset_vel = VScale(dir, (-kVacuumed * (kMaxTime / kMaxTime)));
-			}
-
-			accel = 0.f;
-
+			offset_dist -= (delta_time_ * kOffsetSpeed);
 		}
+		else
+		{
+			offset_dist = 0.f;
+		}
+
 	}
 
-	
-	
+	//今等速でなっている加速にしたい
+	decide_dist = kVacuumDist - offset_dist;
 
-	//velocityにoffset分を足す
-	velocity_ = VAdd(velocity_, offset_vel);
+
+	VECTOR pos = GetRotatedByTheDistanceFromThePos(kVacuumVerticalRad, side_rad_, decide_dist, player->GetPos());
+	velocity_ = VSub(pos,camera_pos);
+	//posを記憶
+	vacuum_camera_->SetPos(VAdd(camera_pos, velocity_));
+	vacuum_camera_->SetTargetPos(player->GetCenterPos());
 }
 
 

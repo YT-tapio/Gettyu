@@ -149,8 +149,10 @@
     <ClCompile Include="effect_manager.cpp" />
     <ClCompile Include="enemy_manager.cpp" />
     <ClCompile Include="FPS.cpp" />
+    <ClCompile Include="game.cpp" />
     <ClCompile Include="get_camera.cpp" />
     <ClCompile Include="input.cpp" />
+    <ClCompile Include="line.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="normal_enemy.cpp" />
     <ClCompile Include="player.cpp" />
@@ -160,6 +162,7 @@
     <ClCompile Include="sphere_camera.cpp" />
     <ClCompile Include="stage.cpp" />
     <ClCompile Include="still_object.cpp" />
+    <ClCompile Include="sub_screen.cpp" />
     <ClCompile Include="super_attack_camera.cpp" />
     <ClCompile Include="super_attack.cpp" />
     <ClCompile Include="tracking.cpp" />
@@ -186,9 +189,11 @@
     <ClInclude Include="effect_manager.h" />
     <ClInclude Include="enemy_manager.h" />
     <ClInclude Include="FPS.h" />
+    <ClInclude Include="game.h" />
     <ClInclude Include="get_camera.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="keyconfig.h" />
+    <ClInclude Include="line.h" />
     <ClInclude Include="mixamo_fram.h" />
     <ClInclude Include="normal_enemy.h" />
     <ClInclude Include="player.h" />
@@ -199,6 +204,7 @@
     <ClInclude Include="sphere_camera.h" />
     <ClInclude Include="stage.h" />
     <ClInclude Include="still_object.h" />
+    <ClInclude Include="sub_screen.h" />
     <ClInclude Include="super_attack.h" />
     <ClInclude Include="super_attack_camera.h" />
     <ClInclude Include="tracking.h" />

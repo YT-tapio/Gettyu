@@ -18,5 +18,6 @@ public:
 
 	void Draw();
 
+
 	void SetPos(const VECTOR vel) { pos_ = VAdd(pos_, vel); MV1SetPosition(model_data_, pos_); }
 };

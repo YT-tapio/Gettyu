@@ -112,6 +112,21 @@
     <Filter Include="ソース ファイル\input\vibration">
       <UniqueIdentifier>{4c44d59d-76ab-46ca-a183-465268f3358e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\UI">
+      <UniqueIdentifier>{1738b5a4-7d7d-4690-a6b3-75653cbb1cfe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\game">
+      <UniqueIdentifier>{dfba3545-15c5-42de-811a-23343baa818a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\post_effect">
+      <UniqueIdentifier>{f40736bc-fe5d-4dbd-8760-5db008a6aa49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\post_effect\line">
+      <UniqueIdentifier>{02a588bd-6e9a-46dd-a62f-7c077bdd87c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\sub_screen">
+      <UniqueIdentifier>{7ce70e21-d239-48e1-939f-b93fb7df999a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -212,6 +227,15 @@
     </ClCompile>
     <ClCompile Include="vibration.cpp">
       <Filter>ソース ファイル\input\vibration</Filter>
+    </ClCompile>
+    <ClCompile Include="game.cpp">
+      <Filter>ソース ファイル\game</Filter>
+    </ClCompile>
+    <ClCompile Include="line.cpp">
+      <Filter>ソース ファイル\post_effect\line</Filter>
+    </ClCompile>
+    <ClCompile Include="sub_screen.cpp">
+      <Filter>ソース ファイル\sub_screen</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -325,6 +349,15 @@
     </ClInclude>
     <ClInclude Include="vibration.h">
       <Filter>ソース ファイル\input\vibration</Filter>
+    </ClInclude>
+    <ClInclude Include="game.h">
+      <Filter>ソース ファイル\game</Filter>
+    </ClInclude>
+    <ClInclude Include="line.h">
+      <Filter>ソース ファイル\post_effect\line</Filter>
+    </ClInclude>
+    <ClInclude Include="sub_screen.h">
+      <Filter>ソース ファイル\sub_screen</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

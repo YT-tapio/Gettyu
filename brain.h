@@ -130,6 +130,7 @@ private:
 
 	void MakeVertical();
 
+
 	//受け取った引数のポジションから指定したdist分のradの位置を返す
 	VECTOR GetRotatedByTheDistanceFromThePos(const float ver_rad, const float side_rad, const float dist,const VECTOR& center_pos);
 
@@ -223,7 +224,7 @@ public:
 
 
 	//
-	void ChangeCameraInit(int& before_camera_name, const VECTOR& camera_pos, std::shared_ptr<Player>player, const VECTOR& now_target_pos);
+	void ChangeCameraInit(int& before_camera_name, const VECTOR& camera_pos, std::shared_ptr<Player>player, const VECTOR& now_target_pos, bool& is_init);
 
 	//
 	void VirtualCameraUpdate(std::shared_ptr<Player>player, const VECTOR& camera_pos, const VECTOR& now_target_pos);
@@ -237,7 +238,7 @@ public:
 	void TrackingUpdate(const VECTOR& now_camera_pos, std::shared_ptr<Player> player);
 
 	//吸引時のカメラのアプデ
-	void VacuumUpdate(std::shared_ptr<Player>player);
+	void VacuumUpdate(std::shared_ptr<Player>player, const VECTOR& camera_pos);
 
 	void SuperAttackUpdate(const VECTOR& camera_pos, const VECTOR& now_target_pos, std::shared_ptr<Player> player);
 
