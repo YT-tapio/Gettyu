@@ -234,7 +234,7 @@ public:
 	/// <summary>
 	/// カメラが球体上に回る処理
 	/// </summary>
-	void SphereUpdate(const VECTOR& target_pos, const VECTOR& camera_pos,const Input* input);
+	void SphereUpdate(const VECTOR& target_pos, const VECTOR& camera_pos);
 
 	//追尾のアップデート
 	void TrackingUpdate(const VECTOR& now_camera_pos, std::shared_ptr<Player> player);

@@ -83,16 +83,22 @@ private:
 	/// <returns></returns>
 	float MakePercent(float value, float min, float max);
 
+	// コンストラクタ
+	Input();
+
 public:
 
-	// コンストラクタ
-	Input(const int num);
 	
+	static Input& GetInstance()
+	{
+		static Input instance;
+		return instance;
+	}
 
-	// デストラクタ
-	~Input();
+	Input(const Input&) = delete;
+	Input& operator=(const Input&) = delete;
 
-	void Awake();
+	void Awake(const int num);
 	
 	// 入力更新
 	void Update();

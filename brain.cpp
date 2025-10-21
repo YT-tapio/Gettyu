@@ -672,10 +672,7 @@ void Brain::VirtualCameraUpdate(std::shared_ptr<Player>player,const VECTOR& came
 	//球体上に回る処理のターゲット
 	VECTOR sphere_target_pos = player->GetCenterPos();
 
-	auto input = player->GetInput();
-
-	Input* inp = new Input(input->GetPadNom());
-	inp->SetTypeState(input->GetNowTypeState(), input->GetBeforeTypeState());
+	
 
 	// blend中じゃないときはswitchで管理
 	if (!is_blend_)
@@ -688,7 +685,7 @@ void Brain::VirtualCameraUpdate(std::shared_ptr<Player>player,const VECTOR& came
 		{
 		case VirtualCameraName::kSphere:
 
-			SphereUpdate(sphere_target_pos, camera_pos, inp);
+			SphereUpdate(sphere_target_pos, camera_pos);
 			speed = 1.0f;
 
 			if (is_target_blend_)
@@ -799,11 +796,14 @@ void Brain::VirtualCameraUpdate(std::shared_ptr<Player>player,const VECTOR& came
 }
 
 
-void Brain::SphereUpdate(const VECTOR& target_pos,const VECTOR& camera_pos,const Input* input)
+void Brain::SphereUpdate(const VECTOR& target_pos,const VECTOR& camera_pos)
 {
+	/*
 	Input* inp = new Input(input->GetPadNom());
 	inp->SetTypeState(input->GetNowTypeState(), input->GetBeforeTypeState());
-
+	*/
+	
+	
 	float pad_side_rad_value		= 0.0f;
 	float pad_vertical_rad_value	= 0.0f;
 
@@ -813,14 +813,14 @@ void Brain::SphereUpdate(const VECTOR& target_pos,const VECTOR& camera_pos,const
 	float decide_side_rad_value			= 0.0f;
 	float decide_vertical_rad_value		= 0.0f;
 
-	pad_side_rad_value		= static_cast<float>(((M_PI / 180) * (inp->GetPadStickPercent(StickType::kRight, Control::kX) * kCameraSpeed) * all_sensitivity_) * side_sensitivity_) * 0.5f;
-	pad_vertical_rad_value	= -(static_cast<float>((M_PI / 180) * ((inp->GetPadStickPercent(StickType::kRight, Control::kY) * kCameraSpeed) * all_sensitivity_) * vertical_sensitivity_)) * 0.5f;
+	pad_side_rad_value		= static_cast<float>(((M_PI / 180) * (Input::GetInstance().GetPadStickPercent(StickType::kRight, Control::kX) * kCameraSpeed) * all_sensitivity_) * side_sensitivity_) * 0.5f;
+	pad_vertical_rad_value	= -(static_cast<float>((M_PI / 180) * ((Input::GetInstance().GetPadStickPercent(StickType::kRight, Control::kY) * kCameraSpeed) * all_sensitivity_) * vertical_sensitivity_)) * 0.5f;
 
 	//if()
-	mouse_side_rad_value		= static_cast<float>((M_PI / 180) * (inp->GetMousePercent(Control::kX) * kCameraSpeed) * all_sensitivity_) * side_sensitivity_;
-	mouse_vertical_rad_value	= static_cast<float>((M_PI / 180) * (inp->GetMousePercent(Control::kY) * kCameraSpeed) * all_sensitivity_) * vertical_sensitivity_;
+	mouse_side_rad_value		= static_cast<float>((M_PI / 180) * (Input::GetInstance().GetMousePercent(Control::kX) * kCameraSpeed) * all_sensitivity_) * side_sensitivity_;
+	mouse_vertical_rad_value	= static_cast<float>((M_PI / 180) * (Input::GetInstance().GetMousePercent(Control::kY) * kCameraSpeed) * all_sensitivity_) * vertical_sensitivity_;
 
-	inp->ResetMousePoint();
+	Input::GetInstance().ResetMousePoint();
 
 
 	if (pad_side_rad_value == 0.0f && pad_vertical_rad_value == 0.0f)

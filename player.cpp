@@ -23,7 +23,6 @@ Player::Player(VECTOR pos, int model,int pad_num,int div, float r, float vertica
 	: model_(model)
 	, pad_input_num_(pad_num)
 	, weapon_(nullptr)
-	, input_(new Input (DX_INPUT_PAD1))
 	, now_type_(AnimationType::kNothing)
 	, target_rot_(0.0f)
 	, before_rot_(0.0f)
@@ -55,7 +54,6 @@ Player::Player(VECTOR pos, int model,int pad_num,int div, float r, float vertica
 Player::~Player()
 {
 	delete weapon_;
-	delete input_;
 	delete super_attack_;
 }
 
@@ -189,11 +187,7 @@ void Player::SetDeltaTime(float delta_time)
 
 void Player::InputState()
 {
-	input_->Update();
-
-	GetHitKeyStateAll(key_input_);
-
-	GetJoypadXInputState(pad_input_num_, &pad_input_);
+	
 }
 
 
@@ -331,14 +325,15 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 	if (!is_super_attack_ && now_type_ < AnimationType::kAttack)
 	{
 		/*左スティックの入力量をみる*/
-		if (input_->CheckInputKey(KeyConfig::kDashKey) > InputState::kOff || input_->GetPadStickVertical(StickType::kLeft) > 200)
+		if (Input::GetInstance().CheckInputKey(KeyConfig::kDashKey) > InputState::kOff || Input::GetInstance().GetPadStickVertical(StickType::kLeft) > 200)
 		{
 			speed = kDashSpeed;
 
 			now_type_ = AnimationType::kFastRun;
 			now_state_ = State::kRun;
 		}
-		else if (input_->CheckInputKey(KeyConfig::kWalkKey) > InputState::kOff || (input_->GetPadStickVertical(StickType::kLeft) > 50 && input_->GetPadStickVertical(StickType::kLeft) < 150))
+		else if (Input::GetInstance().CheckInputKey(KeyConfig::kWalkKey) > InputState::kOff || (Input::GetInstance().GetPadStickVertical(StickType::kLeft) > 50 &&
+			Input::GetInstance().GetPadStickVertical(StickType::kLeft) < 150))
 		{
 			speed = kWalkSpeed;
 
@@ -400,7 +395,7 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 
 	
 	//棒を振る系のやつ
-	if ((input_->CheckInputMouse(KeyConfig::kAttackKey) == InputState::kPush))
+	if ((Input::GetInstance().CheckInputMouse(KeyConfig::kAttackKey) == InputState::kPush) && !(is_super_attack_))
 	{
 		if (is_ground_ && weapon_->GetName() != WeaponName::kWizardStaff)
 		{
@@ -410,8 +405,8 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 	}
 
 	//必殺技による武器替え
-	if ((input_->CheckInputPadButton(PadConfig::kSuperAttackButton) == InputState::kPush ||
-		input_->CheckInputMouse(KeyConfig::kSuperAttackKey) == InputState::kPush) &&
+	if ((Input::GetInstance().CheckInputPadButton(PadConfig::kSuperAttackButton) == InputState::kPush ||
+		Input::GetInstance().CheckInputMouse(KeyConfig::kSuperAttackKey) == InputState::kPush) &&
 		!(is_super_attack_) && is_ground_ && !(is_camera_blend_) &&
 		(now_weapon_name_ == WeaponName::kBugNet) && !(now_type_ >= AnimationType::kAttack))
 	{
@@ -455,27 +450,16 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 	{
 		WeaponName next_name = WeaponName::kNothing;
 
-		if (input_->CheckInputPadButton(PadConfig::kSwitchWarpRodButton) == InputState::kPush ||
-			input_->CheckInputKey(KeyConfig::kSwicthBatKey) == InputState::kPush)
+		if (Input::GetInstance().CheckInputPadButton(PadConfig::kSwitchWarpRodButton) == InputState::kPush ||
+			Input::GetInstance().CheckInputKey(KeyConfig::kSwicthBatKey) == InputState::kPush)
 		{
 			next_name = WeaponName::kBugNet;
 		}
 
-		if (input_->CheckInputPadButton(PadConfig::kSwitchBatButton) == InputState::kPush ||
-			input_->CheckInputKey(KeyConfig::kSwicthWarpRodKey) == InputState::kPush)
+		if (Input::GetInstance().CheckInputPadButton(PadConfig::kSwitchBatButton) == InputState::kPush ||
+			Input::GetInstance().CheckInputKey(KeyConfig::kSwicthWarpRodKey) == InputState::kPush)
 		{
 			next_name = WeaponName::kBat;
-		}
-
-		if (FALSE)
-		{
-			//デバック用
-			if (input_->CheckInputPadButton(PadConfig::kSwitchBatButton) == InputState::kPush ||
-				input_->CheckInputKey(KEY_INPUT_3) == InputState::kPush)
-			{
-				next_name = WeaponName::kWizardStaff;
-			}
-
 		}
 		
 
@@ -592,14 +576,14 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 	if (!is_super_attack_ && !is_attack_)
 	{
 		//前
-		if (input_->CheckInputKey(KeyConfig::kUpKey))
+		if (Input::GetInstance().CheckInputKey(KeyConfig::kUpKey))
 		{
 			direction_ = VAdd(direction_, VGet(direction.x, 0, direction.x * constant));
 			//rotation_ = VGet(0, rotation, 0);
 
 			/*---例外処理(行列使ったらこんなことしなくて済んだかも)---*/
 
-			if (!(input_->CheckInputKey(KeyConfig::kDownKey) > InputState::kOff))
+			if (!(Input::GetInstance().CheckInputKey(KeyConfig::kDownKey) > InputState::kOff))
 			{
 				rot += (static_cast<float>((M_PI / 180) * 0));
 
@@ -609,19 +593,19 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 		}
 
 		//後ろ
-		if ((input_->CheckInputKey(KeyConfig::kDownKey) > InputState::kOff))
+		if ((Input::GetInstance().CheckInputKey(KeyConfig::kDownKey) > InputState::kOff))
 		{
 			direction_ = VAdd(direction_, VGet(-1.0f * (direction.x), 0, -1.0f * (direction.x * constant)));
 
 			/*---例外処理---*/
-			if (!(input_->CheckInputKey(KeyConfig::kUpKey) > InputState::kOff))
+			if (!(Input::GetInstance().CheckInputKey(KeyConfig::kUpKey) > InputState::kOff))
 			{
 
-				if ((input_->CheckInputKey(KeyConfig::kRightKey) > InputState::kOff))
+				if ((Input::GetInstance().CheckInputKey(KeyConfig::kRightKey) > InputState::kOff))
 				{
 					rot += (static_cast<float>((M_PI / 180) * 180));
 				}
-				else if ((input_->CheckInputKey(KeyConfig::kLeftKey) > InputState::kOff))
+				else if ((Input::GetInstance().CheckInputKey(KeyConfig::kLeftKey) > InputState::kOff))
 				{
 					rot += -1 * (static_cast<float>((M_PI / 180) * 180));
 				}
@@ -638,12 +622,12 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 
 
 		//右
-		if ((input_->CheckInputKey(KeyConfig::kRightKey) > InputState::kOff))
+		if ((Input::GetInstance().CheckInputKey(KeyConfig::kRightKey) > InputState::kOff))
 		{
 			direction_ = VAdd(direction_, VGet(direction.x * constant, 0, -direction.x));
 
 			/*---例外処理---*/
-			if (!((input_->CheckInputKey(KeyConfig::kLeftKey) > InputState::kOff)))
+			if (!((Input::GetInstance().CheckInputKey(KeyConfig::kLeftKey) > InputState::kOff)))
 			{
 				rot += (static_cast<float>((M_PI / 180) * 90));
 				input_count++;
@@ -652,12 +636,12 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 		}
 
 		//左
-		if ((input_->CheckInputKey(KeyConfig::kLeftKey) > InputState::kOff))
+		if ((Input::GetInstance().CheckInputKey(KeyConfig::kLeftKey) > InputState::kOff))
 		{
 			direction_ = VAdd(direction_, VGet(-(direction.x * constant), 0, direction.x));
 
 			/*---例外処理---*/
-			if (!((input_->CheckInputKey(KeyConfig::kRightKey) > InputState::kOff)))
+			if (!((Input::GetInstance().CheckInputKey(KeyConfig::kRightKey) > InputState::kOff)))
 			{
 				rot += -1 * static_cast<float>((M_PI / 180) * 90);
 
@@ -669,9 +653,9 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 
 		/*---pad除外----*/
 
-		if (input_->GetPadStickVertical(StickType::kLeft) > 50.0f)
+		if (Input::GetInstance().GetPadStickVertical(StickType::kLeft) > 50.0f)
 		{
-			rot += input_->GetPadStickRad(StickType::kLeft);
+			rot += Input::GetInstance().GetPadStickRad(StickType::kLeft);
 
 			direction_ = VAdd(direction_,
 				VGet(-sinf(rot + rotation), 0.0f, -cosf(rot + rotation)));
@@ -695,15 +679,13 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 
 	//とりあえず右スティックの入力量を受け取る
 	//今連続でふれるようになってしまっている
-	if (input_->GetPadStickVertical(StickType::kRight) > 150.f && now_weapon_name_ != WeaponName::kWizardStaff)
+	if (Input::GetInstance().GetPadStickVertical(StickType::kRight) > 150.f && now_weapon_name_ != WeaponName::kWizardStaff)
 	{
-
-
 		//元から振っているときはダメにする
 		if (is_ground_ && !is_attack_ && !rejected)
 		{
 			
-			target_rot_ = rotation + input_->GetPadStickRad(StickType::kRight);
+			target_rot_ = rotation + Input::GetInstance().GetPadStickRad(StickType::kRight);
 			now_type_ = AnimationType::kSwordSlash;
 			now_state_ = State::kAttack;
 			is_attack_ = TRUE;
@@ -870,7 +852,8 @@ void  Player::JumpAction(VECTOR& velocity)
 	if (is_ground_)
 	{
 
-		if (input_->CheckInputKey(KeyConfig::kJumpKey) == InputState::kPush || input_->CheckInputPadButton(PadConfig::kJumpButton) == InputState::kPush)
+		if (Input::GetInstance().CheckInputKey(KeyConfig::kJumpKey) == InputState::kPush ||
+			Input::GetInstance().CheckInputPadButton(PadConfig::kJumpButton) == InputState::kPush)
 		{
 			//ジャンプの処理
 			fall_speed_ = kJumpPower;
@@ -957,10 +940,10 @@ void Player::IsHitEnemy(BaseEnemy* enemy, bool& got)
 	if (weapon_->GetName() == WeaponName::kWizardStaff)
 	{
 		//回しているradの値を受け取る
-		float stick_spin_rad = input_->GetStickSpin(StickType::kRight);
+		float stick_spin_rad = Input::GetInstance().GetStickSpin(StickType::kRight);
 
 
-		if (stick_spin_rad != 0.f && (input_->GetPadStickVertical(StickType::kRight) > kPadSpinMin))
+		if (stick_spin_rad != 0.f && (Input::GetInstance().GetPadStickVertical(StickType::kRight) > kPadSpinMin))
 		{
 			weapon_->Update(enemy,fabs(stick_spin_rad));
 			now_state_ = State::kAttack;
@@ -1058,7 +1041,7 @@ void Player::Vibration(const VibrationData& data)
 {
 	//ほしいのは時間と、振動の強さ
 	//パッドしんどう
-	StartJoypadVibration(input_->GetPadNom(), data.power, data.time, -1);
+	StartJoypadVibration(Input::GetInstance().GetPadNom(), data.power, data.time, -1);
 }
 
 

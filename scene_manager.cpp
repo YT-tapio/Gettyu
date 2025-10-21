@@ -2,6 +2,8 @@
 #include"title.h"
 #include"game.h"
 #include"result.h"
+#include"debug.h"
+#include"input.h"
 
 SceneManager::SceneManager()
 {
@@ -52,6 +54,8 @@ SceneManager::SceneManager()
 	now_scene_name_ = now_scene_->GetName();
 
     FPS::GetInstance();
+    Timer::GetInstance();
+    Input::GetInstance().Awake(DX_INPUT_PAD1);
 }
 
 SceneManager::~SceneManager()
@@ -64,13 +68,13 @@ void SceneManager::Update()
     SceneName before_name = now_scene_->GetName();
     while (ScreenFlip() == 0 && ProcessMessage() == 0 && ClearDrawScreen() == 0 && !CheckHitKey(KEY_INPUT_ESCAPE))
     {
-
+        bool init = FALSE;
         
-
+        Debug::GetInstance().Recet();
+        Input::GetInstance().Update();
         //シーンが切り替わっている場合
         if (before_name != now_scene_name_)
         {
-            printfDx("ロード中");
             now_scene_ = nullptr;
             switch (now_scene_name_)
             {
@@ -89,22 +93,35 @@ void SceneManager::Update()
             
             now_scene_->Init();
             before_name = now_scene_->GetName();
+            init = TRUE;
         }
 
+        //initしたときちょっと1f遅れさせる
         FPS::GetInstance().Update();
+        Timer::GetInstance().Update();
 
-        now_scene_->Update(now_scene_name_);
+        if (!init)
+        {
+            now_scene_->Update(now_scene_name_);
 
-        ClearDrawScreen();
+            ClearDrawScreen();
+        }
+        
         
         //ここで描画処理
         now_scene_->Draw();
 
+        //ここでデバック処理
+
+        Timer::GetInstance().Debug();
 
         ScreenFlip();
 
         FPS::GetInstance().Wait();
         FPS::GetInstance().SetPrevTime();
+
+        
+
 
     }
 

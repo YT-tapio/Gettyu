@@ -25,9 +25,6 @@
     <Filter Include="ソース ファイル\camera">
       <UniqueIdentifier>{6ebbd0ff-3448-41ae-8729-ad5329630857}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\FPS">
-      <UniqueIdentifier>{82cee67e-d633-42a9-ba44-b62a51a378ec}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\stage">
       <UniqueIdentifier>{9f3370c4-dc0f-4a3c-a790-8d24b1537a99}</UniqueIdentifier>
     </Filter>
@@ -145,6 +142,15 @@
     <Filter Include="ソース ファイル\scene\manager">
       <UniqueIdentifier>{da79228d-09dc-4f53-b0e8-bf5e81a69a99}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Singleton\time">
+      <UniqueIdentifier>{7fcdefc9-88c9-48d3-8d9f-484334341434}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Singleton\FPS">
+      <UniqueIdentifier>{82cee67e-d633-42a9-ba44-b62a51a378ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\time">
+      <UniqueIdentifier>{46f02387-6406-4ec2-8fe0-64c5a8102274}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -166,7 +172,7 @@
       <Filter>ソース ファイル\object</Filter>
     </ClCompile>
     <ClCompile Include="FPS.cpp">
-      <Filter>ソース ファイル\FPS</Filter>
+      <Filter>ソース ファイル\Singleton\FPS</Filter>
     </ClCompile>
     <ClCompile Include="stage.cpp">
       <Filter>ソース ファイル\stage</Filter>
@@ -273,6 +279,12 @@
     <ClCompile Include="base_sub_screen.cpp">
       <Filter>ソース ファイル\sub_screen</Filter>
     </ClCompile>
+    <ClCompile Include="time.cpp">
+      <Filter>ソース ファイル\Singleton\time</Filter>
+    </ClCompile>
+    <ClCompile Include="condition_timer.cpp">
+      <Filter>ソース ファイル\time</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="keyconfig.h">
@@ -303,7 +315,7 @@
       <Filter>ソース ファイル\object</Filter>
     </ClInclude>
     <ClInclude Include="FPS.h">
-      <Filter>ソース ファイル\FPS</Filter>
+      <Filter>ソース ファイル\Singleton\FPS</Filter>
     </ClInclude>
     <ClInclude Include="stage.h">
       <Filter>ソース ファイル\stage</Filter>
@@ -412,6 +424,12 @@
     </ClInclude>
     <ClInclude Include="base_sub_screen.h">
       <Filter>ソース ファイル\sub_screen</Filter>
+    </ClInclude>
+    <ClInclude Include="time.h">
+      <Filter>ソース ファイル\Singleton\time</Filter>
+    </ClInclude>
+    <ClInclude Include="condition_timer.h">
+      <Filter>ソース ファイル\time</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

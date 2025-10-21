@@ -10,7 +10,7 @@ private:
 	
 	int current_num_ = 0;
 	//表示
-	bool disp_ = FALSE;
+	bool disp_ = TRUE;
 
 	//コンストラクタを非公開
 	Debug(){}

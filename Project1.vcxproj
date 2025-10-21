@@ -146,6 +146,7 @@
     <ClCompile Include="brain.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="collision.cpp" />
+    <ClCompile Include="condition_timer.cpp" />
     <ClCompile Include="debug.cpp" />
     <ClCompile Include="effect.cpp" />
     <ClCompile Include="effect_manager.cpp" />
@@ -170,6 +171,7 @@
     <ClCompile Include="sub_screen.cpp" />
     <ClCompile Include="super_attack_camera.cpp" />
     <ClCompile Include="super_attack.cpp" />
+    <ClCompile Include="time.cpp" />
     <ClCompile Include="title.cpp" />
     <ClCompile Include="tracking.cpp" />
     <ClCompile Include="turn_camera.cpp" />
@@ -192,6 +194,7 @@
     <ClInclude Include="camera.h" />
     <ClInclude Include="collision.h" />
     <ClInclude Include="collision_data.h" />
+    <ClInclude Include="condition_timer.h" />
     <ClInclude Include="debug.h" />
     <ClInclude Include="effect.h" />
     <ClInclude Include="effect_manager.h" />
@@ -218,6 +221,7 @@
     <ClInclude Include="sub_screen.h" />
     <ClInclude Include="super_attack.h" />
     <ClInclude Include="super_attack_camera.h" />
+    <ClInclude Include="time.h" />
     <ClInclude Include="title.h" />
     <ClInclude Include="tracking.h" />
     <ClInclude Include="turn_camera.h" />

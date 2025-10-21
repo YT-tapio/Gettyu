@@ -5,17 +5,11 @@
 #include"input.h"
 
 
-Input::Input(const int num)
-	: num_(num)
+Input::Input()
 {
 
 }
 
-
-Input::~Input()
-{
-	
-}
 
 /*-----------private----------*/
 
@@ -46,6 +40,11 @@ float Input::MakePercent(float value, float min, float max)
 }
 
 /*-----------public-----------*/
+
+void Input::Awake(const int num)
+{
+	num_ = num;
+}
 
 void Input::Update()
 {

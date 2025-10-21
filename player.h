@@ -52,7 +52,6 @@ private:
 
 	//ƒNƒ‰ƒXŠÖ˜A
 	WeaponBase* weapon_;
-	Input* input_;
 	SuperAttack* super_attack_;
 
 	Effect* super_weapon_spin_effect_ = new Effect("data/effect/NextSoft01/MagicTornade.efkefc", VGet(0.f,0.f,0.f), VGet(0.f, 0.f, 0.f), 7.f, 7.f, 150.f, TRUE);
@@ -230,7 +229,6 @@ public:
 
 	const bool GetIsVacuum() const { return is_vacuum_; }
 
-	const Input* GetInput() const { return input_; }
 
 	const CapsuleData GetCapsuleData() const { return capsule_; }
 
