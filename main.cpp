@@ -3,16 +3,15 @@
 #include<memory>
 #include"DxLib.h"
 #include"EffekseerForDxLib.h"
-#include"game.h"
+#include"scene_manager.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
     
-    std::shared_ptr<Game>game = std::make_shared<Game>();
+    std::shared_ptr<SceneManager>scene_manager = std::make_shared<SceneManager>();
 
-    game->Awake();
-    game->Loop();
-    game->End();
+    scene_manager->Update();
+
 
     return 0;
 

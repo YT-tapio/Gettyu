@@ -140,6 +140,7 @@
     <ClCompile Include="animation.cpp" />
     <ClCompile Include="base_enemy.cpp" />
     <ClCompile Include="base_object.cpp" />
+    <ClCompile Include="base_scene.cpp" />
     <ClCompile Include="bat.cpp" />
     <ClCompile Include="brain.cpp" />
     <ClCompile Include="camera.cpp" />
@@ -154,9 +155,12 @@
     <ClCompile Include="input.cpp" />
     <ClCompile Include="line.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="movie.cpp" />
     <ClCompile Include="normal_enemy.cpp" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="result.cpp" />
     <ClCompile Include="rot_function.cpp" />
+    <ClCompile Include="scene_manager.cpp" />
     <ClCompile Include="situation.cpp" />
     <ClCompile Include="sky_dom.cpp" />
     <ClCompile Include="sphere_camera.cpp" />
@@ -165,6 +169,7 @@
     <ClCompile Include="sub_screen.cpp" />
     <ClCompile Include="super_attack_camera.cpp" />
     <ClCompile Include="super_attack.cpp" />
+    <ClCompile Include="title.cpp" />
     <ClCompile Include="tracking.cpp" />
     <ClCompile Include="turn_camera.cpp" />
     <ClCompile Include="vacuum_camera.cpp" />
@@ -178,6 +183,7 @@
     <ClInclude Include="animation.h" />
     <ClInclude Include="base_enemy.h" />
     <ClInclude Include="base_object.h" />
+    <ClInclude Include="base_scene.h" />
     <ClInclude Include="bat.h" />
     <ClInclude Include="brain.h" />
     <ClInclude Include="Calculation.h" />
@@ -195,9 +201,12 @@
     <ClInclude Include="keyconfig.h" />
     <ClInclude Include="line.h" />
     <ClInclude Include="mixamo_fram.h" />
+    <ClInclude Include="movie.h" />
     <ClInclude Include="normal_enemy.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="result.h" />
     <ClInclude Include="rot_function.h" />
+    <ClInclude Include="scene_manager.h" />
     <ClInclude Include="screen.h" />
     <ClInclude Include="situation.h" />
     <ClInclude Include="sky_dom.h" />
@@ -207,6 +216,7 @@
     <ClInclude Include="sub_screen.h" />
     <ClInclude Include="super_attack.h" />
     <ClInclude Include="super_attack_camera.h" />
+    <ClInclude Include="title.h" />
     <ClInclude Include="tracking.h" />
     <ClInclude Include="turn_camera.h" />
     <ClInclude Include="vacuum_camera.h" />

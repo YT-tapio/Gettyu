@@ -17,9 +17,12 @@
 #include"enemy_manager.h"
 #include"situation.h"
 #include"sky_dom.h"
+#include"sub_screen.h"
+#include"base_scene.h"
 
+class BaseScene;
 
-class Game
+class Game : public BaseScene
 {
 private:
 
@@ -30,16 +33,20 @@ private:
 	std::shared_ptr<Stage>stage;
 	std::shared_ptr<EnemyManager>enemy_manager;
 	std::shared_ptr<SkyDom> sky_dom;
-	std::shared_ptr<FPS>fps;
+	std::shared_ptr<FPS> fps;
+	std::shared_ptr<BaseScreen> screen_;
+
 public:
 
 	Game();
 
-	~Game();
+	~Game() override;
 
-	void Awake();
+	void Init() override;
 
-	void Loop();
+	void Update(SceneName& name) override;
+
+	void Draw() override;
 
 	void End();
 };

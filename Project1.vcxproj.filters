@@ -115,9 +115,6 @@
     <Filter Include="ソース ファイル\UI">
       <UniqueIdentifier>{1738b5a4-7d7d-4690-a6b3-75653cbb1cfe}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\game">
-      <UniqueIdentifier>{dfba3545-15c5-42de-811a-23343baa818a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\post_effect">
       <UniqueIdentifier>{f40736bc-fe5d-4dbd-8760-5db008a6aa49}</UniqueIdentifier>
     </Filter>
@@ -126,6 +123,27 @@
     </Filter>
     <Filter Include="ソース ファイル\sub_screen">
       <UniqueIdentifier>{7ce70e21-d239-48e1-939f-b93fb7df999a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\movie">
+      <UniqueIdentifier>{c515c847-5ac6-495f-8958-58a3fb1d4dcf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\scene">
+      <UniqueIdentifier>{1d81bd55-ce6e-4c58-b231-a9eec6d66ca3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\scene\base">
+      <UniqueIdentifier>{025444c7-4d63-41ec-893a-9a69d2c11808}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\scene\result">
+      <UniqueIdentifier>{a62c3e30-994c-4c40-9b7c-8bf9f6cedb5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\scene\title">
+      <UniqueIdentifier>{ce069253-9e05-4921-bb9a-5c621707dcf5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\scene\game">
+      <UniqueIdentifier>{dfba3545-15c5-42de-811a-23343baa818a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\scene\manager">
+      <UniqueIdentifier>{da79228d-09dc-4f53-b0e8-bf5e81a69a99}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -229,13 +247,28 @@
       <Filter>ソース ファイル\input\vibration</Filter>
     </ClCompile>
     <ClCompile Include="game.cpp">
-      <Filter>ソース ファイル\game</Filter>
+      <Filter>ソース ファイル\scene\game</Filter>
     </ClCompile>
     <ClCompile Include="line.cpp">
       <Filter>ソース ファイル\post_effect\line</Filter>
     </ClCompile>
     <ClCompile Include="sub_screen.cpp">
       <Filter>ソース ファイル\sub_screen</Filter>
+    </ClCompile>
+    <ClCompile Include="movie.cpp">
+      <Filter>ソース ファイル\movie</Filter>
+    </ClCompile>
+    <ClCompile Include="base_scene.cpp">
+      <Filter>ソース ファイル\scene\base</Filter>
+    </ClCompile>
+    <ClCompile Include="title.cpp">
+      <Filter>ソース ファイル\scene\title</Filter>
+    </ClCompile>
+    <ClCompile Include="result.cpp">
+      <Filter>ソース ファイル\scene\result</Filter>
+    </ClCompile>
+    <ClCompile Include="scene_manager.cpp">
+      <Filter>ソース ファイル\scene\manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -351,13 +384,28 @@
       <Filter>ソース ファイル\input\vibration</Filter>
     </ClInclude>
     <ClInclude Include="game.h">
-      <Filter>ソース ファイル\game</Filter>
+      <Filter>ソース ファイル\scene\game</Filter>
     </ClInclude>
     <ClInclude Include="line.h">
       <Filter>ソース ファイル\post_effect\line</Filter>
     </ClInclude>
     <ClInclude Include="sub_screen.h">
       <Filter>ソース ファイル\sub_screen</Filter>
+    </ClInclude>
+    <ClInclude Include="movie.h">
+      <Filter>ソース ファイル\movie</Filter>
+    </ClInclude>
+    <ClInclude Include="base_scene.h">
+      <Filter>ソース ファイル\scene\base</Filter>
+    </ClInclude>
+    <ClInclude Include="title.h">
+      <Filter>ソース ファイル\scene\title</Filter>
+    </ClInclude>
+    <ClInclude Include="result.h">
+      <Filter>ソース ファイル\scene\result</Filter>
+    </ClInclude>
+    <ClInclude Include="scene_manager.h">
+      <Filter>ソース ファイル\scene\manager</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

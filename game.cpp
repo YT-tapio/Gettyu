@@ -2,45 +2,8 @@
 
 
 Game::Game()
+    :BaseScene(SceneName::kGame)
 {
-    SetGraphMode(kGameWidth, kGameHeight, 32);			//ウィンドウのサイズとカラーモードを決める
-    ChangeWindowMode(TRUE);				//ウィンドウモードにする
-    if (DxLib_Init() == -1)        // ＤＸライブラリ初期化処理
-    {
-        return ;        // エラーが起きたら直ちに終了
-    }
-
-
-    // DirectX11を使用するようにする。(DirectX9も可、一部機能不可)
-    // Effekseerを使用するには必ず設定する。
-    SetUseDirect3DVersion(DX_DIRECT3D_11);
-
-    // 引数には画面に表示する最大パーティクル数を設定する。
-    if (Effkseer_Init(20000) == -1) { DxLib_End(); }
-
-    // フルスクリーンウインドウの切り替えでリソースが消えるのを防ぐ。
-    // Effekseerを使用する場合は必ず設定する。
-    SetChangeScreenModeGraphicsSystemResetFlag(FALSE);
-
-    // DXライブラリのデバイスロストした時のコールバックを設定する。
-    // ウインドウとフルスクリーンの切り替えが発生する場合は必ず実行する。
-    Effekseer_SetGraphicsDeviceLostCallbackFunctions();
-
-    // Zバッファを有効にする。
-    // Effekseerを使用する場合、2DゲームでもZバッファを使用する。
-    SetUseZBuffer3D(TRUE);
-
-    // Zバッファへの書き込みを有効にする。
-    // Effekseerを使用する場合、2DゲームでもZバッファを使用する。
-    SetWriteZBuffer3D(TRUE);
-
-    // 描画先画面を裏画面にする
-    SetDrawScreen(DX_SCREEN_BACK);
-
-    SetUseZBufferFlag(TRUE);		// Ｚバッファを使用する
-    SetUseBackCulling(TRUE);		// バックカリングを行う
-
-    SetMouseDispFlag(FALSE);
 
 }
 
@@ -50,7 +13,7 @@ Game::~Game()
 }
 
 
-void Game::Awake()
+void Game::Init()
 {
     int red = GetColor(255, 0, 0);
     int green = GetColor(0, 255, 0);
@@ -146,96 +109,97 @@ void Game::Awake()
     enemy_manager->Init();
 
     sky_dom = std::make_shared<SkyDom>("data/skydome/Dome_SS601.mv1", camera->GetPos());
+    screen_ = std::make_shared<BaseScreen>(kGameWidth, kGameHeight, TRUE);
+
     fps = std::make_shared<FPS>();
 }
 
-void Game::Loop()
+void Game::Update(SceneName& name)
 {
     //全体のタイムスケール
-    float time_scale = 1.0f;
+    static float time_scale = 1.0f;
+    
+    //現在の時間を取得
+    fps->Update();
+    //camera->GetPos();
 
-    while (ScreenFlip() == 0 && ProcessMessage() == 0 && ClearDrawScreen() == 0 && !CheckHitKey(KEY_INPUT_ESCAPE))
+    //更新処理
+
+    //デルタタイムのアップデートはゲット時はplayerとenemyのだけ0にする
+
+    player->SetDeltaTime(fps->GetDeltaTime());
+    brain->SetDeltaTime(fps->GetDeltaTime());
+    enemy_manager->SetDeltaTime(fps->GetDeltaTime());
+    //test_effect1->SetDeltaTime(fps->GetDeltaTime());
+
+    player->InputState();
+
+    // screen_->Update();
+
+    enemy_manager->Update(player);
+    player->Update(camera->GetPos(), brain->GetSideRad(), *stage);
+
+
+    //マウスでの操作
+    brain->Update(camera->GetTargetPos(), camera->GetPos(), player);
+
+    camera->Update(brain->GetVelocity(), brain->GetTargetVelocity());
+    effect_player->Update();
+
+    sky_dom->SetPos(player->GetVelocity());
+    if (CheckHitKey(KEY_INPUT_RIGHT))
     {
-        //現在の時間を取得
-        fps->Update();
-        //camera->GetPos();
-
-        //更新処理
-
-        //デルタタイムのアップデートはゲット時はplayerとenemyのだけ0にする
-
-        player->SetDeltaTime(fps->GetDeltaTime());
-        brain->SetDeltaTime(fps->GetDeltaTime());
-        enemy_manager->SetDeltaTime(fps->GetDeltaTime());
-        //test_effect1->SetDeltaTime(fps->GetDeltaTime());
-
-        player->InputState();
-
-
-        enemy_manager->Update(player);
-        player->Update(camera->GetPos(), brain->GetSideRad(), *stage);
-
-
-        //マウスでの操作
-        brain->Update(camera->GetTargetPos(), camera->GetPos(), player);
-
-        camera->Update(brain->GetVelocity(), brain->GetTargetVelocity());
-        effect_player->Update();
-
-        sky_dom->SetPos(player->GetVelocity());
-        if (CheckHitKey(KEY_INPUT_RIGHT))
-        {
-            time_scale += 0.01;
-        }
-
-        if (CheckHitKey(KEY_INPUT_LEFT))
-        {
-            time_scale -= 0.01f;
-            if (time_scale < 0.0f)
-            {
-                time_scale = 0.0f;
-            }
-        }
-
-        if (CheckHitKey(KEY_INPUT_R))
-        {
-            time_scale = 1.0f;
-        }
-
-        fps->SetTimeScale(time_scale);
-
-        ClearDrawScreen();
-
-        /*-----------------描画処理------------------*/
-
-        /*----デルタタイム表示----*/
-
-        sky_dom->Draw();
-
-        player->Draw();
-        enemy_manager->Draw();
-
-
-        SetUseLighting(FALSE);
-
-        stage->Draw();
-        effect_player->Draw();
-        camera->Draw();
-
-        //enemy->Draw();
-        //object->Draw();
-
-        //DrawCapsule3D(VGet(0, 0, 0), VGet(10, 10, 10), 2, 20, GetColor(255, 255, 255), GetColor(255, 255, 255), FALSE);
-
-        //brain->Draw();
-
-        //fps->DrawTimeScale();
-        SetUseLighting(TRUE);
-        ScreenFlip();
-        fps->Wait();
-        fps->SetPrevTime();
-
+        time_scale += 0.01;
     }
+
+    if (CheckHitKey(KEY_INPUT_LEFT))
+    {
+        time_scale -= 0.01f;
+        if (time_scale < 0.0f)
+        {
+            time_scale = 0.0f;
+        }
+    }
+
+    if (CheckHitKey(KEY_INPUT_R))
+    {
+        time_scale = 1.0f;
+    }
+
+    fps->SetTimeScale(time_scale);
+
+    ClearDrawScreen();
+
+    /*-----------------描画処理------------------*/
+
+    Draw();
+
+    /*----デルタタイム表示----*/
+
+    
+    //screen_->Draw();
+    //printfDx("0");
+
+    //fps->DrawTimeScale();
+    SetUseLighting(TRUE);
+    ScreenFlip();
+    fps->Wait();
+    fps->SetPrevTime();
+}
+
+void Game::Draw()
+{
+    sky_dom->Draw();
+
+    player->Draw();
+    enemy_manager->Draw();
+
+
+    SetUseLighting(FALSE);
+
+    stage->Draw();
+    effect_player->Draw();
+    camera->Draw();
 }
 
 
