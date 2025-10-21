@@ -26,15 +26,14 @@ class Game : public BaseScene
 {
 private:
 
-	std::shared_ptr<EffectManager>effect_player;
-	std::shared_ptr<Player>player;
-	std::shared_ptr<Brain>brain;
-	std::shared_ptr<Camera>camera;
-	std::shared_ptr<Stage>stage;
-	std::shared_ptr<EnemyManager>enemy_manager;
-	std::shared_ptr<SkyDom> sky_dom;
-	std::shared_ptr<FPS> fps;
-	std::shared_ptr<BaseScreen> screen_;
+	std::shared_ptr<EffectManager>effect_player_;
+	std::shared_ptr<Player>player_;
+	std::shared_ptr<Brain>brain_;
+	std::shared_ptr<Camera>camera_;
+	std::shared_ptr<Stage>stage_;
+	std::shared_ptr<EnemyManager>enemy_manager_;
+	std::shared_ptr<SkyDom> sky_dom_;
+	std::shared_ptr<BaseSubScreen> concentration_line_;
 
 public:
 

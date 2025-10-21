@@ -117,3 +117,9 @@ void EnemyManager::SetDeltaTime(float delta_time)
 		enemy->SetDeltaTime(delta_time);
 	}
 }
+
+
+bool EnemyManager::CheckIsEnemy()
+{
+	return enemies_.empty();
+}

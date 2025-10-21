@@ -55,56 +55,7 @@ void EffectManager::Load()
 /// <param name="playPosition">再生座標</param>
 void EffectManager::Update()
 {
-    /*
-    if (!on_disp_)
-    {
-        return;
-    }
-    
-
-    // 定期的にエフェクトを再生する
-    if (playCount > play_interval_)
-    {
-        
-        if (FALSE)
-        {
-            // エフェクトを再生する。
-            playing_handle_ = PlayEffekseer3DEffect(resource_handle_);
-        }
-       
-
-        play_type_ = EffectPlayType::kEnd;
-        on_disp_ = FALSE;
-        playCount = 0;
-
-    }
-
-    if (play_type_ == EffectPlayType::kStart)
-    {
-        playing_handle_ = PlayEffekseer3DEffect(resource_handle_);
-        play_type_ = kPlay;
-    }
-    
-    if (play_type_ == EffectPlayType::kEnd)
-    {
-        StopEffekseer3DEffect(playing_handle_);
-    }
-
-    // 再生カウントを進める
-    playCount += (1 * (delta_time_ * 10));
-
-    if (TRUE)
-    {
-        // 再生中のエフェクトを移動する。
-        SetPosPlayingEffekseer3DEffect(playing_handle_, playPosition.x, playPosition.y, playPosition.z);
-    }
-    else
-    {
-        // 再生中のエフェクトを移動する。
-        SetPosPlayingEffekseer3DEffect(playing_handle_, 0, 0, 0);
-    }
-    */
-
+    Effekseer_Sync3DSetting();
     // Effekseerにより再生中のエフェクトを更新する。
     UpdateEffekseer3D();
 }

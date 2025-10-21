@@ -18,11 +18,20 @@ private:
 
 	int count_;
 
+	FPS();
+
 public:
 
-	FPS();
 	
-	~FPS();
+	static FPS& GetInstance()
+	{
+		static FPS instance;
+		return instance;
+	}
+
+	// コピーコンストラクタと代入演算子を削除
+	FPS(const FPS&) = delete;
+	FPS& operator=(const FPS&) = delete;
 
 	void Init();
 

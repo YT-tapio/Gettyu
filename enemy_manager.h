@@ -39,4 +39,7 @@ public:
 
 	void SetDeltaTime(float delta_time);
 
+	//enemy‚ª‚¢‚é‚©‚Ì”»’f
+	bool CheckIsEnemy();
+
 };

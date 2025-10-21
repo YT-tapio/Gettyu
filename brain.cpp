@@ -589,13 +589,17 @@ void Brain::ChangeCameraInit(int& before_camera_name,const VECTOR& camera_pos,st
 
 			blend_speed_		= 1.0f;
 			target_blend_speed_ = 0.f;
-
+			
 			is_blend_tracking_ = TRUE;
 
 			
 			if (before_camera_name == VirtualCameraName::kGet)
 			{
 				next_pos_ = vacuum_camera_->GetPos();
+			}
+			else
+			{
+				vacuum_offset_dist_ = 0.f;
 			}
 
 
@@ -1061,8 +1065,6 @@ void Brain::VacuumUpdate(std::shared_ptr<Player>player,const VECTOR& camera_pos)
 	const float kAccelSpeed		= 0.5f;
 	const float kOffsetMax			= 30.f;
 	const float kOffsetSpeed		= 1.f;
-
-	static float offset_dist			= 0.f;
 	static float timer					= 0.f;
 	static float accel					= 0.f;
 
@@ -1100,14 +1102,14 @@ void Brain::VacuumUpdate(std::shared_ptr<Player>player,const VECTOR& camera_pos)
 		//‰Á‘¬“x
 
 		//offsetmax‚¢‚¶‚å‚¤‚¶‚á‚È‚¢‚È‚ç
-		if (!(offset_dist >=  kOffsetMax))
+		if (!(vacuum_offset_dist_ >=  kOffsetMax))
 		{
-			offset_dist += (offset_dist + ((delta_time_ / 10.f) * kOffsetSpeed));
+			vacuum_offset_dist_ += (vacuum_offset_dist_ + ((delta_time_ / 10.f) * kOffsetSpeed));
 
 
-			if (offset_dist > kOffsetMax)
+			if (vacuum_offset_dist_ > kOffsetMax)
 			{
-				offset_dist = kOffsetMax;
+				vacuum_offset_dist_ = kOffsetMax;
 			}
 		}
 	}
@@ -1116,19 +1118,19 @@ void Brain::VacuumUpdate(std::shared_ptr<Player>player,const VECTOR& camera_pos)
 		//offset_dist‚ð‚¾‚ñ‚¾‚ñ¬‚³‚­
 		//Œ¸‘¬
 		
-		if (offset_dist > 0.f)
+		if (vacuum_offset_dist_ > 0.f)
 		{
-			offset_dist -= (delta_time_ * kOffsetSpeed);
+			vacuum_offset_dist_ -= (delta_time_ * kOffsetSpeed);
 		}
 		else
 		{
-			offset_dist = 0.f;
+			vacuum_offset_dist_ = 0.f;
 		}
 
 	}
 
 	//¡“™‘¬‚Å‚È‚Á‚Ä‚¢‚é‰Á‘¬‚É‚µ‚½‚¢
-	decide_dist = kVacuumDist - offset_dist;
+	decide_dist = kVacuumDist - vacuum_offset_dist_;
 
 
 	VECTOR pos = GetRotatedByTheDistanceFromThePos(kVacuumVerticalRad, side_rad_, decide_dist, player->GetPos());

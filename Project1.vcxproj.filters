@@ -270,6 +270,9 @@
     <ClCompile Include="scene_manager.cpp">
       <Filter>ソース ファイル\scene\manager</Filter>
     </ClCompile>
+    <ClCompile Include="base_sub_screen.cpp">
+      <Filter>ソース ファイル\sub_screen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="keyconfig.h">
@@ -406,6 +409,9 @@
     </ClInclude>
     <ClInclude Include="scene_manager.h">
       <Filter>ソース ファイル\scene\manager</Filter>
+    </ClInclude>
+    <ClInclude Include="base_sub_screen.h">
+      <Filter>ソース ファイル\sub_screen</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

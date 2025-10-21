@@ -23,13 +23,6 @@ void Title::Update(SceneName& name)
 	{
 		name = SceneName::kGame;
 	}
-
-	ClearDrawScreen();
-
-	Draw();
-
-	ScreenFlip();
-
 }
 
 void Title::Draw()

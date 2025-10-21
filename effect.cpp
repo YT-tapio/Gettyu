@@ -29,6 +29,7 @@ Effect::Effect(const char* file_path, const VECTOR& pos, const VECTOR& rot,
 
 Effect::~Effect()
 {
+	StopEffekseer3DEffect(playing_handle_);
 	DeleteEffekseerEffect(handle_);
 }
 
@@ -47,8 +48,8 @@ void Effect::Play()
 	//çƒê∂ÇµÇƒÇ¢Ç»Ç¢Ç∆Ç´ÇÕçƒê∂Ç≥ÇπÇÈ
 	if (!is_play_ && !is_end_)
 	{
-		SetPosPlayingEffekseer3DEffect(playing_handle_, pos_.x, pos_.y, pos_.z);
 		playing_handle_ = PlayEffekseer3DEffect(handle_);
+		SetPosPlayingEffekseer3DEffect(playing_handle_, pos_.x, pos_.y, pos_.z);
 		is_play_ = TRUE;
 		play_count_ = 0.0f;
 	}

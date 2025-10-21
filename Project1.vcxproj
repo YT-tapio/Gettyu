@@ -141,6 +141,7 @@
     <ClCompile Include="base_enemy.cpp" />
     <ClCompile Include="base_object.cpp" />
     <ClCompile Include="base_scene.cpp" />
+    <ClCompile Include="base_sub_screen.cpp" />
     <ClCompile Include="bat.cpp" />
     <ClCompile Include="brain.cpp" />
     <ClCompile Include="camera.cpp" />
@@ -184,6 +185,7 @@
     <ClInclude Include="base_enemy.h" />
     <ClInclude Include="base_object.h" />
     <ClInclude Include="base_scene.h" />
+    <ClInclude Include="base_sub_screen.h" />
     <ClInclude Include="bat.h" />
     <ClInclude Include="brain.h" />
     <ClInclude Include="Calculation.h" />

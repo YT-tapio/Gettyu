@@ -12,10 +12,6 @@ FPS::FPS()
 
 }
 
-FPS::~FPS()
-{
-	//ˆ—‚È‚µ
-}
 
 
 void FPS::Init()

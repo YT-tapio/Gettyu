@@ -36,7 +36,7 @@ void Game::Init()
     AnimationData sword_slash_attack;
     AnimationData super_attack_first;
 
-    effect_player =
+    effect_player_ =
         std::make_shared<EffectManager>("", 1.0f, 120);
 
 
@@ -77,41 +77,40 @@ void Game::Init()
         AnimationType::kSuperAttackFirst, chara, 3.0f);
 
     //playerを生成
-    player =
+    player_ =
         std::make_shared<Player>(VGet(0, 10, 100), chara, DX_INPUT_PAD1, 20, 1.5f, 5.0f);
 
-    brain = std::make_shared<Brain>(player->GetCenterPos());
+    brain_ = std::make_shared<Brain>(player_->GetCenterPos());
 
-    camera = std::make_shared<Camera>(brain->GetPositionFromTarget(player->GetCenterPos()),
-        player->GetCenterPos(), (DX_PI_F / 180.0f) * 75.0f);
+    camera_ = std::make_shared<Camera>(brain_->GetPositionFromTarget(player_->GetCenterPos()),
+        player_->GetCenterPos(), (DX_PI_F / 180.0f) * 75.0f);
 
     int model_data = MV1LoadModel("data/model/map/arena/map.mv1");
 
-    stage = std::make_shared<Stage>(model_data, VGet(0, 0, 0), 1.0f);
+    stage_ = std::make_shared<Stage>(model_data, VGet(0, 0, 0), 1.0f);
 
-    brain->Init(camera->GetPos(), player->GetCenterPos());
-    camera->Init(brain->GetVelocity());
+    brain_->Init(camera_->GetPos(), player_->GetCenterPos());
+    camera_->Init(brain_->GetVelocity());
 
     /*---プレイヤーにアニメーションを追加---*/
 
-    player->AddAnim(idle);
-    player->AddAnim(walk);
-    player->AddAnim(slow_run);
-    player->AddAnim(fast_run);
-    player->AddAnim(jumping_up);
-    player->AddAnim(jumping_down);
-    player->AddAnim(sword_slash_attack);
-    player->AddAnim(super_attack_first);
+    player_->AddAnim(idle);
+    player_->AddAnim(walk);
+    player_->AddAnim(slow_run);
+    player_->AddAnim(fast_run);
+    player_->AddAnim(jumping_up);
+    player_->AddAnim(jumping_down);
+    player_->AddAnim(sword_slash_attack);
+    player_->AddAnim(super_attack_first);
 
-    enemy_manager =
+    enemy_manager_ =
         std::make_shared<EnemyManager>();
 
-    enemy_manager->Init();
+    enemy_manager_->Init();
 
-    sky_dom = std::make_shared<SkyDom>("data/skydome/Dome_SS601.mv1", camera->GetPos());
-    screen_ = std::make_shared<BaseScreen>(kGameWidth, kGameHeight, TRUE);
+    sky_dom_ = std::make_shared<SkyDom>("data/skydome/Dome_SS601.mv1", camera_->GetPos());
+    concentration_line_ = std::make_shared<ConcentrationLine>(kGameWidth, kGameHeight, TRUE);
 
-    fps = std::make_shared<FPS>();
 }
 
 void Game::Update(SceneName& name)
@@ -120,33 +119,39 @@ void Game::Update(SceneName& name)
     static float time_scale = 1.0f;
     
     //現在の時間を取得
-    fps->Update();
+    
     //camera->GetPos();
 
     //更新処理
 
     //デルタタイムのアップデートはゲット時はplayerとenemyのだけ0にする
 
-    player->SetDeltaTime(fps->GetDeltaTime());
-    brain->SetDeltaTime(fps->GetDeltaTime());
-    enemy_manager->SetDeltaTime(fps->GetDeltaTime());
+    player_->SetDeltaTime(FPS::GetInstance().GetDeltaTime());
+    brain_->SetDeltaTime(FPS::GetInstance().GetDeltaTime());
+    enemy_manager_->SetDeltaTime(FPS::GetInstance().GetDeltaTime());
     //test_effect1->SetDeltaTime(fps->GetDeltaTime());
 
-    player->InputState();
+    concentration_line_->Update();
+    concentration_line_->SetIsDisp(player_->GetIsVacuum());
+    
 
-    // screen_->Update();
+    player_->InputState();
 
-    enemy_manager->Update(player);
-    player->Update(camera->GetPos(), brain->GetSideRad(), *stage);
+    
+
+    enemy_manager_->Update(player_);
+    player_->Update(camera_->GetPos(), brain_->GetSideRad(), *stage_);
 
 
     //マウスでの操作
-    brain->Update(camera->GetTargetPos(), camera->GetPos(), player);
+    brain_->Update(camera_->GetTargetPos(), camera_->GetPos(), player_);
 
-    camera->Update(brain->GetVelocity(), brain->GetTargetVelocity());
-    effect_player->Update();
+    camera_->Update(brain_->GetVelocity(), brain_->GetTargetVelocity());
+    effect_player_->Update();
 
-    sky_dom->SetPos(player->GetVelocity());
+    
+
+    sky_dom_->SetPos(player_->GetVelocity());
     if (CheckHitKey(KEY_INPUT_RIGHT))
     {
         time_scale += 0.01;
@@ -166,40 +171,40 @@ void Game::Update(SceneName& name)
         time_scale = 1.0f;
     }
 
-    fps->SetTimeScale(time_scale);
 
-    ClearDrawScreen();
+    //ここら辺で終わりのやつを作りたいです
 
-    /*-----------------描画処理------------------*/
-
-    Draw();
-
-    /*----デルタタイム表示----*/
+    if (enemy_manager_->CheckIsEnemy())
+    {
+        //ここで終了
+        name = SceneName::kResult;
+    }
 
     
-    //screen_->Draw();
-    //printfDx("0");
 
-    //fps->DrawTimeScale();
-    SetUseLighting(TRUE);
-    ScreenFlip();
-    fps->Wait();
-    fps->SetPrevTime();
+    FPS::GetInstance().SetTimeScale(time_scale);
+
 }
 
 void Game::Draw()
 {
-    sky_dom->Draw();
+    
+    sky_dom_->Draw();
 
-    player->Draw();
-    enemy_manager->Draw();
+    player_->Draw();
+    enemy_manager_->Draw();
 
-
+    
     SetUseLighting(FALSE);
 
-    stage->Draw();
-    effect_player->Draw();
-    camera->Draw();
+    stage_->Draw();
+    
+    camera_->Draw();
+
+    
+    effect_player_->Draw();
+    concentration_line_->Draw();
+    SetUseLighting(TRUE);
 }
 
 

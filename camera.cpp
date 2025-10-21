@@ -18,9 +18,9 @@ Camera::Camera(const VECTOR& pos, const VECTOR& target_pos, float fov)
 
 	pos_ = pos;
 	target_pos_ = target_pos;
-
+	fov_ = fov;
 	// ‹–ìŠpİ’è
-	SetupCamera_Perspective(fov);
+	SetupCamera_Perspective(fov_);
 }
 
 Camera::~Camera()
@@ -46,7 +46,8 @@ void Camera::Update(const VECTOR& velocity, const VECTOR& target_velocity)
 	SetLightPosition(pos_);
 	
 	SetCameraPositionAndTarget_UpVecY(pos_, target_pos_);
-
+	SetCameraNearFar(1.0f, 1000.0f);
+	SetupCamera_Perspective(fov_);
 	if (CheckHitKey(KEY_INPUT_T))
 	{
 		// ‹–ìŠpİ’è

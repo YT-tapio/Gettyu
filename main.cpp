@@ -2,7 +2,6 @@
 #include<vector>
 #include<memory>
 #include"DxLib.h"
-#include"EffekseerForDxLib.h"
 #include"scene_manager.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)

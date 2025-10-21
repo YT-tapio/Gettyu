@@ -23,13 +23,6 @@ void Result::Update(SceneName& name)
 	{
 		name = SceneName::kTitle;
 	}
-
-	ClearDrawScreen();
-
-	Draw();
-
-	ScreenFlip();
-
 }
 
 void Result::Draw()

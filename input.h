@@ -92,6 +92,7 @@ public:
 	// デストラクタ
 	~Input();
 
+	void Awake();
 	
 	// 入力更新
 	void Update();

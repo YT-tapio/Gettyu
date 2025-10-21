@@ -121,6 +121,8 @@ private:
 	float get_dist_ = 0.f;
 	float offset_line_timer_ = 0.f;
 
+	float vacuum_offset_dist_ = 0.f;
+
 	MousePoint now_mouse_pos_;
 	MousePoint before_mouse_pos_;
 

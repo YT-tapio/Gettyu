@@ -29,6 +29,7 @@ SceneManager::SceneManager()
     // ウインドウとフルスクリーンの切り替えが発生する場合は必ず実行する。
     Effekseer_SetGraphicsDeviceLostCallbackFunctions();
 
+
     // Zバッファを有効にする。
     // Effekseerを使用する場合、2DゲームでもZバッファを使用する。
     SetUseZBuffer3D(TRUE);
@@ -49,6 +50,8 @@ SceneManager::SceneManager()
 
 	now_scene_->Init();
 	now_scene_name_ = now_scene_->GetName();
+
+    FPS::GetInstance();
 }
 
 SceneManager::~SceneManager()
@@ -61,9 +64,13 @@ void SceneManager::Update()
     SceneName before_name = now_scene_->GetName();
     while (ScreenFlip() == 0 && ProcessMessage() == 0 && ClearDrawScreen() == 0 && !CheckHitKey(KEY_INPUT_ESCAPE))
     {
+
+        
+
         //シーンが切り替わっている場合
         if (before_name != now_scene_name_)
         {
+            printfDx("ロード中");
             now_scene_ = nullptr;
             switch (now_scene_name_)
             {
@@ -79,12 +86,25 @@ void SceneManager::Update()
                 now_scene_ = std::make_shared<Result>();
                 break;
             }
-
+            
             now_scene_->Init();
-            printfDx("0");
             before_name = now_scene_->GetName();
         }
+
+        FPS::GetInstance().Update();
+
         now_scene_->Update(now_scene_name_);
+
+        ClearDrawScreen();
+        
+        //ここで描画処理
+        now_scene_->Draw();
+
+
+        ScreenFlip();
+
+        FPS::GetInstance().Wait();
+        FPS::GetInstance().SetPrevTime();
 
     }
 
