@@ -4,11 +4,12 @@
 #include"player.h"
 #include"effect.h"
 #include"collision_data.h"
+#include"enemy_FSM.h"
 #include"base_enemy_state.h"
 
 class Player;
 class BaseEnemyState;
-
+class EnemyFSM;
 
 class BaseEnemy
 {
@@ -21,6 +22,7 @@ protected:
 
 	CollisionData collision_data_;
 	std::shared_ptr<BaseEnemyState> state_;		//一貫して最初はpatrolling
+	std::shared_ptr<EnemyFSM> fsm_;
 
 	//
 	MATRIX mat_;		//vectorの集合体
@@ -30,17 +32,18 @@ protected:
 	VECTOR velocity_;	//移動量
 	VECTOR scale_;		//大きさ
 
-
 	bool is_get_;
 	int model_;
 
 	float delta_time_;
-
+	//各enemyによって変える
+	float speed_;
+	float alert_dist_;
 
 public:
 
 	BaseEnemy(const int model, const VECTOR& pos,
-		const VECTOR& scale, const VECTOR& dir,Effect* effect, Effect* got_effect);
+		const VECTOR& scale, const VECTOR& rot,Effect* effect, Effect* got_effect,float speed, float alert_dist);
 
 
 	virtual ~BaseEnemy() = 0;
@@ -51,6 +54,11 @@ public:
 
 
 	virtual void Update(std::shared_ptr<Player> player,bool& got) = 0;
+
+
+	virtual void Patrolling() = 0;
+
+	virtual void Alert(std::shared_ptr<Player> player) = 0;
 
 	void EffectUpdate();
 
@@ -78,6 +86,8 @@ public:
 
 	//ゲットされた時の位置調整
 	void SetPosIsGot(const VECTOR& pos);
+
+	const float GetAlertDist() const { return alert_dist_; }
 
 	const bool GetIsGet() const { return is_get_; }
 

@@ -312,6 +312,9 @@
     <ClCompile Include="patrolling.cpp">
       <Filter>ソース ファイル\enemy\state\enemy_state\patrolling</Filter>
     </ClCompile>
+    <ClCompile Include="alert.cpp">
+      <Filter>ソース ファイル\enemy\state\enemy_state\alert</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="keyconfig.h">
@@ -466,6 +469,9 @@
     </ClInclude>
     <ClInclude Include="patrolling.h">
       <Filter>ソース ファイル\enemy\state\enemy_state\patrolling</Filter>
+    </ClInclude>
+    <ClInclude Include="alert.h">
+      <Filter>ソース ファイル\enemy\state\enemy_state\alert</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

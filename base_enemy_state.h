@@ -2,6 +2,7 @@
 #include"base_enemy.h"
 
 class BaseEnemy;
+class Player;
 
 enum class StateName
 {
@@ -39,11 +40,13 @@ public:
 	/// enemy‚Ì’†‚É‚ ‚é‚»‚ê‚¼‚ê‚Ìupdate‚ğ“Ç‚ñ‚Å‚ ‚°‚é
 	/// </summary>
 	/// <param name="enemy"></param>
-	virtual void Update(BaseEnemy* enemy) = 0;
+	virtual void Update(BaseEnemy* enemy, std::shared_ptr<Player> player) = 0;
 
 	/// <summary>
 	/// I—¹ğŒ
 	/// </summary>
 	virtual void Exit(BaseEnemy* enemy) = 0;
+
+	const StateName GetName() const { return name_; }
 
 };

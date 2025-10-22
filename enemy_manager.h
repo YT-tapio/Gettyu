@@ -10,6 +10,7 @@
 class Player;
 class BaseEnemy;
 class NormalEnemy;
+class Player;
 
 class EnemyManager
 {

@@ -137,6 +137,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="alert.cpp" />
     <ClCompile Include="animation.cpp" />
     <ClCompile Include="base_enemy.cpp" />
     <ClCompile Include="base_object.cpp" />
@@ -186,6 +187,7 @@
     <ClCompile Include="wizard_staff.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="alert.h" />
     <ClInclude Include="animation.h" />
     <ClInclude Include="base_enemy.h" />
     <ClInclude Include="base_object.h" />

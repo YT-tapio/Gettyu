@@ -20,10 +20,10 @@ void EnemyPatrolling::Entry(BaseEnemy* enemy)
 }
 
 
-void EnemyPatrolling::Update(BaseEnemy* enemy)
+void EnemyPatrolling::Update(BaseEnemy* enemy, std::shared_ptr<Player> player)
 {
 	//‚±‚Ì’†‚ÅŽU•à‚ð‚³‚¹‚Ä‚¢‚­
-
+	enemy->Patrolling();
 }
 
 void EnemyPatrolling::Exit(BaseEnemy* enemy)

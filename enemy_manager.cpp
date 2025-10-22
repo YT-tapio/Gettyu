@@ -1,5 +1,9 @@
 #include<iostream>
 #include<memory>
+
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 #include"enemy_manager.h"
 #include"situation.h"
 
@@ -19,13 +23,13 @@ void EnemyManager::Init()
 {
 	//printfDx("wa\n");
 	enemies_.push_back(std::make_shared<NormalEnemy>("data/model/character/Ch14_nonPBR.mv1",
-		VGet(10.f, 0.f, 50.f), VGet(0.05f, 0.05f, 0.05f),VGet(10.f,0,5.0f),get_effect_,got_effect_));
+		VGet(10.f, 0.f, 50.f), VGet(0.05f, 0.05f, 0.05f),VGet(0.f,static_cast<float>((M_PI / 180) * 70), 0.0f), get_effect_, got_effect_, 2.f,10.f));
 
 	enemies_.push_back(std::make_shared<NormalEnemy>("data/model/character/Ch14_nonPBR.mv1",
-		VGet(50.f, 1.5f, 10.f), VGet(0.05f, 0.05f, 0.05f), VGet(5.f, 0, 10.0f), get_effect_, got_effect_));
+		VGet(50.f, 1.5f, 10.f), VGet(0.05f, 0.05f, 0.05f), VGet(0.f, static_cast<float>((M_PI / 180) * 80), 0.0f), get_effect_, got_effect_,4.f, 10.f));
 
 	enemies_.push_back(std::make_shared<NormalEnemy>("data/model/character/Ch14_nonPBR.mv1",
-		VGet(20.f, 3.f, 5.f), VGet(0.05f, 0.05f, 0.05f), VGet(5.f, 0, 5.0f), get_effect_, got_effect_));
+		VGet(20.f, 3.f, 5.f), VGet(0.05f, 0.05f, 0.05f), VGet(0.f, static_cast<float>((M_PI / 180) * 90), 0.0f), get_effect_, got_effect_,0.5f, 10.f));
 }
 
 void EnemyManager::Update(std::shared_ptr<Player> player)

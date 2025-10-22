@@ -3,7 +3,7 @@
 BaseEnemyState::BaseEnemyState(StateName name)
 	: name_(name)
 {
-
+	
 }
 
 BaseEnemyState::~BaseEnemyState()

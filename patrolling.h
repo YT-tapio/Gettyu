@@ -2,6 +2,7 @@
 #include"base_enemy_state.h"
 
 class BaseEnemy;
+class Player;
 
 class EnemyPatrolling : public BaseEnemyState
 {
@@ -25,7 +26,7 @@ public:
 	/// XV
 	/// </summary>
 	/// <param name="enemy"></param>
-	void Update(BaseEnemy* enemy) override;
+	void Update(BaseEnemy* enemy, std::shared_ptr<Player> player) override;
 
 	/// <summary>
 	/// ‚µ‚ã‚¤‚è‚å‚¤‚¶‚å‚¤‚¯‚ñ

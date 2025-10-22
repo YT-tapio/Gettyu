@@ -1,11 +1,14 @@
-
+#include<math.h>
 #include"base_enemy.h"
 #include"situation.h"
 #include"patrolling.h"
+#include"debug.h"
 
 BaseEnemy::BaseEnemy(const int model, const VECTOR& pos,
-	const VECTOR& scale, const VECTOR& dir, Effect* get_effect,Effect* got_effect)
+	const VECTOR& scale, const VECTOR& rot, Effect* get_effect,Effect* got_effect,float speed,float alert_dist)
 {
+	fsm_ = std::make_shared<EnemyFSM>();
+
 	//モデルのダウンロード
 	model_ = model;
 	if (model_ == -1)
@@ -18,10 +21,13 @@ BaseEnemy::BaseEnemy(const int model, const VECTOR& pos,
 	//VECTOR
 	pos_ = pos;
 	dir_ = VGet(0.f, 0.f, 0.f);
-	rot_ = VGet(0.f, 0.f, 0.f);
+	rot_ = rot;
 	velocity_ = VGet(0.f, 0.f, 0.f);
 	scale_ = scale;
-	dir_ = dir;
+
+	//dirはrotから求まる
+
+	dir_ = VGet(-sinf(rot.y), 0.f, -cosf(rot.y));
 	mat_ = MMult(MMult(MGetRotY(0.0f), MGetScale(scale_)), 
 		MGetTranslate(pos_));
 
@@ -30,6 +36,9 @@ BaseEnemy::BaseEnemy(const int model, const VECTOR& pos,
 
 	get_effect_ = get_effect;
 	got_effect_ = got_effect;
+
+	speed_ = speed;
+	alert_dist_ = alert_dist;
 }
 
 BaseEnemy::~BaseEnemy()
@@ -75,9 +84,9 @@ void BaseEnemy::EndGetEffect()
 void BaseEnemy::Draw(int i)
 {
 
-	mat_ = MMult(MGetScale(scale_), MGetTranslate(pos_));
+	mat_ = MMult(MMult(MGetRotY(rot_.y), MGetScale(scale_)), MGetTranslate(pos_));
 
-	if (FALSE)
+	if (Debug::GetInstance().GetDisp())
 	{
 		switch (collision_data_.name)
 		{
@@ -114,11 +123,13 @@ void BaseEnemy::Draw(int i)
 	
 
 	//座標表示
-	if (FALSE)
+	if (Debug::GetInstance().GetDisp())
 	{
-		DrawLine3D(pos_, VAdd(pos_, dir_), GetColor(255, 255, 255));
-		DrawFormatString(0, 15 + (15 * i), GetColor(100 * (i), 255 - (50 * i), 100 - (0 * i)), "enemy%d_collision_pos:: x:%.2f,y:%.2f,z:%.2f", i, collision_data_.pos.x,
-			collision_data_.pos.y, collision_data_.pos.z);
+		DrawLine3D(pos_, VAdd(pos_, VScale(dir_,5.f)), GetColor(255, 255, 255));
+		
+		DrawFormatString(0, 20 * Debug::GetInstance().GetCurrentNum(), GetColor(100 * (i), 255 - (50 * i), 100 - (0 * i)), "enemy%d rot : %.2f", i, rot_.y);
+		
+		Debug::GetInstance().Add();
 	}
 
 }
