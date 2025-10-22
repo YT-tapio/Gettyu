@@ -141,6 +141,7 @@
     <ClCompile Include="base_enemy.cpp" />
     <ClCompile Include="base_object.cpp" />
     <ClCompile Include="base_scene.cpp" />
+    <ClCompile Include="base_enemy_state.cpp" />
     <ClCompile Include="base_sub_screen.cpp" />
     <ClCompile Include="bat.cpp" />
     <ClCompile Include="brain.cpp" />
@@ -150,6 +151,7 @@
     <ClCompile Include="debug.cpp" />
     <ClCompile Include="effect.cpp" />
     <ClCompile Include="effect_manager.cpp" />
+    <ClCompile Include="enemy_FSM.cpp" />
     <ClCompile Include="enemy_manager.cpp" />
     <ClCompile Include="FPS.cpp" />
     <ClCompile Include="game.cpp" />
@@ -159,6 +161,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="movie.cpp" />
     <ClCompile Include="normal_enemy.cpp" />
+    <ClCompile Include="patrolling.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="result.cpp" />
     <ClCompile Include="rot_function.cpp" />
@@ -187,6 +190,7 @@
     <ClInclude Include="base_enemy.h" />
     <ClInclude Include="base_object.h" />
     <ClInclude Include="base_scene.h" />
+    <ClInclude Include="base_enemy_state.h" />
     <ClInclude Include="base_sub_screen.h" />
     <ClInclude Include="bat.h" />
     <ClInclude Include="brain.h" />
@@ -198,6 +202,7 @@
     <ClInclude Include="debug.h" />
     <ClInclude Include="effect.h" />
     <ClInclude Include="effect_manager.h" />
+    <ClInclude Include="enemy_FSM.h" />
     <ClInclude Include="enemy_manager.h" />
     <ClInclude Include="FPS.h" />
     <ClInclude Include="game.h" />
@@ -208,6 +213,7 @@
     <ClInclude Include="mixamo_fram.h" />
     <ClInclude Include="movie.h" />
     <ClInclude Include="normal_enemy.h" />
+    <ClInclude Include="patrolling.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="result.h" />
     <ClInclude Include="rot_function.h" />

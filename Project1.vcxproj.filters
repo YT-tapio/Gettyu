@@ -151,6 +151,24 @@
     <Filter Include="ソース ファイル\time">
       <UniqueIdentifier>{46f02387-6406-4ec2-8fe0-64c5a8102274}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\AI">
+      <UniqueIdentifier>{1d4f56c3-6a8e-4be9-9b8d-623c681bab61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\enemy\state">
+      <UniqueIdentifier>{02135972-fd3c-4b56-9177-5dd81011049a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\enemy\state\enemy_state">
+      <UniqueIdentifier>{45550f1b-671d-448b-b984-a16d65fc5bd0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\enemy\state\enemy_state\base">
+      <UniqueIdentifier>{de82a9de-8a52-4c25-9bae-020cc8c0b747}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\enemy\state\enemy_state\patrolling">
+      <UniqueIdentifier>{a2faeb9f-8acc-4e05-93a7-5442d415e216}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\enemy\state\enemy_state\alert">
+      <UniqueIdentifier>{69074d67-404b-4321-8cf0-a8ffd052b112}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -284,6 +302,15 @@
     </ClCompile>
     <ClCompile Include="condition_timer.cpp">
       <Filter>ソース ファイル\time</Filter>
+    </ClCompile>
+    <ClCompile Include="enemy_FSM.cpp">
+      <Filter>ソース ファイル\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="base_enemy_state.cpp">
+      <Filter>ソース ファイル\enemy\state\enemy_state\base</Filter>
+    </ClCompile>
+    <ClCompile Include="patrolling.cpp">
+      <Filter>ソース ファイル\enemy\state\enemy_state\patrolling</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -430,6 +457,15 @@
     </ClInclude>
     <ClInclude Include="condition_timer.h">
       <Filter>ソース ファイル\time</Filter>
+    </ClInclude>
+    <ClInclude Include="enemy_FSM.h">
+      <Filter>ソース ファイル\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="base_enemy_state.h">
+      <Filter>ソース ファイル\enemy\state\enemy_state\base</Filter>
+    </ClInclude>
+    <ClInclude Include="patrolling.h">
+      <Filter>ソース ファイル\enemy\state\enemy_state\patrolling</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

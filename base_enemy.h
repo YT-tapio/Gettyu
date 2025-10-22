@@ -4,8 +4,10 @@
 #include"player.h"
 #include"effect.h"
 #include"collision_data.h"
+#include"base_enemy_state.h"
 
 class Player;
+class BaseEnemyState;
 
 
 class BaseEnemy
@@ -18,6 +20,7 @@ private:
 protected:
 
 	CollisionData collision_data_;
+	std::shared_ptr<BaseEnemyState> state_;		//ˆêŠÑ‚µ‚ÄÅ‰‚Ípatrolling
 
 	//
 	MATRIX mat_;		//vector‚ÌW‡‘Ì

@@ -1,6 +1,7 @@
 
 #include"base_enemy.h"
 #include"situation.h"
+#include"patrolling.h"
 
 BaseEnemy::BaseEnemy(const int model, const VECTOR& pos,
 	const VECTOR& scale, const VECTOR& dir, Effect* get_effect,Effect* got_effect)
@@ -11,6 +12,8 @@ BaseEnemy::BaseEnemy(const int model, const VECTOR& pos,
 	{
 		//printfDx("enemy‚Ìƒ‚ƒfƒ‹“Ç‚İ‚İ¸”s\n");
 	}
+
+	state_ = std::make_shared<EnemyPatrolling>();
 
 	//VECTOR
 	pos_ = pos;

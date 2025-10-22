@@ -51,17 +51,8 @@ void NormalEnemy::Update(std::shared_ptr<Player> player, bool& got)
 
 	if (!is_get_)
 	{
-		VECTOR vel = VGet(0.f, 0.f, 0.f);
-		vel = VScale(VNorm(dir_), 2.0f);
-		//velocity_ = VScale(vel, delta_time_);
-
-		pos_ = VAdd(pos_, velocity_);
-		//collision_data_.pos = VAdd(collision_data_.pos, velocity_);
-
-		//pos_ = collision_data_.pos;
-		//pos_.y = collision_data_.pos.y - collision_data_.r;
-		//当たり判定の位置を更新
-
+		//stateによるupdate
+		state_->Update(this);
 	}
 
 	//当たり判定の位置は半径分上げる
