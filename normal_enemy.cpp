@@ -7,8 +7,8 @@
 #include"situation.h"
 #include"rot_function.h"
 
-NormalEnemy::NormalEnemy(const char* path,const VECTOR& pos,const VECTOR& scale,const VECTOR& dir,Effect* get_effect, Effect* got_effect, float speed, float alert_dist)
-	:BaseEnemy(MV1LoadModel(path),pos,scale,dir,get_effect,got_effect,speed,alert_dist)
+NormalEnemy::NormalEnemy(const char* path,const VECTOR& pos,const VECTOR& scale,const VECTOR& dir,Effect* get_effect, Effect* got_effect, float speed, float alert_dist, float fov)
+	:BaseEnemy(MV1LoadModel(path),pos,scale,dir,get_effect,got_effect,speed,alert_dist,fov)
 {
 	collision_data_.name = CollisionName::kSphere;
 	collision_data_.pos = pos;
@@ -37,6 +37,16 @@ void NormalEnemy::Init(const VECTOR& pos, const VECTOR scale)
 	delta_time_ = 0.0f;
 }
 
+
+void NormalEnemy::FleepingInit(std::shared_ptr<Player> player)
+{
+	//ここでrotを指定してdirも指定する。
+	//とりあえず反転して逃げさせる
+	rot_.y += kReverceRad;
+	dir_ = VGet(-sinf(rot_.y), 0.f, -cosf(rot_.y));
+
+}
+
 void NormalEnemy::Update(std::shared_ptr<Player> player, bool& got)
 {
 
@@ -48,6 +58,7 @@ void NormalEnemy::Update(std::shared_ptr<Player> player, bool& got)
 	if (state_->GetName() != next_state->GetName())
 	{
 		state_ = next_state;
+		state_->Entry(this, player);
 	}
 
 	// メモ代わり
@@ -93,9 +104,6 @@ void NormalEnemy::Patrolling()
 	
 	//最大値(移動量)
 	const float kMaxVel = 20.f;
-	//ラジアンにした時の1度の値
-	const float kRad = static_cast<float>(M_PI / 180);
-	const float kReverceRad = kRad * 180;		//反転の値
 	//回転のオフセット時間
 	const float kOffsetTime = 1.f;
 	
@@ -158,6 +166,20 @@ void NormalEnemy::Alert(std::shared_ptr<Player> player)
 	//ここでplayerとの距離を測りどんな状態に変化するか判断
 
 
+
+
+}
+
+
+
+void NormalEnemy::Fleeping(std::shared_ptr<Player> player)
+{
+	//ここで逃げる
+
+	// どう逃げさせようかな
+	// 一定距離うごいたら初期化させexitさせていいと思う
+
+	velocity_ = VScale(dir_, 3.f);
 
 
 }

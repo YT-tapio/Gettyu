@@ -3,6 +3,7 @@
 //EnemyState‚ğ“Ç‚İ‚Ş
 #include"patrolling.h"
 #include"alert.h"
+#include"fleeping.h"
 
 EnemyFSM::EnemyFSM()
 {
@@ -31,11 +32,14 @@ std::shared_ptr<BaseEnemyState> EnemyFSM::ChangeAlert(std::shared_ptr<BaseEnemyS
 	
 	if (VSize(dist) <= alert)
 	{
+		enemy->SetColor(GetColor(0, 0, 0));
 		return std::make_shared<EnemyAlert>();
 	}
 	else
 	{
+		enemy->SetColor(GetColor(0, 0, 0));
 		return std::make_shared<EnemyPatrolling>();
+		
 	}
 	
 	return now_state;
@@ -43,6 +47,37 @@ std::shared_ptr<BaseEnemyState> EnemyFSM::ChangeAlert(std::shared_ptr<BaseEnemyS
 }
 
 
+std::shared_ptr<BaseEnemyState> EnemyFSM::ChangeFleeping(std::shared_ptr<BaseEnemyState> now_state, std::shared_ptr<Player> player, BaseEnemy* enemy)
+{
+
+	//alert‚¶‚á‚È‚¢‚È‚ç‘ŠúƒŠƒ^[ƒ“
+	if (now_state->GetName() != StateName::kAlert) { return now_state; }
+	
+	//“àÏ(VDot)‚Å‹‚ß‚Ü‚µ‚å‚¤
+	//³‹K‰»(VNorm)‚·‚é
+	
+	//player‚©‚çenemy‚ÌvectorŒ^‚Ìdist‚ğæ‚é
+	
+	VECTOR enemy_to_player_dist = VSub(player->GetCenterPos(), enemy->GetPos());
+	VECTOR dist_dir = VNorm(enemy_to_player_dist);							//enemy‚©‚çplayer‚Ü‚Å‚Ìdist‚Ì³‹K‰»
+	VECTOR enemy_norm_dir		= VNorm(enemy->GetDirection());		//enemy‚Ì³‹K‰»
+
+	//dot‚Ì‚¯‚Á‚©‚ğó‚¯æ‚é
+	float dot = VDot(enemy_norm_dir, dist_dir);
+
+	//Šp“x‚ğ‹‚ß‚é
+	float rad = acosf(dot);
+	float herf_fov = (enemy->GetFov() * 0.5f);
+	//rad‚ªfov‚Ì”¼•ª‚ÉˆÈ‰º‚È‚çstate‚ğØ‚è‚©‚¦‚é
+	if (rad <= herf_fov)
+	{
+		//printfDx("in fov\n");
+		enemy->SetColor(GetColor(255, 0, 0));
+		return std::make_shared<EnemyFleeping>();
+	}
+
+	return now_state;
+}
 
 /*--------public---------*/
 
@@ -55,7 +90,7 @@ std::shared_ptr<BaseEnemyState> EnemyFSM::UpdateState(std::shared_ptr<BaseEnemyS
 	//
 
 	state = ChangeAlert(state, player, enemy);
-
+	state = ChangeFleeping(state, player, enemy);
 
 
 	return state;

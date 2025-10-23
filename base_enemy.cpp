@@ -5,7 +5,7 @@
 #include"debug.h"
 
 BaseEnemy::BaseEnemy(const int model, const VECTOR& pos,
-	const VECTOR& scale, const VECTOR& rot, Effect* get_effect,Effect* got_effect,float speed,float alert_dist)
+	const VECTOR& scale, const VECTOR& rot, Effect* get_effect,Effect* got_effect,float speed,float alert_dist, float fov)
 {
 	fsm_ = std::make_shared<EnemyFSM>();
 
@@ -39,6 +39,8 @@ BaseEnemy::BaseEnemy(const int model, const VECTOR& pos,
 
 	speed_ = speed;
 	alert_dist_ = alert_dist;
+	fov_ = fov;
+	debug_color_ = GetColor(255, 255, 255);
 }
 
 BaseEnemy::~BaseEnemy()
@@ -86,25 +88,7 @@ void BaseEnemy::Draw(int i)
 
 	mat_ = MMult(MMult(MGetRotY(rot_.y), MGetScale(scale_)), MGetTranslate(pos_));
 
-	if (Debug::GetInstance().GetDisp())
-	{
-		switch (collision_data_.name)
-		{
-
-		case CollisionName::kSphere:
-
-			DrawSphere3D(collision_data_.pos, 3.f, 15, GetColor(100 * (i), 255 - (70 * i), 100 - (0 * i)),
-				GetColor(50 * (i), 255 - (50 * i), 255), FALSE);
-
-			break;
-
-		case CollisionName::kCapsule:
-
-			DrawCapsule3D(collision_data_.pos, VGet(collision_data_.pos.x, (collision_data_.pos.y - collision_data_.ver),
-				collision_data_.pos.z), collision_data_.r, 15, GetColor(255, 255, 255), GetColor(255, 255, 255), FALSE);
-			break;
-		}
-	}
+	
 	
 
 	if (model_ == -1)
@@ -122,21 +106,98 @@ void BaseEnemy::Draw(int i)
 
 	
 
-	//座標表示
-	if (Debug::GetInstance().GetDisp())
-	{
-		DrawLine3D(pos_, VAdd(pos_, VScale(dir_,5.f)), GetColor(255, 255, 255));
-		
-		DrawFormatString(0, 20 * Debug::GetInstance().GetCurrentNum(), GetColor(100 * (i), 255 - (50 * i), 100 - (0 * i)), "enemy%d rot : %.2f", i, rot_.y);
-		
-		Debug::GetInstance().Add();
-	}
+	
 
 }
 
-void BaseEnemy::Debug()
+
+void BaseEnemy::DrawFov()
+{
+	const float angle_scale = 5.f;
+
+	//2本線出る
+	float angle1 = rot_.y + (fov_ * 0.5f);
+	float angle2 = rot_.y - (fov_ * 0.5f);
+
+	//角度が出せたのでdirを出す
+	VECTOR dir1 = VGet(-sinf(angle1), 0.f,-cosf(angle1));
+	VECTOR dir2 = VGet(-sinf(angle2), 0.f, -cosf(angle2));
+
+	//そのdirにscaleをかけて今のposにたす
+	VECTOR fov_pos1 = VAdd(pos_,VScale(dir1, angle_scale));
+	VECTOR fov_pos2 = VAdd(pos_,VScale(dir2, angle_scale));
+
+	//posが出たので線を引く
+	DrawLine3D(pos_, fov_pos1, GetColor(255, 255, 255));
+	DrawLine3D(pos_, fov_pos2, GetColor(255, 255, 255));
+}
+
+void BaseEnemy::Debug(int i)
 {
 	//でばっくのシングルトンから今までのデバックのログ数を受け取りその量を受け取る
+	if (Debug::GetInstance().GetDisp())
+	{
+		//当たり判定を表示
+		switch (collision_data_.name)
+		{
+
+		case CollisionName::kSphere:
+
+			DrawSphere3D(collision_data_.pos, 3.f, 15, GetColor(100 * (i), 255 - (70 * i), 100 - (0 * i)),
+				GetColor(50 * (i), 255 - (50 * i), 255), FALSE);
+
+			break;
+
+		case CollisionName::kCapsule:
+
+			DrawCapsule3D(collision_data_.pos, VGet(collision_data_.pos.x, (collision_data_.pos.y - collision_data_.ver),
+				collision_data_.pos.z), collision_data_.r, 15, GetColor(255, 255, 255), GetColor(255, 255, 255), FALSE);
+			break;
+		}
+
+		//正面を出す
+		DrawLine3D(pos_, VAdd(pos_, VScale(dir_, 5.f)), GetColor(255, 255, 255));
+		DrawFov();
+
+
+		//enemy名
+		DrawFormatString(0, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), debug_color_, "----------enemy%d----------", i);
+		Debug::GetInstance().Add();
+		
+		//ポジションを表示
+		DrawFormatString(0, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), debug_color_, "pos");
+		Debug::GetInstance().Add();
+
+		DrawFormatString(0, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), debug_color_, "x : %.2f,y : %.2f,z : %.2f", pos_.x, pos_.y, pos_.z);
+		Debug::GetInstance().Add();
+
+		//
+		switch (state_->GetName())
+		{
+		case StateName::kPatrolling:
+			DrawFormatString(0, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), debug_color_, "state : patlloring");
+			break;
+
+		case StateName::kAlert:
+			DrawFormatString(0, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), debug_color_, "state : alert");
+			break;
+
+		case StateName::kFleeping:
+			DrawFormatString(0, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), debug_color_, "stat : fleeping");
+			break;
+		}
+		Debug::GetInstance().Add();
+		DrawFormatString(0, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), debug_color_, "rot : % .2f", rot_.y);
+
+		Debug::GetInstance().Add();
+	}
+
+
+}
+
+void BaseEnemy::SetColor(int color)
+{
+	debug_color_ = color;
 }
 
 void BaseEnemy::SetDeltaTime(float delta_time)

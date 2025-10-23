@@ -9,6 +9,11 @@ class NormalEnemy : public BaseEnemy
 {
 private:
 
+	//ラジアンにした時の1度の値
+	const float kRad = static_cast<float>(M_PI / 180);
+	const float kReverceRad = kRad * 180;		//反転の値
+
+
 	VECTOR total_vel_;
 
 	//反転するときの値
@@ -22,7 +27,7 @@ public:
 
 
 	NormalEnemy(const char* path, const VECTOR& pos,
-		const VECTOR& scale, const VECTOR& dir, Effect* get_effect, Effect* got_effect, float speed, float alert_dist);
+		const VECTOR& scale, const VECTOR& dir, Effect* get_effect, Effect* got_effect, float speed, float alert_dist,float fov);
 
 
 	~NormalEnemy() override;
@@ -31,11 +36,15 @@ public:
 	void Init(const VECTOR& pos,const VECTOR scale) override;
 
 
+	void FleepingInit(std::shared_ptr<Player> player) override;
+
+
 	void Update(std::shared_ptr<Player> player, bool& got) override;
 	
 	void Patrolling() override;
 
 	void Alert(std::shared_ptr<Player> player) override;
 
+	void Fleeping(std::shared_ptr<Player> player) override;
 	//void Draw() override;
 };

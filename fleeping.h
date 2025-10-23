@@ -1,20 +1,21 @@
 #pragma once
+
 #include"base_enemy_state.h"
 
 class BaseEnemy;
 class BaseEnemyState;
 class Player;
 
-class EnemyAlert : public BaseEnemyState
+class EnemyFleeping : public BaseEnemyState
 {
 private:
 
 
 public:
 
-	EnemyAlert();
+	EnemyFleeping();
 
-	~EnemyAlert() override;
+	~EnemyFleeping() override;
 
 	void Entry(BaseEnemy* enemy, std::shared_ptr<Player> player) override;
 

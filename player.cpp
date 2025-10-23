@@ -260,6 +260,10 @@ void Player::Update(const VECTOR& pos, const float& rotation, Stage& stage)
 
 	InputMovement(pos, target_rot);
 
+	if (VSize(velocity_) != 0.f)
+	{
+		direction_ = VNorm(velocity_);
+	}
 
 	if (is_super_attack_)
 	{
@@ -313,7 +317,9 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 
 	float speed = 0.0f;
 
-	direction_ = VGet(0, 0, 0);
+	is_move_ = FALSE;
+
+	//direction_ = VGet(0, 0, 0);
 
 	/*(PadConfig::kLeftButton)*/
 
@@ -324,41 +330,50 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 
 	if (!is_super_attack_ && now_type_ < AnimationType::kAttack)
 	{
-		/*左スティックの入力量をみる*/
-		if (Input::GetInstance().CheckInputKey(KeyConfig::kDashKey) > InputState::kOff || Input::GetInstance().GetPadStickVertical(StickType::kLeft) > 200)
+		if (is_move_)
 		{
-			speed = kDashSpeed;
+			/*左スティックの入力量をみる*/
+			if (Input::GetInstance().CheckInputKey(KeyConfig::kDashKey) > InputState::kOff || Input::GetInstance().GetPadStickVertical(StickType::kLeft) > 200)
+			{
+				speed = kDashSpeed;
 
-			now_type_ = AnimationType::kFastRun;
-			now_state_ = State::kRun;
-		}
-		else if (Input::GetInstance().CheckInputKey(KeyConfig::kWalkKey) > InputState::kOff || (Input::GetInstance().GetPadStickVertical(StickType::kLeft) > 50 &&
-			Input::GetInstance().GetPadStickVertical(StickType::kLeft) < 150))
-		{
-			speed = kWalkSpeed;
+				now_type_ = AnimationType::kFastRun;
+				now_state_ = State::kRun;
+			}
+			else if (Input::GetInstance().CheckInputKey(KeyConfig::kWalkKey) > InputState::kOff || (Input::GetInstance().GetPadStickVertical(StickType::kLeft) > 50 &&
+				Input::GetInstance().GetPadStickVertical(StickType::kLeft) < 150))
+			{
+				speed = kWalkSpeed;
 
-			now_type_ = AnimationType::kWalk;
-			now_state_ = State::kWalk;
-		}
-		else
-		{
-			speed = kNormalSpeed;
+				now_type_ = AnimationType::kWalk;
+				now_state_ = State::kWalk;
+			}
+			else
+			{
+				speed = kNormalSpeed;
 
-			now_type_ = AnimationType::kSlowRun;
-			now_state_ = State::kSlowRun;
+				now_type_ = AnimationType::kSlowRun;
+				now_state_ = State::kSlowRun;
+			}
+
 		}
+		
 
 	}
 	
-
-	
 	velocity = VScale(direction_, speed);
+	if (VSize(velocity) != 0.f)
+	{
+		direction_ = VNorm(velocity);
+	}
+	
 
 	JumpAction(velocity);
 
 
 	if (is_super_attack_)
 	{
+		
 		velocity_ = VGet(0.f, 0.f, 0.f);
 	}
 
@@ -367,12 +382,14 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 
 	if (!is_ground_)
 	{
+		
+
 		if (velocity_.y > 0.0f)
 		{
 			now_type_ = AnimationType::kJumpUp;
 			now_state_ = State::kJump;
 		}
-		else if(velocity_.y < -0.1f)
+		else if (velocity_.y < -0.1f)
 		{
 			now_type_ = AnimationType::kJumpDown;
 			now_state_ = State::kFall;
@@ -385,6 +402,8 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 
 		
 	}
+
+
 
 	//必殺技(カメラが動いてない)
 	//攻撃
@@ -589,7 +608,7 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 
 				input_count++;
 			}
-
+			is_move_ = TRUE;
 		}
 
 		//後ろ
@@ -617,7 +636,7 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 				input_count++;
 
 			}
-
+			is_move_ = TRUE;
 		}
 
 
@@ -633,6 +652,7 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 				input_count++;
 			}
 			//rotation_ = VAdd(rotation_,VGet(0, rotation + static_cast<float>((M_PI / 180) * 90), 0));
+			is_move_ = TRUE;
 		}
 
 		//左
@@ -647,7 +667,7 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 
 				input_count++;
 			}
-
+			is_move_ = TRUE;
 			//rotation_ = VAdd(rotation_, VGet(0, rotation - static_cast<float>((M_PI / 180) * 90), 0));
 		}
 
@@ -661,6 +681,7 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 				VGet(-sinf(rot + rotation), 0.0f, -cosf(rot + rotation)));
 
 			input_count++;
+			is_move_ = TRUE;
 		}
 
 		//回転からdirectionを出すことができる

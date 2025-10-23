@@ -14,14 +14,14 @@ EnemyAlert::~EnemyAlert()
 }
 
 
-void EnemyAlert::Entry(BaseEnemy* enemy)
+void EnemyAlert::Entry(BaseEnemy* enemy, std::shared_ptr<Player> player)
 {
 
 }
 
 void EnemyAlert::Update(BaseEnemy* enemy, std::shared_ptr<Player> player)
 {
-	printfDx("yeah");
+	//printfDx("Alert");
 }
 
 void EnemyAlert::Exit(BaseEnemy* enemy)

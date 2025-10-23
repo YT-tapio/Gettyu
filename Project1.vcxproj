@@ -154,6 +154,7 @@
     <ClCompile Include="effect_manager.cpp" />
     <ClCompile Include="enemy_FSM.cpp" />
     <ClCompile Include="enemy_manager.cpp" />
+    <ClCompile Include="fleeping.cpp" />
     <ClCompile Include="FPS.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="get_camera.cpp" />
@@ -206,6 +207,7 @@
     <ClInclude Include="effect_manager.h" />
     <ClInclude Include="enemy_FSM.h" />
     <ClInclude Include="enemy_manager.h" />
+    <ClInclude Include="fleeping.h" />
     <ClInclude Include="FPS.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="get_camera.h" />

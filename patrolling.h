@@ -20,7 +20,7 @@ public:
 	/// ‹N“®ğŒ
 	/// </summary>
 	/// <param name="enemy"></param>
-	void Entry(BaseEnemy* enemy) override;
+	void Entry(BaseEnemy* enemy, std::shared_ptr<Player> player) override;
 
 	/// <summary>
 	/// XV

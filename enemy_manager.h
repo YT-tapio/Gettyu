@@ -38,6 +38,8 @@ public:
 
 	void Draw();
 
+	void Debug();
+
 	void SetDeltaTime(float delta_time);
 
 	//enemy‚ª‚¢‚é‚©‚Ì”»’f

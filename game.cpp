@@ -201,9 +201,14 @@ void Game::Draw()
     
     camera_->Draw();
 
+
     
     effect_player_->Draw();
     concentration_line_->Draw();
+
+    enemy_manager_->Debug();
+
+
     SetUseLighting(TRUE);
 }
 

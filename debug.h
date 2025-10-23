@@ -8,6 +8,8 @@ private:
 
 	//今のデバック数
 	
+	const int size_ = 18;
+
 	int current_num_ = 0;
 	//表示
 	bool disp_ = TRUE;
@@ -71,6 +73,7 @@ public:
 	/// <returns></returns>
 	const int GetCurrentNum() const { return current_num_; }
 
+	const int GetFontSize() const { return size_; }
 
 	const bool GetDisp() const { return disp_; }
 

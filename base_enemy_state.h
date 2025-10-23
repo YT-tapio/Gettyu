@@ -33,7 +33,7 @@ public:
 	/// <summary>
 	/// ‚»‚Ìstate‚É‚È‚éğŒ
 	/// </summary>
-	virtual void Entry(BaseEnemy* enemy) = 0;
+	virtual void Entry(BaseEnemy* enemy, std::shared_ptr<Player> player) = 0;
 
 
 	/// <summary>

@@ -169,6 +169,9 @@
     <Filter Include="ソース ファイル\enemy\state\enemy_state\alert">
       <UniqueIdentifier>{69074d67-404b-4321-8cf0-a8ffd052b112}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\enemy\state\enemy_state\fleeping">
+      <UniqueIdentifier>{a9bf050d-9a63-40a3-a574-e095fbd5571f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -314,6 +317,9 @@
     </ClCompile>
     <ClCompile Include="alert.cpp">
       <Filter>ソース ファイル\enemy\state\enemy_state\alert</Filter>
+    </ClCompile>
+    <ClCompile Include="fleeping.cpp">
+      <Filter>ソース ファイル\enemy\state\enemy_state\fleeping</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -472,6 +478,9 @@
     </ClInclude>
     <ClInclude Include="alert.h">
       <Filter>ソース ファイル\enemy\state\enemy_state\alert</Filter>
+    </ClInclude>
+    <ClInclude Include="fleeping.h">
+      <Filter>ソース ファイル\enemy\state\enemy_state\fleeping</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

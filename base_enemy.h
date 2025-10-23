@@ -34,16 +34,19 @@ protected:
 
 	bool is_get_;
 	int model_;
+	int debug_color_;
 
 	float delta_time_;
 	//Šeenemy‚É‚æ‚Á‚Ä•Ï‚¦‚é
 	float speed_;
 	float alert_dist_;
+	float fov_;
+
 
 public:
 
 	BaseEnemy(const int model, const VECTOR& pos,
-		const VECTOR& scale, const VECTOR& rot,Effect* effect, Effect* got_effect,float speed, float alert_dist);
+		const VECTOR& scale, const VECTOR& rot, Effect* effect, Effect* got_effect, float speed, float alert_dist, float fov);
 
 
 	virtual ~BaseEnemy() = 0;
@@ -51,7 +54,7 @@ public:
 
 	virtual void Init(const VECTOR& pos, const VECTOR scale) = 0;
 
-
+	virtual void FleepingInit(std::shared_ptr<Player> player) = 0;
 
 	virtual void Update(std::shared_ptr<Player> player,bool& got) = 0;
 
@@ -59,6 +62,8 @@ public:
 	virtual void Patrolling() = 0;
 
 	virtual void Alert(std::shared_ptr<Player> player) = 0;
+
+	virtual void Fleeping(std::shared_ptr<Player> player) = 0;
 
 	void EffectUpdate();
 
@@ -68,7 +73,11 @@ public:
 
 	void Draw(int i);
 
-	void Debug();
+	void DrawFov();
+
+	void Debug(int i);
+
+	void SetColor(int color);
 
 	void SetDeltaTime(float delta_time);
 
@@ -89,9 +98,13 @@ public:
 
 	const float GetAlertDist() const { return alert_dist_; }
 
+	const float GetFov() const { return fov_; }
+
 	const bool GetIsGet() const { return is_get_; }
 
 	const VECTOR GetPos() const { return pos_; }
+
+	const VECTOR GetDirection() const { return dir_; }
 
 	const CollisionData GetCollisionData() const { return collision_data_; }
 };
