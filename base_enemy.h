@@ -33,6 +33,9 @@ protected:
 	VECTOR scale_;		//‘å‚«‚³
 
 	bool is_get_;
+	bool is_fleeping_;
+
+
 	int model_;
 	int debug_color_;
 
@@ -101,6 +104,8 @@ public:
 	const float GetFov() const { return fov_; }
 
 	const bool GetIsGet() const { return is_get_; }
+
+	const bool GetIsFleeping() const { return is_fleeping_; }
 
 	const VECTOR GetPos() const { return pos_; }
 

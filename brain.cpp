@@ -914,14 +914,15 @@ void Brain::TrackingUpdate(const VECTOR& now_camera_pos,std::shared_ptr<Player> 
 	//
 
 	//勝手にブレンドするやつ
-	const float kSmoothBlendSpeed = 0.3f;
+	const float kSmoothBlendSpeed	= 0.3f;
 
 	//maxのdistを決めておく
-	const float kMaxDist = 40.f;
-	const float kMinDist = 20.f;
+	const float kMaxDist					= 40.f;
+	const float kMinDist					= 20.f;
+	const float kNotYMinDist				= 10.f;		//yを無視した時の最小値
 	//ブレンドするまでにかける時間
 	const float kMaxBlendStartTime	= 3.5f;
-	static float timer				= 0.f;
+	static float timer							= 0.f;
 
 	//maxの距離よりも離れてしまったときのblendスピード
 	const float kMaxDistOffsetSpeed = 1.0f;
@@ -935,13 +936,25 @@ void Brain::TrackingUpdate(const VECTOR& now_camera_pos,std::shared_ptr<Player> 
 	VECTOR dist_vec = VGet(0.f, 0.f, 0.f);
 	dist_vec		= VSub(now_camera_pos, player->GetCenterPos());
 
+	//cameraとplayerのyをむししたdistもとる
+	VECTOR on_the_line = VGet(dist_vec.x, 0.f, dist_vec.z);
+
+
 	VECTOR offset_vel = VGet(0, 0, 0);
 
 	static bool blend			= FALSE;
 	static bool max_dist_blend	= FALSE;
 
 
-
+	if (VSize(on_the_line) <= kNotYMinDist)
+	{
+		//playerのvelocity渡してあげる
+		velocity_ = VAdd(velocity_, player->GetVelocity());
+		target_velocity_ = player->GetVelocity();
+		tracking_camera_->SetPos(VAdd(now_camera_pos, velocity_));
+		target_velocity_ = player->GetVelocity();
+		return;
+	}
 
 
 
@@ -1272,7 +1285,7 @@ void Brain::GetCameraUpdate(const VECTOR& pos, const VECTOR& camera_pos,const VE
 		// radの初期値から360ど回っていないときは調整をする
 		// 決められた回転量
 		// だんだんと回転量を増やしていく
-		const float kOffsetRad = 2.5f;
+		const float kOffsetRad = 3.5f;
 		const float kPiOffset = static_cast<float>(M_PI / 180);		//一度分にする
 		const float kPi = kPiOffset * 180;		//Pi
 		const float kMaxTurnRad = kPi + (kPiOffset * 100);					//回転するときの最大値(これで変わる)

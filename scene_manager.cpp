@@ -72,6 +72,7 @@ void SceneManager::Update()
         
         Debug::GetInstance().Recet();
         Input::GetInstance().Update();
+        Debug::GetInstance().Change();
         //ƒV[ƒ“‚ªØ‚è‘Ö‚í‚Á‚Ä‚¢‚éê‡
         if (before_name != now_scene_name_)
         {

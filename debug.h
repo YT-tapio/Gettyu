@@ -12,26 +12,13 @@ private:
 
 	int current_num_ = 0;
 	//表示
-	bool disp_ = TRUE;
+	bool disp_ = FALSE;
 
 	//コンストラクタを非公開
 	Debug(){}
 
 	
-	void CheckChangeDisp()
-	{
-
-		if (CheckHitKey(KEY_INPUT_P))
-		{
-			disp_ = TRUE;
-		}
-
-		if (CheckHitKey(KEY_INPUT_O))
-		{
-			disp_ = FALSE;
-		}
-
-	}
+	void CheckChangeDisp();
 
 
 public:

@@ -32,6 +32,7 @@ BaseEnemy::BaseEnemy(const int model, const VECTOR& pos,
 		MGetTranslate(pos_));
 
 	is_get_ = FALSE;
+	is_fleeping_ = FALSE;
 	delta_time_ = 0.0f;
 
 	get_effect_ = get_effect;

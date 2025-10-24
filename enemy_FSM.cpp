@@ -20,6 +20,9 @@ EnemyFSM::~EnemyFSM()
 
 std::shared_ptr<BaseEnemyState> EnemyFSM::ChangeAlert(std::shared_ptr<BaseEnemyState> now_state, std::shared_ptr<Player> player,BaseEnemy* enemy)
 {
+
+	//アラートの中でさらになんかの条件なら違うのに切り替えるてきなかんじにします
+
 	//alertに切り替えるための条件
 	//enemyのalert距離を受け取る
 	float alert = enemy->GetAlertDist();
@@ -28,12 +31,16 @@ std::shared_ptr<BaseEnemyState> EnemyFSM::ChangeAlert(std::shared_ptr<BaseEnemyS
 	VECTOR dist = VSub(player->GetCenterPos(), enemy->GetPos());
 
 	//distのサイズを受け取りそのサイズがenemyのalert(警戒距離)内にいたらalertにきりかえる
-	
-	
+
+
 	if (VSize(dist) <= alert)
 	{
 		enemy->SetColor(GetColor(0, 0, 0));
-		return std::make_shared<EnemyAlert>();
+
+		//警戒中でfleepingかどうかを判断させる
+
+
+		return ChangeFleeping(now_state, player, enemy);
 	}
 	else
 	{
@@ -49,10 +56,12 @@ std::shared_ptr<BaseEnemyState> EnemyFSM::ChangeAlert(std::shared_ptr<BaseEnemyS
 
 std::shared_ptr<BaseEnemyState> EnemyFSM::ChangeFleeping(std::shared_ptr<BaseEnemyState> now_state, std::shared_ptr<Player> player, BaseEnemy* enemy)
 {
-
-	//alertじゃないなら早期リターン
-	if (now_state->GetName() != StateName::kAlert) { return now_state; }
 	
+	if (enemy->GetIsFleeping())
+	{
+		return std::make_shared<EnemyFleeping>();
+	}
+
 	//内積(VDot)で求めましょう
 	//正規化(VNorm)する
 	
@@ -75,8 +84,9 @@ std::shared_ptr<BaseEnemyState> EnemyFSM::ChangeFleeping(std::shared_ptr<BaseEne
 		enemy->SetColor(GetColor(255, 0, 0));
 		return std::make_shared<EnemyFleeping>();
 	}
+	
 
-	return now_state;
+	return std::make_shared<EnemyAlert>();
 }
 
 /*--------public---------*/
@@ -90,7 +100,7 @@ std::shared_ptr<BaseEnemyState> EnemyFSM::UpdateState(std::shared_ptr<BaseEnemyS
 	//
 
 	state = ChangeAlert(state, player, enemy);
-	state = ChangeFleeping(state, player, enemy);
+	//state = ChangeFleeping(state, player, enemy);
 
 
 	return state;

@@ -42,9 +42,22 @@ void NormalEnemy::FleepingInit(std::shared_ptr<Player> player)
 {
 	//ここでrotを指定してdirも指定する。
 	//とりあえず反転して逃げさせる
-	rot_.y += kReverceRad;
-	dir_ = VGet(-sinf(rot_.y), 0.f, -cosf(rot_.y));
 
+	//playerとenemyのposで逃げるのを指定
+
+	VECTOR enemy_to_player_dist = VSub(player->GetCenterPos(), pos_);
+
+	VECTOR norm_dist = VNorm(enemy_to_player_dist);
+
+	rot_.y = atan2f(norm_dist.x,norm_dist.z);
+
+	dir_ = VGet(-sinf(rot_.y), 0.f, -cosf(rot_.y));
+	total_vel_ = VGet(0, 0, 0);
+
+
+
+
+	is_fleeping_ = TRUE;
 }
 
 void NormalEnemy::Update(std::shared_ptr<Player> player, bool& got)
@@ -136,13 +149,6 @@ void NormalEnemy::Patrolling()
 	}
 
 
-	/*
-	
-
-	
-	*/
-
-
 	if (is_return_)
 	{
 		if (rot_.y != target_rot_)
@@ -174,12 +180,24 @@ void NormalEnemy::Alert(std::shared_ptr<Player> player)
 
 void NormalEnemy::Fleeping(std::shared_ptr<Player> player)
 {
+
+	//定数
+	const float kFleepingMax = 30.f;
+
 	//ここで逃げる
 
 	// どう逃げさせようかな
 	// 一定距離うごいたら初期化させexitさせていいと思う
 
-	velocity_ = VScale(dir_, 3.f);
+	velocity_ = VScale(dir_, 0.5f);
 
+	total_vel_ = VAdd(total_vel_,velocity_);
+
+	//ここでtotal_vel_がまだ逃げ切ってないときは
+	if (VSize(total_vel_) > kFleepingMax)
+	{
+		total_vel_ = VGet(0, 0, 0);
+		is_fleeping_ = FALSE;
+	}
 
 }

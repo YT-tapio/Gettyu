@@ -5,6 +5,13 @@
 
 struct KeyConfig
 {
+    //デバックボタン
+    static const int kChageDebugKey = KEY_INPUT_N;
+
+    //シーン遷移ボタンのようななもの
+    static const int kChangeSceneKey = KEY_INPUT_SPACE;
+    static const int kGameToResultKey = KEY_INPUT_TAB;
+
     static const int kUpKey = KEY_INPUT_W;
     static const int kDownKey = KEY_INPUT_S;
     static const int kLeftKey = KEY_INPUT_A;
@@ -24,6 +31,14 @@ struct KeyConfig
 
 struct PadConfig
 {
+    //デバックボタン
+    static const int kChageDebugButton = XINPUT_BUTTON_BACK;
+
+
+    //シーン遷移ボタンのようなもの
+    static const int kChangeSceneButton = XINPUT_BUTTON_A;
+    static const int kGameToResultButton = XINPUT_BUTTON_START;
+
     static const int kLeftStick = 14000;
     static const int kRightStick = -19000;
     static const int kUpStick = 0;

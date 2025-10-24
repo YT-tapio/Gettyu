@@ -1,7 +1,7 @@
 #include"camera.h"
 #include"screen.h"
 #include"EffekseerForDxLib.h"
-
+#include"debug.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
 
@@ -59,9 +59,14 @@ void Camera::Update(const VECTOR& velocity, const VECTOR& target_velocity)
 
 void Camera::Draw()
 {
-	DrawFormatString(100, 120, GetColor(255, 255, 255), "x:%.2f,y:%.2f,z:%.2f",pos_.x, pos_.y, pos_.z);
+	if (Debug::GetInstance().GetDisp())
+	{
+		DrawFormatString(100, 120, GetColor(255, 255, 255), "x:%.2f,y:%.2f,z:%.2f", pos_.x, pos_.y, pos_.z);
 
-	DrawSphere3D(target_pos_, 1, 20, GetColor(255, 255, 255), GetColor(255, 255, 255), FALSE);
+		DrawSphere3D(target_pos_, 1, 20, GetColor(255, 255, 255), GetColor(255, 255, 255), FALSE);
+	}
+
+	
 }
 
 

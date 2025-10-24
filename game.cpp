@@ -1,6 +1,6 @@
 #include"game.h"
-
-
+#include"input.h"
+#include"keyconfig.h"
 Game::Game()
     :BaseScene(SceneName::kGame)
 {
@@ -122,6 +122,13 @@ void Game::Update(SceneName& name)
     
     //camera->GetPos();
 
+    //デバッグ用
+    if (Input::GetInstance().CheckInputKey(KeyConfig::kGameToResultKey) == InputState::kPush ||
+        Input::GetInstance().CheckInputPadButton(PadConfig::kGameToResultButton) == InputState::kPush)
+    {
+        name = SceneName::kResult;
+    }
+
     //更新処理
 
     //デルタタイムのアップデートはゲット時はplayerとenemyのだけ0にする
@@ -208,6 +215,7 @@ void Game::Draw()
 
     enemy_manager_->Debug();
 
+    DrawFormatString((kGameWidth - 300), 35, GetColor(0, 0, 0), "TAB / BACK Button : result");
 
     SetUseLighting(TRUE);
 }
