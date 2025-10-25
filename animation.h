@@ -2,7 +2,7 @@
 #include<vector>
 #include<iostream>
 
-enum AnimationType
+enum class AnimationType
 {
     kNothing,
     kIdle,
@@ -16,7 +16,6 @@ enum AnimationType
     kSwordSlash,
     kSuperAttackFirst
 };
-
 
 
 struct AnimationData

@@ -183,6 +183,7 @@
     <ClCompile Include="vacuum_camera.cpp" />
     <ClCompile Include="vibration.cpp" />
     <ClCompile Include="virtual_camera.cpp" />
+    <ClCompile Include="sound_vibration.cpp" />
     <ClCompile Include="warp_rod.cpp" />
     <ClCompile Include="weapon_base.cpp" />
     <ClCompile Include="wizard_staff.cpp" />
@@ -238,6 +239,7 @@
     <ClInclude Include="vacuum_camera.h" />
     <ClInclude Include="vibration.h" />
     <ClInclude Include="virtual_camera.h" />
+    <ClInclude Include="sound_vibration.h" />
     <ClInclude Include="weapon_base.h" />
     <ClInclude Include="warp_rod.h" />
     <ClInclude Include="wizard_staff.h" />

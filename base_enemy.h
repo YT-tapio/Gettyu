@@ -8,6 +8,7 @@
 #include"base_enemy_state.h"
 
 class Player;
+class Animation;
 class BaseEnemyState;
 class EnemyFSM;
 
@@ -23,6 +24,11 @@ protected:
 	CollisionData collision_data_;
 	std::shared_ptr<BaseEnemyState> state_;		//一貫して最初はpatrolling
 	std::shared_ptr<EnemyFSM> fsm_;
+
+	std::shared_ptr<Animation> animation_;
+	AnimationType now_anim_type_;            //現在のプレイヤーのアニメ～しょん
+	AnimationType before_anim_type_;			//1つ前のアニメーション
+	AnimationType before_before_anim_type_;	//2つ前のアニメーション
 
 	//
 	MATRIX mat_;		//vectorの集合体
@@ -43,14 +49,16 @@ protected:
 	float delta_time_;
 	//各enemyによって変える
 	float speed_;
-	float alert_dist_;
+	float fleeping_speed_;
+	float alert_dist_;			//警戒の距離
+	float engagement_dist_;
 	float fov_;
 
 
 public:
 
 	BaseEnemy(const int model, const VECTOR& pos,
-		const VECTOR& scale, const VECTOR& rot, Effect* effect, Effect* got_effect, float speed, float alert_dist, float fov);
+		const VECTOR& scale, const VECTOR& rot, Effect* effect, Effect* got_effect, float speed, float fleeping_speed,float alert_dist, float engagement_dist, float fov);
 
 
 	virtual ~BaseEnemy() = 0;
@@ -71,7 +79,11 @@ public:
 
 	virtual void Fleeping(std::shared_ptr<Player> player) = 0;
 
+	void AddAnim(const AnimationData& animation_data);
+
 	void EffectUpdate();
+
+	void AnimationUpdate();
 
 	void PlayGetEffect();
 
@@ -103,6 +115,8 @@ public:
 	void SetPosIsGot(const VECTOR& pos);
 
 	const float GetAlertDist() const { return alert_dist_; }
+
+	const float GetEngagementDist() const { return engagement_dist_; }
 
 	const float GetFov() const { return fov_; }
 

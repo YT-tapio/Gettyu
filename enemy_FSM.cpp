@@ -21,25 +21,25 @@ EnemyFSM::~EnemyFSM()
 std::shared_ptr<BaseEnemyState> EnemyFSM::ChangeAlert(std::shared_ptr<BaseEnemyState> now_state, std::shared_ptr<Player> player,BaseEnemy* enemy)
 {
 
+	//playerからサウンドのようなものを受け取る
+	auto player_sound = player->GetSoundVibrationNum();
+
+	
 	//アラートの中でさらになんかの条件なら違うのに切り替えるてきなかんじにします
 
 	//alertに切り替えるための条件
-	//enemyのalert距離を受け取る
-	float alert = enemy->GetAlertDist();
-
+	//enemyのalert距離にplayerのサウンドを受け取る
+	float alert = enemy->GetAlertDist() * player_sound;
+	
 	//プレイヤーとの距離を見てその距離で判断enemyの警戒度的なのも受け取りたい
 	VECTOR dist = VSub(player->GetCenterPos(), enemy->GetPos());
 
 	//distのサイズを受け取りそのサイズがenemyのalert(警戒距離)内にいたらalertにきりかえる
-
-
 	if (VSize(dist) <= alert)
 	{
 		enemy->SetColor(GetColor(0, 0, 0));
 
 		//警戒中でfleepingかどうかを判断させる
-
-
 		return ChangeFleeping(now_state, player, enemy);
 	}
 	else
@@ -47,12 +47,6 @@ std::shared_ptr<BaseEnemyState> EnemyFSM::ChangeAlert(std::shared_ptr<BaseEnemyS
 		enemy->SetColor(GetColor(0, 0, 0));
 		return std::make_shared<EnemyPatrolling>();
 		
-	}
-
-	//vacuum
-	if (player->GetIsVacuum())
-	{
-		//playerにサウンド持たせる必要がある
 	}
 
 
@@ -75,9 +69,9 @@ std::shared_ptr<BaseEnemyState> EnemyFSM::ChangeFleeping(std::shared_ptr<BaseEne
 	
 	//playerからenemyのvector型のdistを取る
 	
-	VECTOR enemy_to_player_dist = VSub(player->GetCenterPos(), enemy->GetPos());
-	VECTOR dist_dir = VNorm(enemy_to_player_dist);							//enemyからplayerまでのdistの正規化
-	VECTOR enemy_norm_dir		= VNorm(enemy->GetDirection());		//enemyの正規化
+	VECTOR enemy_to_player_dist = VSub(player->GetCenterPos(), enemy->GetPos());		// enemyからplayerまでの距離
+	VECTOR dist_dir				= VNorm(enemy_to_player_dist);							// enemyからplayerまでのdistの正規化
+	VECTOR enemy_norm_dir		= VNorm(enemy->GetDirection());							// enemyの正規化
 
 	//dotのけっかを受け取る
 	float dot = VDot(enemy_norm_dir, dist_dir);
@@ -94,16 +88,34 @@ std::shared_ptr<BaseEnemyState> EnemyFSM::ChangeFleeping(std::shared_ptr<BaseEne
 	}
 	else
 	{
-		const auto player_state = player->GetNowState();
-		//もし、近くで走っているときは気づかせるようにする
-		if (player_state == PlayerState::kRun || player_state == PlayerState::kSlowRun)
+		//playerのサウンド状況を受け取り規定値よりもおおきいのなら
+
+		//接敵距離を見る
+
+		auto engage_dist = (enemy->GetEngagementDist() * player->GetSoundVibrationNum());
+
+		
+
+		//距離が接敵距離なら
+		if (VSize(enemy_to_player_dist) <= engage_dist)
 		{
 			enemy->SetColor(GetColor(255, 0, 0));
+			//逃げる
 			return std::make_shared<EnemyFleeping>();
 		}
-
 	}
+
+	//今のfleeping(逃走)からアラートに代わるときalertの範囲内に敵がいるとまだ逃げる
+	if (now_state->GetName() == StateName::kFleeping)
+	{
+		if (VSize(enemy_to_player_dist) <= enemy->GetAlertDist())
+		{
+			return std::make_shared<EnemyFleeping>();
+		}
+	}
+
 	
+
 
 	return std::make_shared<EnemyAlert>();
 }

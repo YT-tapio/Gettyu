@@ -21,15 +21,41 @@ EnemyManager::~EnemyManager()
 
 void EnemyManager::Init()
 {
+	int normal_model_data = MV1LoadModel("data/model/character/enemy/Ch14_nonPBR.mv1");
+
 	//printfDx("wa\n");
-	enemies_.push_back(std::make_shared<NormalEnemy>("data/model/character/Ch14_nonPBR.mv1",
-		VGet(10.f, 0.f, 50.f), VGet(0.05f, 0.05f, 0.05f),VGet(0.f,static_cast<float>((M_PI / 180) * 70), 0.0f), get_effect_, got_effect_, 2.f,40.f, static_cast<float>((M_PI / 180) * 120)));
+	enemies_.push_back(std::make_shared<NormalEnemy>(normal_model_data,
+		VGet(10.f, 0.f, 50.f), VGet(0.05f, 0.05f, 0.05f), VGet(0.f, static_cast<float>((M_PI / 180) * 70), 0.0f), get_effect_, got_effect_, 2.f, 4.f, 40.f, 20.f, static_cast<float>((M_PI / 180) * 100)));
+	/*
+	enemies_.push_back(std::make_shared<NormalEnemy>(normal_model_data,
+		VGet(50.f, 1.5f, 10.f), VGet(0.05f, 0.05f, 0.05f), VGet(0.f, static_cast<float>((M_PI / 180) * 80), 0.0f), get_effect_, got_effect_,2.f,5.f, 40.f, 20.f, static_cast<float>((M_PI / 180) * 100)));
 
-	enemies_.push_back(std::make_shared<NormalEnemy>("data/model/character/Ch14_nonPBR.mv1",
-		VGet(50.f, 1.5f, 10.f), VGet(0.05f, 0.05f, 0.05f), VGet(0.f, static_cast<float>((M_PI / 180) * 80), 0.0f), get_effect_, got_effect_,4.f, 40.f, static_cast<float>((M_PI / 180) * 120)));
+	enemies_.push_back(std::make_shared<NormalEnemy>(normal_model_data,
+		VGet(20.f, 3.f, 5.f), VGet(0.05f, 0.05f, 0.05f), VGet(0.f, static_cast<float>((M_PI / 180) * 90), 0.0f), get_effect_, got_effect_,0.5f, 2.5f,40.f, 20.f, static_cast<float>((M_PI / 180) * 100)));
+	*/
 
-	enemies_.push_back(std::make_shared<NormalEnemy>("data/model/character/Ch14_nonPBR.mv1",
-		VGet(20.f, 3.f, 5.f), VGet(0.05f, 0.05f, 0.05f), VGet(0.f, static_cast<float>((M_PI / 180) * 90), 0.0f), get_effect_, got_effect_,0.5f, 40.f, static_cast<float>((M_PI / 180) * 120)));
+	//アニメーションスピード
+	float animation_walk_speed = 3.f;
+
+	//各アニメーションを生成する
+	
+	AnimationData walk;
+
+	
+
+
+	//アニメーションをロード
+	Load(walk, "data/model/character/enemy/animation/Walking.mv1", AnimationType::kWalk, normal_model_data, animation_walk_speed);
+
+	//アニメーションの追加を行う
+
+	for (auto& enemy : enemies_)
+	{
+		enemy->AddAnim(walk);
+	}
+
+
+	
 }
 
 void EnemyManager::Update(std::shared_ptr<Player> player)

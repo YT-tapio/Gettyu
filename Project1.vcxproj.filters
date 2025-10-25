@@ -172,6 +172,9 @@
     <Filter Include="ソース ファイル\enemy\state\enemy_state\fleeping">
       <UniqueIdentifier>{a9bf050d-9a63-40a3-a574-e095fbd5571f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\virtual_sound">
+      <UniqueIdentifier>{71cdfb39-5921-4644-84dc-6b3b819cd39f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -320,6 +323,9 @@
     </ClCompile>
     <ClCompile Include="fleeping.cpp">
       <Filter>ソース ファイル\enemy\state\enemy_state\fleeping</Filter>
+    </ClCompile>
+    <ClCompile Include="sound_vibration.cpp">
+      <Filter>ソース ファイル\virtual_sound</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -481,6 +487,9 @@
     </ClInclude>
     <ClInclude Include="fleeping.h">
       <Filter>ソース ファイル\enemy\state\enemy_state\fleeping</Filter>
+    </ClInclude>
+    <ClInclude Include="sound_vibration.h">
+      <Filter>ソース ファイル\virtual_sound</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

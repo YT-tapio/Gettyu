@@ -4,6 +4,7 @@
 #include"super_attack.h"
 #include"base_enemy.h"
 #include"vibration.h"
+#include"sound_vibration.h"
 
 struct MixamoBonePath;
 class WeaponBase;
@@ -13,6 +14,7 @@ class Bat;
 class WarpRod;
 class WizardStaff;
 class BaseEnemy;
+class SoundVibration;
 enum class WeaponName;
 
 struct CapsuleData
@@ -39,11 +41,19 @@ class Player
 {
 private:
 
+	
+
 	const float kWalkSpeed = 1.0f;
 	const float kNormalSpeed = 2.5f;
 	const float kDashSpeed = 5.5f;
 	const float kGravity = 0.75f;		//d—Í
 	const float kJumpPower = 3.5f;		//ƒWƒƒƒ“ƒv—Í
+
+	const float kFastRunSound = 0.7f;
+	const float kNormalRunSound = 0.3f;
+	const float kWalkSound = 0.1f;
+	
+	const float kVacuumSound = 1.f;
 
 	//MixamoBonePath bone_;
 
@@ -55,6 +65,8 @@ private:
 	SuperAttack* super_attack_;
 
 	Effect* super_weapon_spin_effect_ = new Effect("data/effect/NextSoft01/MagicTornade.efkefc", VGet(0.f,0.f,0.f), VGet(0.f, 0.f, 0.f), 7.f, 7.f, 150.f, TRUE);
+
+	SoundVibration* sound_vibration_ = new SoundVibration();
 
 
 	PlayerState now_state_;
@@ -124,6 +136,9 @@ public:
 
 
 	void Draw();
+
+
+	void Debug();
 
 
 	void AddAnim(const AnimationData& animation_data);
@@ -232,7 +247,7 @@ public:
 
 	const CapsuleData GetCapsuleData() const { return capsule_; }
 
-	
+	const float GetSoundVibrationNum() const { return sound_vibration_->GetNum(); }
 };
 
 

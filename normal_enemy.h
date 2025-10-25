@@ -26,8 +26,8 @@ private:
 public:
 
 
-	NormalEnemy(const char* path, const VECTOR& pos,
-		const VECTOR& scale, const VECTOR& dir, Effect* get_effect, Effect* got_effect, float speed, float alert_dist,float fov);
+	NormalEnemy(int model, const VECTOR& pos,
+		const VECTOR& scale, const VECTOR& dir, Effect* get_effect, Effect* got_effect, float speed, float fleeping_speed, float alert_dist, float engagement_dist,float fov);
 
 
 	~NormalEnemy() override;

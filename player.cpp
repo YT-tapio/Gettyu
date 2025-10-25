@@ -19,6 +19,7 @@
 
 
 
+
 Player::Player(VECTOR pos, int model,int pad_num,int div, float r, float vertical_num)
 	: model_(model)
 	, pad_input_num_(pad_num)
@@ -56,6 +57,7 @@ Player::~Player()
 	delete weapon_;
 	delete super_attack_;
 	delete super_weapon_spin_effect_;
+	delete sound_vibration_;
 }
 
 /*--------------------private--------------------------*/
@@ -143,6 +145,28 @@ void Player::Draw()
 	{
 		weapon_->Draw(delta_time_);
 		//Situation::GetInstance().SetGetSituationPos(weapon_->GetCollisionData().pos);
+	}
+
+	
+
+}
+
+
+void Player::Debug()
+{
+	if (Debug::GetInstance().GetDisp())
+	{
+		//
+		DrawFormatString(0, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), GetColor(0, 0, 0), "---------player--------");
+		Debug::GetInstance().Add();
+
+		DrawFormatString(0, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), GetColor(0, 0, 0), "pos");
+		Debug::GetInstance().Add();
+		DrawFormatString(0, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), GetColor(0,0,0), "x : %.2f,y : %.2f,z : %.2f", pos_.x, pos_.y, pos_.z);
+		Debug::GetInstance().Add();
+
+		DrawFormatString(0, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), GetColor(0, 0, 0), "%.2f", sound_vibration_->GetNum());
+		Debug::GetInstance().Add();
 	}
 }
 
@@ -244,6 +268,9 @@ void Player::AttachWeapon(WeaponName name)
 void Player::Update(const VECTOR& pos, const float& rotation, Stage& stage)
 {
 
+	//サウンドのリセット
+	sound_vibration_->Reset();
+
 	//AttachWeapon(frame_path_->RIGHT_HAND);
 	// ターゲットを切り替えた時のrotationを色んな奴に持たすわけにはいかないのでplayerに持たせる、
 	// updateにはposだけにしといていいと思う(引き数)
@@ -305,6 +332,7 @@ void Player::Update(const VECTOR& pos, const float& rotation, Stage& stage)
 
 void Player::InputMovement(const VECTOR& pos,float& rotation)
 {
+	
 	VECTOR velocity = { 0.0f,0.0f,0.0f };
 
 	float speed = 0.0f;
@@ -315,7 +343,6 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 
 	/*(PadConfig::kLeftButton)*/
 
-	
 	
 
 	CheckDirection(pos, rotation);
@@ -331,6 +358,7 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 
 				now_type_ = AnimationType::kFastRun;
 				now_state_ = PlayerState::kRun;
+				sound_vibration_->Add(kFastRunSound);
 			}
 			else if (Input::GetInstance().CheckInputKey(KeyConfig::kWalkKey) > InputState::kOff || (Input::GetInstance().GetPadStickVertical(StickType::kLeft) > 50 &&
 				Input::GetInstance().GetPadStickVertical(StickType::kLeft) < 150))
@@ -339,6 +367,9 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 
 				now_type_ = AnimationType::kWalk;
 				now_state_ = PlayerState::kWalk;
+
+				sound_vibration_->Add(kWalkSound);
+				
 			}
 			else
 			{
@@ -346,8 +377,14 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 
 				now_type_ = AnimationType::kSlowRun;
 				now_state_ = PlayerState::kSlowRun;
+
+				sound_vibration_->Add(kNormalRunSound);
 			}
 
+		}
+		else
+		{
+			
 		}
 		
 
@@ -492,6 +529,7 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 		if (now_weapon_name_ >= WeaponName::kWizardStaff)
 		{
 			Situation::GetInstance().SetSituation(SituationName::kVacuum);
+			sound_vibration_->Add(kVacuumSound);
 		}
 		else
 		{

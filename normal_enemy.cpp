@@ -7,8 +7,8 @@
 #include"situation.h"
 #include"rot_function.h"
 
-NormalEnemy::NormalEnemy(const char* path,const VECTOR& pos,const VECTOR& scale,const VECTOR& dir,Effect* get_effect, Effect* got_effect, float speed, float alert_dist, float fov)
-	:BaseEnemy(MV1LoadModel(path),pos,scale,dir,get_effect,got_effect,speed,alert_dist,fov)
+NormalEnemy::NormalEnemy(int model, const VECTOR& pos, const VECTOR& scale, const VECTOR& dir, Effect* get_effect, Effect* got_effect, float speed, float fleeping_speed, float alert_dist, float engagement_dist, float fov)
+	:BaseEnemy(model,pos,scale,dir,get_effect,got_effect,speed,fleeping_speed,alert_dist,engagement_dist,fov)
 {
 	collision_data_.name = CollisionName::kSphere;
 	collision_data_.pos = pos;
@@ -37,19 +37,19 @@ void NormalEnemy::Init(const VECTOR& pos, const VECTOR scale)
 	delta_time_ = 0.0f;
 }
 
-
 void NormalEnemy::PatrollingInit(std::shared_ptr<Player> player)
 {
 	total_vel_ = VGet(0, 0, 0);
 	is_return_ = FALSE;
 	target_rot_ = rot_.y;
+	is_fleeping_ = FALSE;
 }
 
 
 void NormalEnemy::FleepingInit(std::shared_ptr<Player> player)
 {
 	//ここでrotを指定してdirも指定する。
-	//とりあえず反転して逃げさせる
+	//とりあえず反転して逃げさせる。
 
 	//playerとenemyのposで逃げるのを指定
 
@@ -61,9 +61,6 @@ void NormalEnemy::FleepingInit(std::shared_ptr<Player> player)
 
 	dir_ = VGet(-sinf(rot_.y), 0.f, -cosf(rot_.y));
 	total_vel_ = VGet(0, 0, 0);
-
-
-
 
 	is_fleeping_ = TRUE;
 }
@@ -98,14 +95,12 @@ void NormalEnemy::Update(std::shared_ptr<Player> player, bool& got)
 		return;
 	}
 
-	if (!is_get_)
-	{
-		//stateによるupdate
-		state_->Update(this,player);
-	}
+	//stateによるupdate
+	state_->Update(this, player);
 
-	//ここで当たり判定を行う
-
+	//アニメーションの更新
+	now_anim_type_ = AnimationType::kWalk;
+	AnimationUpdate();
 
 	//ポジションの更新
 
@@ -173,6 +168,9 @@ void NormalEnemy::Patrolling()
 	}
 	velocity_ = VAdd(velocity_, vel);
 	total_vel_ = VAdd(total_vel_,vel);
+
+	
+
 }
 
 
@@ -198,7 +196,9 @@ void NormalEnemy::Fleeping(std::shared_ptr<Player> player)
 	// どう逃げさせようかな
 	// 一定距離うごいたら初期化させexitさせていいと思う
 
-	velocity_ = VScale(dir_, 0.5f);
+	velocity_ = VScale(dir_, fleeping_speed_);
+
+	velocity_ = VScale(velocity_, delta_time_);
 
 	total_vel_ = VAdd(total_vel_,velocity_);
 

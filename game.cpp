@@ -53,7 +53,7 @@ void Game::Init()
     //アニメーションのロード
 
     Load(idle, idle_path,
-        AnimationType::kIdle, chara, 3.0f);
+        AnimationType::kIdle,chara, 3.0f);
 
     Load(walk, walk_path,
         AnimationType::kWalk, chara, 3.0f);
@@ -213,6 +213,7 @@ void Game::Draw()
     effect_player_->Draw();
     concentration_line_->Draw();
 
+    player_->Debug();
     enemy_manager_->Debug();
 
     DrawFormatString((kGameWidth - 300), 35, GetColor(0, 0, 0), "TAB / BACK Button : result");

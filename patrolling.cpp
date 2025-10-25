@@ -16,7 +16,7 @@ EnemyPatrolling::~EnemyPatrolling()
 
 void EnemyPatrolling::Entry(BaseEnemy* enemy, std::shared_ptr<Player> player)
 {
-
+	enemy->PatrollingInit(player);
 }
 
 

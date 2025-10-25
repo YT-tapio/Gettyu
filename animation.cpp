@@ -159,6 +159,16 @@ void Animation::BlendUpdate()
     }
     else
     {
+
+        for (auto& animation : animation_data_)
+        {
+            if (now_type_ == animation.type)
+            {
+                MV1SetAttachAnimBlendRate(animation.model_handle,
+                    animation.attach_index, 1.f);
+            }
+        }
+        
         blend_rate_ = 0.0f;
     }
 }
@@ -177,13 +187,13 @@ void Animation::Update(AnimationType type)
             {
 
                 
-                if (animation.type < kNoLoop)
+                if (animation.type < AnimationType::kNoLoop)
                 {
                     animation.play_time = 0.0f;
                 }
                 else
                 {
-                    if (animation.type > kAttack)
+                    if (animation.type > AnimationType::kAttack)
                     {
                         animation.play_time = animation.total_time - 0.1f;
                         is_play_ = FALSE;

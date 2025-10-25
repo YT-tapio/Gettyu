@@ -3,12 +3,17 @@
 #include"situation.h"
 #include"patrolling.h"
 #include"debug.h"
+#include"animation.h"
 
 BaseEnemy::BaseEnemy(const int model, const VECTOR& pos,
-	const VECTOR& scale, const VECTOR& rot, Effect* get_effect,Effect* got_effect,float speed,float alert_dist, float fov)
+	const VECTOR& scale, const VECTOR& rot, Effect* get_effect,Effect* got_effect,float speed, float fleeping_speed, float alert_dist, float engagement_dist, float fov)
 {
-	fsm_ = std::make_shared<EnemyFSM>();
+	fsm_		= std::make_shared<EnemyFSM>();
+	animation_	= std::make_shared<Animation>();
 
+	now_anim_type_				= AnimationType::kNothing;
+	before_anim_type_			= AnimationType::kNothing;
+	before_before_anim_type_	= before_anim_type_;
 	//モデルのダウンロード
 	model_ = model;
 	if (model_ == -1)
@@ -39,7 +44,9 @@ BaseEnemy::BaseEnemy(const int model, const VECTOR& pos,
 	got_effect_ = got_effect;
 
 	speed_ = speed;
+	fleeping_speed_ = fleeping_speed;
 	alert_dist_ = alert_dist;
+	engagement_dist_ = engagement_dist;
 	fov_ = fov;
 	debug_color_ = GetColor(255, 255, 255);
 }
@@ -48,6 +55,12 @@ BaseEnemy::~BaseEnemy()
 {
 	//delete get_effect_;
 	//delete got_effect_;
+}
+
+
+void BaseEnemy::AddAnim(const AnimationData& animation_data)
+{
+	animation_->Add(animation_data);
 }
 
 
@@ -70,6 +83,47 @@ void BaseEnemy::EffectUpdate()
 
 	
 
+}
+
+
+void BaseEnemy::AnimationUpdate()
+{
+	if (before_anim_type_ != now_anim_type_)
+	{
+
+		if (!(animation_->GetBlendFlag()))
+		{
+			
+			if (before_anim_type_ != AnimationType::kNothing)
+			{
+				animation_->InitBlend(now_anim_type_, before_anim_type_);
+			}
+
+			animation_->Attach(now_anim_type_);
+
+			before_before_anim_type_ = before_anim_type_;
+			before_anim_type_ = now_anim_type_;
+
+			animation_->SetBlend(TRUE);
+
+		}
+		else
+		{
+			if (now_anim_type_ == AnimationType::kSuperAttackFirst)
+			{
+				animation_->Detach(before_anim_type_);
+				animation_->Attach(now_anim_type_);
+				before_before_anim_type_ = before_anim_type_;
+				before_anim_type_ = now_anim_type_;
+			}
+		}
+	}
+
+	animation_->Update(now_anim_type_);
+	if (animation_->GetBlendFlag())
+	{
+		animation_->Update(before_anim_type_);
+	}
 }
 
 void BaseEnemy::PlayGetEffect()
@@ -138,6 +192,8 @@ void BaseEnemy::Debug(int i)
 	//でばっくのシングルトンから今までのデバックのログ数を受け取りその量を受け取る
 	if (Debug::GetInstance().GetDisp())
 	{
+
+		int red = GetColor(255, 0, 0);
 		//当たり判定を表示
 		switch (collision_data_.name)
 		{
@@ -156,9 +212,9 @@ void BaseEnemy::Debug(int i)
 			break;
 		}
 
-		//アラート距離を可視化
-		DrawSphere3D(pos_, alert_dist_, 20, debug_color_, debug_color_, FALSE);
-
+		
+		DrawSphere3D(pos_, alert_dist_, 20, debug_color_, debug_color_, FALSE);		// 警戒距離を可視化
+		DrawSphere3D(pos_, engagement_dist_, 20, red, red, FALSE);					// 接敵距離
 
 		//正面を出す
 		DrawLine3D(pos_, VAdd(pos_, VScale(dir_, 5.f)), GetColor(255, 255, 255));
@@ -208,8 +264,10 @@ void BaseEnemy::SetColor(int color)
 void BaseEnemy::SetDeltaTime(float delta_time)
 {
 	delta_time_ = delta_time;
+	animation_->SetDeltaTime(delta_time_);
 	get_effect_->SetDeltaTime(delta_time);
 	got_effect_->SetDeltaTime(delta_time);
+
 }
 
 void BaseEnemy::SetIsGet(bool flag)
