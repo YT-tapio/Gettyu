@@ -156,6 +156,10 @@ void BaseEnemy::Debug(int i)
 			break;
 		}
 
+		//アラート距離を可視化
+		DrawSphere3D(pos_, alert_dist_, 20, debug_color_, debug_color_, FALSE);
+
+
 		//正面を出す
 		DrawLine3D(pos_, VAdd(pos_, VScale(dir_, 5.f)), GetColor(255, 255, 255));
 		DrawFov();

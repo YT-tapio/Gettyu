@@ -26,7 +26,7 @@ Player::Player(VECTOR pos, int model,int pad_num,int div, float r, float vertica
 	, now_type_(AnimationType::kNothing)
 	, target_rot_(0.0f)
 	, before_rot_(0.0f)
-	, now_state_(State::kStand)
+	, now_state_(PlayerState::kStand)
 {
 	capsule_.r = r;
 	capsule_.div_num = div;
@@ -330,7 +330,7 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 				speed = kDashSpeed;
 
 				now_type_ = AnimationType::kFastRun;
-				now_state_ = State::kRun;
+				now_state_ = PlayerState::kRun;
 			}
 			else if (Input::GetInstance().CheckInputKey(KeyConfig::kWalkKey) > InputState::kOff || (Input::GetInstance().GetPadStickVertical(StickType::kLeft) > 50 &&
 				Input::GetInstance().GetPadStickVertical(StickType::kLeft) < 150))
@@ -338,14 +338,14 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 				speed = kWalkSpeed;
 
 				now_type_ = AnimationType::kWalk;
-				now_state_ = State::kWalk;
+				now_state_ = PlayerState::kWalk;
 			}
 			else
 			{
 				speed = kNormalSpeed;
 
 				now_type_ = AnimationType::kSlowRun;
-				now_state_ = State::kSlowRun;
+				now_state_ = PlayerState::kSlowRun;
 			}
 
 		}
@@ -379,12 +379,12 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 		if (velocity_.y > 0.0f)
 		{
 			now_type_ = AnimationType::kJumpUp;
-			now_state_ = State::kJump;
+			now_state_ = PlayerState::kJump;
 		}
 		else if (velocity_.y < -0.1f)
 		{
 			now_type_ = AnimationType::kJumpDown;
-			now_state_ = State::kFall;
+			now_state_ = PlayerState::kFall;
 		}
 		else
 		{
@@ -411,7 +411,7 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 		if (is_ground_ && weapon_->GetName() != WeaponName::kWizardStaff)
 		{
 			now_type_ = AnimationType::kSwordSlash;
-			now_state_ = State::kAttack;
+			now_state_ = PlayerState::kAttack;
 		}
 	}
 
@@ -435,7 +435,7 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 		if (now_type_ < AnimationType::kAttack)
 		{
 			now_type_ = AnimationType::kIdle;
-			now_state_ = State::kStand;
+			now_state_ = PlayerState::kStand;
 		}
 		
 	}
@@ -700,7 +700,7 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 			
 			target_rot_ = rotation + Input::GetInstance().GetPadStickRad(StickType::kRight);
 			now_type_ = AnimationType::kSwordSlash;
-			now_state_ = State::kAttack;
+			now_state_ = PlayerState::kAttack;
 			is_attack_ = TRUE;
 			if (target_rot_ > (static_cast<float>((M_PI / 180) * 180)))
 			{
@@ -959,7 +959,7 @@ void Player::IsHitEnemy(BaseEnemy* enemy, bool& got)
 		if (stick_spin_rad != 0.f && (Input::GetInstance().GetPadStickVertical(StickType::kRight) > kPadSpinMin))
 		{
 			weapon_->Update(enemy,fabs(stick_spin_rad));
-			now_state_ = State::kAttack;
+			now_state_ = PlayerState::kAttack;
 			super_weapon_spin_effect_->SetPos(weapon_->GetPos());
 			super_weapon_spin_effect_->Play();
 			Vibration(kVacuumVibration);
@@ -980,7 +980,7 @@ void Player::IsHitEnemy(BaseEnemy* enemy, bool& got)
 
 	//‘¼‚Ì‚à‚Ì‚ªUŒ‚‚É‚ ‚½‚Á‚Ä‚¢‚éŽž‚Íˆ—‚ð‰ñ‚³‚È‚¢
 
-	if (now_state_ == State::kAttack)
+	if (now_state_ == PlayerState::kAttack)
 	{
 		// •Ší‚Æ“G‚Ì“–‚½‚è”»’è‚ð‚µ‚Ü‚·
 		if (SphereCapsuleCollision(weapon_->GetCollisionData(), enemy->GetCollisionData()))

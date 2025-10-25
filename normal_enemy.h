@@ -36,6 +36,8 @@ public:
 	void Init(const VECTOR& pos,const VECTOR scale) override;
 
 
+	void PatrollingInit(std::shared_ptr<Player> player) override;
+
 	void FleepingInit(std::shared_ptr<Player> player) override;
 
 

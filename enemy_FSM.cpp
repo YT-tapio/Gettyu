@@ -48,6 +48,14 @@ std::shared_ptr<BaseEnemyState> EnemyFSM::ChangeAlert(std::shared_ptr<BaseEnemyS
 		return std::make_shared<EnemyPatrolling>();
 		
 	}
+
+	//vacuum
+	if (player->GetIsVacuum())
+	{
+		//playerにサウンド持たせる必要がある
+	}
+
+
 	
 	return now_state;
 	
@@ -83,6 +91,17 @@ std::shared_ptr<BaseEnemyState> EnemyFSM::ChangeFleeping(std::shared_ptr<BaseEne
 		//printfDx("in fov\n");
 		enemy->SetColor(GetColor(255, 0, 0));
 		return std::make_shared<EnemyFleeping>();
+	}
+	else
+	{
+		const auto player_state = player->GetNowState();
+		//もし、近くで走っているときは気づかせるようにする
+		if (player_state == PlayerState::kRun || player_state == PlayerState::kSlowRun)
+		{
+			enemy->SetColor(GetColor(255, 0, 0));
+			return std::make_shared<EnemyFleeping>();
+		}
+
 	}
 	
 

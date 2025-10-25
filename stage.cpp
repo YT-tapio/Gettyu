@@ -174,7 +174,7 @@ VECTOR Stage::CheckHitWithFloor(Player& player, const VECTOR& check_position)
 	}
 
 	// ジャンプ中且つ上昇中の場合は処理を分岐
-	if (player.GetNowState() == State::kJump && player.GetVelocity().y > 0.0f)
+	if (player.GetNowState() == PlayerState::kJump && player.GetVelocity().y > 0.0f)
 	{
 		// 天井に頭をぶつける処理を行う
 		// 一番低い天井にぶつける為の判定用変数を初期化
@@ -227,7 +227,7 @@ VECTOR Stage::CheckHitWithFloor(Player& player, const VECTOR& check_position)
 			
 			// ジャンプ中かどうかで処理を分岐
 			HITRESULT_LINE lineResult;	// 線分とポリゴンとの当たり判定の結果を代入する構造体
-			if (player.GetNowState() == State::kJump)
+			if (player.GetNowState() == PlayerState::kJump)
 			{
 				// ジャンプ中の場合は頭の先から足先より少し低い位置の間で当たっているかを判定
 				lineResult = HitCheck_Line_Triangle(player.GetCapsuleData().end_pos,

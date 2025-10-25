@@ -35,6 +35,7 @@ protected:
 	bool is_get_;
 	bool is_fleeping_;
 
+	
 
 	int model_;
 	int debug_color_;
@@ -56,6 +57,8 @@ public:
 
 
 	virtual void Init(const VECTOR& pos, const VECTOR scale) = 0;
+
+	virtual void PatrollingInit(std::shared_ptr<Player> player) = 0;
 
 	virtual void FleepingInit(std::shared_ptr<Player> player) = 0;
 

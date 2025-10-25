@@ -24,7 +24,7 @@ struct CapsuleData
 	int div_num = 0;
 };
 
-enum class State
+enum class PlayerState
 {
 	kStand,
 	kSlowRun,
@@ -57,7 +57,7 @@ private:
 	Effect* super_weapon_spin_effect_ = new Effect("data/effect/NextSoft01/MagicTornade.efkefc", VGet(0.f,0.f,0.f), VGet(0.f, 0.f, 0.f), 7.f, 7.f, 150.f, TRUE);
 
 
-	State now_state_;
+	PlayerState now_state_;
 
 	MATRIX model_matrix_;				//
 
@@ -201,7 +201,7 @@ public:
 
 	const float GetSuperAttackEffectPlayCount() const { return super_attack_->GetEffectPlayCount(); }
 
-	const State& GetNowState() const { return now_state_; }
+	const PlayerState& GetNowState() const { return now_state_; }
 
 	const VECTOR& GetPos() const { return pos_; }
 

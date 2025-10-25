@@ -38,6 +38,14 @@ void NormalEnemy::Init(const VECTOR& pos, const VECTOR scale)
 }
 
 
+void NormalEnemy::PatrollingInit(std::shared_ptr<Player> player)
+{
+	total_vel_ = VGet(0, 0, 0);
+	is_return_ = FALSE;
+	target_rot_ = rot_.y;
+}
+
+
 void NormalEnemy::FleepingInit(std::shared_ptr<Player> player)
 {
 	//‚±‚±‚Årot‚ğw’è‚µ‚Ädir‚àw’è‚·‚éB
@@ -159,6 +167,7 @@ void NormalEnemy::Patrolling()
 		{
 			is_return_ = FALSE;
 		}
+
 		vel = VGet(0.f, 0.f, 0.f);
 		
 	}
