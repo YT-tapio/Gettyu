@@ -4,7 +4,7 @@
 #include"animation.h"
 
 void Load(AnimationData& animation_data,
-    const char name[], AnimationType type, int model, float play_speed)
+    const char name[], AnimationType type, int model, int ind,float play_speed)
 {
     animation_data.type = type;
     animation_data.animation_handle = MV1LoadModel(name);
@@ -15,7 +15,7 @@ void Load(AnimationData& animation_data,
     }
 
     animation_data.model_handle = model;
-
+    animation_data.index = ind;
     animation_data.play_time = 0.0f;
     animation_data.total_time = 0.0f;
     animation_data.play_speed = play_speed;
@@ -79,7 +79,7 @@ void Animation::Attach(AnimationType type)
         if (type == animation.type)
         {
             animation.attach_index =
-                MV1AttachAnim(animation.model_handle, 0, animation.animation_handle, FALSE);
+                MV1AttachAnim(animation.model_handle, animation.index, animation.animation_handle, FALSE);
 
             animation.total_time =
                 MV1GetAttachAnimTotalTime(animation.model_handle, 

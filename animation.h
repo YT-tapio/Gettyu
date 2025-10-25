@@ -25,6 +25,7 @@ struct AnimationData
     int model_handle;            // モデル
     int attach_index;              // アタッチの要素数
     int animation_handle;       // アニメーションの名前
+    int index;                          //識別番号
 
     float total_time;      //総再生時間
     float play_time;       //流しているアニメーションの時間
@@ -34,7 +35,7 @@ struct AnimationData
 
 
 void Load(AnimationData& animation_data,
-    const char name[], AnimationType type, int model, float play_speed);
+    const char name[], AnimationType type, int model, int ind,float play_speed);
 
 /// <summary>
 /// モデルのアタッチを行う

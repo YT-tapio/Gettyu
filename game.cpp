@@ -53,28 +53,28 @@ void Game::Init()
     //アニメーションのロード
 
     Load(idle, idle_path,
-        AnimationType::kIdle,chara, 3.0f);
+        AnimationType::kIdle,chara, 0,3.0f);
 
     Load(walk, walk_path,
-        AnimationType::kWalk, chara, 3.0f);
+        AnimationType::kWalk, chara, 0, 3.0f);
 
     Load(slow_run, slow_run_path,
-        AnimationType::kSlowRun, chara, 3.0f);
+        AnimationType::kSlowRun, chara, 0, 3.0f);
 
     Load(fast_run, fast_run_path,
-        AnimationType::kFastRun, chara, 3.0f);
+        AnimationType::kFastRun, chara, 0, 3.0f);
 
     Load(jumping_up, jumping_up_path,
-        AnimationType::kJumpUp, chara, 2.0f);
+        AnimationType::kJumpUp, chara, 0, 2.0f);
 
     Load(jumping_down, jumping_down_path,
-        AnimationType::kJumpDown, chara, 2.0f);
+        AnimationType::kJumpDown, chara, 0, 2.0f);
 
     Load(sword_slash_attack, sword_slash_path,
-        AnimationType::kSwordSlash, chara, 4.0f);
+        AnimationType::kSwordSlash, chara, 0, 4.0f);
 
     Load(super_attack_first, super_attack_path,
-        AnimationType::kSuperAttackFirst, chara, 3.0f);
+        AnimationType::kSuperAttackFirst, chara, 0, 3.0f);
 
     //playerを生成
     player_ =

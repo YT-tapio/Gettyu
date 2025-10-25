@@ -45,7 +45,7 @@ void EnemyManager::Init()
 
 
 	//アニメーションをロード
-	Load(walk, "data/model/character/enemy/animation/Walking.mv1", AnimationType::kWalk, normal_model_data, animation_walk_speed);
+	Load(walk, "data/model/character/enemy/animation/Walking.mv1", AnimationType::kWalk, normal_model_data, 1, animation_walk_speed);
 
 	//アニメーションの追加を行う
 
