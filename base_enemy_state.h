@@ -1,6 +1,7 @@
 #pragma once
 #include"base_enemy.h"
 
+
 class BaseEnemy;
 class Player;
 
@@ -9,6 +10,7 @@ enum class StateName
 	kNothing,			// なんもなし
 	kPatrolling,			// さんぽ(見つかってない)
 	kAlert,				// 警戒モード
+	kSurprise,			//プレイヤーに気づく1
 	kAttack,				// 攻撃
 	kFleeping,			// 逃走中
 	kGet					// 捕まった

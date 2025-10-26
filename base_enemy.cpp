@@ -21,7 +21,7 @@ BaseEnemy::BaseEnemy(const int model, const VECTOR& pos,
 		//printfDx("enemy‚Ìƒ‚ƒfƒ‹“Ç‚İ‚İ¸”s\n");
 	}
 
-	state_ = std::make_shared<EnemyPatrolling>();
+	state_ = nullptr;
 
 	//VECTOR
 	pos_ = pos;

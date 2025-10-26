@@ -43,6 +43,28 @@ void NormalEnemy::PatrollingInit(std::shared_ptr<Player> player)
 	is_return_ = FALSE;
 	target_rot_ = rot_.y;
 	is_fleeping_ = FALSE;
+	now_anim_type_ = AnimationType::kWalk;
+}
+
+
+void NormalEnemy::SurpriseInit(std::shared_ptr<Player> player)
+{
+	//プレイヤーの方向を向く
+	//playerと敵の距離を見る
+
+	VECTOR dist = VSub(player->GetPos(), pos_);
+
+	rot_.y = atan2f(dist.x, dist.z);
+	//プレイヤーの方向を見させる
+	rot_.y += kReverceRad;
+
+	if (rot_.y >= kReverceRad)
+	{
+		rot_.y -= (kReverceRad + kReverceRad);
+	}
+
+	//アニメーションも変化させる
+	now_anim_type_ = AnimationType::kSurprise;
 }
 
 
@@ -73,11 +95,21 @@ void NormalEnemy::Update(std::shared_ptr<Player> player, bool& got)
 	//状態変化
 	const auto next_state = fsm_->UpdateState(state_, player, this);
 
-	if (state_->GetName() != next_state->GetName())
+
+	if (state_ != nullptr)
+	{
+		if (state_->GetName() != next_state->GetName())
+		{
+			state_ = next_state;
+			state_->Entry(this, player);
+		}
+	}
+	else
 	{
 		state_ = next_state;
 		state_->Entry(this, player);
 	}
+	
 
 	// メモ代わり
 	// 捕まるかどうかの処理をするplayer側にthisを送ればよさそうやね
@@ -99,7 +131,6 @@ void NormalEnemy::Update(std::shared_ptr<Player> player, bool& got)
 	state_->Update(this, player);
 
 	//アニメーションの更新
-	now_anim_type_ = AnimationType::kWalk;
 	AnimationUpdate();
 
 	//ポジションの更新
@@ -170,6 +201,12 @@ void NormalEnemy::Patrolling()
 	total_vel_ = VAdd(total_vel_,vel);
 
 	
+
+}
+
+
+void NormalEnemy::Surprise()
+{
 
 }
 

@@ -12,6 +12,7 @@ enum class AnimationType
     kNoLoop,        //ここより先のアニメーションはループなし
     kJumpUp,
     kJumpDown,
+    kSurprise,
     kAttack,        //ここより先は攻撃アニメーション(最後になるとアニメーションを終了)
     kSwordSlash,
     kSuperAttackFirst
@@ -147,6 +148,36 @@ public:
     }
 
     const bool IsPlay() const { return is_play_; }
+
+    float GetPlayTime(const AnimationType& type)
+    {
+        for (const auto anim : animation_data_)
+        {
+            if (anim.type == type)
+            {
+                return anim.play_speed;
+            }
+        }
+    }
+
+
+    bool GetIsPlay(const AnimationType& type)
+    {
+        for (const auto anim : animation_data_)
+        {
+            if (anim.type == type)
+            {
+                if (anim.play_time >= anim.total_time)
+                {
+                    return TRUE;
+                }
+                else
+                {
+                    return FALSE;
+                }
+            }
+        }
+    }
 
     //デバッグ用
     void Draw(const AnimationType& type);

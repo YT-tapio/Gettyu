@@ -4,6 +4,7 @@
 #include"patrolling.h"
 #include"alert.h"
 #include"fleeping.h"
+#include"surprise.h"
 
 EnemyFSM::EnemyFSM()
 {
@@ -117,7 +118,7 @@ std::shared_ptr<BaseEnemyState> EnemyFSM::ChangeFleeping(std::shared_ptr<BaseEne
 	
 
 
-	return std::make_shared<EnemyAlert>();
+	return std::make_shared<EnemySurprise>();
 }
 
 /*--------public---------*/
@@ -125,6 +126,10 @@ std::shared_ptr<BaseEnemyState> EnemyFSM::ChangeFleeping(std::shared_ptr<BaseEne
 std::shared_ptr<BaseEnemyState> EnemyFSM::UpdateState(std::shared_ptr<BaseEnemyState> now_state,std::shared_ptr<Player> player, BaseEnemy* enemy)
 {
 	auto state = now_state;
+
+
+	//surpriseからfleeping
+
 
 
 	//ここの中でステートを切り替えるかの判断を行う

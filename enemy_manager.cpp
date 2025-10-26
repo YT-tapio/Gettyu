@@ -35,23 +35,24 @@ void EnemyManager::Init()
 	*/
 
 	//アニメーションスピード
-	float animation_walk_speed = 3.f;
-
+	const float kAnimationWalkSpeed = 3.f;
+	const float kAnimationSurpriseSpeed = 3.f;
 	//各アニメーションを生成する
 	
 	AnimationData walk;
-
+	AnimationData surprise;
 	
 
 
 	//アニメーションをロード
-	Load(walk, "data/model/character/enemy/animation/Walking.mv1", AnimationType::kWalk, normal_model_data, 1, animation_walk_speed);
-
+	Load(walk, "data/model/character/enemy/animation/Walking.mv1", AnimationType::kWalk, normal_model_data, 1, kAnimationWalkSpeed);
+	Load(surprise, "data/model/character/enemy/animation/Joyful_Jump.mv1", AnimationType::kSurprise, normal_model_data, 1, kAnimationSurpriseSpeed);
 	//アニメーションの追加を行う
 
 	for (auto& enemy : enemies_)
 	{
 		enemy->AddAnim(walk);
+		enemy->AddAnim(surprise);
 	}
 
 

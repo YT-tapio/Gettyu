@@ -68,12 +68,16 @@ public:
 
 	virtual void PatrollingInit(std::shared_ptr<Player> player) = 0;
 
+	virtual void SurpriseInit(std::shared_ptr<Player> player) = 0;
+
 	virtual void FleepingInit(std::shared_ptr<Player> player) = 0;
 
 	virtual void Update(std::shared_ptr<Player> player,bool& got) = 0;
 
 
 	virtual void Patrolling() = 0;
+
+	virtual void Surprise() = 0;
 
 	virtual void Alert(std::shared_ptr<Player> player) = 0;
 

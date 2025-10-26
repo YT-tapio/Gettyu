@@ -38,12 +38,16 @@ public:
 
 	void PatrollingInit(std::shared_ptr<Player> player) override;
 
+	void SurpriseInit(std::shared_ptr<Player> player) override;
+
 	void FleepingInit(std::shared_ptr<Player> player) override;
 
 
 	void Update(std::shared_ptr<Player> player, bool& got) override;
 	
 	void Patrolling() override;
+
+	void Surprise() override;
 
 	void Alert(std::shared_ptr<Player> player) override;
 

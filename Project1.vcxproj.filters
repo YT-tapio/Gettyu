@@ -175,6 +175,9 @@
     <Filter Include="ソース ファイル\virtual_sound">
       <UniqueIdentifier>{71cdfb39-5921-4644-84dc-6b3b819cd39f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\enemy\state\enemy_state\surprise">
+      <UniqueIdentifier>{a91406b8-b2a3-4277-881f-a0fbe451fc09}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -326,6 +329,9 @@
     </ClCompile>
     <ClCompile Include="sound_vibration.cpp">
       <Filter>ソース ファイル\virtual_sound</Filter>
+    </ClCompile>
+    <ClCompile Include="surprise.cpp">
+      <Filter>ソース ファイル\enemy\state\enemy_state\surprise</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -490,6 +496,9 @@
     </ClInclude>
     <ClInclude Include="sound_vibration.h">
       <Filter>ソース ファイル\virtual_sound</Filter>
+    </ClInclude>
+    <ClInclude Include="surprise.h">
+      <Filter>ソース ファイル\enemy\state\enemy_state\surprise</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

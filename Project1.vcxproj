@@ -176,6 +176,7 @@
     <ClCompile Include="sub_screen.cpp" />
     <ClCompile Include="super_attack_camera.cpp" />
     <ClCompile Include="super_attack.cpp" />
+    <ClCompile Include="surprise.cpp" />
     <ClCompile Include="time.cpp" />
     <ClCompile Include="title.cpp" />
     <ClCompile Include="tracking.cpp" />
@@ -232,6 +233,7 @@
     <ClInclude Include="sub_screen.h" />
     <ClInclude Include="super_attack.h" />
     <ClInclude Include="super_attack_camera.h" />
+    <ClInclude Include="surprise.h" />
     <ClInclude Include="time.h" />
     <ClInclude Include="title.h" />
     <ClInclude Include="tracking.h" />
