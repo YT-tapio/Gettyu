@@ -43,17 +43,17 @@ private:
 
 	
 
-	const float kWalkSpeed = 1.0f;
-	const float kNormalSpeed = 2.5f;
-	const float kDashSpeed = 5.5f;
-	const float kGravity = 0.75f;		//重力
-	const float kJumpPower = 3.5f;		//ジャンプ力
+	const float kWalkSpeed			= 1.0f;
+	const float kNormalSpeed		= 2.5f;
+	const float kDashSpeed			= 5.5f;
+	const float kGravity			= 0.75f;			// 重力
+	const float kJumpPower			= 3.5f;				// ジャンプ力
 
-	const float kFastRunSound = 0.7f;
-	const float kNormalRunSound = 0.3f;
-	const float kWalkSound = 0.1f;
+	const float kFastRunSound		= 2.f;				// 大きい音
+	const float kNormalRunSound		= 1.f;				// 歩いているのが普通
+	const float kWalkSound			= 0.1f;				// ちょっとだけ聞かれているような
 	
-	const float kVacuumSound = 1.f;
+	const float kVacuumSound		= 2.f;				// 
 
 	//MixamoBonePath bone_;
 

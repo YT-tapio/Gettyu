@@ -178,6 +178,9 @@
     <Filter Include="ソース ファイル\enemy\state\enemy_state\surprise">
       <UniqueIdentifier>{a91406b8-b2a3-4277-881f-a0fbe451fc09}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\alert_state">
+      <UniqueIdentifier>{35e2a15a-2140-4f1b-8606-96813245c311}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -332,6 +335,9 @@
     </ClCompile>
     <ClCompile Include="surprise.cpp">
       <Filter>ソース ファイル\enemy\state\enemy_state\surprise</Filter>
+    </ClCompile>
+    <ClCompile Include="alert_state.cpp">
+      <Filter>ソース ファイル\alert_state</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -499,6 +505,9 @@
     </ClInclude>
     <ClInclude Include="surprise.h">
       <Filter>ソース ファイル\enemy\state\enemy_state\surprise</Filter>
+    </ClInclude>
+    <ClInclude Include="alert_state.h">
+      <Filter>ソース ファイル\alert_state</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

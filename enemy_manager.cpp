@@ -23,20 +23,22 @@ void EnemyManager::Init()
 {
 	int normal_model_data = MV1LoadModel("data/model/character/enemy/Ch14_nonPBR.mv1");
 
+	VECTOR scale = VGet(0.07f, 0.07f,0.07f);
+	
 	//printfDx("wa\n");
 	enemies_.push_back(std::make_shared<NormalEnemy>(normal_model_data,
-		VGet(10.f, 0.f, 50.f), VGet(0.05f, 0.05f, 0.05f), VGet(0.f, static_cast<float>((M_PI / 180) * 70), 0.0f), get_effect_, got_effect_, 2.f, 4.f, 40.f, 20.f, static_cast<float>((M_PI / 180) * 100)));
+		VGet(10.f, 0.f, 50.f), scale, VGet(0.f, static_cast<float>((M_PI / 180) * 70), 0.0f), get_effect_, got_effect_, 2.f, 4.f, AlertState::kNormal, 20.f, static_cast<float>((M_PI / 180) * 100)));
 	/*
 	enemies_.push_back(std::make_shared<NormalEnemy>(normal_model_data,
-		VGet(50.f, 1.5f, 10.f), VGet(0.05f, 0.05f, 0.05f), VGet(0.f, static_cast<float>((M_PI / 180) * 80), 0.0f), get_effect_, got_effect_,2.f,5.f, 40.f, 20.f, static_cast<float>((M_PI / 180) * 100)));
+		VGet(50.f, 1.5f, 10.f), scale, VGet(0.f, static_cast<float>((M_PI / 180) * 80), 0.0f), get_effect_, got_effect_,2.f,5.f, 40.f, 20.f, static_cast<float>((M_PI / 180) * 100)));
 
 	enemies_.push_back(std::make_shared<NormalEnemy>(normal_model_data,
-		VGet(20.f, 3.f, 5.f), VGet(0.05f, 0.05f, 0.05f), VGet(0.f, static_cast<float>((M_PI / 180) * 90), 0.0f), get_effect_, got_effect_,0.5f, 2.5f,40.f, 20.f, static_cast<float>((M_PI / 180) * 100)));
+		VGet(20.f, 3.f, 5.f), scale, VGet(0.f, static_cast<float>((M_PI / 180) * 90), 0.0f), get_effect_, got_effect_,0.5f, 2.5f,40.f, 20.f, static_cast<float>((M_PI / 180) * 100)));
 	*/
 
 	//アニメーションスピード
 	const float kAnimationWalkSpeed = 3.f;
-	const float kAnimationSurpriseSpeed = 3.f;
+	const float kAnimationSurpriseSpeed = 10.f;
 	//各アニメーションを生成する
 	
 	AnimationData walk;

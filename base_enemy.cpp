@@ -6,7 +6,7 @@
 #include"animation.h"
 
 BaseEnemy::BaseEnemy(const int model, const VECTOR& pos,
-	const VECTOR& scale, const VECTOR& rot, Effect* get_effect,Effect* got_effect,float speed, float fleeping_speed, float alert_dist, float engagement_dist, float fov)
+	const VECTOR& scale, const VECTOR& rot, Effect* get_effect,Effect* got_effect,float speed, float fleeping_speed, AlertState alert, float engagement_dist, float fov)
 {
 	fsm_		= std::make_shared<EnemyFSM>();
 	animation_	= std::make_shared<Animation>();
@@ -45,8 +45,39 @@ BaseEnemy::BaseEnemy(const int model, const VECTOR& pos,
 
 	speed_ = speed;
 	fleeping_speed_ = fleeping_speed;
-	alert_dist_ = alert_dist;
-	engagement_dist_ = engagement_dist;
+	
+	alert_state_ = alert;
+
+	//Œx‰ú“x‚É‚æ‚Á‚ÄˆÙ‚È‚é”’l
+	switch (alert_state_)
+	{
+	case AlertState::kHigh:
+
+		alert_dist_			= kAlertHigh;
+
+		break;
+
+	case AlertState::kNormal:
+
+		alert_dist_			= kAlertNormal;
+	
+		break;
+
+	case AlertState::kLow:
+
+		alert_dist_			= kAlertLow;
+
+		break;
+
+	}
+
+	//engagement‚à”ä‚ðì‚Á‚Ä‚»‚ê‚Å‚â‚é
+	engagement_dist_ = kEngagementNormal * alert_dist_ / kAlertNormal;
+
+	//‚à‚Æ‚à‚Æ‚Ì‚â‚Â‚Æ‚Ì”ä‚ðì‚éA‚»‚Ì”ä‚ðtimer‚ÉŠ|‚¯‚é
+	alert_timer_ = new ConditionTimer(kNormalAlertTime * (alert_dist_ / kAlertNormal));
+
+
 	fov_ = fov;
 	debug_color_ = GetColor(255, 255, 255);
 }
@@ -233,24 +264,33 @@ void BaseEnemy::Debug(int i)
 		Debug::GetInstance().Add();
 
 		//
-		switch (state_->GetName())
+		if (state_ != nullptr)
 		{
-		case StateName::kPatrolling:
-			DrawFormatString(0, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), debug_color_, "state : patlloring");
-			break;
+			switch (state_->GetName())
+			{
+			case StateName::kPatrolling:
+				DrawFormatString(0, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), debug_color_, "state : patlloring");
+				break;
 
-		case StateName::kAlert:
-			DrawFormatString(0, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), debug_color_, "state : alert");
-			break;
+			case StateName::kAlert:
+				DrawFormatString(0, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), debug_color_, "state : alert");
+				break;
 
-		case StateName::kFleeping:
-			DrawFormatString(0, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), debug_color_, "stat : fleeping");
-			break;
+			case StateName::kSurprise:
+				DrawFormatString(0, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), debug_color_, "state : alert");
+				break;
+
+			case StateName::kFleeping:
+				DrawFormatString(0, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), debug_color_, "stat : fleeping");
+				break;
+			}
+			Debug::GetInstance().Add();
+			DrawFormatString(0, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), debug_color_, "rot : % .2f", rot_.y);
+
+			Debug::GetInstance().Add();
 		}
-		Debug::GetInstance().Add();
-		DrawFormatString(0, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), debug_color_, "rot : % .2f", rot_.y);
 
-		Debug::GetInstance().Add();
+		
 	}
 
 

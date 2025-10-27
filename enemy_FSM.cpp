@@ -59,7 +59,7 @@ std::shared_ptr<BaseEnemyState> EnemyFSM::ChangeAlert(std::shared_ptr<BaseEnemyS
 
 std::shared_ptr<BaseEnemyState> EnemyFSM::ChangeFleeping(std::shared_ptr<BaseEnemyState> now_state, std::shared_ptr<Player> player, BaseEnemy* enemy)
 {
-	
+	//逃げているのなら範囲外まで
 	if (enemy->GetIsFleeping())
 	{
 		return std::make_shared<EnemyFleeping>();
@@ -80,46 +80,73 @@ std::shared_ptr<BaseEnemyState> EnemyFSM::ChangeFleeping(std::shared_ptr<BaseEne
 	//角度を求める
 	float rad = acosf(dot);
 	float herf_fov = (enemy->GetFov() * 0.5f);
-	//radがfovの半分に以下ならstateを切りかえる
-	if (rad <= herf_fov)
+
+	
+
+	//radがfovの半分以下かつ、視界の距離ないなら
+	if (rad <= herf_fov && (enemy->GetAlertDist() >= VSize(enemy_to_player_dist)))
 	{
 		//printfDx("in fov\n");
 		enemy->SetColor(GetColor(255, 0, 0));
-		return std::make_shared<EnemyFleeping>();
+		//先に驚きから
+		return std::make_shared<EnemySurprise>();
 	}
 	else
 	{
-		//playerのサウンド状況を受け取り規定値よりもおおきいのなら
-
-		//接敵距離を見る
-
+		//個々の処理はplayerが物音を立てているかの検知をおこなう
+		//enemyの絶対気づく距離からplayerから発生するサウンドをかけ合わせる
 		auto engage_dist = (enemy->GetEngagementDist() * player->GetSoundVibrationNum());
-
-		
 
 		//距離が接敵距離なら
 		if (VSize(enemy_to_player_dist) <= engage_dist)
 		{
 			enemy->SetColor(GetColor(255, 0, 0));
 			//逃げる
-			return std::make_shared<EnemyFleeping>();
+			return std::make_shared<EnemySurprise>();
 		}
+
 	}
 
 	//今のfleeping(逃走)からアラートに代わるときalertの範囲内に敵がいるとまだ逃げる
 	if (now_state->GetName() == StateName::kFleeping)
 	{
+		//enemyが警戒している距離内にまだいるとき
 		if (VSize(enemy_to_player_dist) <= enemy->GetAlertDist())
 		{
 			return std::make_shared<EnemyFleeping>();
+		}
+		else
+		{
+			//警戒距離を抜け出したとき
+			//enemyには警戒させる
+			return std::make_shared<EnemyAlert>();
 		}
 	}
 
 	
 
-
-	return std::make_shared<EnemySurprise>();
+	//リターンされないのなら気づいていなくする
+	return std::make_shared<EnemyPatrolling>();
 }
+
+std::shared_ptr<BaseEnemyState> EnemyFSM::Surprise(BaseEnemy* enemy)
+{
+	// stateは驚きの時入ってくる
+	// 入ってきたらenemyのanimationが終わっているのかを判断
+
+	//アニメーションが再生中ならまだSurprise
+	if (enemy->GetIsAnimPlay())
+	{
+		return std::make_shared<EnemySurprise>();
+	}
+	else
+	{
+		//アニメーションの更新が終わったら逃げさせる
+		return std::make_shared<EnemyFleeping>();
+	}
+
+}
+
 
 /*--------public---------*/
 
@@ -127,16 +154,32 @@ std::shared_ptr<BaseEnemyState> EnemyFSM::UpdateState(std::shared_ptr<BaseEnemyS
 {
 	auto state = now_state;
 
+	
+	if (state == nullptr)
+	{
+		//ここの中でステートを切り替えるかの判断を行う
+		state = ChangeAlert(state, player, enemy);
+	}
+	else
+	{
+		if (state->GetName() == StateName::kSurprise)
+		{
+			//ここの中でステートを切り替えるかの判断を行う
+			state = Surprise(enemy);
+		}
+		else
+		{
+			//ここの中でステートを切り替えるかの判断を行う
+			state = ChangeFleeping(state, player, enemy);
 
-	//surpriseからfleeping
+		}
+	}
+
+
+	//fleeping距離にいるときは絶対逃げる、fleeping距離で感知できないのならenemyの視界によって判断
 
 
 
-	//ここの中でステートを切り替えるかの判断を行う
-	//
-
-	state = ChangeAlert(state, player, enemy);
-	//state = ChangeFleeping(state, player, enemy);
 
 
 	return state;

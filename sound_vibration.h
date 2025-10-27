@@ -4,7 +4,7 @@ class SoundVibration
 {
 private:
 
-    const float kInitNum = 1.f;
+    const float kInitNum = 0.f;
     float num_; //オブジェクトが発しているサウンドの可視化
 
 public:

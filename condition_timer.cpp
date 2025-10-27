@@ -29,6 +29,12 @@ void ConditionTimer::Update()
 }
 
 
+void ConditionTimer::Reset()
+{
+	timer_ = 0.f;
+}
+
+
 float ConditionTimer::GetTimeRatio()
 {
 	return timer_ / max_time_;

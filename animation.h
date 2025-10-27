@@ -151,7 +151,7 @@ public:
 
     float GetPlayTime(const AnimationType& type)
     {
-        for (const auto anim : animation_data_)
+        for (const auto& anim : animation_data_)
         {
             if (anim.type == type)
             {
@@ -163,11 +163,11 @@ public:
 
     bool GetIsPlay(const AnimationType& type)
     {
-        for (const auto anim : animation_data_)
+        for (const auto& anim : animation_data_)
         {
             if (anim.type == type)
             {
-                if (anim.play_time >= anim.total_time)
+                if (anim.play_time < anim.total_time)
                 {
                     return TRUE;
                 }

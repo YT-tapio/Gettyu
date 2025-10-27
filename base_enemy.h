@@ -6,6 +6,8 @@
 #include"collision_data.h"
 #include"enemy_FSM.h"
 #include"base_enemy_state.h"
+#include"condition_timer.h"
+#include"alert_state.h"
 
 class Player;
 class Animation;
@@ -19,6 +21,14 @@ private:
 	Effect* get_effect_;
 	Effect* got_effect_;
 
+	const float kAlertHigh			= 50.f;	// 警戒度(高)
+	const float kAlertNormal		= 40.f;  // 警戒度(中)
+	const float kAlertLow			= 30.f;  // 警戒度(低)
+
+	const float kEngagementNormal	= 20.f;
+
+	const float kNormalAlertTime	= 2.f;
+
 protected:
 
 	CollisionData collision_data_;
@@ -30,6 +40,9 @@ protected:
 	AnimationType before_anim_type_;			//1つ前のアニメーション
 	AnimationType before_before_anim_type_;	//2つ前のアニメーション
 
+	//警戒のタイマー
+	ConditionTimer* alert_timer_;
+
 	//
 	MATRIX mat_;		//vectorの集合体
 	VECTOR pos_;		//ポジション
@@ -37,6 +50,8 @@ protected:
 	VECTOR rot_;		//回転量
 	VECTOR velocity_;	//移動量
 	VECTOR scale_;		//大きさ
+
+	AlertState alert_state_;	//警戒度
 
 	bool is_get_;
 	bool is_fleeping_;
@@ -58,7 +73,7 @@ protected:
 public:
 
 	BaseEnemy(const int model, const VECTOR& pos,
-		const VECTOR& scale, const VECTOR& rot, Effect* effect, Effect* got_effect, float speed, float fleeping_speed,float alert_dist, float engagement_dist, float fov);
+		const VECTOR& scale, const VECTOR& rot, Effect* effect, Effect* got_effect, float speed, float fleeping_speed, AlertState alert, float engagement_dist, float fov);
 
 
 	virtual ~BaseEnemy() = 0;
@@ -69,6 +84,8 @@ public:
 	virtual void PatrollingInit(std::shared_ptr<Player> player) = 0;
 
 	virtual void SurpriseInit(std::shared_ptr<Player> player) = 0;
+
+	virtual void AlertInit(std::shared_ptr<Player> player) = 0;
 
 	virtual void FleepingInit(std::shared_ptr<Player> player) = 0;
 
@@ -118,6 +135,8 @@ public:
 	//ゲットされた時の位置調整
 	void SetPosIsGot(const VECTOR& pos);
 
+	bool GetIsAnimPlay() { return animation_->GetIsPlay(now_anim_type_); }
+
 	const float GetAlertDist() const { return alert_dist_; }
 
 	const float GetEngagementDist() const { return engagement_dist_; }
@@ -127,6 +146,8 @@ public:
 	const bool GetIsGet() const { return is_get_; }
 
 	const bool GetIsFleeping() const { return is_fleeping_; }
+
+	
 
 	const VECTOR GetPos() const { return pos_; }
 

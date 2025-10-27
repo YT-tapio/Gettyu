@@ -1,0 +1,8 @@
+#pragma once
+
+enum class AlertState
+{
+	kHigh,		// ïqä¥
+	kNormal,	// ïÅí 
+	kLow		// ì›ä¥
+};

@@ -7,8 +7,8 @@
 #include"situation.h"
 #include"rot_function.h"
 
-NormalEnemy::NormalEnemy(int model, const VECTOR& pos, const VECTOR& scale, const VECTOR& dir, Effect* get_effect, Effect* got_effect, float speed, float fleeping_speed, float alert_dist, float engagement_dist, float fov)
-	:BaseEnemy(model,pos,scale,dir,get_effect,got_effect,speed,fleeping_speed,alert_dist,engagement_dist,fov)
+NormalEnemy::NormalEnemy(int model, const VECTOR& pos, const VECTOR& scale, const VECTOR& dir, Effect* get_effect, Effect* got_effect, float speed, float fleeping_speed, AlertState alert, float engagement_dist, float fov)
+	:BaseEnemy(model,pos,scale,dir,get_effect,got_effect,speed,fleeping_speed,alert,engagement_dist,fov)
 {
 	collision_data_.name = CollisionName::kSphere;
 	collision_data_.pos = pos;
@@ -68,6 +68,16 @@ void NormalEnemy::SurpriseInit(std::shared_ptr<Player> player)
 }
 
 
+void NormalEnemy::AlertInit(std::shared_ptr<Player> player)
+{
+	//タイマーのリセット
+	alert_timer_->Reset();
+
+	//独自のアニメーションも再生させたい(探しているような)
+
+}
+
+
 void NormalEnemy::FleepingInit(std::shared_ptr<Player> player)
 {
 	//ここでrotを指定してdirも指定する。
@@ -87,6 +97,7 @@ void NormalEnemy::FleepingInit(std::shared_ptr<Player> player)
 	is_fleeping_ = TRUE;
 }
 
+
 void NormalEnemy::Update(std::shared_ptr<Player> player, bool& got)
 {
 
@@ -100,6 +111,7 @@ void NormalEnemy::Update(std::shared_ptr<Player> player, bool& got)
 	{
 		if (state_->GetName() != next_state->GetName())
 		{
+			state_->Exit(this);
 			state_ = next_state;
 			state_->Entry(this, player);
 		}
@@ -214,9 +226,9 @@ void NormalEnemy::Surprise()
 void NormalEnemy::Alert(std::shared_ptr<Player> player)
 {
 	//ここでplayerとの距離を測りどんな状態に変化するか判断
+	alert_timer_->Update();
 
-
-
+	if()
 
 }
 

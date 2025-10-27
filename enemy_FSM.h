@@ -20,6 +20,8 @@ private:
 	//“¦‘–
 	std::shared_ptr<BaseEnemyState> ChangeFleeping(std::shared_ptr<BaseEnemyState> now_state, std::shared_ptr<Player> player, BaseEnemy* enemy);
 
+	std::shared_ptr<BaseEnemyState> Surprise(BaseEnemy* enemy);
+
 public:
 
 	EnemyFSM();

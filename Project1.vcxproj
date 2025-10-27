@@ -138,6 +138,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="alert.cpp" />
+    <ClCompile Include="alert_state.cpp" />
     <ClCompile Include="animation.cpp" />
     <ClCompile Include="base_enemy.cpp" />
     <ClCompile Include="base_object.cpp" />
@@ -191,6 +192,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="alert.h" />
+    <ClInclude Include="alert_state.h" />
     <ClInclude Include="animation.h" />
     <ClInclude Include="base_enemy.h" />
     <ClInclude Include="base_object.h" />
