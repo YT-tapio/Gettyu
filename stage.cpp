@@ -486,9 +486,20 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 					}
 					else
 					{
-						//地面の判定(法線のY座標が0以下なら)
-						if (poly.Normal.y <= 0.f)
+
+						// 新規の処理
+						// この中で壁ずり
 						{
+
+
+							//地上の確認
+							if (poly.Normal.y >= 0.f)
+							{
+								player.SetIsGround(TRUE);
+							}
+
+
+
 							//ポリゴンの中点からの距離を見てから、そのあと正射影ベクトルを出す。
 							//センターからの距離
 							poly_to_old = VSub(old_pos, poly_center_pos);			//old
@@ -498,23 +509,9 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 							poly_to_old_proj_vec = GetProjectionVector(poly.Normal, poly_to_old);
 							poly_to_next_proj_vec = GetProjectionVector(poly.Normal, poly_to_next);
 
+							//nextの
 
-							offset_vel = VSub(old_pos, VAdd(next_pos, poly_to_next_proj_vec));
-							//player.SetIsGround(FALSE);
-						}
-						else
-						{
-
-							//ポリゴンの中点からの距離を見てから、そのあと正射影ベクトルを出す。
-							//センターからの距離
-							poly_to_old = VSub(old_pos, poly_center_pos);			//old
-							poly_to_next = VSub(next_pos, poly_center_pos);			//next
-
-							//正射影ベクトルを出す
-							poly_to_old_proj_vec = GetProjectionVector(poly.Normal, poly_to_old);
-							poly_to_next_proj_vec = GetProjectionVector(poly.Normal, poly_to_next);
-
-							// 各ベクターの大きさを出す
+							//各ベクターの大きさを出す
 							float poly_to_old_size = fabs((sqrt((poly_to_old_proj_vec.x * poly_to_old_proj_vec.x) +
 								(poly_to_old_proj_vec.y * poly_to_old_proj_vec.y) + (poly_to_old_proj_vec.z * poly_to_old_proj_vec.z))));
 
@@ -523,60 +520,166 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 
 							// その比をみて、全体の移動量にかける。調べたい比 単体/全体
 							float ratio = poly_to_old_size / (poly_to_old_size + poly_to_next_size);
+							float next_ratio = poly_to_next_size / (poly_to_old_size + poly_to_next_size);
 
-
+							//次に移動するときのサイズを受け取っておく
+							float size = VSize(VScale(velocity, next_ratio));
 
 							// vectorにかける
+							//これでoffsetの完了
 							offset_vel = VScale(offset_vel, ratio);
 
-							player.SetIsGround(TRUE);
-							player.ResetFallSpeed();
-							//ポリゴンの少し上に押し戻す
-							offset_vel = VAdd(offset_vel, VGet(0.0f, 0.1f, 0.0f));
-						}
+							//交点を出した
+							VECTOR x_pos = VAdd(old_pos, offset_vel);
 
+							//ポリゴン上にある平行のpos
+							VECTOR triangle_next_pos = VAdd(next_pos, poly_to_next_proj_vec);
 
-						//offset分足したカプセルの座標
-						next_player_capsule.start_pos = VAdd(old_pos, offset_vel);
-						next_player_capsule.start_pos.y += next_player_capsule.r;
-						next_player_capsule.end_pos = next_player_capsule.start_pos;
-						next_player_capsule.end_pos.y += next_player_capsule.vertical_num;
+							//交点からポリゴン上にあるposまでのdirを出す
+							VECTOR next_move_pos_dir = VNorm(VSub(triangle_next_pos, x_pos));
 
-						//printfDx("x:%f,y:%f,z:%f\n", offset_vel.x, offset_vel.y, offset_vel.z);
+							VECTOR next_move_pos = VAdd(x_pos,VScale(next_move_pos_dir, size));
 
-						// 昔の処理(ゴミ)
-						// 法線の方向に押し戻す
-						//offset_vel = VSub(VSub(next_pos, old_pos), VScale(poly.Normal, kHitSlideLength));
+							offset_vel = VSub(next_move_pos, old_pos);
+							
+							
 
-						//offset_vel = VGet(0, 0, 0);
+							//法線上に半径分押し出す
+							//offset_vel = VAdd(offset_vel, VScale(poly.Normal, player.GetCapsuleData().r));
 
+							//offset分足したカプセルの座標
+							next_player_capsule.start_pos = VAdd(old_pos, offset_vel);
+							next_player_capsule.start_pos.y += next_player_capsule.r;
+							next_player_capsule.end_pos = next_player_capsule.start_pos;
+							next_player_capsule.end_pos.y += next_player_capsule.vertical_num;
 
-						//next_pos = VAdd(next_pos, VScale(poly.Normal, 0.1f));
-						//printfDx("x:%f,y:%f,z:%f\n", poly.Normal.x, poly.Normal.y, poly.Normal.z);
-						//offset_vel = VSub(VSub(next_pos, old_pos),offset_vel);
+							
 
-
-
-						//移動後にもう一度何かと当たっているのかを調べる
-						for (int j = 0; j < hit_dim.HitNum; j++)
-						{
-							poly = hit_dim.Dim[j];
-
-							if (HitCheck_Capsule_Triangle(next_player_capsule.start_pos, next_player_capsule.end_pos
-								, next_player_capsule.r, poly.Position[0], poly.Position[1], poly.Position[2]))
+							//移動後にもう一度何かと当たっているのかを調べる
+							for (int j = 0; j < hit_dim.HitNum; j++)
 							{
-								is_hit = TRUE;
+								poly = hit_dim.Dim[j];
+
+								if (HitCheck_Capsule_Triangle(next_player_capsule.start_pos, next_player_capsule.end_pos
+									, next_player_capsule.r, poly.Position[0], poly.Position[1], poly.Position[2]))
+								{
+									is_hit = TRUE;
+									break;
+								}
+
+							}
+
+
+							//全てのポリゴンと当たっていない場合ループ終了
+							if (!is_hit)
+							{
 								break;
 							}
 
 						}
 
 
-						//全てのポリゴンと当たっていない場合ループ終了
-						if (!is_hit)
+						if (FALSE)
 						{
-							break;
+							// 地面の判定(法線のY座標が0以下なら)
+							if (poly.Normal.y <= 0.f)
+							{
+								// ポリゴンの中点からの距離を見てから、そのあと正射影ベクトルを出す。
+								// センターからの距離
+								poly_to_old = VSub(old_pos, poly_center_pos);			//old
+								poly_to_next = VSub(next_pos, poly_center_pos);			//next
+
+								//正射影ベクトルを出す
+								poly_to_old_proj_vec = GetProjectionVector(poly.Normal, poly_to_old);
+								poly_to_next_proj_vec = GetProjectionVector(poly.Normal, poly_to_next);
+
+
+								offset_vel = VSub(old_pos, VAdd(next_pos, poly_to_next_proj_vec));
+								//player.SetIsGround(FALSE);
+
+								offset_vel = VAdd(offset_vel, VGet(0.0f, 0.1f, 0.0f));
+
+							}
+							else
+							{
+
+								//ポリゴンの中点からの距離を見てから、そのあと正射影ベクトルを出す。
+								//センターからの距離
+								poly_to_old = VSub(old_pos, poly_center_pos);			//old
+								poly_to_next = VSub(next_pos, poly_center_pos);			//next
+
+								//正射影ベクトルを出す
+								poly_to_old_proj_vec = GetProjectionVector(poly.Normal, poly_to_old);
+								poly_to_next_proj_vec = GetProjectionVector(poly.Normal, poly_to_next);
+
+								// 各ベクターの大きさを出す
+								float poly_to_old_size = fabs((sqrt((poly_to_old_proj_vec.x * poly_to_old_proj_vec.x) +
+									(poly_to_old_proj_vec.y * poly_to_old_proj_vec.y) + (poly_to_old_proj_vec.z * poly_to_old_proj_vec.z))));
+
+								float poly_to_next_size = fabs((sqrt((poly_to_next_proj_vec.x * poly_to_next_proj_vec.x) +
+									(poly_to_next_proj_vec.y * poly_to_next_proj_vec.y) + (poly_to_next_proj_vec.z * poly_to_next_proj_vec.z))));
+
+								// その比をみて、全体の移動量にかける。調べたい比 単体/全体
+								float ratio = poly_to_old_size / (poly_to_old_size + poly_to_next_size);
+
+
+
+								// vectorにかける
+								offset_vel = VScale(offset_vel, ratio);
+
+								player.SetIsGround(TRUE);
+								player.ResetFallSpeed();
+								//ポリゴンの少し上に押し戻す
+								//offset_vel = VAdd(offset_vel, VGet(0.0f, 0.1f, 0.0f));
+							}
+
+
+							//offset分足したカプセルの座標
+							next_player_capsule.start_pos = VAdd(old_pos, offset_vel);
+							next_player_capsule.start_pos.y += next_player_capsule.r;
+							next_player_capsule.end_pos = next_player_capsule.start_pos;
+							next_player_capsule.end_pos.y += next_player_capsule.vertical_num;
+
+							//printfDx("x:%f,y:%f,z:%f\n", offset_vel.x, offset_vel.y, offset_vel.z);
+
+
+
+							// 昔の処理(ゴミ)
+							// 法線の方向に押し戻す
+							//offset_vel = VSub(VSub(next_pos, old_pos), VScale(poly.Normal, kHitSlideLength));
+
+							//offset_vel = VGet(0, 0, 0);
+
+
+							//next_pos = VAdd(next_pos, VScale(poly.Normal, 0.1f));
+							//printfDx("x:%f,y:%f,z:%f\n", poly.Normal.x, poly.Normal.y, poly.Normal.z);
+							//offset_vel = VSub(VSub(next_pos, old_pos),offset_vel);
+
+
+
+							//移動後にもう一度何かと当たっているのかを調べる
+							for (int j = 0; j < hit_dim.HitNum; j++)
+							{
+								poly = hit_dim.Dim[j];
+
+								if (HitCheck_Capsule_Triangle(next_player_capsule.start_pos, next_player_capsule.end_pos
+									, next_player_capsule.r, poly.Position[0], poly.Position[1], poly.Position[2]))
+								{
+									is_hit = TRUE;
+									break;
+								}
+
+							}
+
+
+							//全てのポリゴンと当たっていない場合ループ終了
+							if (!is_hit)
+							{
+								break;
+							}
 						}
+
+						
 					}
 
 					

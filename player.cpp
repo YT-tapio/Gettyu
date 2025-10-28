@@ -156,6 +156,9 @@ void Player::Debug()
 {
 	if (Debug::GetInstance().GetDisp())
 	{
+		
+		DrawCapsule3D(capsule_.start_pos, capsule_.end_pos, capsule_.r, 20.f, GetColor(255, 255, 255), GetColor(255, 255, 255), FALSE);
+
 		//
 		DrawFormatString(0, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), GetColor(0, 0, 0), "---------player--------");
 		Debug::GetInstance().Add();
@@ -167,6 +170,9 @@ void Player::Debug()
 
 		DrawFormatString(0, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), GetColor(0, 0, 0), "%.2f", sound_vibration_->GetNum());
 		Debug::GetInstance().Add();
+
+
+
 	}
 }
 
