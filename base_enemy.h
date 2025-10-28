@@ -55,7 +55,7 @@ protected:
 
 	bool is_get_;
 	bool is_fleeping_;
-
+	bool is_alert_;
 	
 
 	int model_;
@@ -73,7 +73,7 @@ protected:
 public:
 
 	BaseEnemy(const int model, const VECTOR& pos,
-		const VECTOR& scale, const VECTOR& rot, Effect* effect, Effect* got_effect, float speed, float fleeping_speed, AlertState alert, float engagement_dist, float fov);
+		const VECTOR& scale, const VECTOR& rot, Effect* effect, Effect* got_effect, float speed, float fleeping_speed, AlertState alert, float fov);
 
 
 	virtual ~BaseEnemy() = 0;
@@ -100,7 +100,7 @@ public:
 
 	virtual void Fleeping(std::shared_ptr<Player> player) = 0;
 
-	void AddAnim(const AnimationData& animation_data);
+	virtual void AddAnim() = 0;
 
 	void EffectUpdate();
 
@@ -147,7 +147,7 @@ public:
 
 	const bool GetIsFleeping() const { return is_fleeping_; }
 
-	
+	const bool GetIsAlert() const { return is_alert_; }
 
 	const VECTOR GetPos() const { return pos_; }
 

@@ -152,35 +152,24 @@ std::shared_ptr<BaseEnemyState> EnemyFSM::Surprise(BaseEnemy* enemy)
 
 std::shared_ptr<BaseEnemyState> EnemyFSM::UpdateState(std::shared_ptr<BaseEnemyState> now_state,std::shared_ptr<Player> player, BaseEnemy* enemy)
 {
-	auto state = now_state;
 
-	
-	if (state == nullptr)
+	if (now_state == nullptr)
 	{
-		//ここの中でステートを切り替えるかの判断を行う
-		state = ChangeAlert(state, player, enemy);
+		return std::make_shared<EnemyPatrolling>();
 	}
 	else
 	{
-		if (state->GetName() == StateName::kSurprise)
-		{
-			//ここの中でステートを切り替えるかの判断を行う
-			state = Surprise(enemy);
-		}
-		else
-		{
-			//ここの中でステートを切り替えるかの判断を行う
-			state = ChangeFleeping(state, player, enemy);
+		auto state = now_state->ChangeState(enemy, player);
 
+
+		if (state != nullptr)
+		{
+			return state;
 		}
+
+		//nullptrが返された場合
+		return now_state;
 	}
 
-
-	//fleeping距離にいるときは絶対逃げる、fleeping距離で感知できないのならenemyの視界によって判断
-
-
-
-
-
-	return state;
+	
 }

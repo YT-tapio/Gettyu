@@ -7,8 +7,8 @@
 #include"situation.h"
 #include"rot_function.h"
 
-NormalEnemy::NormalEnemy(int model, const VECTOR& pos, const VECTOR& scale, const VECTOR& dir, Effect* get_effect, Effect* got_effect, float speed, float fleeping_speed, AlertState alert, float engagement_dist, float fov)
-	:BaseEnemy(model,pos,scale,dir,get_effect,got_effect,speed,fleeping_speed,alert,engagement_dist,fov)
+NormalEnemy::NormalEnemy(const TCHAR* model_path, const VECTOR& pos, const VECTOR& scale, const VECTOR& dir, Effect* get_effect, Effect* got_effect, float speed, float fleeping_speed, AlertState alert, float fov)
+	:BaseEnemy(MV1LoadModel(model_path),pos,scale,dir,get_effect,got_effect,speed,fleeping_speed,alert,fov)
 {
 	collision_data_.name = CollisionName::kSphere;
 	collision_data_.pos = pos;
@@ -72,9 +72,9 @@ void NormalEnemy::AlertInit(std::shared_ptr<Player> player)
 {
 	//タイマーのリセット
 	alert_timer_->Reset();
-
+	is_alert_ = TRUE;
 	//独自のアニメーションも再生させたい(探しているような)
-
+	now_anim_type_ = AnimationType::kNothing;
 }
 
 
@@ -95,6 +95,26 @@ void NormalEnemy::FleepingInit(std::shared_ptr<Player> player)
 	total_vel_ = VGet(0, 0, 0);
 
 	is_fleeping_ = TRUE;
+	now_anim_type_ = AnimationType::kFastRun;
+}
+
+
+void NormalEnemy::AddAnim()
+{
+	//アニメーションスピード
+	const float kAnimationWalkSpeed = 3.f;
+	const float kAnimationSurpriseSpeed = 10.f;
+	//各アニメーションを生成する
+
+	AnimationData walk;
+	AnimationData surprise;
+
+	//アニメーションをロード
+	Load(walk, "data/model/character/enemy/animation/Walking.mv1", AnimationType::kWalk, model_, 1, kAnimationWalkSpeed);
+	Load(surprise, "data/model/character/enemy/animation/Joyful_Jump.mv1", AnimationType::kSurprise, model_, 1, kAnimationSurpriseSpeed);
+
+	animation_->Add(walk);
+	animation_->Add(surprise);
 }
 
 
@@ -131,7 +151,6 @@ void NormalEnemy::Update(std::shared_ptr<Player> player, bool& got)
 	if (!is_get_)
 	{
 		//ここでまだ捕まっていないときは
-
 		player->IsHitEnemy(this, got);
 	}
 	else
@@ -227,8 +246,12 @@ void NormalEnemy::Alert(std::shared_ptr<Player> player)
 {
 	//ここでplayerとの距離を測りどんな状態に変化するか判断
 	alert_timer_->Update();
-
-	if()
+	//タイマーが終了したら
+	if (alert_timer_->GetIsEnd())
+	{
+		//アラートを解除
+		is_alert_ = FALSE;
+	}
 
 }
 

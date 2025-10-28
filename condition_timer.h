@@ -21,5 +21,7 @@ public:
 
 	float GetTimeRatio();
 
+	bool GetIsEnd();
+
 	void Debug();
 };

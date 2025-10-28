@@ -29,12 +29,13 @@ private:
 public:
 
 
-	NormalEnemy(int model, const VECTOR& pos,
-		const VECTOR& scale, const VECTOR& dir, Effect* get_effect, Effect* got_effect, float speed, float fleeping_speed, AlertState alert, float engagement_dist,float fov);
+	NormalEnemy(const TCHAR* model_path, const VECTOR& pos,
+		const VECTOR& scale, const VECTOR& dir, Effect* get_effect, Effect* got_effect, float speed, float fleeping_speed, AlertState alert, float fov);
 
 
 	~NormalEnemy() override;
 
+	
 
 	void Init(const VECTOR& pos,const VECTOR scale) override;
 
@@ -47,6 +48,7 @@ public:
 
 	void FleepingInit(std::shared_ptr<Player> player) override;
 
+	void AddAnim() override;
 
 	void Update(std::shared_ptr<Player> player, bool& got) override;
 	

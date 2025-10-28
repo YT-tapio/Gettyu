@@ -41,6 +41,19 @@ float ConditionTimer::GetTimeRatio()
 }
 
 
+bool ConditionTimer::GetIsEnd()
+{
+	if (timer_ == max_time_)
+	{
+		return TRUE;
+	}
+	else
+	{
+		return FALSE;
+	}
+}
+
+
 void ConditionTimer::Debug()
 {
 	DrawFormatString(0, Debug::GetInstance().GetCurrentNum() * 20, GetColor(255, 255, 255), "timer:%.2f", timer_);

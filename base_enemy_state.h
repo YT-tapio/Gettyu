@@ -49,6 +49,9 @@ public:
 	/// </summary>
 	virtual void Exit(BaseEnemy* enemy) = 0;
 
+
+	virtual std::shared_ptr<BaseEnemyState> ChangeState(BaseEnemy* enemy, std::shared_ptr<Player> player) = 0;
+
 	const StateName GetName() const { return name_; }
 
 };

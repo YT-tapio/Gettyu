@@ -1,4 +1,5 @@
 #include"surprise.h"
+#include"fleeping.h"
 
 EnemySurprise::EnemySurprise()
 	:BaseEnemyState(StateName::kSurprise)
@@ -24,4 +25,19 @@ void EnemySurprise::Update(BaseEnemy* enemy, std::shared_ptr<Player> player)
 void EnemySurprise::Exit(BaseEnemy* enemy)
 {
 
+}
+
+std::shared_ptr<BaseEnemyState> EnemySurprise::ChangeState(BaseEnemy* enemy, std::shared_ptr<Player> player)
+{
+
+	//surpriseのアニメーションが終わったら
+	if (enemy->GetIsAnimPlay())
+	{
+		return nullptr;
+	}
+	else
+	{
+		//playしていない
+		return std::make_shared<EnemyFleeping>();
+	}
 }

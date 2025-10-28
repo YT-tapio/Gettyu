@@ -19,5 +19,5 @@ public:
 
 	void Exit(BaseEnemy* enemy) override;
 
-
+	std::shared_ptr<BaseEnemyState> ChangeState(BaseEnemy* enemy, std::shared_ptr<Player> player) override;
 };

@@ -84,8 +84,8 @@ void Animation::Attach(AnimationType type)
             animation.total_time =
                 MV1GetAttachAnimTotalTime(animation.model_handle, 
                     animation.attach_index);
-
             
+            animation.play_time = 0.f;
 
             if (animation.attach_index == -1)
             {

@@ -6,7 +6,7 @@
 #include"animation.h"
 
 BaseEnemy::BaseEnemy(const int model, const VECTOR& pos,
-	const VECTOR& scale, const VECTOR& rot, Effect* get_effect,Effect* got_effect,float speed, float fleeping_speed, AlertState alert, float engagement_dist, float fov)
+	const VECTOR& scale, const VECTOR& rot, Effect* get_effect,Effect* got_effect,float speed, float fleeping_speed, AlertState alert, float fov)
 {
 	fsm_		= std::make_shared<EnemyFSM>();
 	animation_	= std::make_shared<Animation>();
@@ -88,11 +88,6 @@ BaseEnemy::~BaseEnemy()
 	//delete got_effect_;
 }
 
-
-void BaseEnemy::AddAnim(const AnimationData& animation_data)
-{
-	animation_->Add(animation_data);
-}
 
 
 void BaseEnemy::EffectUpdate()

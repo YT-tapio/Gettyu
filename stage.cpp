@@ -487,7 +487,7 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 					else
 					{
 						//地面の判定(法線のY座標が0以下なら)
-						if (poly.Normal.y < 0.1f)
+						if (poly.Normal.y <= 0.f)
 						{
 							//ポリゴンの中点からの距離を見てから、そのあと正射影ベクトルを出す。
 							//センターからの距離
@@ -500,7 +500,7 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 
 
 							offset_vel = VSub(old_pos, VAdd(next_pos, poly_to_next_proj_vec));
-							player.SetIsGround(FALSE);
+							//player.SetIsGround(FALSE);
 						}
 						else
 						{
