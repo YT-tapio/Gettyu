@@ -196,20 +196,36 @@ void Game::Update(SceneName& name)
 void Game::Draw()
 {
     
-    sky_dom_->Draw();
+    shadow_map_->SetupDrawShadowMap();
 
     player_->Draw();
     enemy_manager_->Draw();
 
-    
-    SetUseLighting(FALSE);
 
     stage_->Draw();
     
-    camera_->Draw();
+    //SetUseLighting(TRUE);
 
+    shadow_map_->EndDrawShadowMap();
+
+
+
+    shadow_map_->UseShadowMap();
+
+    player_->Draw();
+    enemy_manager_->Draw();
+    sky_dom_->Draw();
+
+   
+
+    stage_->Draw();
+
+
+    shadow_map_->UnuseShadowMap();
 
     
+
+    camera_->Draw();
     effect_player_->Draw();
     concentration_line_->Draw();
 

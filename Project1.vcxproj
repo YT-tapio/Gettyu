@@ -169,6 +169,7 @@
     <ClCompile Include="result.cpp" />
     <ClCompile Include="rot_function.cpp" />
     <ClCompile Include="scene_manager.cpp" />
+    <ClCompile Include="shadow_map.cpp" />
     <ClCompile Include="situation.cpp" />
     <ClCompile Include="sky_dom.cpp" />
     <ClCompile Include="sphere_camera.cpp" />
@@ -227,6 +228,7 @@
     <ClInclude Include="rot_function.h" />
     <ClInclude Include="scene_manager.h" />
     <ClInclude Include="screen.h" />
+    <ClInclude Include="shadow_map.h" />
     <ClInclude Include="situation.h" />
     <ClInclude Include="sky_dom.h" />
     <ClInclude Include="sphere_camera.h" />

@@ -19,7 +19,7 @@
 #include"sky_dom.h"
 #include"sub_screen.h"
 #include"base_scene.h"
-
+#include"shadow_map.h"
 class BaseScene;
 
 class Game : public BaseScene
@@ -34,6 +34,8 @@ private:
 	std::shared_ptr<EnemyManager>enemy_manager_;
 	std::shared_ptr<SkyDom> sky_dom_;
 	std::shared_ptr<BaseSubScreen> concentration_line_;
+
+	std::shared_ptr<ShadowMap> shadow_map_ = std::make_shared<ShadowMap>();
 
 public:
 

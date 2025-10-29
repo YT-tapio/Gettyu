@@ -44,6 +44,9 @@ private:
 	// 床ポリゴンとの当たりをチェックし、補正すべき移動ベクトルを返す
 	VECTOR CheckHitWithFloor(Player& player, const VECTOR& check_position);
 
+	// 壁or床の情報を受け取って調整したposを返す
+	VECTOR CheckEntityCollisionFixedPOs(Player& player, MV1_COLL_RESULT_POLY* entity, int hit_num,const VECTOR& pos, const VECTOR& vel);
+
 public:
 
 	Stage(int model_handle, VECTOR pos, float scale);

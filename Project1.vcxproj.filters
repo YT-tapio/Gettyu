@@ -181,6 +181,9 @@
     <Filter Include="ソース ファイル\alert_state">
       <UniqueIdentifier>{35e2a15a-2140-4f1b-8606-96813245c311}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\shadow_map">
+      <UniqueIdentifier>{28a34536-9c23-4243-a5ad-5ef213d44a96}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -338,6 +341,9 @@
     </ClCompile>
     <ClCompile Include="alert_state.cpp">
       <Filter>ソース ファイル\alert_state</Filter>
+    </ClCompile>
+    <ClCompile Include="shadow_map.cpp">
+      <Filter>ソース ファイル\shadow_map</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -508,6 +514,9 @@
     </ClInclude>
     <ClInclude Include="alert_state.h">
       <Filter>ソース ファイル\alert_state</Filter>
+    </ClInclude>
+    <ClInclude Include="shadow_map.h">
+      <Filter>ソース ファイル\shadow_map</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
