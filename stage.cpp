@@ -498,7 +498,7 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 								player.SetIsGround(TRUE);
 							}
 
-
+							player.SetIsGround(TRUE);
 
 							//ポリゴンの中点からの距離を見てから、そのあと正射影ベクトルを出す。
 							//センターからの距離
