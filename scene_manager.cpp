@@ -31,6 +31,8 @@ SceneManager::SceneManager()
     // ウインドウとフルスクリーンの切り替えが発生する場合は必ず実行する。
     Effekseer_SetGraphicsDeviceLostCallbackFunctions();
 
+    SetLightEnable(TRUE);
+
 
     // Zバッファを有効にする。
     // Effekseerを使用する場合、2DゲームでもZバッファを使用する。

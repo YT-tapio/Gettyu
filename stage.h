@@ -1,6 +1,6 @@
 #pragma once
 #include"base_object.h"
-
+#include"way_point.h"
 /// <summary>
 /// 正射影ベクトルを出す
 /// </summary>
@@ -11,7 +11,7 @@ VECTOR GetProjectionVector(const VECTOR& vector, const VECTOR& vector2);
 
 struct CapsuleData;
 class Player;
-
+class WayPoint;
 
 class Stage : public BaseObject
 {
@@ -20,6 +20,8 @@ private:
 	static const int kMaxHitColl = 2048;	// 処理するコリジョンポリゴンの最大数
 	static constexpr int	kHitTryNum = 16;		// 壁押し出し処理の最大試行回数
 	static constexpr float	kHitSlideLength = 5.0f;		// 一度の壁押し出し処理でスライドさせる距離
+
+	std::vector<std::shared_ptr<WayPoint>> way_points_;
 
 	VECTOR scale_;	//モデルの大きさ
 
@@ -34,6 +36,9 @@ private:
 	MV1_COLL_RESULT_POLY* floor_[kMaxHitColl];	// 床ポリゴンと判断されたポリゴンの構造体のアドレスを保存しておくためのポインタ配列
 
 	CapsuleData next_to_old_cap_;
+
+	//waypointを生成するやーつ
+	void MakeWayPoint();
 
 	// 検出されたポリゴンが壁ポリゴン( ＸＺ平面に垂直なポリゴン )か床ポリゴン( ＸＺ平面に垂直ではないポリゴン )かを判断し、保存する
 	void AnalyzeWallAndFloor(MV1_COLL_RESULT_POLY_DIM hit_dim, const VECTOR& check_position);

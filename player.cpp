@@ -767,7 +767,7 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 	}
 	
 	//
-	//SetLightDirection(VGet(direction.x, 0, direction.x * constant));
+	SetLightDirection(VGet(direction.x, 0, direction.x * constant));
 
 	if (input_count != 0 && !is_attack_)
 	{

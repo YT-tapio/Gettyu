@@ -13,6 +13,24 @@ Game::~Game()
 }
 
 
+void Game::DrawShadowMap()
+{
+    shadow_map_->SetupDrawShadowMap();
+
+    player_->Draw();
+    enemy_manager_->Draw();
+
+
+    stage_->Draw();
+
+    //SetUseLighting(TRUE);
+
+    shadow_map_->EndDrawShadowMap();
+}
+
+//
+
+
 void Game::Init()
 {
     int red = GetColor(255, 0, 0);
@@ -195,31 +213,23 @@ void Game::Update(SceneName& name)
 
 void Game::Draw()
 {
-    
-    shadow_map_->SetupDrawShadowMap();
-
-    player_->Draw();
-    enemy_manager_->Draw();
-
-
-    stage_->Draw();
-    
-    //SetUseLighting(TRUE);
-
-    shadow_map_->EndDrawShadowMap();
-
+   
+    DrawShadowMap();
 
 
     shadow_map_->UseShadowMap();
 
+    
+
     player_->Draw();
     enemy_manager_->Draw();
+
     sky_dom_->Draw();
 
-   
-
+    SetUseLighting(FALSE);
     stage_->Draw();
-
+    SetUseLighting(TRUE);
+    
 
     shadow_map_->UnuseShadowMap();
 

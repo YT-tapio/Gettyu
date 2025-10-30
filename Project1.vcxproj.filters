@@ -184,6 +184,9 @@
     <Filter Include="ソース ファイル\shadow_map">
       <UniqueIdentifier>{28a34536-9c23-4243-a5ad-5ef213d44a96}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\way_point">
+      <UniqueIdentifier>{6b126273-90f7-48d8-81cc-89234f9f1219}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -344,6 +347,9 @@
     </ClCompile>
     <ClCompile Include="shadow_map.cpp">
       <Filter>ソース ファイル\shadow_map</Filter>
+    </ClCompile>
+    <ClCompile Include="way_point.cpp">
+      <Filter>ソース ファイル\way_point</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -517,6 +523,9 @@
     </ClInclude>
     <ClInclude Include="shadow_map.h">
       <Filter>ソース ファイル\shadow_map</Filter>
+    </ClInclude>
+    <ClInclude Include="way_point.h">
+      <Filter>ソース ファイル\way_point</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

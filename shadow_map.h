@@ -5,8 +5,8 @@ class ShadowMap
 {
 private:
 
-	static constexpr int	kSizeX			= 8192;
-	static constexpr int	kSizeY			= 8192;
+	static constexpr int	kSizeX			= 2;
+	static constexpr int	kSizeY			= 2;
 	static constexpr VECTOR kMinOffsetPos	= { -700.0f, -10.0f, -700.0f };
 	static constexpr VECTOR kMaxOffsetPos	= { 700.0f, 300.0f,  700.0f };
 

@@ -37,6 +37,8 @@ private:
 
 	std::shared_ptr<ShadowMap> shadow_map_ = std::make_shared<ShadowMap>();
 
+	void DrawShadowMap();
+
 public:
 
 	Game();

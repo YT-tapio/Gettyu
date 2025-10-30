@@ -38,11 +38,17 @@ Stage::Stage(int model_handle, VECTOR pos, float scale)
 {
 	MV1SetupCollInfo(model_, -1);
 
+	
+
 
 	MATRIX scale_matrix = MGetScale(scale_);
 	//çsóÒÇê∂ê¨
 	MATRIX pos_matrix = MGetTranslate(position_);
 	matrix_ = MMult(scale_matrix, pos_matrix);
+
+	// Ç±Ç±Ç≈waypointÇÃê∂ê¨
+
+	MakeWayPoint();
 
 	MV1SetMatrix(model_, matrix_);
 }
@@ -55,6 +61,15 @@ Stage::~Stage()
 
 
 /*------------private------------*/
+
+
+void Stage::MakeWayPoint()
+{
+
+
+
+}
+
 
 void Stage::AnalyzeWallAndFloor(MV1_COLL_RESULT_POLY_DIM hit_dim, const VECTOR& check_position)
 {

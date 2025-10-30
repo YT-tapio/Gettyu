@@ -43,7 +43,7 @@ void Camera::Update(const VECTOR& velocity, const VECTOR& target_velocity)
 	target_pos_ = VAdd(target_pos_, target_vel);
 	Effekseer_Sync3DSetting();
 	
-	//SetLightPosition(pos_);
+	SetLightPosition(pos_);
 	
 	SetCameraPositionAndTarget_UpVecY(pos_, target_pos_);
 	SetCameraNearFar(1.0f, 1000.0f);
