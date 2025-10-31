@@ -1,7 +1,3 @@
-#include<iostream>
-#include<vector>
-
-#include"DxLib.h"
 
 #include"way_point.h"
 #include"Debug.h"
@@ -34,13 +30,16 @@ void WayPoint::Debug(std::vector<std::shared_ptr<WayPoint>> way_points)
 		max_count++;
 
 		//”F¯‚µ‚Ä‚¢‚é‚â‚Â‚ğ•`‰æ
-
-		DrawFormatString(0, Debug::GetInstance().GetCurrentNum() * Debug::GetInstance().GetFontSize(), GetColor(0, 0, 0), "%d ", neighbor);
-
+		DrawFormatString(Debug::GetInstance().GetFontSize() * 5 + Debug::GetInstance().GetFontSize() * max_count, Debug::GetInstance().GetCurrentNum() * Debug::GetInstance().GetFontSize(), GetColor(0, 0, 0), "%d ", neighbor);
 	}
 
 	Debug::GetInstance().Add();
 	
+	if (max_count == 0)
+	{
+		return;
+	}
+
 	//‚Â‚È‚®êŠ‚Ì•ÛŠÇ‚ğs‚¤
 	for (const auto& way_point : way_points)
 	{

@@ -8,6 +8,7 @@
 #include"base_enemy_state.h"
 #include"condition_timer.h"
 #include"alert_state.h"
+#include"navigation.h"
 
 class Player;
 class Animation;
@@ -33,12 +34,18 @@ protected:
 
 	CollisionData collision_data_;
 	std::shared_ptr<BaseEnemyState> state_;		//一貫して最初はpatrolling
+	
+	//AI
 	std::shared_ptr<EnemyFSM> fsm_;
+	std::shared_ptr<Navigation> navigation_;
 
 	std::shared_ptr<Animation> animation_;
 	AnimationType now_anim_type_;            //現在のプレイヤーのアニメ～しょん
 	AnimationType before_anim_type_;			//1つ前のアニメーション
 	AnimationType before_before_anim_type_;	//2つ前のアニメーション
+
+
+
 
 	//警戒のタイマー
 	ConditionTimer* alert_timer_;

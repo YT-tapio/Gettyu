@@ -20,6 +20,8 @@
 #include"sub_screen.h"
 #include"base_scene.h"
 #include"shadow_map.h"
+#include"weapon_UI.h"
+
 class BaseScene;
 
 class Game : public BaseScene
@@ -36,6 +38,9 @@ private:
 	std::shared_ptr<BaseSubScreen> concentration_line_;
 
 	std::shared_ptr<ShadowMap> shadow_map_ = std::make_shared<ShadowMap>();
+
+	//UIŒQ
+	std::shared_ptr<WeaponUI> weapon_UI_;
 
 	void DrawShadowMap();
 

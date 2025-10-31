@@ -9,7 +9,9 @@ BaseEnemy::BaseEnemy(const int model, const VECTOR& pos,
 	const VECTOR& scale, const VECTOR& rot, Effect* get_effect,Effect* got_effect,float speed, float fleeping_speed, AlertState alert, float fov)
 {
 	fsm_		= std::make_shared<EnemyFSM>();
+	navigation_ = std::make_shared<Navigation>();
 	animation_	= std::make_shared<Animation>();
+
 
 	now_anim_type_				= AnimationType::kNothing;
 	before_anim_type_			= AnimationType::kNothing;
@@ -218,7 +220,6 @@ void BaseEnemy::Debug(int i)
 	//でばっくのシングルトンから今までのデバックのログ数を受け取りその量を受け取る
 	if (Debug::GetInstance().GetDisp())
 	{
-
 		int red = GetColor(255, 0, 0);
 		//当たり判定を表示
 		switch (collision_data_.name)
@@ -285,7 +286,9 @@ void BaseEnemy::Debug(int i)
 			Debug::GetInstance().Add();
 		}
 
-		
+		//navigationの可視化
+		navigation_->Debug();
+
 	}
 
 

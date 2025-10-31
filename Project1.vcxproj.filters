@@ -187,6 +187,15 @@
     <Filter Include="ソース ファイル\way_point">
       <UniqueIdentifier>{6b126273-90f7-48d8-81cc-89234f9f1219}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\AI\FSM">
+      <UniqueIdentifier>{84c6e8f6-3254-42e3-990c-76fd4a403aa8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\AI\navigation">
+      <UniqueIdentifier>{1df9db0c-496b-4a4d-8354-fcffe0e7efee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\sub_screen\Normal">
+      <UniqueIdentifier>{a3a479f7-c356-464a-920e-6f5731001880}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -321,9 +330,6 @@
     <ClCompile Include="condition_timer.cpp">
       <Filter>ソース ファイル\time</Filter>
     </ClCompile>
-    <ClCompile Include="enemy_FSM.cpp">
-      <Filter>ソース ファイル\AI</Filter>
-    </ClCompile>
     <ClCompile Include="base_enemy_state.cpp">
       <Filter>ソース ファイル\enemy\state\enemy_state\base</Filter>
     </ClCompile>
@@ -350,6 +356,18 @@
     </ClCompile>
     <ClCompile Include="way_point.cpp">
       <Filter>ソース ファイル\way_point</Filter>
+    </ClCompile>
+    <ClCompile Include="enemy_FSM.cpp">
+      <Filter>ソース ファイル\AI\FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="navigation.cpp">
+      <Filter>ソース ファイル\AI\navigation</Filter>
+    </ClCompile>
+    <ClCompile Include="weapon_UI.cpp">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="normal_sub_screen.cpp">
+      <Filter>ソース ファイル\sub_screen\Normal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -497,9 +515,6 @@
     <ClInclude Include="condition_timer.h">
       <Filter>ソース ファイル\time</Filter>
     </ClInclude>
-    <ClInclude Include="enemy_FSM.h">
-      <Filter>ソース ファイル\AI</Filter>
-    </ClInclude>
     <ClInclude Include="base_enemy_state.h">
       <Filter>ソース ファイル\enemy\state\enemy_state\base</Filter>
     </ClInclude>
@@ -526,6 +541,21 @@
     </ClInclude>
     <ClInclude Include="way_point.h">
       <Filter>ソース ファイル\way_point</Filter>
+    </ClInclude>
+    <ClInclude Include="enemy_FSM.h">
+      <Filter>ソース ファイル\AI\FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="navigation.h">
+      <Filter>ソース ファイル\AI\navigation</Filter>
+    </ClInclude>
+    <ClInclude Include="weapon_UI.h">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="normal_sub_screen.h">
+      <Filter>ソース ファイル\sub_screen\Normal</Filter>
+    </ClInclude>
+    <ClInclude Include="UI_data.h">
+      <Filter>ソース ファイル\UI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

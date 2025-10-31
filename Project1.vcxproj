@@ -163,7 +163,9 @@
     <ClCompile Include="line.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="movie.cpp" />
+    <ClCompile Include="navigation.cpp" />
     <ClCompile Include="normal_enemy.cpp" />
+    <ClCompile Include="normal_sub_screen.cpp" />
     <ClCompile Include="patrolling.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="result.cpp" />
@@ -189,6 +191,7 @@
     <ClCompile Include="sound_vibration.cpp" />
     <ClCompile Include="warp_rod.cpp" />
     <ClCompile Include="way_point.cpp" />
+    <ClCompile Include="weapon_UI.cpp" />
     <ClCompile Include="weapon_base.cpp" />
     <ClCompile Include="wizard_staff.cpp" />
   </ItemGroup>
@@ -222,7 +225,9 @@
     <ClInclude Include="line.h" />
     <ClInclude Include="mixamo_fram.h" />
     <ClInclude Include="movie.h" />
+    <ClInclude Include="navigation.h" />
     <ClInclude Include="normal_enemy.h" />
+    <ClInclude Include="normal_sub_screen.h" />
     <ClInclude Include="patrolling.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="result.h" />
@@ -243,6 +248,7 @@
     <ClInclude Include="title.h" />
     <ClInclude Include="tracking.h" />
     <ClInclude Include="turn_camera.h" />
+    <ClInclude Include="UI_data.h" />
     <ClInclude Include="vacuum_camera.h" />
     <ClInclude Include="vibration.h" />
     <ClInclude Include="virtual_camera.h" />
@@ -250,6 +256,7 @@
     <ClInclude Include="way_point.h" />
     <ClInclude Include="weapon_base.h" />
     <ClInclude Include="warp_rod.h" />
+    <ClInclude Include="weapon_UI.h" />
     <ClInclude Include="wizard_staff.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

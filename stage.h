@@ -1,6 +1,6 @@
 #pragma once
 #include"base_object.h"
-#include"way_point.h"
+
 /// <summary>
 /// 正射影ベクトルを出す
 /// </summary>
@@ -37,8 +37,6 @@ private:
 
 	CapsuleData next_to_old_cap_;
 
-	//waypointを生成するやーつ
-	void MakeWayPoint();
 
 	// 検出されたポリゴンが壁ポリゴン( ＸＺ平面に垂直なポリゴン )か床ポリゴン( ＸＺ平面に垂直ではないポリゴン )かを判断し、保存する
 	void AnalyzeWallAndFloor(MV1_COLL_RESULT_POLY_DIM hit_dim, const VECTOR& check_position);

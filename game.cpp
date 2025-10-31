@@ -129,6 +129,8 @@ void Game::Init()
     sky_dom_ = std::make_shared<SkyDom>("data/skydome/Dome_SS601.mv1", camera_->GetPos());
     concentration_line_ = std::make_shared<ConcentrationLine>(kGameWidth, kGameHeight, TRUE);
 
+    weapon_UI_ = std::make_shared<WeaponUI>();
+
 }
 
 void Game::Update(SceneName& name)
@@ -238,6 +240,8 @@ void Game::Draw()
     camera_->Draw();
     effect_player_->Draw();
     concentration_line_->Draw();
+
+    weapon_UI_->Draw();
 
     player_->Debug();
     enemy_manager_->Debug();
