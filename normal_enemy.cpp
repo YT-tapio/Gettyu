@@ -268,9 +268,11 @@ void NormalEnemy::Fleeping(std::shared_ptr<Player> player)
 	// ‚Ç‚¤“¦‚°‚³‚¹‚æ‚¤‚©‚È
 	// ˆê’è‹——£‚¤‚²‚¢‚½‚ç‰Šú‰»‚³‚¹exit‚³‚¹‚Ä‚¢‚¢‚Æv‚¤
 
-	velocity_ = VScale(dir_, fleeping_speed_);
+	VECTOR vel = VGet(0.f,0.f,0.f);
 
-	velocity_ = VScale(velocity_, delta_time_);
+	vel = VScale(dir_, fleeping_speed_);
+
+	velocity_ = VAdd(velocity_,VScale(vel, delta_time_));
 
 	total_vel_ = VAdd(total_vel_,velocity_);
 

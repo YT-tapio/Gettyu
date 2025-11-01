@@ -1,6 +1,9 @@
 #include"weapon_UI.h"
 #include"screen.h"
+#include"FPS.h"
+#include"input.h"
 #include"weapon_checker.h"
+
 WeaponUI::WeaponUI()
 {
 
@@ -15,47 +18,46 @@ WeaponUI::WeaponUI()
 	int sub_screen_width = 1000;
 	int sub_screen_height = 1000;
 
-	
-
 	sub_screen_width = sub_screen_width * kScreenWidthPercent;
 	sub_screen_height = sub_screen_height * kScreenHeightPercent;
 
 
 	//screenの設定
-	sub_screen_ = std::make_shared<NormalSubScreen>(VGet(1000, 200,0.f), kGameWidth, kGameHeight, static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0);
-	circle_gauss_ = std::make_shared<NormalSubScreen>(VGet(1000, 200, 0.f), kGameWidth, kGameHeight, static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0);
+	sub_screen_		= std::make_shared<NormalSubScreen>(VGet(1000.f, 200.f,0.f), kGameWidth, kGameHeight, static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0);
+	circle_gauss_		= std::make_shared<NormalSubScreen>(VGet(1000.f, 200.f, 0.f), kGameWidth, kGameHeight, static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0);
 
 	//ここでいろんなデーターダウンロード
-	x_button_.handle				= LoadGraph("data/UI/X_ButtonUI.png");
-	y_button_.handle				= LoadGraph("data/UI/Y_ButtonUI.png");
+	bat_button_.handle					= kXButtonHandle;
+	warprod_button_.handle				= kYButtonHandle;
+
+	
 
 	//posの設定
-	x_button_.pos					= VGet(800.f, 200.f, 0.f);
-	y_button_.pos					= VGet(1000.f, 400.f, 0.f);
+	bat_button_.pos							= VGet(800.f, 400.f, 0.f);
+	warprod_button_.pos					= VGet(1000.f, 200.f, 0.f);
 
 	//元の画像のサイズ
-	x_button_.original_width		= 1920.f;
-	x_button_.original_height		= 1080.f;
-	y_button_.original_width		= 1920.f;
-	y_button_.original_height		= 1080.f;
+	bat_button_.original_width				= 1920.f;
+	bat_button_.original_height			= 1080.f;
+	warprod_button_.original_width		= 1920.f;
+	warprod_button_.original_height		= 1080.f;
 
 
 	//どのくらいの大きさにしたいか
-	x_button_.width					= 300.f;
-	x_button_.height				= 300.f;
-	y_button_.width					= 300.f;
-	y_button_.height				= 300.f;
+	bat_button_.width							= 300.f;
+	bat_button_.height							= 300.f;
+	warprod_button_.width					= 300.f;
+	warprod_button_.height					= 300.f;
 
 	//さいず
-	OffsetGraphSize(x_button_);
-	OffsetGraphSize(y_button_);
-
+	OffsetGraphSize(bat_button_);
+	OffsetGraphSize(warprod_button_);
 
 	//ぼかしたサークルの位置
-	circle_gauss_pos_ = VGet(x_button_.pos.x, x_button_.pos.y, 0.f);
+	circle_gauss_pos_ = VGet(bat_button_.pos.x, bat_button_.pos.y, 0.f);
 	circle_gauss_r_ = 150.f;
 
-	if (x_button_.handle == -1 || y_button_.handle == -1)
+	if (bat_button_.handle == -1 || warprod_button_.handle == -1)
 	{
 		printfDx("読み込み失敗\n");
 	}
@@ -63,13 +65,23 @@ WeaponUI::WeaponUI()
 	sub_screen_->SetIsDisp(TRUE);
 	circle_gauss_->SetIsDisp(TRUE);
 
+	bat_pos_ = kInitBatPos;
+	warprod_pos_ = kInitWarprodPos;
+	bat_scale_ = kInitBatScale;
+	warprod_scale_ = kInitWarprodScale;
 
+	bat_vibration_rad_ = 0.f;
+	warprod_vibration_rad_ = 0.f;
+
+	SetModelMatrix(kBatHandle, kBatRot, bat_scale_, bat_pos_);
+	SetModelMatrix(kBatHandle, kBatRot, bat_scale_, warprod_pos_);
+	//gausser_->Update(VGet(kGameWidth * 0.5f, kGameHeight * 0.5f, 0.f), kGameWidth, kGameHeight, circle_gauss_->GetHandle(), 8, 10000);
 }
 
 WeaponUI::~WeaponUI()
 {
-	DeleteGraph(x_button_.handle);
-	DeleteGraph(y_button_.handle);
+	DeleteGraph(bat_button_.handle);
+	DeleteGraph(warprod_button_.handle);
 }
 
 void WeaponUI::OffsetGraphSize(UIGraphData& graph_data)
@@ -91,14 +103,14 @@ void WeaponUI::SetCirclePos()
 	{
 	case WeaponName::kBat:
 
-		circle_gauss_pos_ = x_button_.pos;
+		circle_gauss_pos_ = bat_button_.pos;
 
 		break;
 
 
 	case WeaponName::kBugNet:
 
-		circle_gauss_pos_ = y_button_.pos;
+		circle_gauss_pos_ = warprod_button_.pos;
 
 		break;
 
@@ -108,40 +120,136 @@ void WeaponUI::SetCirclePos()
 
 }
 
+void WeaponUI::SetWeaponScale()
+{
+	//サイズをどんくらい大きくするか
+	const float kSize = 1.2f;
+
+	switch (WeaponChecker::GetInstance().GetName())
+	{
+	case WeaponName::kBat:
+
+		bat_scale_ = VScale(kInitBatScale, kSize);
+		warprod_scale_ = kInitWarprodScale;
+		break;
+
+	case WeaponName::kBugNet:
+
+		warprod_scale_ = VScale(kInitWarprodScale, kSize);
+		bat_scale_ = kInitBatScale;
+		break;
+
+	}
+
+}
+
+
+void WeaponUI::SetGraph()
+{
+	switch (Input::GetInstance().GetDeviceType())
+	{
+	case InputDeviceType::kKey:
+
+		bat_button_.handle			= kOneKeyHandle;
+		warprod_button_.handle		= kTwoKeyHandle;
+		
+		break;
+
+	case InputDeviceType::kPad:
+
+		bat_button_.handle			= kXButtonHandle;
+		warprod_button_.handle		= kYButtonHandle;
+
+		break;
+	}
+
+
+}
+
+void WeaponUI::SetModelMatrix(int handle, const VECTOR& rot, const VECTOR& scale, const VECTOR& pos)
+{
+	MATRIX rot_mat = MMult(MMult(MGetRotX(rot.x), MGetRotY(rot.y)), MGetRotZ(rot.z));
+	MV1SetMatrix(handle, MMult(MMult(MGetScale(scale), rot_mat), MGetTranslate(pos)));
+}
+
+void WeaponUI::SetAll()
+{
+	//UIを上下に浮かすように
+	bat_pos_ = UpDown(kInitBatPos, bat_vibration_rad_, kBatVibrationSpeed, kVibrationSize);
+	warprod_pos_ = UpDown(kInitWarprodPos, warprod_vibration_rad_, kWarprodVibrationSpeed, kVibrationSize);
+
+	// 武器の種類によって変える
+	SetCirclePos();
+
+	// UIの切り替え
+	SetGraph();
+
+	SetWeaponScale();
+
+	SetModelMatrix(kBatHandle, kBatRot, bat_scale_, bat_pos_);
+	SetModelMatrix(kWarprodHandle, kWarprodRot, warprod_scale_, warprod_pos_);
+}
+
+
+// 上下に揺らす処理(各スピードによって変える)
+VECTOR WeaponUI::UpDown(const VECTOR& init_pos, float& rad, float speed,float swing)
+{
+	const float kReverceRad = kOneRad * 180;
+
+	VECTOR next_pos = init_pos;
+
+	//sinを使って上下に動かす
+
+	rad += (kOneRad * (speed * FPS::GetInstance().GetDeltaTime()));
+
+
+	//180を超えるようなら
+	if (rad > kReverceRad)
+	{
+		//-180から180の間に強制変換
+		rad -= (kReverceRad + kReverceRad);
+	}
+
+
+	next_pos = VAdd(next_pos, VGet(0.f, (swing * sinf(rad)), 0.f));
+
+	return next_pos;
+}
 
 /*--------public---------*/
 
 void WeaponUI::Update()
 {
-	//武器の種類によって変える
-	SetCirclePos();
+	SetAll();
 
+	
+
+	//こっからは更新なしにしましょう//
 
 	circle_gauss_->Up();
-
 
 	DrawCircle(static_cast<int>(circle_gauss_pos_.x), static_cast<int>(circle_gauss_pos_.y), static_cast<int>(circle_gauss_r_), GetColor(255, 255, 240), TRUE);
 
 	circle_gauss_->Down();
 
-	gausser_->Update(VGet(kGameWidth * 0.5f, kGameHeight * 0.5f, 0.f), kGameWidth, kGameHeight, circle_gauss_->GetHandle(), 8, 10000);
-
+	gausser_->Update(VGet(kGameWidth * 0.5f, kGameHeight * 0.5f, 0.f), kGameWidth, kGameHeight, circle_gauss_->GetHandle(), kPixcelWidthHigh, kCircleGaussParam);;
+	
 	sub_screen_->Up();			// screenを起動
 
-	GraphDraw(x_button_);
-	GraphDraw(y_button_);
-	//DrawCircle(kGameWidth * 0.5f, kGameHeight * 0.5f, GetColor(0, 0, 0), TRUE);
+	GraphDraw(bat_button_);
+	GraphDraw(warprod_button_);
+
+	auto light_dir = GetLightDirection();
+	SetLightDirection(VGet(0.f, 0.f, 1.f));
+	MV1DrawModel(kBatHandle);
+	MV1DrawModel(kWarprodHandle);
+	SetLightDirection(light_dir);
 	sub_screen_->Down();		// screenを使わない
-
-	
-
 }
 
 
 void WeaponUI::Draw()
 {
-
 	circle_gauss_->Draw();
 	sub_screen_->Draw();
 }
-

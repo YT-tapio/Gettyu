@@ -133,5 +133,5 @@ void SceneManager::Update()
     Effkseer_End();
     DxLib_End();
 
-
+    
 }

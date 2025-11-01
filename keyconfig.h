@@ -25,8 +25,8 @@ struct KeyConfig
 
     //“®‚«‚É‚ÍŠÖŒW‚µ‚È‚¢‚à‚Ì
     static const int kSwitchWeaponKey = KEY_INPUT_R;
-    static const int kSwicthBatKey = KEY_INPUT_1;
-    static const int kSwicthWarpRodKey = KEY_INPUT_2;
+    static const int kSwicthBatKey = KEY_INPUT_2;
+    static const int kSwicthWarpRodKey = KEY_INPUT_1;
 };
 
 struct PadConfig
