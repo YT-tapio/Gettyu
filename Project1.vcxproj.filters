@@ -199,6 +199,9 @@
     <Filter Include="ソース ファイル\gauss">
       <UniqueIdentifier>{fd595d70-bacd-47b1-a7c6-001a605b8345}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Singleton\now_weapon">
+      <UniqueIdentifier>{4568467e-2912-4a7c-be16-0bd2447d6dc5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -374,6 +377,9 @@
     </ClCompile>
     <ClCompile Include="gauss.cpp">
       <Filter>ソース ファイル\gauss</Filter>
+    </ClCompile>
+    <ClCompile Include="weapon_checker.cpp">
+      <Filter>ソース ファイル\Singleton\now_weapon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -565,6 +571,9 @@
     </ClInclude>
     <ClInclude Include="gauss.h">
       <Filter>ソース ファイル\gauss</Filter>
+    </ClInclude>
+    <ClInclude Include="weapon_checker.h">
+      <Filter>ソース ファイル\Singleton\now_weapon</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

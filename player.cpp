@@ -16,7 +16,7 @@
 #include"collision.h"
 #include"situation.h"
 #include"debug.h"
-
+#include"weapon_checker.h"
 
 
 
@@ -261,6 +261,8 @@ void Player::AttachWeapon(WeaponName name)
 	}
 
 	now_weapon_name_ = name;
+	WeaponChecker::GetInstance().SetWeaponName(now_weapon_name_);
+
 
 	if (weapon_ != nullptr)
 	{

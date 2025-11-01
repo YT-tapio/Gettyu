@@ -7,7 +7,6 @@ class Debug
 private:
 
 	//今のデバック数
-	
 	const int size_ = 18;
 
 	int current_num_ = 0;

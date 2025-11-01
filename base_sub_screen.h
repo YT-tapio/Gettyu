@@ -48,4 +48,5 @@ public:
 
 	void SetIsDisp(const bool& flag);
 
+	const int GetHandle() const { return handle_; }
 };

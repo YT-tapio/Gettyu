@@ -5,16 +5,13 @@ class Gauss
 {
 private:
 
-	//‚Ú‚©‚µ‚Ì‹­‚³
-	int pixel_width_;
-	int param_;
-
+	
 public:
 
-	Gauss(int pixel_width, int param);
+	Gauss();
 
 	~Gauss();
 
-	void Update(const VECTOR& pos, int width, int height, int handle);
+	void Update(const VECTOR& pos, int width, int height, int handle, int pixel_width, int param);
 
 };

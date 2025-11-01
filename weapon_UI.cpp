@@ -1,5 +1,6 @@
 #include"weapon_UI.h"
 #include"screen.h"
+#include"weapon_checker.h"
 WeaponUI::WeaponUI()
 {
 
@@ -52,7 +53,7 @@ WeaponUI::WeaponUI()
 
 	//ぼかしたサークルの位置
 	circle_gauss_pos_ = VGet(x_button_.pos.x, x_button_.pos.y, 0.f);
-	circle_gauss_r_ = 5.f;
+	circle_gauss_r_ = 150.f;
 
 	if (x_button_.handle == -1 || y_button_.handle == -1)
 	{
@@ -84,9 +85,47 @@ void WeaponUI::GraphDraw(UIGraphData graph_data)
 		, static_cast<int>(graph_data.pos.x + graph_data.width), static_cast<int>(graph_data.pos.y + graph_data.height), graph_data.handle, TRUE);
 }
 
+void WeaponUI::SetCirclePos()
+{
+	switch (WeaponChecker::GetInstance().GetName())
+	{
+	case WeaponName::kBat:
+
+		circle_gauss_pos_ = x_button_.pos;
+
+		break;
+
+
+	case WeaponName::kBugNet:
+
+		circle_gauss_pos_ = y_button_.pos;
+
+		break;
+
+
+	}
+
+
+}
+
+
+/*--------public---------*/
 
 void WeaponUI::Update()
 {
+	//武器の種類によって変える
+	SetCirclePos();
+
+
+	circle_gauss_->Up();
+
+
+	DrawCircle(static_cast<int>(circle_gauss_pos_.x), static_cast<int>(circle_gauss_pos_.y), static_cast<int>(circle_gauss_r_), GetColor(255, 255, 240), TRUE);
+
+	circle_gauss_->Down();
+
+	gausser_->Update(VGet(kGameWidth * 0.5f, kGameHeight * 0.5f, 0.f), kGameWidth, kGameHeight, circle_gauss_->GetHandle(), 8, 10000);
+
 	sub_screen_->Up();			// screenを起動
 
 	GraphDraw(x_button_);
@@ -94,16 +133,14 @@ void WeaponUI::Update()
 	//DrawCircle(kGameWidth * 0.5f, kGameHeight * 0.5f, GetColor(0, 0, 0), TRUE);
 	sub_screen_->Down();		// screenを使わない
 
-	circle_gauss_->Up();
+	
 
-	DrawCircle(static_cast<int>(circle_gauss_pos_.x), static_cast<int>(circle_gauss_pos_.y), static_cast<int>(circle_gauss_r_), GetColor(255, 255, 254), TRUE);
-
-	circle_gauss_->Down();
 }
 
 
 void WeaponUI::Draw()
 {
+
 	circle_gauss_->Draw();
 	sub_screen_->Draw();
 }

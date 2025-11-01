@@ -1,5 +1,5 @@
 #pragma once
-
+#include"DxLib.h"
 enum class CollisionName
 {
 	kNothing,	// è’ìÀÇ»Çµ
