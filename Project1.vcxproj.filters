@@ -196,6 +196,9 @@
     <Filter Include="ソース ファイル\sub_screen\Normal">
       <UniqueIdentifier>{a3a479f7-c356-464a-920e-6f5731001880}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\gauss">
+      <UniqueIdentifier>{fd595d70-bacd-47b1-a7c6-001a605b8345}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -368,6 +371,9 @@
     </ClCompile>
     <ClCompile Include="normal_sub_screen.cpp">
       <Filter>ソース ファイル\sub_screen\Normal</Filter>
+    </ClCompile>
+    <ClCompile Include="gauss.cpp">
+      <Filter>ソース ファイル\gauss</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -556,6 +562,9 @@
     </ClInclude>
     <ClInclude Include="UI_data.h">
       <Filter>ソース ファイル\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="gauss.h">
+      <Filter>ソース ファイル\gauss</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

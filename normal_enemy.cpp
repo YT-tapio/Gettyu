@@ -225,7 +225,7 @@ void NormalEnemy::Patrolling()
 			is_return_ = FALSE;
 		}
 
-		vel = VAdd(vel,VGet(0.f, 0.f, 0.f));
+		vel = VGet(0.f, 0.f, 0.f);
 		
 	}
 	velocity_ = VAdd(velocity_, vel);

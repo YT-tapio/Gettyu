@@ -174,6 +174,11 @@ void Game::Update(SceneName& name)
     //マウスでの操作
     brain_->Update(camera_->GetTargetPos(), camera_->GetPos(), player_);
 
+
+    //UIのアップデート
+    weapon_UI_->Update();
+
+
     camera_->Update(brain_->GetVelocity(), brain_->GetTargetVelocity());
     effect_player_->Update();
 
@@ -199,6 +204,8 @@ void Game::Update(SceneName& name)
         time_scale = 1.0f;
     }
 
+
+    
 
     //ここら辺で終わりのやつを作りたいです
 
@@ -253,7 +260,7 @@ void Game::Draw()
 
     
 
-    DrawFormatString((kGameWidth - 300), 35, GetColor(0, 0, 0), "TAB / BACK Button : result");
+    DrawFormatString((kGameWidth - 300), (kGameHeight - 30), GetColor(0, 0, 0), "TAB / BACK Button : result");
 
     SetUseLighting(TRUE);
 }

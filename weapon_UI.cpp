@@ -1,38 +1,67 @@
 #include"weapon_UI.h"
-
+#include"screen.h"
 WeaponUI::WeaponUI()
 {
+
+	//もともとの画面の比率
+
+	float all_screen_size = (kGameWidth + kGameHeight);
+
+	float kScreenWidthPercent = kGameWidth / all_screen_size;
+	float kScreenHeightPercent = kGameHeight / all_screen_size;
+
+
+	int sub_screen_width = 1000;
+	int sub_screen_height = 1000;
+
+	
+
+	sub_screen_width = sub_screen_width * kScreenWidthPercent;
+	sub_screen_height = sub_screen_height * kScreenHeightPercent;
+
+
 	//screenの設定
-	sub_screen_ = std::make_shared<NormalSubScreen>(VGet(0, 0, 0), 0, 0, TRUE, AlphaColorType::kBlack, 15);
+	sub_screen_ = std::make_shared<NormalSubScreen>(VGet(1000, 200,0.f), kGameWidth, kGameHeight, static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0);
+	circle_gauss_ = std::make_shared<NormalSubScreen>(VGet(1000, 200, 0.f), kGameWidth, kGameHeight, static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0);
 
 	//ここでいろんなデーターダウンロード
 	x_button_.handle				= LoadGraph("data/UI/X_ButtonUI.png");
 	y_button_.handle				= LoadGraph("data/UI/Y_ButtonUI.png");
 
 	//posの設定
-	x_button_.pos					= VGet(50.f, 50.f, 0.f);
-	y_button_.pos					= VGet(150.f, 50.f, 0.f);
+	x_button_.pos					= VGet(800.f, 200.f, 0.f);
+	y_button_.pos					= VGet(1000.f, 400.f, 0.f);
 
 	//元の画像のサイズ
-	x_button_.original_width	= 1920.f;
-	x_button_.original_height	= 1080.f;
-	y_button_.original_width	= 1920.f;
-	y_button_.original_height	= 1080.f;
+	x_button_.original_width		= 1920.f;
+	x_button_.original_height		= 1080.f;
+	y_button_.original_width		= 1920.f;
+	y_button_.original_height		= 1080.f;
 
-	x_button_.width					= 50.f;
-	x_button_.height				= 50.f;
-	y_button_.width					= 50.f;
-	y_button_.height				= 50.f;
+
+	//どのくらいの大きさにしたいか
+	x_button_.width					= 300.f;
+	x_button_.height				= 300.f;
+	y_button_.width					= 300.f;
+	y_button_.height				= 300.f;
 
 	//さいず
 	OffsetGraphSize(x_button_);
 	OffsetGraphSize(y_button_);
 
 
+	//ぼかしたサークルの位置
+	circle_gauss_pos_ = VGet(x_button_.pos.x, x_button_.pos.y, 0.f);
+	circle_gauss_r_ = 5.f;
+
 	if (x_button_.handle == -1 || y_button_.handle == -1)
 	{
 		printfDx("読み込み失敗\n");
 	}
+
+	sub_screen_->SetIsDisp(TRUE);
+	circle_gauss_->SetIsDisp(TRUE);
+
 
 }
 
@@ -58,13 +87,24 @@ void WeaponUI::GraphDraw(UIGraphData graph_data)
 
 void WeaponUI::Update()
 {
+	sub_screen_->Up();			// screenを起動
 
+	GraphDraw(x_button_);
+	GraphDraw(y_button_);
+	//DrawCircle(kGameWidth * 0.5f, kGameHeight * 0.5f, GetColor(0, 0, 0), TRUE);
+	sub_screen_->Down();		// screenを使わない
+
+	circle_gauss_->Up();
+
+	DrawCircle(static_cast<int>(circle_gauss_pos_.x), static_cast<int>(circle_gauss_pos_.y), static_cast<int>(circle_gauss_r_), GetColor(255, 255, 254), TRUE);
+
+	circle_gauss_->Down();
 }
 
 
 void WeaponUI::Draw()
 {
-	GraphDraw(x_button_);
-	GraphDraw(y_button_);
+	circle_gauss_->Draw();
+	sub_screen_->Draw();
 }
 

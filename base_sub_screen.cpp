@@ -1,8 +1,8 @@
 #include"base_sub_screen.h"
 
-BaseSubScreen::BaseSubScreen(const VECTOR& pos,const int width, const int height, bool alpha, AlphaColorType color_type,const int param)
+BaseSubScreen::BaseSubScreen(const VECTOR& pos,const int screen_width, const int screen_height, const int width,const int height,bool alpha, AlphaColorType color_type,const int param)
 {
-	handle_			= MakeScreen(width, height, alpha);
+	handle_			= MakeScreen(screen_width, screen_height, alpha);
 	is_disp_		= FALSE;
 
 	screen_width_	= width;

@@ -156,6 +156,7 @@ public:
 	const InputType GetNowTypeState() const { return now_type_state_; }
 	const InputType GetBeforeTypeState() const { return before_type_state_; }
 
+	const InputDeviceType GetDeviceType() const { return device_type_; }
 
 	const int GetPadNom() const { return num_; }
 

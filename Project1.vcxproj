@@ -158,6 +158,7 @@
     <ClCompile Include="fleeping.cpp" />
     <ClCompile Include="FPS.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="gauss.cpp" />
     <ClCompile Include="get_camera.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="line.cpp" />
@@ -219,6 +220,7 @@
     <ClInclude Include="fleeping.h" />
     <ClInclude Include="FPS.h" />
     <ClInclude Include="game.h" />
+    <ClInclude Include="gauss.h" />
     <ClInclude Include="get_camera.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="keyconfig.h" />
