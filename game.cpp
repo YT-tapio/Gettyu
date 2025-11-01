@@ -1,5 +1,6 @@
 #include"game.h"
 #include"input.h"
+#include"debug.h"
 #include"keyconfig.h"
 Game::Game()
     :BaseScene(SceneName::kGame)
@@ -243,8 +244,14 @@ void Game::Draw()
 
     weapon_UI_->Draw();
 
-    player_->Debug();
-    enemy_manager_->Debug();
+    if (Debug::GetInstance().GetDisp())
+    {
+        player_->Debug();
+        Input::GetInstance().Debug();
+        enemy_manager_->Debug();
+    }
+
+    
 
     DrawFormatString((kGameWidth - 300), 35, GetColor(0, 0, 0), "TAB / BACK Button : result");
 

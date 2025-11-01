@@ -5,6 +5,8 @@
 #include"input.h"
 #include"debug.h"
 
+
+
 Input::Input()
 	:device_type_(InputDeviceType::kNothing)
 {
@@ -14,14 +16,82 @@ Input::Input()
 
 /*-----------private----------*/
 
+
+bool Input::GetInputKey()
+{
+	if (CheckHitKeyAll(DX_CHECKINPUT_KEY) != 0 ||
+		CheckHitKeyAll(DX_CHECKINPUT_MOUSE) != 0)
+	{
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+
+bool Input::GetInputPad()
+{
+
+	if (TRUE)
+	{
+		if (CheckHitKeyAll(DX_CHECKINPUT_PAD) != 0)
+		{
+			return TRUE;
+		}
+		
+	}
+	else
+	{
+		for (int i = 0; i < 16; i++)
+		{
+			if (now_type_state_.pad.Buttons[i] != 0)
+			{
+				return TRUE;
+			}
+		}
+
+		if ((now_type_state_.pad.ThumbLX <= kPadStickDeadZone &&
+			now_type_state_.pad.ThumbLX >= -kPadStickDeadZone) ||
+			(now_type_state_.pad.ThumbLY <= kPadStickDeadZone &&
+				now_type_state_.pad.ThumbLY >= -kPadStickDeadZone) ||
+			(now_type_state_.pad.ThumbRX <= kPadStickDeadZone &&
+				now_type_state_.pad.ThumbRX >= -kPadStickDeadZone) ||
+			(now_type_state_.pad.ThumbRY <= kPadStickDeadZone &&
+				now_type_state_.pad.ThumbRY >= -kPadStickDeadZone))
+		{
+			return TRUE;
+		}
+
+
+		if (now_type_state_.pad.LeftTrigger > 0 ||
+			now_type_state_.pad.RightTrigger > 0)
+		{
+			return TRUE;
+		}
+
+
+	}
+
+	
+	return FALSE;
+}
+
+
 void Input::DecideDeviceType()
 {
+	
+	bool is_key = GetInputKey();
+	bool is_pad = GetInputPad();
+	
 	//何が入力されているか
 
-	if (device_type_ == InputDeviceType::kNothing)
+
+	switch(device_type_)
 	{
+	case InputDeviceType::kNothing:
+
 		//キーボード入力検知
-		if (CheckHitKeyAll())
+		if (is_key)
 		{
 			//キーボード入力されたら
 			device_type_ = InputDeviceType::kKey;
@@ -29,59 +99,55 @@ void Input::DecideDeviceType()
 		}
 
 		//pad入力検知
-		if (now_type_state_.pad.Buttons != 0 || 
-			now_type_state_.pad.ThumbLX != 0 ||
-			now_type_state_.pad.ThumbLY != 0 || 
-			now_type_state_.pad.ThumbRX != 0 || 
-			now_type_state_.pad.ThumbRY != 0 )
+		if (is_pad)
 		{
 			device_type_ = InputDeviceType::kPad;
 			return;
 		}
 
-	}
+		return;
+
+		break;
 
 
-	if (device_type_ == InputDeviceType::kKey)
-	{
+	case InputDeviceType::kKey:
+
 		//キーボード入力検知
-		if (CheckHitKeyAll())
+		if (is_key)
 		{
 			//続けて入力されているなら
 			return;
 		}
 
-		if (now_type_state_.pad.Buttons != 0 ||
-			now_type_state_.pad.ThumbLX != 0 ||
-			now_type_state_.pad.ThumbLY != 0 ||
-			now_type_state_.pad.ThumbRX != 0 ||
-			now_type_state_.pad.ThumbRY != 0)
+		if (is_pad)
 		{
 			device_type_ = InputDeviceType::kPad;
 			return;
 		}
 		return;
-	}
+		
+		break;
 
 
-	if (device_type_ == InputDeviceType::kPad)
-	{
-		if (now_type_state_.pad.Buttons != 0 ||
-			now_type_state_.pad.ThumbLX != 0 ||
-			now_type_state_.pad.ThumbLY != 0 ||
-			now_type_state_.pad.ThumbRX != 0 ||
-			now_type_state_.pad.ThumbRY != 0)
+	case InputDeviceType::kPad:
+
+		if (is_pad)
 		{
 			return;
 		}
 
 		//キーボード入力検知
-		if (CheckHitKeyAll())
+		if (is_key)
 		{
 			//続けて入力されているなら
 			device_type_ = InputDeviceType::kKey;
 			return;
 		}
+
+		return;
+
+		break;
+
 	}
 
 
@@ -141,6 +207,7 @@ void Input::Update()
 	GetMousePoint(&now_type_state_.mouse_x, &now_type_state_.mouse_y);
 	GetJoypadXInputState(num_,&(now_type_state_.pad));
 
+	DecideDeviceType();
 	
 }
 
@@ -548,8 +615,20 @@ void Input::Debug()
 
 	DrawFormatString(0, Debug::GetInstance().GetCurrentNum() * Debug::GetInstance().GetFontSize(), GetColor(0, 0, 0), "input:");
 
-	if (device_type_ == InputDeviceType::kKey)
+	switch (device_type_)
 	{
+
+	case InputDeviceType::kKey:
+
+		DrawFormatString(Debug::GetInstance().GetFontSize() * 3, Debug::GetInstance().GetCurrentNum() * Debug::GetInstance().GetFontSize(), GetColor(0, 0, 0), "Key");
+
+		break;
+
+	case InputDeviceType::kPad:
+
+		DrawFormatString(Debug::GetInstance().GetFontSize() * 3, Debug::GetInstance().GetCurrentNum() * Debug::GetInstance().GetFontSize(), GetColor(0, 0, 0), "Pad");
+
+		break;
 
 	}
 

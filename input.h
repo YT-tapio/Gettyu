@@ -77,6 +77,11 @@ private:
 	// ¯•Ê”Ô†
 	int num_;
 
+	bool GetInputKey();
+
+	bool GetInputPad();
+
+
 	void DecideDeviceType();
 
 
