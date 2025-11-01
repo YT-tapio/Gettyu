@@ -54,7 +54,7 @@ void WizardStaff::Update(BaseEnemy* enemy, const float spin_rad)
 	rem_vel = VAdd(rem_vel, vacuum_vel);
 
 	//vacuum_vel‚ðenemy‚Ìvelocity‚É‚½‚·
-	enemy->SetVelocity(rem_vel);
+	enemy->AddVelocity(rem_vel);
 
 
 	// ‹z‚¢ž‚Ý‚ð‚¯‚¢‚¼‚­‚³‚¹‚é‚½‚ß‚Ì‰½‚©‚ª—~‚µ‚¢‚µA¡‹z‚¢ž‚Ý‚³‚ê‚Ä‚¢‚éó‹µ‚Æ‚©‚Ì

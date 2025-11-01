@@ -4,6 +4,14 @@
 
 const float kPadSpinMin = 50.f;
 
+enum InputDeviceType
+{
+	kNothing,		// 初期化時の値
+	kKey,			// キーボード
+	kPad			// パッド
+};
+
+
 //入力されているなどの状態を表すもの
 enum InputState
 {
@@ -57,6 +65,9 @@ private:
 
 	/*-----変数-----*/
 
+	InputDeviceType device_type_;
+
+
 	// 現在の
 	InputType now_type_state_;
 	
@@ -65,6 +76,9 @@ private:
 	
 	// 識別番号
 	int num_;
+
+	void DecideDeviceType();
+
 
 	/// <summary>
 	/// 2点間の距離ベクトル?を出す
@@ -139,6 +153,8 @@ public:
 
 
 	const int GetPadNom() const { return num_; }
+
+	void Debug();
 
 	void Draw();
 

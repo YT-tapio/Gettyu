@@ -3,15 +3,91 @@
 #include"screen.h"
 #include"Calculation.h"
 #include"input.h"
-
+#include"debug.h"
 
 Input::Input()
+	:device_type_(InputDeviceType::kNothing)
 {
 
 }
 
 
 /*-----------private----------*/
+
+void Input::DecideDeviceType()
+{
+	//何が入力されているか
+
+	if (device_type_ == InputDeviceType::kNothing)
+	{
+		//キーボード入力検知
+		if (CheckHitKeyAll())
+		{
+			//キーボード入力されたら
+			device_type_ = InputDeviceType::kKey;
+			return;
+		}
+
+		//pad入力検知
+		if (now_type_state_.pad.Buttons != 0 || 
+			now_type_state_.pad.ThumbLX != 0 ||
+			now_type_state_.pad.ThumbLY != 0 || 
+			now_type_state_.pad.ThumbRX != 0 || 
+			now_type_state_.pad.ThumbRY != 0 )
+		{
+			device_type_ = InputDeviceType::kPad;
+			return;
+		}
+
+	}
+
+
+	if (device_type_ == InputDeviceType::kKey)
+	{
+		//キーボード入力検知
+		if (CheckHitKeyAll())
+		{
+			//続けて入力されているなら
+			return;
+		}
+
+		if (now_type_state_.pad.Buttons != 0 ||
+			now_type_state_.pad.ThumbLX != 0 ||
+			now_type_state_.pad.ThumbLY != 0 ||
+			now_type_state_.pad.ThumbRX != 0 ||
+			now_type_state_.pad.ThumbRY != 0)
+		{
+			device_type_ = InputDeviceType::kPad;
+			return;
+		}
+		return;
+	}
+
+
+	if (device_type_ == InputDeviceType::kPad)
+	{
+		if (now_type_state_.pad.Buttons != 0 ||
+			now_type_state_.pad.ThumbLX != 0 ||
+			now_type_state_.pad.ThumbLY != 0 ||
+			now_type_state_.pad.ThumbRX != 0 ||
+			now_type_state_.pad.ThumbRY != 0)
+		{
+			return;
+		}
+
+		//キーボード入力検知
+		if (CheckHitKeyAll())
+		{
+			//続けて入力されているなら
+			device_type_ = InputDeviceType::kKey;
+			return;
+		}
+	}
+
+
+
+}
+
 
 VECTOR Input::GetVerticalVector(const VECTOR& next_pos, const VECTOR& pos)
 {
@@ -464,6 +540,22 @@ float Input::GetStickSpin(int type)
 	return (GetPadStickRad(StickType::kRight) - before_type_state_.right_stick_rad);
 }
 
+
+void Input::Debug()
+{
+	DrawFormatString(0, Debug::GetInstance().GetCurrentNum() * Debug::GetInstance().GetFontSize(), GetColor(0, 0, 0), "-----Input-----");
+	Debug::GetInstance().Add();
+
+	DrawFormatString(0, Debug::GetInstance().GetCurrentNum() * Debug::GetInstance().GetFontSize(), GetColor(0, 0, 0), "input:");
+
+	if (device_type_ == InputDeviceType::kKey)
+	{
+
+	}
+
+	Debug::GetInstance().Add();
+
+}
 
 
 void Input::Draw()
