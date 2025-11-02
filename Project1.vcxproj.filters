@@ -202,6 +202,9 @@
     <Filter Include="ソース ファイル\camera\Singleton\now_weapon">
       <UniqueIdentifier>{4568467e-2912-4a7c-be16-0bd2447d6dc5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\UI\super_atackk">
+      <UniqueIdentifier>{a11dfc45-c778-49ce-aab4-91c978334db4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -380,6 +383,9 @@
     </ClCompile>
     <ClCompile Include="weapon_checker.cpp">
       <Filter>ソース ファイル\camera\Singleton\now_weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="super_attac_UI.cpp">
+      <Filter>ソース ファイル\UI\super_atackk</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -574,6 +580,9 @@
     </ClInclude>
     <ClInclude Include="weapon_checker.h">
       <Filter>ソース ファイル\camera\Singleton\now_weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="super_attack_UI.h">
+      <Filter>ソース ファイル\UI\super_atackk</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

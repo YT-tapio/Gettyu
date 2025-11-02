@@ -167,6 +167,7 @@
     <ClCompile Include="navigation.cpp" />
     <ClCompile Include="normal_enemy.cpp" />
     <ClCompile Include="normal_sub_screen.cpp" />
+    <ClCompile Include="super_attac_UI.cpp" />
     <ClCompile Include="weapon_checker.cpp" />
     <ClCompile Include="patrolling.cpp" />
     <ClCompile Include="player.cpp" />
@@ -231,6 +232,7 @@
     <ClInclude Include="navigation.h" />
     <ClInclude Include="normal_enemy.h" />
     <ClInclude Include="normal_sub_screen.h" />
+    <ClInclude Include="super_attack_UI.h" />
     <ClInclude Include="weapon_checker.h" />
     <ClInclude Include="patrolling.h" />
     <ClInclude Include="player.h" />

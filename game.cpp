@@ -127,11 +127,11 @@ void Game::Init()
 
     enemy_manager_->Init();
 
-    sky_dom_ = std::make_shared<SkyDom>("data/skydome/Dome_SS601.mv1", camera_->GetPos());
-    concentration_line_ = std::make_shared<ConcentrationLine>(kGameWidth, kGameHeight, TRUE);
+    sky_dom_                  = std::make_shared<SkyDom>("data/skydome/Dome_SS601.mv1", camera_->GetPos());
+    concentration_line_     = std::make_shared<ConcentrationLine>(kGameWidth, kGameHeight, TRUE);
 
-    weapon_UI_ = std::make_shared<WeaponUI>();
-
+    weapon_UI_               = std::make_shared<WeaponUI>();
+    super_attack_UI_        = std::make_shared<SuperAttackUI>();
 }
 
 void Game::Update(SceneName& name)
@@ -177,6 +177,7 @@ void Game::Update(SceneName& name)
 
     //UIのアップデート
     weapon_UI_->Update();
+    super_attack_UI_->Update();
 
 
     camera_->Update(brain_->GetVelocity(), brain_->GetTargetVelocity());
@@ -250,6 +251,7 @@ void Game::Draw()
     concentration_line_->Draw();
 
     weapon_UI_->Draw();
+    super_attack_UI_->Draw();
 
     if (Debug::GetInstance().GetDisp())
     {

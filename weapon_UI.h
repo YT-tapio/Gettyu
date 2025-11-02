@@ -40,6 +40,8 @@ private:
 	const int kBatHandle					= MV1LoadModel("data/model/weapon/use_path/Bat.mv1");
 	const int kWarprodHandle			= MV1LoadModel("data/model/weapon/use_path/Bug_Net3.mv1");
 
+	const int kSuperAttackGaugeFrameHandle = LoadGraph("data/UI/A_ButtonUI.png");
+
 	std::shared_ptr<NormalSubScreen> sub_screen_;
 	std::shared_ptr<NormalSubScreen> circle_gauss_;
 

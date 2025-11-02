@@ -97,7 +97,44 @@ void Player::MakeTargetRot(const VECTOR& target_pos, float& target_rot)
 }
 
 
+bool Player::SuperAttackCondition()
+{
 
+	if (!(super_attack_->GetIsReady()))
+	{
+		return FALSE;
+	}
+
+	if (!is_ground_)
+	{
+		return FALSE;
+	}
+
+	if (!(now_weapon_name_ == WeaponName::kBugNet))
+	{
+		return FALSE;
+	}
+
+	if (now_type_ >= AnimationType::kAttack)
+	{
+		return FALSE;
+	}
+
+	if (is_super_attack_)
+	{
+		return FALSE;
+	}
+
+
+
+	if (!(Input::GetInstance().CheckInputPadButton(PadConfig::kSuperAttackButton) == InputState::kPush ||
+		Input::GetInstance().CheckInputMouse(KeyConfig::kSuperAttackKey) == InputState::kPush))
+	{
+		return FALSE;
+	}
+
+	return TRUE;
+}
 
 /*------------------------public---------------------------*/
 
@@ -171,7 +208,7 @@ void Player::Debug()
 		DrawFormatString(0, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), GetColor(0, 0, 0), "%.2f", sound_vibration_->GetNum());
 		Debug::GetInstance().Add();
 
-
+		super_attack_->Debug();
 
 	}
 }
@@ -285,17 +322,19 @@ void Player::Update(const VECTOR& pos, const float& rotation, Stage& stage)
 
 	float target_rot = rotation;
 
+	super_attack_->Update();
+
 	InputMovement(pos, target_rot);
 
 	if (VSize(velocity_) != 0.f)
 	{
 		direction_ = VNorm(velocity_);
 	}
-
+	
 	if (is_super_attack_)
 	{
 		super_attack_->SetPos(VAdd(pos_, VGet(0, 150, 0)),pos_);
-		super_attack_->Update();
+		super_attack_->EffectUpdate();
 	}
 
 	if (AnimationType::kAttack > now_type_  && !is_super_attack_)
@@ -461,10 +500,7 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 	}
 
 	//•KŽE‹Z‚É‚æ‚é•Ší‘Ö‚¦
-	if ((Input::GetInstance().CheckInputPadButton(PadConfig::kSuperAttackButton) == InputState::kPush ||
-		Input::GetInstance().CheckInputMouse(KeyConfig::kSuperAttackKey) == InputState::kPush) &&
-		!(is_super_attack_) && is_ground_ && !(is_camera_blend_) &&
-		(now_weapon_name_ == WeaponName::kBugNet) && !(now_type_ >= AnimationType::kAttack))
+	if (SuperAttackCondition())
 	{
 		is_super_attack_ = TRUE;
 		now_type_ = AnimationType::kSuperAttackFirst;

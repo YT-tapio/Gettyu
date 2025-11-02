@@ -14,8 +14,7 @@ SuperAttack::SuperAttack(const VECTOR& pos,const char*  file_path)
 	, effect_handle_(-1)
 	, play_handle_(-1)
 	, is_play_(FALSE)
-	, play_count_(0.f)
-	, max_play_count_(0.f)
+	, is_ready_(FALSE)
 	, delta_time_(0.f)
 {
 	effect_ = new Effect("data/effect/Effekseer01/Laser02.efkefc", effect_pos_, VGet(static_cast<float>((M_PI / 180) * -90),
@@ -26,6 +25,11 @@ SuperAttack::SuperAttack(const VECTOR& pos,const char*  file_path)
 
 	effect_end_ = new Effect("data/effect/Pierre01/Flame.efkefc", effect_pos_, VGet(0.0f,
 		0.0f, 0.0f), 7.5f, 5.0f, 200.0f, FALSE);
+
+
+
+	// conditiontimer‚Ìsetup
+	cool_time_ = std::make_shared<ConditionTimer>(kCoolTimeMax);
 
 }
 
@@ -48,6 +52,24 @@ void SuperAttack::Init()
 void SuperAttack::Update()
 {
 
+	cool_time_->Update();
+
+	
+	if (cool_time_->GetIsEnd())
+	{
+		is_ready_ = TRUE;
+	}
+	else
+	{
+		is_ready_ = FALSE;
+	}
+
+	
+
+}
+
+void SuperAttack::EffectUpdate()
+{
 	if (now_situation_num_ == 1)
 	{
 		effect_->SetPos(effect_pos_);
@@ -78,11 +100,7 @@ void SuperAttack::Update()
 	{
 		effect_end_->SetIsPlay(FALSE);
 	}
-
-
-
-	//printfDx("%.2f\n",effect_end_->GetPlayCount());
-
+	cool_time_->Reset();
 }
 
 void SuperAttack::Draw()
@@ -91,6 +109,10 @@ void SuperAttack::Draw()
 	{
 		//DrawSphere3D(effect_pos_, 10, 20, GetColor(255, 255, 255), GetColor(255, 255, 255), FALSE);
 	}
+}
 
+void SuperAttack::Debug()
+{
+	cool_time_->Debug();
 }
 

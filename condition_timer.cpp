@@ -25,7 +25,6 @@ void ConditionTimer::Update()
 	{
 		timer_ = max_time_;
 	}
-
 }
 
 
@@ -57,4 +56,5 @@ bool ConditionTimer::GetIsEnd()
 void ConditionTimer::Debug()
 {
 	DrawFormatString(0, Debug::GetInstance().GetCurrentNum() * 20, GetColor(255, 255, 255), "timer:%.2f", timer_);
+	Debug::GetInstance().Add();
 }

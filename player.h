@@ -125,6 +125,8 @@ private:
 	//ターゲットの方向を見つける
 	void MakeTargetRot(const VECTOR& target_pos, float& target_rot);
 
+	bool SuperAttackCondition();
+
 public:
 
 

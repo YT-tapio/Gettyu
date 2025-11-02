@@ -57,7 +57,7 @@ WeaponUI::WeaponUI()
 	circle_gauss_pos_ = VGet(bat_button_.pos.x, bat_button_.pos.y, 0.f);
 	circle_gauss_r_ = 150.f;
 
-	if (bat_button_.handle == -1 || warprod_button_.handle == -1)
+	if (kSuperAttackGaugeFrameHandle == -1 ||bat_button_.handle == -1 || warprod_button_.handle == -1)
 	{
 		printfDx("“Ç‚Ýž‚ÝŽ¸”s\n");
 	}
@@ -243,8 +243,11 @@ void WeaponUI::Update()
 	SetLightDirection(VGet(0.f, 0.f, 1.f));
 	MV1DrawModel(kBatHandle);
 	MV1DrawModel(kWarprodHandle);
+	
 	SetLightDirection(light_dir);
 	sub_screen_->Down();		// screen‚ðŽg‚í‚È‚¢
+
+	
 }
 
 
