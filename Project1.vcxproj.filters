@@ -184,26 +184,29 @@
     <Filter Include="ソース ファイル\gauss">
       <UniqueIdentifier>{fd595d70-bacd-47b1-a7c6-001a605b8345}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\camera\Singleton">
-      <UniqueIdentifier>{f371f4b4-16f3-4e3b-9773-bb8c53407f83}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\camera\Singleton\situation">
-      <UniqueIdentifier>{c266bbd9-12cc-4e9a-bc4c-9240a897981b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\camera\Singleton\debug">
-      <UniqueIdentifier>{5283eb33-c945-4946-929e-fe8c2402b82a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\camera\Singleton\time">
-      <UniqueIdentifier>{7fcdefc9-88c9-48d3-8d9f-484334341434}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\camera\Singleton\FPS">
-      <UniqueIdentifier>{82cee67e-d633-42a9-ba44-b62a51a378ec}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\camera\Singleton\now_weapon">
-      <UniqueIdentifier>{4568467e-2912-4a7c-be16-0bd2447d6dc5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\UI\super_atackk">
       <UniqueIdentifier>{a11dfc45-c778-49ce-aab4-91c978334db4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Singleton">
+      <UniqueIdentifier>{f371f4b4-16f3-4e3b-9773-bb8c53407f83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Singleton\situation">
+      <UniqueIdentifier>{c266bbd9-12cc-4e9a-bc4c-9240a897981b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Singleton\debug">
+      <UniqueIdentifier>{5283eb33-c945-4946-929e-fe8c2402b82a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Singleton\time">
+      <UniqueIdentifier>{7fcdefc9-88c9-48d3-8d9f-484334341434}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Singleton\FPS">
+      <UniqueIdentifier>{82cee67e-d633-42a9-ba44-b62a51a378ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Singleton\now_weapon">
+      <UniqueIdentifier>{4568467e-2912-4a7c-be16-0bd2447d6dc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Singleton\mask">
+      <UniqueIdentifier>{3b25d0d1-3dda-4666-a2e9-57748a81ea9d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -226,7 +229,7 @@
       <Filter>ソース ファイル\object</Filter>
     </ClCompile>
     <ClCompile Include="FPS.cpp">
-      <Filter>ソース ファイル\camera\Singleton\FPS</Filter>
+      <Filter>ソース ファイル\Singleton\FPS</Filter>
     </ClCompile>
     <ClCompile Include="stage.cpp">
       <Filter>ソース ファイル\stage</Filter>
@@ -253,7 +256,7 @@
       <Filter>ソース ファイル\collision</Filter>
     </ClCompile>
     <ClCompile Include="situation.cpp">
-      <Filter>ソース ファイル\camera\Singleton\situation</Filter>
+      <Filter>ソース ファイル\Singleton\situation</Filter>
     </ClCompile>
     <ClCompile Include="bat.cpp">
       <Filter>ソース ファイル\weapon\bat</Filter>
@@ -271,7 +274,7 @@
       <Filter>ソース ファイル\input</Filter>
     </ClCompile>
     <ClCompile Include="debug.cpp">
-      <Filter>ソース ファイル\camera\Singleton\debug</Filter>
+      <Filter>ソース ファイル\Singleton\debug</Filter>
     </ClCompile>
     <ClCompile Include="brain.cpp">
       <Filter>ソース ファイル\camera\brain</Filter>
@@ -334,7 +337,7 @@
       <Filter>ソース ファイル\sub_screen</Filter>
     </ClCompile>
     <ClCompile Include="time.cpp">
-      <Filter>ソース ファイル\camera\Singleton\time</Filter>
+      <Filter>ソース ファイル\Singleton\time</Filter>
     </ClCompile>
     <ClCompile Include="condition_timer.cpp">
       <Filter>ソース ファイル\time</Filter>
@@ -382,10 +385,16 @@
       <Filter>ソース ファイル\gauss</Filter>
     </ClCompile>
     <ClCompile Include="weapon_checker.cpp">
-      <Filter>ソース ファイル\camera\Singleton\now_weapon</Filter>
+      <Filter>ソース ファイル\Singleton\now_weapon</Filter>
     </ClCompile>
     <ClCompile Include="super_attac_UI.cpp">
       <Filter>ソース ファイル\UI\super_atackk</Filter>
+    </ClCompile>
+    <ClCompile Include="UI_data.cpp">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="mask.cpp">
+      <Filter>ソース ファイル\Singleton\mask</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -417,7 +426,7 @@
       <Filter>ソース ファイル\object</Filter>
     </ClInclude>
     <ClInclude Include="FPS.h">
-      <Filter>ソース ファイル\camera\Singleton\FPS</Filter>
+      <Filter>ソース ファイル\Singleton\FPS</Filter>
     </ClInclude>
     <ClInclude Include="stage.h">
       <Filter>ソース ファイル\stage</Filter>
@@ -447,7 +456,7 @@
       <Filter>ソース ファイル\collision</Filter>
     </ClInclude>
     <ClInclude Include="situation.h">
-      <Filter>ソース ファイル\camera\Singleton\situation</Filter>
+      <Filter>ソース ファイル\Singleton\situation</Filter>
     </ClInclude>
     <ClInclude Include="bat.h">
       <Filter>ソース ファイル\weapon\bat</Filter>
@@ -465,7 +474,7 @@
       <Filter>ソース ファイル\input</Filter>
     </ClInclude>
     <ClInclude Include="debug.h">
-      <Filter>ソース ファイル\camera\Singleton\debug</Filter>
+      <Filter>ソース ファイル\Singleton\debug</Filter>
     </ClInclude>
     <ClInclude Include="brain.h">
       <Filter>ソース ファイル\camera\brain</Filter>
@@ -528,7 +537,7 @@
       <Filter>ソース ファイル\sub_screen</Filter>
     </ClInclude>
     <ClInclude Include="time.h">
-      <Filter>ソース ファイル\camera\Singleton\time</Filter>
+      <Filter>ソース ファイル\Singleton\time</Filter>
     </ClInclude>
     <ClInclude Include="condition_timer.h">
       <Filter>ソース ファイル\time</Filter>
@@ -579,10 +588,13 @@
       <Filter>ソース ファイル\gauss</Filter>
     </ClInclude>
     <ClInclude Include="weapon_checker.h">
-      <Filter>ソース ファイル\camera\Singleton\now_weapon</Filter>
+      <Filter>ソース ファイル\Singleton\now_weapon</Filter>
     </ClInclude>
     <ClInclude Include="super_attack_UI.h">
       <Filter>ソース ファイル\UI\super_atackk</Filter>
+    </ClInclude>
+    <ClInclude Include="mask.h">
+      <Filter>ソース ファイル\Singleton\mask</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

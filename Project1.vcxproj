@@ -163,11 +163,13 @@
     <ClCompile Include="input.cpp" />
     <ClCompile Include="line.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="mask.cpp" />
     <ClCompile Include="movie.cpp" />
     <ClCompile Include="navigation.cpp" />
     <ClCompile Include="normal_enemy.cpp" />
     <ClCompile Include="normal_sub_screen.cpp" />
     <ClCompile Include="super_attac_UI.cpp" />
+    <ClCompile Include="UI_data.cpp" />
     <ClCompile Include="weapon_checker.cpp" />
     <ClCompile Include="patrolling.cpp" />
     <ClCompile Include="player.cpp" />
@@ -227,6 +229,7 @@
     <ClInclude Include="input.h" />
     <ClInclude Include="keyconfig.h" />
     <ClInclude Include="line.h" />
+    <ClInclude Include="mask.h" />
     <ClInclude Include="mixamo_fram.h" />
     <ClInclude Include="movie.h" />
     <ClInclude Include="navigation.h" />

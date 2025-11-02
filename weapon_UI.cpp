@@ -23,8 +23,8 @@ WeaponUI::WeaponUI()
 
 
 	//screenの設定
-	sub_screen_		= std::make_shared<NormalSubScreen>(VGet(1000.f, 200.f,0.f), kGameWidth, kGameHeight, static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0);
-	circle_gauss_		= std::make_shared<NormalSubScreen>(VGet(1000.f, 200.f, 0.f), kGameWidth, kGameHeight, static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0);
+	sub_screen_		= std::make_shared<NormalSubScreen>(VGet(1000.f, 200.f,0.f), kGameWidth, kGameHeight, static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0,FALSE);
+	circle_gauss_		= std::make_shared<NormalSubScreen>(VGet(1000.f, 200.f, 0.f), kGameWidth, kGameHeight, static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0,FALSE);
 
 	//ここでいろんなデーターダウンロード
 	bat_button_.handle					= kXButtonHandle;
@@ -84,18 +84,6 @@ WeaponUI::~WeaponUI()
 	DeleteGraph(warprod_button_.handle);
 }
 
-void WeaponUI::OffsetGraphSize(UIGraphData& graph_data)
-{
-	//もともとwidth,heightに入れておく
-	graph_data.width = graph_data.width * (graph_data.original_width / (graph_data.original_width + graph_data.original_height));
-	graph_data.height = graph_data.height * (graph_data.original_height / (graph_data.original_width + graph_data.original_height));
-}
-
-void WeaponUI::GraphDraw(UIGraphData graph_data)
-{
-	DrawExtendGraph(static_cast<int>(graph_data.pos.x - graph_data.width), static_cast<int>(graph_data.pos.y - graph_data.height)
-		, static_cast<int>(graph_data.pos.x + graph_data.width), static_cast<int>(graph_data.pos.y + graph_data.height), graph_data.handle, TRUE);
-}
 
 void WeaponUI::SetCirclePos()
 {
@@ -236,8 +224,8 @@ void WeaponUI::Update()
 	
 	sub_screen_->Up();			// screenを起動
 
-	GraphDraw(bat_button_);
-	GraphDraw(warprod_button_);
+	DrawUIGraph(bat_button_);
+	DrawUIGraph(warprod_button_);
 
 	auto light_dir = GetLightDirection();
 	SetLightDirection(VGet(0.f, 0.f, 1.f));

@@ -63,11 +63,6 @@ private:
 	float warprod_vibration_rad_;
 
 
-
-	void OffsetGraphSize(UIGraphData& graph_data);
-
-	void GraphDraw(UIGraphData graph_data);
-
 	void SetCirclePos();
 
 	void SetWeaponScale();

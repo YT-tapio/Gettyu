@@ -21,6 +21,8 @@ private:
 	
 	int param_;
 
+	bool is_blend_;
+
 	AlphaColorType color_type_;
 
 protected:
@@ -31,7 +33,7 @@ protected:
 public:
 
 
-	BaseSubScreen(const VECTOR& pos,const int screen_width, const int screen_height, const int width,const int height,bool alpha,AlphaColorType color_type, const int param);
+	BaseSubScreen(const VECTOR& pos,const int screen_width, const int screen_height, const int width,const int height,bool alpha,AlphaColorType color_type, const int param,bool is_blend);
 
 	virtual ~BaseSubScreen() = 0;
 

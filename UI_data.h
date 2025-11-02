@@ -12,3 +12,7 @@ struct UIGraphData
 	float width;					// ちょうせいしたいサイズ(横)
 	float height;					// ちょうせいしたいサイズ(縦)
 };
+
+void OffsetGraphSize(UIGraphData& graph_data);
+
+void DrawUIGraph(const UIGraphData& graph_data);

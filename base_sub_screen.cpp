@@ -1,6 +1,6 @@
 #include"base_sub_screen.h"
 
-BaseSubScreen::BaseSubScreen(const VECTOR& pos,const int screen_width, const int screen_height, const int width,const int height,bool alpha, AlphaColorType color_type,const int param)
+BaseSubScreen::BaseSubScreen(const VECTOR& pos,const int screen_width, const int screen_height, const int width,const int height,bool alpha, AlphaColorType color_type,const int param, bool is_blend)
 {
 	handle_			= MakeScreen(screen_width, screen_height, alpha);
 	is_disp_		= FALSE;
@@ -11,6 +11,7 @@ BaseSubScreen::BaseSubScreen(const VECTOR& pos,const int screen_width, const int
 	center_pos_ = pos;
 	color_type_ = color_type;
 	param_ = param;
+	is_blend_ = is_blend_;
 }
 
 BaseSubScreen::~BaseSubScreen()
@@ -36,19 +37,24 @@ void BaseSubScreen::Down()
 
 void BaseSubScreen::Draw()
 {
-	if (!is_disp_)
-	{
-		return;
-	}
 
-	if (color_type_ == AlphaColorType::kBlack)
+	if (is_blend_)
 	{
-		GraphFilter(handle_, DX_GRAPH_FILTER_BRIGHT_CLIP, DX_CMP_LESS, param_, TRUE, GetColor(0, 255, 0), 0);
+		if (!is_disp_)
+		{
+			return;
+		}
+
+		if (color_type_ == AlphaColorType::kBlack)
+		{
+			GraphFilter(handle_, DX_GRAPH_FILTER_BRIGHT_CLIP, DX_CMP_LESS, param_, TRUE, GetColor(0, 255, 0), 0);
+		}
+		else
+		{
+			GraphFilter(handle_, DX_GRAPH_FILTER_BRIGHT_CLIP, DX_CMP_GREATER, param_, TRUE, GetColor(0, 255, 0), 0);
+		}
 	}
-	else
-	{
-		GraphFilter(handle_, DX_GRAPH_FILTER_BRIGHT_CLIP, DX_CMP_GREATER, param_, TRUE, GetColor(0, 255, 0), 0);
-	}
+	
 
 	
 	DrawExtendGraph(static_cast<float>(center_pos_.x - (screen_width_ * 0.5f)),

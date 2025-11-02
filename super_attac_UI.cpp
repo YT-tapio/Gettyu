@@ -8,17 +8,41 @@ SuperAttackUI::SuperAttackUI()
 	float kScreenWidthPercent = kGameWidth / all_screen_size;
 	float kScreenHeightPercent = kGameHeight / all_screen_size;
 	
-	float sub_screen_width = 1000;
-	float sub_screen_height = 1000;
+	float sub_screen_width		= 1000;
+	float sub_screen_height		= 1000;
 
 	sub_screen_width = sub_screen_width * kScreenWidthPercent;
 	sub_screen_height = sub_screen_height * kScreenHeightPercent;
 
+	frame_data_.handle = -1;
+	frame_data_.original_width = kOriginalImagWidth;
+	frame_data_.original_height = kOriginalImageHeight;
+	frame_data_.width = disp_width_;
+	frame_data_.height = disp_height_;
 	
+	frame_data_.pos = kInitPos;
 
-	frame_screen_			= std::make_shared<NormalSubScreen>(VGet(100.f, 50.f, 0), static_cast<int>(kGameWidth), static_cast<int>(kGameHeight), static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0);
-	body_screen_			= std::make_shared<NormalSubScreen>(VGet(100.f, 50.f, 0), static_cast<int>(kGameWidth), static_cast<int>(kGameHeight), static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0);
-	back_screen_				= std::make_shared<NormalSubScreen>(VGet(100.f, 50.f, 0), static_cast<int>(kGameWidth), static_cast<int>(kGameHeight), static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0);
+	//いったん全部同じように
+	body_data_ = frame_data_;
+	back_data_ = frame_data_;
+
+	//handleを入れる
+	frame_data_.handle = kGaugeFrameHandle;
+	body_data_.handle = kGaugeBodyHandle;
+	back_data_.handle = kGaugeBackHandle;
+
+
+	//ここで各ステートいじる
+	back_data_.width = kDispBackWidth;
+	back_data_.height = kDispBackHeight;
+
+	OffsetGraphSize(frame_data_);
+	OffsetGraphSize(body_data_);
+	OffsetGraphSize(back_data_);
+
+	frame_screen_			= std::make_shared<NormalSubScreen>(VGet(100.f, 50.f, 0), static_cast<int>(kGameWidth), static_cast<int>(kGameHeight), static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0,FALSE);
+	body_screen_			= std::make_shared<NormalSubScreen>(VGet(100.f, 50.f, 0), static_cast<int>(kGameWidth), static_cast<int>(kGameHeight), static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0,FALSE);
+	back_screen_				= std::make_shared<NormalSubScreen>(VGet(100.f, 50.f, 0), static_cast<int>(kGameWidth), static_cast<int>(kGameHeight), static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0,FALSE);
 
 	if (kGaugeBackHandle == -1)
 	{
@@ -39,8 +63,7 @@ SuperAttackUI::SuperAttackUI()
 	body_screen_->SetIsDisp(TRUE);
 	back_screen_->SetIsDisp(TRUE);
 
-	disp_width_ = 1500;
-	disp_height_ = 1000;
+
 
 }
 
@@ -52,12 +75,7 @@ SuperAttackUI::~SuperAttackUI()
 	DeleteGraph(kGaugeBackHandle);
 }
 
-void SuperAttackUI::GaugeDraw(const int handle)
-{
-	DrawExtendGraph(static_cast<int>(kCenterPos.x - (disp_width_ * 0.5f)),
-		static_cast<int>(kCenterPos.y - (disp_height_ * 0.5f)), static_cast<int>(kCenterPos.x + (disp_width_ * 0.5f)), 
-		static_cast<int>(kCenterPos.y + (disp_height_ * 0.5f)),handle, TRUE);
-}
+
 
 
 
@@ -70,20 +88,15 @@ void SuperAttackUI::Update()
 	//ここでがぞうのdraw(screenを起動してから)
 
 	back_screen_->Up();
-	GaugeDraw(kGaugeBackHandle);
-
-	DrawCircle(200, 200, 30, GetColor(255, 255, 255), TRUE);
-
+	DrawUIGraph(back_data_);
 	back_screen_->Down();
 
 	body_screen_->Up();
-	GaugeDraw(kGaugeBodyHandle);
-	DrawCircle(350, 350, 30, GetColor(255, 255, 255), TRUE);
+	DrawUIGraph(body_data_);
 	body_screen_->Down();
 
 	frame_screen_->Up();
-	GaugeDraw(kGaugeFrameHandle);
-	DrawCircle(500, 500, 30, GetColor(255, 255, 255), TRUE);
+	DrawUIGraph(frame_data_);
 	frame_screen_->Down();
 	
 }
