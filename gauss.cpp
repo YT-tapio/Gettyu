@@ -5,11 +5,6 @@ Gauss::Gauss()
 
 }
 
-Gauss::~Gauss()
-{
-
-}
-
 void Gauss::Update(const VECTOR& pos, int width,int height,int handle,int pixel_width,int param)
 {
 	GetDrawScreenGraph(static_cast<int>(pos.x - (width * 0.5f)),

@@ -91,6 +91,8 @@ public:
 
 	const float GetEffectPlayCount() const { return effect_end_->GetPlayCount(); }
 
+
+
 };
 
 

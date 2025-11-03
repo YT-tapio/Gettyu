@@ -181,9 +181,6 @@
     <Filter Include="ソース ファイル\sub_screen\Normal">
       <UniqueIdentifier>{a3a479f7-c356-464a-920e-6f5731001880}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\gauss">
-      <UniqueIdentifier>{fd595d70-bacd-47b1-a7c6-001a605b8345}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\UI\super_atackk">
       <UniqueIdentifier>{a11dfc45-c778-49ce-aab4-91c978334db4}</UniqueIdentifier>
     </Filter>
@@ -207,6 +204,12 @@
     </Filter>
     <Filter Include="ソース ファイル\Singleton\mask">
       <UniqueIdentifier>{3b25d0d1-3dda-4666-a2e9-57748a81ea9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Singleton\gauss">
+      <UniqueIdentifier>{fd595d70-bacd-47b1-a7c6-001a605b8345}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Singleton\super_attack_cool_time">
+      <UniqueIdentifier>{c32bdc0a-c176-40ba-a684-b50ae30f2396}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -382,7 +385,7 @@
       <Filter>ソース ファイル\sub_screen\Normal</Filter>
     </ClCompile>
     <ClCompile Include="gauss.cpp">
-      <Filter>ソース ファイル\gauss</Filter>
+      <Filter>ソース ファイル\Singleton\gauss</Filter>
     </ClCompile>
     <ClCompile Include="weapon_checker.cpp">
       <Filter>ソース ファイル\Singleton\now_weapon</Filter>
@@ -395,6 +398,9 @@
     </ClCompile>
     <ClCompile Include="mask.cpp">
       <Filter>ソース ファイル\Singleton\mask</Filter>
+    </ClCompile>
+    <ClCompile Include="super_attack_cool_time.cpp">
+      <Filter>ソース ファイル\Singleton\super_attack_cool_time</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -585,7 +591,7 @@
       <Filter>ソース ファイル\UI</Filter>
     </ClInclude>
     <ClInclude Include="gauss.h">
-      <Filter>ソース ファイル\gauss</Filter>
+      <Filter>ソース ファイル\Singleton\gauss</Filter>
     </ClInclude>
     <ClInclude Include="weapon_checker.h">
       <Filter>ソース ファイル\Singleton\now_weapon</Filter>
@@ -595,6 +601,15 @@
     </ClInclude>
     <ClInclude Include="mask.h">
       <Filter>ソース ファイル\Singleton\mask</Filter>
+    </ClInclude>
+    <ClInclude Include="gauss_data.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="super_attack_cool_time.h">
+      <Filter>ソース ファイル\Singleton\super_attack_cool_time</Filter>
+    </ClInclude>
+    <ClInclude Include="const_rad.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -273,6 +273,8 @@ void Player::AttachWeapon(WeaponName name)
 		MV1GetFrameLocalWorldMatrix(model_, frame_num_);
 
 
+	
+
 	//–¼‘O‚É‚æ‚Á‚Ä‚©‚¦‚é
 
 	switch (name)
@@ -373,6 +375,7 @@ void Player::Update(const VECTOR& pos, const float& rotation, Stage& stage)
 		}
 
 	}
+	
 	
 
 }

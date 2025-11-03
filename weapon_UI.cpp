@@ -3,6 +3,9 @@
 #include"FPS.h"
 #include"input.h"
 #include"weapon_checker.h"
+#include"gauss.h"
+#include"gauss_data.h"
+
 
 WeaponUI::WeaponUI()
 {
@@ -26,6 +29,7 @@ WeaponUI::WeaponUI()
 	sub_screen_		= std::make_shared<NormalSubScreen>(VGet(1000.f, 200.f,0.f), kGameWidth, kGameHeight, static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0,FALSE);
 	circle_gauss_		= std::make_shared<NormalSubScreen>(VGet(1000.f, 200.f, 0.f), kGameWidth, kGameHeight, static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0,FALSE);
 
+
 	//ここでいろんなデーターダウンロード
 	bat_button_.handle					= kXButtonHandle;
 	warprod_button_.handle				= kYButtonHandle;
@@ -44,10 +48,10 @@ WeaponUI::WeaponUI()
 
 
 	//どのくらいの大きさにしたいか
-	bat_button_.width							= 300.f;
-	bat_button_.height							= 300.f;
-	warprod_button_.width					= 300.f;
-	warprod_button_.height					= 300.f;
+	bat_button_.width							= 600.f;
+	bat_button_.height							= 600.f;
+	warprod_button_.width					= 600.f;
+	warprod_button_.height					= 600.f;
 
 	//さいず
 	OffsetGraphSize(bat_button_);
@@ -179,31 +183,6 @@ void WeaponUI::SetAll()
 }
 
 
-// 上下に揺らす処理(各スピードによって変える)
-VECTOR WeaponUI::UpDown(const VECTOR& init_pos, float& rad, float speed,float swing)
-{
-	const float kReverceRad = kOneRad * 180;
-
-	VECTOR next_pos = init_pos;
-
-	//sinを使って上下に動かす
-
-	rad += (kOneRad * (speed * FPS::GetInstance().GetDeltaTime()));
-
-
-	//180を超えるようなら
-	if (rad > kReverceRad)
-	{
-		//-180から180の間に強制変換
-		rad -= (kReverceRad + kReverceRad);
-	}
-
-
-	next_pos = VAdd(next_pos, VGet(0.f, (swing * sinf(rad)), 0.f));
-
-	return next_pos;
-}
-
 /*--------public---------*/
 
 void WeaponUI::Update()
@@ -220,7 +199,7 @@ void WeaponUI::Update()
 
 	circle_gauss_->Down();
 
-	gausser_->Update(VGet(kGameWidth * 0.5f, kGameHeight * 0.5f, 0.f), kGameWidth, kGameHeight, circle_gauss_->GetHandle(), kPixcelWidthHigh, kCircleGaussParam);;
+	Gauss::GetInstance().Update(VGet(kGameWidth * 0.5f, kGameHeight * 0.5f, 0.f), kGameWidth, kGameHeight, circle_gauss_->GetHandle(), kPixelWidthHigh, kCircleGaussParam);
 	
 	sub_screen_->Up();			// screenを起動
 

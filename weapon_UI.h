@@ -1,16 +1,13 @@
 #pragma once
-#define _USE_MATH_DEFINES
-#include<math.h>
+#include"const_rad.h"
 
 #include"normal_sub_screen.h"
 #include"UI_data.h"
-#include"gauss.h"
+
 class WeaponUI
 {
 private:
 	
-	//一度がどんくらいか
-	const float kOneRad = static_cast<float>(M_PI / 180);
 
 	const float kBatVibrationSpeed = 5;
 	const float kWarprodVibrationSpeed = 7;
@@ -26,9 +23,6 @@ private:
 	const VECTOR kInitBatScale				= VGet(2.f, 2.f, 2.f);
 	const VECTOR kInitWarprodScale			= VGet(0.8f, 0.8f, 0.8f);
 
-	const int kPixcelWidthHigh			= 32;
-	const int kPixcelWidthMiddle		= 16;
-	const int kPixcelWidthLow			= 8;
 
 	const int kCircleGaussParam		= 1000;
 	
@@ -45,7 +39,6 @@ private:
 	std::shared_ptr<NormalSubScreen> sub_screen_;
 	std::shared_ptr<NormalSubScreen> circle_gauss_;
 
-	std::shared_ptr<Gauss> gausser_;
 
 	VECTOR bat_pos_;
 	VECTOR warprod_pos_;
@@ -74,9 +67,6 @@ private:
 	//すべてのsetをおこなうばしょ　
 	void SetAll();
 
-
-	// 上下に揺らす処理(各スピードによって変える)
-	VECTOR UpDown(const VECTOR& init_pos, float& rad, float speed, float swing);
 
 public:
 

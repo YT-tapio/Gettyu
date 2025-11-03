@@ -606,6 +606,7 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 
 		}
 
+		/*
 		//‚³‚«‚É‚©‚×‚É“–‚½‚Á‚Ä‚¢‚é‚Ì‚È‚çŒŸ’m‚³‚¹‚Ä‚¨‚­
 		for (int i = 0; i < hit_dim.HitNum; i++)
 		{
@@ -625,6 +626,8 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 				floor_num_++;
 			}
 		}
+		*/
+		
 		
 
 		for (int k = 0; k < kHitTryNum; k++)

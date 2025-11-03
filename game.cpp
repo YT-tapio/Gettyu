@@ -2,6 +2,7 @@
 #include"input.h"
 #include"debug.h"
 #include"keyconfig.h"
+#include"mask.h"
 Game::Game()
     :BaseScene(SceneName::kGame)
 {
@@ -174,11 +175,10 @@ void Game::Update(SceneName& name)
     //マウスでの操作
     brain_->Update(camera_->GetTargetPos(), camera_->GetPos(), player_);
 
-
     //UIのアップデート
     weapon_UI_->Update();
     super_attack_UI_->Update();
-
+    
 
     camera_->Update(brain_->GetVelocity(), brain_->GetTargetVelocity());
     effect_player_->Update();

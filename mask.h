@@ -1,13 +1,22 @@
 #pragma once
 #include"DxLib.h"
 
+struct MaskData
+{
+	VECTOR pos;
+	int width;
+	int height;
+	int color;
+};
+
+
 class MaskCreator
 {
 private:
 
 	//‚©‚Ô‚Á‚Ä‚¢‚é•¨‚ð•`‰æ‚·‚é‚Ì‚©‚»‚ê‚Æ‚à‚©‚Ô‚Á‚Ä‚¢‚é‚à‚ÌˆÈŠO‚©
 	bool is_in_ = FALSE;
-
+	bool is_init_ = FALSE;
 	MaskCreator();
 
 public:

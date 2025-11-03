@@ -5,12 +5,17 @@ class Gauss
 {
 private:
 
-	
+	Gauss();
 public:
 
-	Gauss();
+	static Gauss& GetInstance()
+	{
+		static Gauss instance;
+		return instance;
+	}
 
-	~Gauss();
+	Gauss(const Gauss&) = delete;
+	Gauss& operator = (const Gauss&) = delete;
 
 	void Update(const VECTOR& pos, int width, int height, int handle, int pixel_width, int param);
 

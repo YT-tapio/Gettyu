@@ -5,7 +5,7 @@
 #include"DxLib.h"
 #include"EffekseerForDxLib.h"
 #include"super_attack.h"
-
+#include"super_attack_cool_time.h"
 
 SuperAttack::SuperAttack(const VECTOR& pos,const char*  file_path)
 	: now_situation_num_(0)
@@ -64,7 +64,7 @@ void SuperAttack::Update()
 		is_ready_ = FALSE;
 	}
 
-	
+	SuperAttackCoolTime::GetInstance().SetRatio(cool_time_->GetTimeRatio());
 
 }
 
