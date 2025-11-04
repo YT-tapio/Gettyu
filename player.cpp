@@ -576,7 +576,6 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 		if (now_weapon_name_ >= WeaponName::kWizardStaff)
 		{
 			Situation::GetInstance().SetSituation(SituationName::kVacuum);
-			sound_vibration_->Add(kVacuumSound);
 		}
 		else
 		{
@@ -1048,6 +1047,7 @@ void Player::IsHitEnemy(BaseEnemy* enemy, bool& got)
 			super_weapon_spin_effect_->SetPos(weapon_->GetPos());
 			super_weapon_spin_effect_->Play();
 			Vibration(kVacuumVibration);
+			sound_vibration_->Add(kVacuumSound);
 			is_vacuum_ = TRUE;
 		}
 		else
@@ -1056,7 +1056,6 @@ void Player::IsHitEnemy(BaseEnemy* enemy, bool& got)
 			if (Situation::GetInstance().GetSituationName() == SituationName::kVacuum)
 			{
 				Situation::GetInstance().SetSituation(SituationName::kNothing);
-				//printfDx("1");
 			}
 			is_vacuum_ = FALSE;
 		}
@@ -1137,8 +1136,8 @@ void Player::IsHitEnemy(BaseEnemy* enemy, bool& got)
 
 void Player::Vibration(const VibrationData& data)
 {
-	//ほしいのは時間と、振動の強さ
-	//パッドしんどう
+	// ほしいのは時間と、振動の強さ
+	// パッドしんどう
 	StartJoypadVibration(Input::GetInstance().GetPadNom(), data.power, data.time, -1);
 }
 

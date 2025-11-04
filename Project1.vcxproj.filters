@@ -211,6 +211,12 @@
     <Filter Include="ソース ファイル\Singleton\super_attack_cool_time">
       <UniqueIdentifier>{c32bdc0a-c176-40ba-a684-b50ae30f2396}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\UI\data">
+      <UniqueIdentifier>{cdec7ff1-29e3-4841-a0fe-90d6ceb8624e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\UI\weapon_UI">
+      <UniqueIdentifier>{313456fa-1676-420b-8c40-dfcbcfea0694}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -378,9 +384,6 @@
     <ClCompile Include="navigation.cpp">
       <Filter>ソース ファイル\AI\navigation</Filter>
     </ClCompile>
-    <ClCompile Include="weapon_UI.cpp">
-      <Filter>ソース ファイル\UI</Filter>
-    </ClCompile>
     <ClCompile Include="normal_sub_screen.cpp">
       <Filter>ソース ファイル\sub_screen\Normal</Filter>
     </ClCompile>
@@ -393,14 +396,17 @@
     <ClCompile Include="super_attac_UI.cpp">
       <Filter>ソース ファイル\UI\super_atackk</Filter>
     </ClCompile>
-    <ClCompile Include="UI_data.cpp">
-      <Filter>ソース ファイル\UI</Filter>
-    </ClCompile>
     <ClCompile Include="mask.cpp">
       <Filter>ソース ファイル\Singleton\mask</Filter>
     </ClCompile>
     <ClCompile Include="super_attack_cool_time.cpp">
       <Filter>ソース ファイル\Singleton\super_attack_cool_time</Filter>
+    </ClCompile>
+    <ClCompile Include="UI_data.cpp">
+      <Filter>ソース ファイル\UI\data</Filter>
+    </ClCompile>
+    <ClCompile Include="weapon_UI.cpp">
+      <Filter>ソース ファイル\UI\weapon_UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -581,14 +587,8 @@
     <ClInclude Include="navigation.h">
       <Filter>ソース ファイル\AI\navigation</Filter>
     </ClInclude>
-    <ClInclude Include="weapon_UI.h">
-      <Filter>ソース ファイル\UI</Filter>
-    </ClInclude>
     <ClInclude Include="normal_sub_screen.h">
       <Filter>ソース ファイル\sub_screen\Normal</Filter>
-    </ClInclude>
-    <ClInclude Include="UI_data.h">
-      <Filter>ソース ファイル\UI</Filter>
     </ClInclude>
     <ClInclude Include="gauss.h">
       <Filter>ソース ファイル\Singleton\gauss</Filter>
@@ -610,6 +610,12 @@
     </ClInclude>
     <ClInclude Include="const_rad.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="UI_data.h">
+      <Filter>ソース ファイル\UI\data</Filter>
+    </ClInclude>
+    <ClInclude Include="weapon_UI.h">
+      <Filter>ソース ファイル\UI\weapon_UI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

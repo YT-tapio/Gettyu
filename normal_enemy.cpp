@@ -104,17 +104,21 @@ void NormalEnemy::AddAnim()
 	//アニメーションスピード
 	const float kAnimationWalkSpeed = 3.f;
 	const float kAnimationSurpriseSpeed = 10.f;
+	const float kAnimationFastRunSpeed = 5.f;
 	//各アニメーションを生成する
 
 	AnimationData walk;
 	AnimationData surprise;
-
+	AnimationData fast_run;
+	
 	//アニメーションをロード
 	Load(walk, "data/model/character/enemy/animation/Walking.mv1", AnimationType::kWalk, model_, 1, kAnimationWalkSpeed);
 	Load(surprise, "data/model/character/enemy/animation/Joyful_Jump.mv1", AnimationType::kSurprise, model_, 1, kAnimationSurpriseSpeed);
+	Load(fast_run, "data/model/character/enemy/animation/Standard_Run.mv1", AnimationType::kFastRun, model_, 1, kAnimationFastRunSpeed);
 
 	animation_->Add(walk);
 	animation_->Add(surprise);
+	animation_->Add(fast_run);
 }
 
 

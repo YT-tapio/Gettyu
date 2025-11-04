@@ -2,6 +2,7 @@
 #include"gauss.h"
 #include"gauss_data.h"
 #include"super_attack_cool_time.h"
+#include"FPS.h"
 
 SuperAttackUI::SuperAttackUI()
 {
@@ -71,6 +72,7 @@ SuperAttackUI::SuperAttackUI()
 	body_screen_			= std::make_shared<NormalSubScreen>(kInitScreenPos, static_cast<int>(kGameWidth), static_cast<int>(kGameHeight), static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 10,TRUE);
 	back_screen_				= std::make_shared<NormalSubScreen>(kInitScreenPos, static_cast<int>(kGameWidth), static_cast<int>(kGameHeight), static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0,FALSE);
 	weapon_screen_		= std::make_shared<NormalSubScreen>(kInitWeaponScreenPos, static_cast<int>(kGameWidth), static_cast<int>(kGameHeight), static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0, FALSE);
+	effect_screen_			= std::make_shared<NormalSubScreen>(kInitScreenPos, static_cast<int>(kGameWidth), static_cast<int>(kGameHeight), static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0, FALSE);
 
 	if (kGaugeBackHandle == -1)
 	{
@@ -96,7 +98,7 @@ SuperAttackUI::SuperAttackUI()
 	body_screen_->SetIsDisp(TRUE);
 	back_screen_->SetIsDisp(TRUE);
 	weapon_screen_->SetIsDisp(TRUE);
-
+	effect_screen_->SetIsDisp(TRUE);
 	//どのくらい大きくするかを決定
 	frame_target_width_ = 0.f;
 	frame_target_height_ = 0.f;
@@ -110,7 +112,6 @@ SuperAttackUI::SuperAttackUI()
 	is_size_up_ = FALSE;
 	is_size_down_ = FALSE;
 	is_ready_ = FALSE;
-
 }
 
 
@@ -119,6 +120,7 @@ SuperAttackUI::~SuperAttackUI()
 	DeleteGraph(kGaugeFrameHandle);
 	DeleteGraph(kGaugeBodyHandle);
 	DeleteGraph(kGaugeBackHandle);
+	//delete ready_effect_;
 }
 
 
@@ -147,8 +149,6 @@ void SuperAttackUI::SetMaskSize()
 	{
 		is_ready_ = FALSE;
 	}
-
-
 }
 
 
@@ -227,42 +227,43 @@ void SuperAttackUI::SizeDownInit()
 void SuperAttackUI::Update()
 {
 	//更新処理
-
+	
 
 	SetMaskSize();
 
 	SetGaugeSizeUp();
 	
 	SetGaugeSizeDown();
-
+	
 	//ここでがぞうのdraw(screenを起動してから)
 
+	//backscreen
 	back_screen_->Up();
 	DrawUIGraph(back_data_);
 	back_screen_->Down();
 
+	//framescreen
 	frame_screen_->Up();
 	DrawUIGraph(frame_data_);
 	frame_screen_->Down();
 
+	//bodyscreen
 	body_screen_->Up();
-
 	DrawUIGraph(body_data_);
 	DrawMaskBox(gauge_mask_data_);
 	body_screen_->Down();
 
+
+
+	//武器の表示
 	weapon_screen_->Up();
 	auto light_dir = GetLightDirection();
 	SetLightDirection(VGet(0.f, 0.f, 1.f));
 	Draw3DModel(weapon_data_);
 	SetLightDirection(light_dir);
-
 	weapon_screen_->Down();
 
-
 	Gauss::GetInstance().Update(VGet((kGameWidth * 0.5f), (kGameHeight * 0.5f), 0.f), kGameWidth, kGameHeight, back_screen_->GetHandle(), kPixelWidthMiddle, kBackGaussParam);
-	
-	
 }
 
 void SuperAttackUI::Draw()
@@ -271,5 +272,6 @@ void SuperAttackUI::Draw()
 	body_screen_->Draw();			//削れる本体
 	frame_screen_->Draw();		//外枠
 	weapon_screen_->Draw();
+	effect_screen_->Draw();
 
 }

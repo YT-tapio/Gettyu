@@ -9,3 +9,8 @@ void SuperAttackCoolTime::SetRatio(const float& ratio)
 {
 	ratio_ = ratio;
 }
+
+void SuperAttackCoolTime::SetIsActive(const bool& flag)
+{
+	is_active_ = flag;
+}

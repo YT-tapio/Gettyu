@@ -15,6 +15,7 @@ SuperAttack::SuperAttack(const VECTOR& pos,const char*  file_path)
 	, play_handle_(-1)
 	, is_play_(FALSE)
 	, is_ready_(FALSE)
+	, is_active_(FALSE)
 	, delta_time_(0.f)
 {
 	effect_ = new Effect("data/effect/Effekseer01/Laser02.efkefc", effect_pos_, VGet(static_cast<float>((M_PI / 180) * -90),
@@ -26,11 +27,9 @@ SuperAttack::SuperAttack(const VECTOR& pos,const char*  file_path)
 	effect_end_ = new Effect("data/effect/Pierre01/Flame.efkefc", effect_pos_, VGet(0.0f,
 		0.0f, 0.0f), 7.5f, 5.0f, 200.0f, FALSE);
 
-
-
 	// conditiontimerのsetup
 	cool_time_ = std::make_shared<ConditionTimer>(kCoolTimeMax);
-
+	active_time_ = std::make_shared<ConditionTimer>(kActiveTimeMax);
 }
 
 
@@ -53,7 +52,7 @@ void SuperAttack::Update()
 {
 
 	cool_time_->Update();
-
+	SuperAttackCoolTime::GetInstance().SetRatio(cool_time_->GetTimeRatio());
 	
 	if (cool_time_->GetIsEnd())
 	{
@@ -64,8 +63,16 @@ void SuperAttack::Update()
 		is_ready_ = FALSE;
 	}
 
-	SuperAttackCoolTime::GetInstance().SetRatio(cool_time_->GetTimeRatio());
+	
 
+	if (is_active_)
+	{
+		active_time_->Update();
+		SuperAttackCoolTime::GetInstance().SetRatio(cool_time_->GetTimeRatio());
+	}
+
+	// 必殺技発動中は別のタイマーを起動させるplayerから持ってこさせる
+	
 }
 
 void SuperAttack::EffectUpdate()

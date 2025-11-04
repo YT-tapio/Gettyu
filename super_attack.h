@@ -9,13 +9,15 @@ private:
 	//ê–Ê•Ï‚í‚è‚ª‰½ŒÂ‚ ‚é‚©
 	const int kSwitchSituationNumMax = 4;
 
-	const float kCoolTimeMax = 10.f;
+	const float kCoolTimeMax	= 20.f;
+	const float kActiveTimeMax = 10.f;
 
 	Effect* effect_;
 	Effect* effect_start_;
 	Effect* effect_end_;
 
 	std::shared_ptr<ConditionTimer> cool_time_;
+	std::shared_ptr<ConditionTimer> active_time_;
 
 	int now_situation_num_ = 0;
 
@@ -31,9 +33,8 @@ private:
 
 	// Ä¶
 	bool is_play_;
-
 	bool is_ready_;
-
+	bool is_active_;
 
 public:
 
@@ -44,8 +45,6 @@ public:
 	~SuperAttack();
 
 	void Init();
-
-
 
 	void Update();
 

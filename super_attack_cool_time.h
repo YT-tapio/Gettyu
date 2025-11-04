@@ -1,11 +1,11 @@
 #pragma once
-
+#include"DxLib.h"
 class SuperAttackCoolTime
 {
 private:
 
 	float ratio_ = 0.f;
-
+	bool is_active_ = FALSE;
 	SuperAttackCoolTime();
 
 public:
@@ -22,6 +22,9 @@ public:
 
 	void SetRatio(const float& ratio);
 
+	void SetIsActive(const bool& flag);
+
 	const float GetRatio() const { return ratio_; }
 
+	const bool GetIsActive() const { return is_active_; }
 };

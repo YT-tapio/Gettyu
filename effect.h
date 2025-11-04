@@ -50,7 +50,7 @@ public:
 	void SetIsPlay(bool flag) { if (flag != is_play_) is_play_ = flag; }
 
 
-	void SetDeltaTime(float delta_time) { delta_time_ = delta_time; }
+	void SetDeltaTime(const float delta_time) { delta_time_ = delta_time; }
 
 
 

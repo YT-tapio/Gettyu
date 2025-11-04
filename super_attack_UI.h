@@ -5,6 +5,8 @@
 #include"mask.h"
 #include"normal_sub_screen.h"
 #include"const_rad.h"
+#include"effect.h"
+#include"EffekseerForDXLib.h"
 
 class SuperAttackUI
 {
@@ -33,6 +35,7 @@ private:
 	const VECTOR kInitWeaponScale		= VGet(1.5f, 1.5f, 1.5f);
 	const VECTOR kInitWeaponRot		= VGet(kOneRad * 90.f, kOneRad * 0.f, kOneRad * 135.f);
 
+
 	const int disp_width_					= 700;
 	const int disp_height_					= 600;
 
@@ -47,7 +50,10 @@ private:
 	const float kSizeUpSpeed		= 65.f;
 	const float kSizeDownSpeed	= 40.f;
 
-	
+
+	const float kReadyEffectSpeed			= 1.f;
+	const float kReadyEffectSize			= 100.f;
+	const float kReadyEffectMaxCount	= 10.f;
 
 	int frame_target_width_;
 	int frame_target_height_;
@@ -63,13 +69,22 @@ private:
 	UIGraphData frame_data_;
 	UIGraphData body_data_;
 	UIGraphData back_data_;
-	
+
 	MaskData gauge_mask_data_;
 
 	std::shared_ptr<NormalSubScreen> frame_screen_;		// ŠO˜g
 	std::shared_ptr<NormalSubScreen> body_screen_;			// –{‘Ì
-	std::shared_ptr<NormalSubScreen> back_screen_;			//”wŒi
-	std::shared_ptr<NormalSubScreen> weapon_screen_;		//•KE‹Z‚Ì•Ší‚ğ•\¦
+	std::shared_ptr<NormalSubScreen> back_screen_;			// ”wŒi
+	std::shared_ptr<NormalSubScreen> weapon_screen_;		// •KE‹Z‚Ì•Ší‚ğ•\¦
+	std::shared_ptr<NormalSubScreen> effect_screen_;		// effect‚Ì•`‰æ‚ğs‚¤
+	std::shared_ptr<NormalSubScreen> button_screen_;		// ‘Î‰‚µ‚Ä‚¢‚é‘€ì‚Ìƒ{ƒ^ƒ“‚ğ•\¦
+
+	//Effect* ready_effect_;
+	
+	//UI‚É‰ˆ‚í‚·
+	VECTOR ready_effect_pos_		= VGet(0.f, 0.f, 0.f);
+	VECTOR ready_effect_rot_		= VGet(0.f, 0.f, 0.f);
+
 
 	bool is_size_up_;
 	bool is_size_down_;

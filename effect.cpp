@@ -2,7 +2,6 @@
 #include"EffekseerForDxLib.h"
 #include"effect.h"
 
-
 Effect::Effect(const char* file_path, const VECTOR& pos, const VECTOR& rot, 
 	float speed, float size, float count_max, bool loop)
 	: pos_(pos)
