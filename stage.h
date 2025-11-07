@@ -48,7 +48,7 @@ private:
 	VECTOR CheckHitWithFloor(Player& player, const VECTOR& check_position);
 
 	// •Çor°‚Ìî•ñ‚ğó‚¯æ‚Á‚Ä’²®‚µ‚½pos‚ğ•Ô‚·
-	VECTOR CheckEntityCollisionFixedPOs(Player& player, MV1_COLL_RESULT_POLY* entity, int hit_num,const VECTOR& pos, const VECTOR& vel);
+	VECTOR CheckEntityCollisionFixedPos(Player& player, MV1_COLL_RESULT_POLY* entity, int hit_num,const VECTOR& pos, const VECTOR& vel);
 
 public:
 
@@ -57,6 +57,8 @@ public:
 	~Stage();
 
 	void Draw() override;
+
+	void Debug() override;
 
 	VECTOR CheckCollision(Player& player, const VECTOR& velocity);
 

@@ -48,6 +48,8 @@ Stage::Stage(int model_handle, VECTOR pos, float scale)
 
 
 	MV1SetMatrix(model_, matrix_);
+
+	next_to_old_cap_.div_num = 20.f;
 }
 
 
@@ -280,16 +282,11 @@ VECTOR Stage::CheckHitWithFloor(Player& player, const VECTOR& check_position)
 }
 
 
-VECTOR Stage::CheckEntityCollisionFixedPOs(Player& player, MV1_COLL_RESULT_POLY* entity, int hit_num, const VECTOR& pos, const VECTOR& vel)
+VECTOR Stage::CheckEntityCollisionFixedPos(Player& player, MV1_COLL_RESULT_POLY* entity, int hit_num, const VECTOR& pos, const VECTOR& vel)
 {
 	VECTOR old_pos = pos;
 	VECTOR offset_vel =vel;
 	VECTOR next_pos = VAdd(old_pos, offset_vel);
-
-	//壁に当たっているのを検知する
-	
-	//printfDx("x:%.2f,y:%.2f,z:%.2f\n", old_pos.x, old_pos.y, old_pos.z);
-	//printfDx("y:%.2f\n",old_pos.y);
 
 	auto old_player_capsule = player.GetCapsuleData();
 	auto next_player_capsule = old_player_capsule;
@@ -501,6 +498,12 @@ void Stage::Draw()
 }
 
 
+void Stage::Debug()
+{
+	DrawCapsule3D(next_to_old_cap_.start_pos, next_to_old_cap_.end_pos, next_to_old_cap_.r, next_to_old_cap_.div_num, GetColor(255, 255, 255), GetColor(255, 255, 255), FALSE);
+}
+
+
 VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 {
 	VECTOR old_pos = player.GetPos();
@@ -509,6 +512,14 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 	
 	//壁に当たっているのを検知する
 	bool is_hit_wall = FALSE;
+
+
+	// wall_num_,floor_num_の初期化
+	wall_num_ = 0;
+	floor_num_ = 0;
+
+	// 今の当たり判定は未来のカプセルのとこだけになっているので、カプセルを大ききくしたやつにする(nowとnextの合計のもの)
+
 
 	//printfDx("x:%.2f,y:%.2f,z:%.2f\n", old_pos.x, old_pos.y, old_pos.z);
 	//printfDx("y:%.2f\n",old_pos.y);
@@ -606,8 +617,9 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 
 		}
 
-		/*
+		
 		//さきにかべに当たっているのなら検知させておく
+		
 		for (int i = 0; i < hit_dim.HitNum; i++)
 		{
 			auto poly = hit_dim.Dim[i];
@@ -625,8 +637,11 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 				floor_[floor_num_] = &poly;
 				floor_num_++;
 			}
+
 		}
-		*/
+		
+
+		
 		
 		
 
@@ -640,8 +655,8 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 
 
 				//衝突しているとき
-				if (HitCheck_Capsule_Triangle(next_player_capsule.start_pos, next_player_capsule.end_pos
-					, next_player_capsule.r, poly.Position[0], poly.Position[1], poly.Position[2]))
+				if (HitCheck_Capsule_Triangle(next_to_old_cap_.start_pos, next_to_old_cap_.end_pos
+					, next_to_old_cap_.r, poly.Position[0], poly.Position[1], poly.Position[2]))
 				{
 
 					//中点を出す
@@ -712,17 +727,15 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 							auto reverce_norm = VScale(poly.Normal, -1);
 
 							//正射影ベクトルを出す
-							poly_to_old_proj_vec = GetProjectionVector(reverce_norm, poly_to_old);
+							poly_to_old_proj_vec = GetProjectionVector(poly.Normal, poly_to_old);
 
 							//
-							poly_to_next_proj_vec = GetProjectionVector(poly.Normal, poly_to_next);
+							poly_to_next_proj_vec = GetProjectionVector(reverce_norm, poly_to_next);
 
 							// 各ベクターの大きさを出す
-							float poly_to_old_size = fabs((sqrt((poly_to_old_proj_vec.x * poly_to_old_proj_vec.x) +
-								(poly_to_old_proj_vec.y * poly_to_old_proj_vec.y) + (poly_to_old_proj_vec.z * poly_to_old_proj_vec.z))));
+							float poly_to_old_size = VSize(poly_to_old_proj_vec);
 
-							float poly_to_next_size = fabs((sqrt((poly_to_next_proj_vec.x * poly_to_next_proj_vec.x) +
-								(poly_to_next_proj_vec.y * poly_to_next_proj_vec.y) + (poly_to_next_proj_vec.z * poly_to_next_proj_vec.z))));
+							float poly_to_next_size = VSize(poly_to_next_proj_vec);
 
 							// その比をみて、全体の移動量にかける。調べたい比 単体/全体
 							float ratio = fabs(poly_to_old_size) / (fabs(poly_to_old_size) + poly_to_next_size);

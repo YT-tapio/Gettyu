@@ -22,7 +22,7 @@ void WayPoint::Debug(std::vector<std::shared_ptr<WayPoint>> way_points)
 	int count = 0;
 	// waypointoの可視化
 	DrawSphere3D(pos_, 1.f, 20, GetColor(255, 255, 255), GetColor(255, 255, 255), TRUE);
-	DrawFormatString(0, Debug::GetInstance().GetCurrentNum() * Debug::GetInstance().GetFontSize(), GetColor(0, 0, 0), "know_num : ");
+	DrawFormatString(0, Debug::GetInstance().GetCurrentNum() * Debug::GetInstance().GetFontSize(), GetColor(0, 0, 0), "I %d know_num : ",num_);
 
 	//認識している数を確認
 	for (const auto& neighbor : neighbors_)
@@ -30,7 +30,7 @@ void WayPoint::Debug(std::vector<std::shared_ptr<WayPoint>> way_points)
 		max_count++;
 
 		//認識しているやつを描画
-		DrawFormatString(Debug::GetInstance().GetFontSize() * 5 + Debug::GetInstance().GetFontSize() * max_count, Debug::GetInstance().GetCurrentNum() * Debug::GetInstance().GetFontSize(), GetColor(0, 0, 0), "%d ", neighbor);
+		DrawFormatString(Debug::GetInstance().GetFontSize() * 6 + Debug::GetInstance().GetFontSize() * max_count, Debug::GetInstance().GetCurrentNum() * Debug::GetInstance().GetFontSize(), GetColor(0, 0, 0), "%d ", neighbor);
 	}
 
 	Debug::GetInstance().Add();

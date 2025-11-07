@@ -255,6 +255,7 @@ void Game::Draw()
 
     if (Debug::GetInstance().GetDisp())
     {
+        stage_->Debug();
         player_->Debug();
         Input::GetInstance().Debug();
         enemy_manager_->Debug();

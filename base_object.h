@@ -45,7 +45,7 @@ public:
 
 	virtual void Draw() {};
 
-
+	virtual void Debug() {};
 
 	/*-----------------*/
 
