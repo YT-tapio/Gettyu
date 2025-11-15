@@ -41,6 +41,8 @@ private:
 	// 検出されたポリゴンが壁ポリゴン( ＸＺ平面に垂直なポリゴン )か床ポリゴン( ＸＺ平面に垂直ではないポリゴン )かを判断し、保存する
 	void AnalyzeWallAndFloor(MV1_COLL_RESULT_POLY_DIM hit_dim, const VECTOR& check_position);
 
+	void MakeCollCheckCapsule(CapsuleData old_cap, CapsuleData next_cap);
+
 	// 壁ポリゴンとの当たりをチェックし、補正すべき移動ベクトルを返す
 	VECTOR CheckHitWithWall(Player& player, const VECTOR& check_position);
 

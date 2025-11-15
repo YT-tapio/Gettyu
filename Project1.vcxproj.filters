@@ -217,6 +217,9 @@
     <Filter Include="ソース ファイル\UI\weapon_UI">
       <UniqueIdentifier>{313456fa-1676-420b-8c40-dfcbcfea0694}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\calculation">
+      <UniqueIdentifier>{d7d7ecdd-711e-40d6-a712-6cc5dddf5639}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -407,6 +410,9 @@
     </ClCompile>
     <ClCompile Include="weapon_UI.cpp">
       <Filter>ソース ファイル\UI\weapon_UI</Filter>
+    </ClCompile>
+    <ClCompile Include="calculation.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

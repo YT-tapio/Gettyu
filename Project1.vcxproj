@@ -147,6 +147,7 @@
     <ClCompile Include="base_sub_screen.cpp" />
     <ClCompile Include="bat.cpp" />
     <ClCompile Include="brain.cpp" />
+    <ClCompile Include="calculation.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="collision.cpp" />
     <ClCompile Include="condition_timer.cpp" />

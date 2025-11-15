@@ -1,12 +1,10 @@
 #pragma once
+#include<iostream>
 
 //多様性を持たせるテンプレート
 template <class Type>
-
 //計算の関数
-
 //x剰の結果を出す
-
 Type TheNumPower(const Type& num, int power)
 {
 	Type value = 1;
@@ -18,5 +16,4 @@ Type TheNumPower(const Type& num, int power)
 
 	return value;
 }
-
 

@@ -16,7 +16,6 @@ Navigation::Navigation()
 
 
 	//2ŒÂ–Ú
-
 	neighbors.push_back(0);
 	neighbors.push_back(2);
 	way_points_.push_back(std::make_shared<WayPoint>(VGet(10, 0, 0), num, neighbors));
