@@ -14,8 +14,12 @@ VECTOR Lerp(const VECTOR& start_pos,const VECTOR& now_pos, const VECTOR& target_
 
 	//タイマーをカウント(俺のdelta_timeは一桁ずれてしまっているので0.1をかけて調整している)
 	timer += (FPS::GetInstance().GetDeltaTime() * 0.1f);
-	//たいまーがすぎたら
-	timer = (timer > max_time) ? max_time : timer;
+	
+	if (timer > max_time)
+	{
+		timer = max_time;
+		flag = FALSE;
+	}
 
 
 	//時間の比を作る
@@ -27,8 +31,10 @@ VECTOR Lerp(const VECTOR& start_pos,const VECTOR& now_pos, const VECTOR& target_
 		time_ratio = timer / max_time;
 	}
 
+	VECTOR test = VScale(dist, time_ratio);
+
 	//比をdistにかけてそれを保管を開始した位置にタス
-	VECTOR next_pos = VAdd(start_pos,VScale(dist, time_ratio));
+	VECTOR next_pos = VAdd(start_pos,test);
 
 
 	vel = VSub(next_pos, now_pos);

@@ -6,6 +6,7 @@
 #include"normal_enemy.h"
 #include"situation.h"
 #include"rot_function.h"
+#include"Lerp.h"
 
 NormalEnemy::NormalEnemy(const TCHAR* model_path, const VECTOR& pos, const VECTOR& scale, const VECTOR& dir, Effect* get_effect, Effect* got_effect, float speed, float fleeping_speed, AlertState alert, float fov)
 	:BaseEnemy(MV1LoadModel(model_path),pos,scale,dir,get_effect,got_effect,speed,fleeping_speed,alert,fov)
@@ -16,8 +17,10 @@ NormalEnemy::NormalEnemy(const TCHAR* model_path, const VECTOR& pos, const VECTO
 	collision_data_.ver = 0.0;
 	total_vel_ = VGet(0, 0, 0);
 	//反転するときの値
+	lerp_timer_ = 0.f;
 	target_rot_ = 0.f;
 	is_return_ = FALSE;
+	lerp_flag_ = FALSE;
 }
 
 NormalEnemy::~NormalEnemy()
@@ -44,13 +47,12 @@ void NormalEnemy::PatrollingInit(std::shared_ptr<Player> player)
 	target_rot_ = rot_.y;
 	is_fleeping_ = FALSE;
 
-	
-
 	// ここでどのwaypointに向かわせるかの判定を行う
 	// どんな関数を用意する?
 	// どこに行くかを決めて、dirを返してくれる関数を用意する
 	dir_ = DecideNextPlace();
 
+	lerp_flag_ = TRUE;
 	// 線形保管で移動するのでposを保存
 	start_pos_ = pos_;
 	now_anim_type_ = AnimationType::kWalk;
@@ -194,10 +196,11 @@ void NormalEnemy::Patrolling()
 	VECTOR vel = VGet(0,0,0);
 
 	//線形保管でよくね
-
-	vel = VScale(dir_, speed_);
-
-	vel = VScale(vel, delta_time_);
+	//velにlerpのやつを代入
+	if (lerp_flag_)
+	{
+		vel = Lerp(pos_, start_pos_, target_pos_, kMoveTimer, lerp_timer_, lerp_flag_);
+	}
 
 	velocity_ = VAdd(velocity_, vel);
 	total_vel_ = VAdd(total_vel_,vel);

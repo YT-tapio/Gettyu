@@ -16,15 +16,18 @@ private:
 	const float kRad = static_cast<float>(M_PI / 180);
 	const float kReverceRad = kRad * 180;		//”½“]‚Ì’l
 
+	const float kMoveTimer = 1.f;
 
 	VECTOR total_vel_;
 
 	//”½“]‚·‚é‚Æ‚«‚Ì’l
 	float target_rot_ = 0.f;
 
+	float lerp_timer_;
 	//”½“]‚·‚é‚©‚Ç‚¤‚©
 	bool is_return_ = FALSE;
 
+	bool lerp_flag_;
 
 public:
 
