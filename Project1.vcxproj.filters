@@ -220,6 +220,9 @@
     <Filter Include="ソース ファイル\calculation">
       <UniqueIdentifier>{d7d7ecdd-711e-40d6-a712-6cc5dddf5639}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\lerp">
+      <UniqueIdentifier>{c66272aa-7e64-422d-be5d-def24790f329}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -413,6 +416,9 @@
     </ClCompile>
     <ClCompile Include="calculation.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="lerp.cpp">
+      <Filter>ソース ファイル\lerp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -622,6 +628,9 @@
     </ClInclude>
     <ClInclude Include="weapon_UI.h">
       <Filter>ソース ファイル\UI\weapon_UI</Filter>
+    </ClInclude>
+    <ClInclude Include="lerp.h">
+      <Filter>ソース ファイル\lerp</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

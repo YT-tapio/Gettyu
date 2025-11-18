@@ -10,3 +10,11 @@ void Debug::CheckChangeDisp()
 		disp_ = !disp_;
 	}
 }
+
+
+
+void Debug::VectorDraw(const VECTOR& vec)
+{
+	DrawFormatString(0, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), kDebugColor, "neighbors_pos : x % .2f,y % .2f,z % .2f", vec.x, vec.y, vec.z);
+	Debug::GetInstance().Add();
+}

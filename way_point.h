@@ -3,6 +3,7 @@
 #include<vector>
 
 #include"DxLib.h"
+#include"sub_screen.h"
 
 class WayPoint
 {
@@ -12,6 +13,10 @@ private:
 	int num_;								// 識別番号
 
 	std::vector<int> neighbors_;			// 知っている番号たち
+
+	//デバック表記を分かりやすく
+
+
 public:
 
 	WayPoint(const VECTOR& pos, int num, std::vector<int> neighbors);
@@ -25,5 +30,5 @@ public:
 
 	const VECTOR GetPos() const { return pos_; }
 
-	const std::vector<int> GetFriend() const { return neighbors_; }
+	std::vector<int> GetFriend() { return neighbors_; }
 };

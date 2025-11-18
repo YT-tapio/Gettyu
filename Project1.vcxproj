@@ -162,6 +162,7 @@
     <ClCompile Include="gauss.cpp" />
     <ClCompile Include="get_camera.cpp" />
     <ClCompile Include="input.cpp" />
+    <ClCompile Include="lerp.cpp" />
     <ClCompile Include="line.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mask.cpp" />
@@ -231,6 +232,7 @@
     <ClInclude Include="get_camera.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="keyconfig.h" />
+    <ClInclude Include="lerp.h" />
     <ClInclude Include="line.h" />
     <ClInclude Include="mask.h" />
     <ClInclude Include="mixamo_fram.h" />

@@ -19,6 +19,7 @@ private:
 	
 	void CheckChangeDisp();
 
+	const int kDebugColor = GetColor(0, 0, 0);
 
 public:
 
@@ -52,6 +53,8 @@ public:
 	{
 		CheckChangeDisp();
 	}
+
+	void VectorDraw(const VECTOR& vec);
 
 	/// <summary>
 	/// デバックしてきた数を取得

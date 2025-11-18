@@ -4,6 +4,7 @@
 #include"patrolling.h"
 #include"debug.h"
 #include"animation.h"
+#include"const_rad.h"
 
 BaseEnemy::BaseEnemy(const int model, const VECTOR& pos,
 	const VECTOR& scale, const VECTOR& rot, Effect* get_effect,Effect* got_effect,float speed, float fleeping_speed, AlertState alert, float fov)
@@ -31,6 +32,11 @@ BaseEnemy::BaseEnemy(const int model, const VECTOR& pos,
 	rot_ = rot;
 	velocity_ = VGet(0.f, 0.f, 0.f);
 	scale_ = scale;
+
+	target_pos_ = VGet(0.f, 0.f, 0.f);
+	start_pos_ = VGet(0.f, 0.f, 0.f);
+
+	my_way_point_ = nullptr;
 
 	//dirはrotから求まる
 
@@ -88,6 +94,54 @@ BaseEnemy::~BaseEnemy()
 {
 	//delete get_effect_;
 	//delete got_effect_;
+}
+
+
+VECTOR BaseEnemy::GetNearWayPointPos()
+{
+	auto way_points = navigation_->GetWayPoint();
+
+	VECTOR most_near_pos = VGet(0, 0, 0);
+	// 自分のポジションからwaypointの距離をみて、範囲外なら仲間に入れない
+
+	for (auto& way_point : way_points)
+	{
+		VECTOR pos = way_point->GetPos();
+
+		//1番目は代入させる
+		if (VSize(most_near_pos) == 0)
+		{
+			most_near_pos = pos;
+			my_way_point_ = way_point;
+		}
+
+		//距離を出す
+		float dist = VSize(VSub(pos, pos_));
+		float most_near_dist = VSize(VSub(most_near_pos, pos_));
+
+		//一番近いものよりも近いときはposを更新
+		if (dist < most_near_dist)
+		{
+			most_near_pos = pos;
+			my_way_point_ = way_point;
+		}
+		
+
+	}
+
+	near_way_point_pos_ = most_near_pos;
+	return most_near_pos;
+}
+
+
+VECTOR BaseEnemy::GetNextWayPointDir()
+{
+	VECTOR dir = VGet(0,0,0);
+
+
+
+
+	return dir;
 }
 
 
@@ -246,7 +300,9 @@ void BaseEnemy::Debug(int i)
 		//正面を出す
 		DrawLine3D(pos_, VAdd(pos_, VScale(dir_, 5.f)), GetColor(255, 255, 255));
 		DrawFov();
-
+		
+		//way_pointと結びつける
+		DrawLine3D(near_way_point_pos_, pos_, GetColor(255, 255, 255));
 
 		//enemy名
 		DrawFormatString(0, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), debug_color_, "----------enemy%d----------", i);
@@ -286,6 +342,26 @@ void BaseEnemy::Debug(int i)
 			Debug::GetInstance().Add();
 		}
 
+		
+
+		if (my_way_point_ != nullptr)
+		{
+			DrawFormatString(0, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), debug_color_, "/*--------%dのneighbors--------*/", my_way_point_->GetNum());
+			Debug::GetInstance().Add();
+			auto neighbors = my_way_point_->GetFriend();
+
+			for (auto num : neighbors)
+			{
+				VECTOR neighbors_pos = navigation_->GetWayPointPos(num);
+
+				Debug::GetInstance().VectorDraw(neighbors_pos);
+			}
+		}
+
+		
+
+
+		
 		//navigationの可視化
 		navigation_->Debug();
 
@@ -344,4 +420,19 @@ void BaseEnemy::SetPosIsGot(const VECTOR& pos)
 	pos_ = pos;
 	collision_data_.pos = pos;
 	pos_.y -= collision_data_.r;
+}
+
+VECTOR BaseEnemy::DecideNextPlace()
+{
+	
+	float rot = 0.f;
+	VECTOR dir = VGet(0, 0, 0);
+
+	//近くのwaypointのposを獲得
+	VECTOR near_way_point_pos = GetNearWayPointPos();
+	
+	dir = VNorm(VSub(near_way_point_pos, pos_));
+
+	target_pos_ = near_way_point_pos;
+	return dir;
 }

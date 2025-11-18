@@ -43,6 +43,16 @@ void NormalEnemy::PatrollingInit(std::shared_ptr<Player> player)
 	is_return_ = FALSE;
 	target_rot_ = rot_.y;
 	is_fleeping_ = FALSE;
+
+	
+
+	// ここでどのwaypointに向かわせるかの判定を行う
+	// どんな関数を用意する?
+	// どこに行くかを決めて、dirを返してくれる関数を用意する
+	dir_ = DecideNextPlace();
+
+	// 線形保管で移動するのでposを保存
+	start_pos_ = pos_;
 	now_anim_type_ = AnimationType::kWalk;
 }
 
@@ -181,59 +191,22 @@ void NormalEnemy::Update(std::shared_ptr<Player> player, bool& got)
 
 void NormalEnemy::Patrolling()
 {
-	// この中で散歩させておく
-	// パトロールの方法も変える
-	
-	//最大値(移動量)
-	const float kMaxVel = 20.f;
-	//回転のオフセット時間
-	const float kOffsetTime = 1.f;
-	
-	VECTOR vel = VGet(0, 0, 0);
+	VECTOR vel = VGet(0,0,0);
 
-	//どんだけ歩いているかの確認をする
-	//今までの歩いてきた量を保存
+	//線形保管でよくね
 
-	dir_ = VGet(-sinf(rot_.y), 0.f, -cosf(rot_.y));
 	vel = VScale(dir_, speed_);
+
 	vel = VScale(vel, delta_time_);
-	
-	//ここで判断してあげる
-	if (VSize(total_vel_) >= kMaxVel)
-	{
-		//初期化と反転を行う
-		total_vel_ = VGet(0, 0, 0);
-		//rotの反転
-		target_rot_ = rot_.y + kReverceRad;
 
-		
-		if (target_rot_ >= kReverceRad)
-		{
-			target_rot_ -= (kReverceRad + kReverceRad);
-		}
-
-		
-		
-		is_return_ = TRUE;
-	}
-
-
-	if (is_return_)
-	{
-		if (rot_.y != target_rot_)
-		{
-			CheckReverseRotFunc(rot_.y, target_rot_, delta_time_, kOffsetTime);
-		}
-		else
-		{
-			is_return_ = FALSE;
-		}
-
-		vel = VGet(0.f, 0.f, 0.f);
-		
-	}
 	velocity_ = VAdd(velocity_, vel);
 	total_vel_ = VAdd(total_vel_,vel);
+
+	rot_.y = atan2f(-dir_.x , -dir_.z);
+	
+	// ここでway_pointのcheckを行う
+	// my_way_pointから知っているneighborsに向かわせる
+	// my_way_point付近にいるのを感知する関数を用意
 
 	
 

@@ -5,7 +5,7 @@
 WayPoint::WayPoint(const VECTOR& pos, int num,std::vector<int> neighbors)
 	: pos_(pos)
 	, num_(num)
-	,neighbors_(neighbors)
+	, neighbors_(neighbors)
 {
 
 }

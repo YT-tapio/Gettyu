@@ -30,6 +30,8 @@ private:
 
 	const float kNormalAlertTime	= 2.f;
 
+	VECTOR near_way_point_pos_ = VGet(0, 0, 0);
+
 protected:
 
 	CollisionData collision_data_;
@@ -44,8 +46,8 @@ protected:
 	AnimationType before_anim_type_;			//1つ前のアニメーション
 	AnimationType before_before_anim_type_;	//2つ前のアニメーション
 
-
-
+	//way_pointを保存しておく
+	std::shared_ptr<WayPoint> my_way_point_;
 
 	//警戒のタイマー
 	ConditionTimer* alert_timer_;
@@ -57,6 +59,9 @@ protected:
 	VECTOR rot_;		//回転量
 	VECTOR velocity_;	//移動量
 	VECTOR scale_;		//大きさ
+
+	VECTOR target_pos_;
+	VECTOR start_pos_;
 
 	AlertState alert_state_;	//警戒度
 
@@ -76,6 +81,12 @@ protected:
 	float engagement_dist_;
 	float fov_;
 
+	VECTOR GetNearWayPointPos();
+
+	/// <summary>
+	/// 次に向かう場所
+	/// </summary>
+	VECTOR GetNextWayPointDir();
 
 public:
 
@@ -141,6 +152,8 @@ public:
 
 	//ゲットされた時の位置調整
 	void SetPosIsGot(const VECTOR& pos);
+
+	VECTOR DecideNextPlace();
 
 	bool GetIsAnimPlay() { return animation_->GetIsPlay(now_anim_type_); }
 
