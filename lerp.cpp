@@ -3,14 +3,14 @@
 #include"FPS.h"
 
 
-VECTOR Lerp(const VECTOR& start_pos,const VECTOR& now_pos, const VECTOR& target_pos, const float max_time, float& timer, bool& flag)
+VECTOR TimeLerp(const VECTOR& start_pos,const VECTOR& now_pos, const VECTOR& target_pos, const float max_time, float& timer, bool& flag)
 {
 	//最終的に返すvelocity
 	VECTOR vel = VGet(0.f, 0.f, 0.f);
 
 	//まず保管を開始した場所から行きたいところまでの距離はかる
 
-	VECTOR dist = VSub(target_pos, start_pos);
+	VECTOR dist = VSub(target_pos, start_pos);   
 
 	//タイマーをカウント(俺のdelta_timeは一桁ずれてしまっているので0.1をかけて調整している)
 	timer += (FPS::GetInstance().GetDeltaTime() * 0.1f);
@@ -38,6 +38,26 @@ VECTOR Lerp(const VECTOR& start_pos,const VECTOR& now_pos, const VECTOR& target_
 
 
 	vel = VSub(next_pos, now_pos);
+
+	return vel;
+}
+
+VECTOR NormalLerp(const VECTOR& now_pos, const VECTOR& target_pos, const float& speed, bool& flag)
+{
+	VECTOR vel = VGet(0.f,0.f,0.f);
+
+	VECTOR dist = VSub(target_pos, now_pos);
+
+	//想定しているスピードよりも遅いとき
+	if (VSize(dist) <= speed)
+	{
+		//らーぷをやめる
+		flag = FALSE;
+		return dist;
+	}
+
+	//正規化したdistにスピードをかける
+	vel = VScale(VNorm(dist), speed);
 
 	return vel;
 }

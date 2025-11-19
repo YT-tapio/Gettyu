@@ -1,5 +1,6 @@
 #pragma once
 #include<iostream>
+#include<algorithm>
 #include"Dxlib.h"
 #include"player.h"
 #include"effect.h"
@@ -48,6 +49,7 @@ protected:
 
 	//way_pointを保存しておく
 	std::shared_ptr<WayPoint> my_way_point_;
+	std::shared_ptr<WayPoint> before_way_point_;
 
 	//警戒のタイマー
 	ConditionTimer* alert_timer_;
@@ -69,24 +71,30 @@ protected:
 	bool is_fleeping_;
 	bool is_alert_;
 	
+	bool lerp_flag_;			//移動の際のラープ
 
 	int model_;
 	int debug_color_;
 
 	float delta_time_;
 	//各enemyによって変える
-	float speed_;
-	float fleeping_speed_;
+	float speed_;				//歩いているときのスピード
+	float fleeping_speed_;		//逃げる時のスピード
 	float alert_dist_;			//警戒の距離
 	float engagement_dist_;
 	float fov_;
 
 	VECTOR GetNearWayPointPos();
 
-	/// <summary>
-	/// 次に向かう場所
-	/// </summary>
-	VECTOR GetNextWayPointDir();
+
+	std::vector<VECTOR> GetWayPointNeighborsPos();
+
+	std::vector<std::shared_ptr<WayPoint>> GetNeighbors();
+
+	//fleeping時の逃げる所を決めたい
+	void DecideFirstFleepingPlace(std::shared_ptr<Player> player);
+	
+	std::shared_ptr<WayPoint> GetFarWayPoint(const VECTOR& pos, std::vector<std::shared_ptr<WayPoint>> way_points);
 
 public:
 

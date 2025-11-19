@@ -37,6 +37,7 @@ BaseEnemy::BaseEnemy(const int model, const VECTOR& pos,
 	start_pos_ = VGet(0.f, 0.f, 0.f);
 
 	my_way_point_ = nullptr;
+	before_way_point_ = nullptr;
 
 	//dirはrotから求まる
 
@@ -123,6 +124,7 @@ VECTOR BaseEnemy::GetNearWayPointPos()
 		if (dist < most_near_dist)
 		{
 			most_near_pos = pos;
+			before_way_point_ = my_way_point_;
 			my_way_point_ = way_point;
 		}
 		
@@ -134,17 +136,88 @@ VECTOR BaseEnemy::GetNearWayPointPos()
 }
 
 
-VECTOR BaseEnemy::GetNextWayPointDir()
+std::vector<VECTOR> BaseEnemy::GetWayPointNeighborsPos()
 {
-	VECTOR dir = VGet(0,0,0);
+	auto neighbors = GetNeighbors();
+	std::vector<VECTOR> way_point_pos;
 
+	for (auto neighbor : neighbors)
+	{
+		way_point_pos.push_back(neighbor->GetPos());
+	}
 
-
-
-	return dir;
+	return way_point_pos;
 }
 
+std::vector<std::shared_ptr<WayPoint>> BaseEnemy::GetNeighbors()
+{
+	return navigation_->GetNeighbors(my_way_point_);
+}
 
+void BaseEnemy::DecideFirstFleepingPlace(std::shared_ptr<Player> player)
+{
+	// playerのposから遠い場所を指定する
+	
+	VECTOR player_pos = player->GetPos();
+
+	//waypointを代入
+
+	std::vector<std::shared_ptr<WayPoint>> way_points;
+
+	way_points.push_back(my_way_point_);
+	way_points.push_back(before_way_point_);
+
+	// beforeのwaypointを所持させておきたい
+	before_way_point_ = my_way_point_;
+	my_way_point_ = GetFarWayPoint(player_pos, way_points);
+
+	target_pos_ = my_way_point_->GetPos();
+	lerp_flag_ = TRUE;
+
+	// 行きたい方向にplayerがいるなら違うとこに向かわせる(後でやる)
+
+}
+
+std::shared_ptr<WayPoint> BaseEnemy::GetFarWayPoint(const VECTOR& pos, std::vector<std::shared_ptr<WayPoint>> way_points)
+{
+	//beforeとmyのどっちが近いのかの判断
+
+	std::shared_ptr<WayPoint> point = nullptr;
+	float most_far_size = 0.f;
+
+
+	for (auto& way_point : way_points)
+	{
+		if (way_point != nullptr)
+		{
+			//何もないとき
+			if (point == nullptr)
+			{
+				point = way_point;
+				most_far_size = VSize(VSub(way_point->GetPos(), pos));
+			}
+			else
+			{
+				// nullptrではない時
+				// サイズの確認
+				float size = VSize(VSub(way_point->GetPos(), pos));
+
+				//farよりも大きいのなら
+				if (size > most_far_size)
+				{
+					//そのway_pointを代入
+					most_far_size = size;
+					point = way_point;
+				}
+
+			}
+		}
+	}
+
+
+	return point;
+	
+}
 
 void BaseEnemy::EffectUpdate()
 {

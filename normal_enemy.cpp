@@ -1,12 +1,14 @@
 
 #define _USE_MATH_DEFINES
 #include <math.h>
-
+#include<map>
+#include <random>
 
 #include"normal_enemy.h"
 #include"situation.h"
 #include"rot_function.h"
 #include"Lerp.h"
+
 
 NormalEnemy::NormalEnemy(const TCHAR* model_path, const VECTOR& pos, const VECTOR& scale, const VECTOR& dir, Effect* get_effect, Effect* got_effect, float speed, float fleeping_speed, AlertState alert, float fov)
 	:BaseEnemy(MV1LoadModel(model_path),pos,scale,dir,get_effect,got_effect,speed,fleeping_speed,alert,fov)
@@ -21,6 +23,8 @@ NormalEnemy::NormalEnemy(const TCHAR* model_path, const VECTOR& pos, const VECTO
 	target_rot_ = 0.f;
 	is_return_ = FALSE;
 	lerp_flag_ = FALSE;
+
+	wait_timer_ = new ConditionTimer(kWaitTime);
 }
 
 NormalEnemy::~NormalEnemy()
@@ -28,6 +32,46 @@ NormalEnemy::~NormalEnemy()
 
 }
 
+//private
+
+void NormalEnemy::DecideNextPos()
+{
+	// ここで次行く場所の指定を行う
+
+	// 今いるwaypointの知り合いを受け取る
+	auto way_points = GetNeighbors();
+	int neighbors_num = 0;
+
+	std::map<int, std::shared_ptr<WayPoint>> neighbors;
+	//知り合いの中でランダムでえらぶ
+
+	for (auto way_point : way_points)
+	{
+		neighbors[neighbors_num] = way_point;
+		neighbors_num++;
+	}
+	neighbors_num--;
+	//mapに代入した,代入した後にランダムで次のway_pointを選ぶ
+
+	std::random_device rd;  // 非決定的乱数の種
+	std::mt19937 gen(rd()); // メルセンヌ・ツイスタ
+	std::uniform_int_distribution<> rand(0, neighbors_num);	//人数分ランダム
+
+	int num = rand(gen);
+
+	//ランダム生成した物を入れる
+	before_way_point_ = my_way_point_;
+	my_way_point_ = neighbors[num];
+	
+	target_pos_ = my_way_point_->GetPos();
+	lerp_flag_ = TRUE;
+
+	wait_timer_->Reset();
+
+}
+
+
+//public
 
 void NormalEnemy::Init(const VECTOR& pos, const VECTOR scale)
 {
@@ -52,6 +96,7 @@ void NormalEnemy::PatrollingInit(std::shared_ptr<Player> player)
 	// どこに行くかを決めて、dirを返してくれる関数を用意する
 	dir_ = DecideNextPlace();
 
+	lerp_timer_ = 0.f;
 	lerp_flag_ = TRUE;
 	// 線形保管で移動するのでposを保存
 	start_pos_ = pos_;
@@ -97,17 +142,26 @@ void NormalEnemy::FleepingInit(std::shared_ptr<Player> player)
 
 	//playerとenemyのposで逃げるのを指定
 
-	VECTOR enemy_to_player_dist = VSub(player->GetCenterPos(), pos_);
+	DecideFirstFleepingPlace(player);
 
-	VECTOR norm_dist = VNorm(enemy_to_player_dist);
 
-	rot_.y = atan2f(norm_dist.x,norm_dist.z);
+	if (FALSE)
+	{
+		VECTOR enemy_to_player_dist = VSub(player->GetCenterPos(), pos_);
 
-	dir_ = VGet(-sinf(rot_.y), 0.f, -cosf(rot_.y));
-	total_vel_ = VGet(0, 0, 0);
+		VECTOR norm_dist = VNorm(enemy_to_player_dist);
 
+		rot_.y = atan2f(norm_dist.x, norm_dist.z);
+
+		dir_ = VGet(-sinf(rot_.y), 0.f, -cosf(rot_.y));
+		total_vel_ = VGet(0, 0, 0);
+
+		
+		
+	}
 	is_fleeping_ = TRUE;
 	now_anim_type_ = AnimationType::kFastRun;
+
 }
 
 
@@ -199,7 +253,25 @@ void NormalEnemy::Patrolling()
 	//velにlerpのやつを代入
 	if (lerp_flag_)
 	{
-		vel = Lerp(pos_, start_pos_, target_pos_, kMoveTimer, lerp_timer_, lerp_flag_);
+		vel = NormalLerp(pos_, target_pos_,(speed_ * delta_time_),lerp_flag_);
+	}
+	else
+	{
+		//タイマーが終了したら
+		if (wait_timer_->GetIsEnd())
+		{
+			// ここで次の場所を指定する
+
+			DecideNextPos();
+
+		}
+		else
+		{
+			//lerpし終わったらwait_timerをきどうしてそれが終わったら
+			wait_timer_->Update();
+		}
+
+
 	}
 
 	velocity_ = VAdd(velocity_, vel);
@@ -239,28 +311,43 @@ void NormalEnemy::Alert(std::shared_ptr<Player> player)
 
 void NormalEnemy::Fleeping(std::shared_ptr<Player> player)
 {
+	VECTOR vel = VGet(0.f, 0.f, 0.f);
 
-	//定数
-	const float kFleepingMax = 30.f;
-
-	//ここで逃げる
-
-	// どう逃げさせようかな
-	// 一定距離うごいたら初期化させexitさせていいと思う
-
-	VECTOR vel = VGet(0.f,0.f,0.f);
-
-	vel = VScale(dir_, fleeping_speed_);
-
-	velocity_ = VAdd(velocity_,VScale(vel, delta_time_));
-
-	total_vel_ = VAdd(total_vel_,velocity_);
-
-	//ここでtotal_vel_がまだ逃げ切ってないときは
-	if (VSize(total_vel_) > kFleepingMax)
+	if (TRUE)
 	{
-		total_vel_ = VGet(0, 0, 0);
-		is_fleeping_ = FALSE;
-	}
 
+		if (lerp_flag_)
+		{
+			vel = NormalLerp(pos_, target_pos_, fleeping_speed_, lerp_flag_);
+		}
+		
+
+
+		velocity_ = VAdd(velocity_, VScale(vel, delta_time_));
+	}
+	else
+	{
+		//定数
+		const float kFleepingMax = 30.f;
+
+		//ここで逃げる
+
+		// どう逃げさせようかな
+		// 一定距離うごいたら初期化させexitさせていいと思う
+
+		
+
+		vel = VScale(dir_, fleeping_speed_);
+
+		velocity_ = VAdd(velocity_, VScale(vel, delta_time_));
+
+		total_vel_ = VAdd(total_vel_, velocity_);
+
+		//ここでtotal_vel_がまだ逃げ切ってないときは
+		if (VSize(total_vel_) > kFleepingMax)
+		{
+			total_vel_ = VGet(0, 0, 0);
+			is_fleeping_ = FALSE;
+		}
+	}
 }

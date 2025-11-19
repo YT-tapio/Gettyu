@@ -29,12 +29,8 @@ void EnemyFleeping::Exit(BaseEnemy* enemy)
 
 std::shared_ptr<BaseEnemyState> EnemyFleeping::ChangeState(BaseEnemy* enemy, std::shared_ptr<Player> player)
 {
-	// enemyのis_fleeping_を取得
-	// is_fleeping_がTRUEの場合は早期リターン
-	if (enemy->GetIsFleeping()) { return nullptr; }
-
-	// is_fleeping_が一定距離走ったとき
-	// playerがenemyのalert内にいるとき
+	
+	//playerがenemyの範囲内にいないのならやめる
 
 	// enemyとplayerがアラート範囲内
 	VECTOR dist = VSub(player->GetCenterPos(), enemy->GetPos());		// enemyからplayerまでの距離

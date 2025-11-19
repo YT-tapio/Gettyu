@@ -5,8 +5,6 @@ Navigation::Navigation()
 {
 	MakeWayPoint();
 
-
-
 }
 
 Navigation::~Navigation()
@@ -108,4 +106,33 @@ VECTOR Navigation::GetWayPointPos(const int num)
 	}
 	
 	return VGet(0, 0, 0);
+}
+
+std::shared_ptr<WayPoint> Navigation::GetWayPoint(const int num)
+{
+	for (auto& way_point : way_points_)
+	{
+		if (way_point->GetNum() == num)
+		{
+			return way_point;
+		}
+	}
+
+	printfDx("‰½‚©‚ª•Ï‚Å‚·\n");
+	return nullptr;
+}
+
+std::vector<std::shared_ptr<WayPoint>> Navigation::GetNeighbors(std::shared_ptr<WayPoint> way_point)
+{
+	std::vector<std::shared_ptr<WayPoint>> neighbors;
+
+	auto nums = way_point->GetFriend();
+
+	for (auto num : nums)
+	{
+		neighbors.push_back(GetWayPoint(num));
+	}
+
+
+	return neighbors;
 }
