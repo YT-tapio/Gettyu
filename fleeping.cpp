@@ -4,12 +4,13 @@
 EnemyFleeping::EnemyFleeping()
 	: BaseEnemyState(StateName::kFleeping)
 {
-
+	outside_timer_ = std::make_shared<ConditionTimer>(kOutsideTime);
+	outside_timer_->Reset();
 }
 
 EnemyFleeping::~EnemyFleeping()
 {
-
+	
 }
 
 void EnemyFleeping::Entry(BaseEnemy* enemy, std::shared_ptr<Player> player)
@@ -35,12 +36,22 @@ std::shared_ptr<BaseEnemyState> EnemyFleeping::ChangeState(BaseEnemy* enemy, std
 	// enemyとplayerがアラート範囲内
 	VECTOR dist = VSub(player->GetCenterPos(), enemy->GetPos());		// enemyからplayerまでの距離
 	
-	if (VSize(dist) <= enemy->GetAlertDist() * player->GetSoundVibrationNum())
+	//サウンド関係なく逃げる
+
+	if (VSize(dist) <= enemy->GetAlertDist())
 	{
-		//この場合initしたい
-		Entry(enemy, player);
+		outside_timer_->Reset();
 		return nullptr;
 	}
+
+	outside_timer_->Update();
+
+	// 時間がたっていない
+	if (!(outside_timer_->GetIsEnd()))
+	{
+		return nullptr;
+	}
+	
 
 	// 範囲内にいない場合は警戒状態にする
 	return std::make_shared<EnemyAlert>();

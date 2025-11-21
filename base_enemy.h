@@ -94,6 +94,8 @@ protected:
 	//fleeping‚Ì“¦‚°‚éŠ‚ğŒˆ‚ß‚½‚¢
 	void DecideFirstFleepingPlace(std::shared_ptr<Player> player);
 	
+	void DecideFleepingPlace(std::shared_ptr<Player> player, std::shared_ptr<WayPoint> way_point);
+
 	std::shared_ptr<WayPoint> GetFarWayPoint(const VECTOR& pos, std::vector<std::shared_ptr<WayPoint>> way_points);
 
 public:

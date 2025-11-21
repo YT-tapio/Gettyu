@@ -10,6 +10,8 @@ class EnemyFleeping : public BaseEnemyState
 {
 private:
 
+	const float kOutsideTime = 2.f;
+	std::shared_ptr<ConditionTimer> outside_timer_;
 
 public:
 

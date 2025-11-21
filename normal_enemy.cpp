@@ -144,7 +144,7 @@ void NormalEnemy::FleepingInit(std::shared_ptr<Player> player)
 
 	DecideFirstFleepingPlace(player);
 
-
+	 
 	if (FALSE)
 	{
 		VECTOR enemy_to_player_dist = VSub(player->GetCenterPos(), pos_);
@@ -159,7 +159,11 @@ void NormalEnemy::FleepingInit(std::shared_ptr<Player> player)
 		
 		
 	}
+
+	//waypointが決まったのでway_pointに向かわせる
+
 	is_fleeping_ = TRUE;
+	lerp_flag_ = TRUE;
 	now_anim_type_ = AnimationType::kFastRun;
 
 }
@@ -320,7 +324,14 @@ void NormalEnemy::Fleeping(std::shared_ptr<Player> player)
 		{
 			vel = NormalLerp(pos_, target_pos_, fleeping_speed_, lerp_flag_);
 		}
+		else
+		{
+			DecideFleepingPlace(player, my_way_point_);
+		}
 		
+		// ラープし終わったら新しい目標地点を選ぶ
+		
+
 
 
 		velocity_ = VAdd(velocity_, VScale(vel, delta_time_));

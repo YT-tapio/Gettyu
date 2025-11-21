@@ -169,12 +169,51 @@ void BaseEnemy::DecideFirstFleepingPlace(std::shared_ptr<Player> player)
 
 	// before‚Ìwaypoint‚ğŠ‚³‚¹‚Ä‚¨‚«‚½‚¢
 	before_way_point_ = my_way_point_;
-	my_way_point_ = GetFarWayPoint(player_pos, way_points);
+	my_way_point_ = GetFarWayPoint(player_pos, way_points);		//ˆê”Ô‰“‚¢êŠ‚É‚·‚é
 
 	target_pos_ = my_way_point_->GetPos();
 	lerp_flag_ = TRUE;
 
 	// s‚«‚½‚¢•ûŒü‚Éplayer‚ª‚¢‚é‚È‚çˆá‚¤‚Æ‚±‚ÉŒü‚©‚í‚¹‚é(Œã‚Å‚â‚é)
+
+}
+
+void BaseEnemy::DecideFleepingPlace(std::shared_ptr<Player> player,std::shared_ptr<WayPoint> way_point)
+{
+
+	VECTOR player_pos = player->GetPos();
+
+	//way_point‚Ìneighbors‚ğ‚à‚ç‚¤
+
+	auto neighbors = navigation_->GetNeighbors(way_point);
+
+	// before‚Ìwaypoint‚ğŠ‚³‚¹‚Ä‚¨‚«‚½‚¢
+	before_way_point_ = my_way_point_;
+	my_way_point_ = GetFarWayPoint(player_pos, neighbors);		//ˆê”Ô‰“‚¢êŠ‚É‚·‚é
+
+	target_pos_ = my_way_point_->GetPos();
+
+	
+
+	//ˆê”Ô‰“‚¢waypoint‚Ì•ûŒü‚Éplayer‚ª‚¢‚é‚È‚ç«‚ß‚³‚¹‚é
+
+	VECTOR n_enemy_to_player = VNorm(VSub(player_pos, pos_));		//enemy‚©‚çplayer
+	VECTOR n_enemy_to_target = VNorm(VSub(target_pos_, pos_));		//enemy‚©‚ç‚³‚«‚Ù‚Ç‚«‚ß‚½target(way_point)
+
+	//dot‚Å‹‚ß‚é
+	float dot		= VDot(n_enemy_to_player, n_enemy_to_target);
+	float herf_fov	= fov_ * 0.5f;
+
+	// ‹ŠE‚È‚¢
+	if (dot <= herf_fov)
+	{
+		// ‚»‚Ìwaypoint‚ğœŠO‚³‚¹‚é
+		
+
+	}
+
+
+	lerp_flag_ = TRUE;
 
 }
 
