@@ -5,7 +5,7 @@
 #include"debug.h"
 #include"animation.h"
 #include"const_rad.h"
-
+#include"fov_function.h"
 BaseEnemy::BaseEnemy(const int model, const VECTOR& pos,
 	const VECTOR& scale, const VECTOR& rot, Effect* get_effect,Effect* got_effect,float speed, float fleeping_speed, AlertState alert, float fov)
 {
@@ -98,6 +98,40 @@ BaseEnemy::~BaseEnemy()
 }
 
 
+std::shared_ptr<WayPoint> BaseEnemy::DecideNextWayPoint(const VECTOR& player_pos, std::vector<std::shared_ptr<WayPoint>> way_points, std::shared_ptr<WayPoint> out_way_point)
+{
+	//次のway_point
+	std::shared_ptr<WayPoint> next_point = nullptr;
+
+	//除外終わりのやつ
+	std::vector<std::shared_ptr<WayPoint>> outed_way_points;
+
+	bool way_point_null = (out_way_point == nullptr);
+
+	 
+
+	for (auto& way_point : way_points)
+	{
+		//nullではないとき
+		if (!way_point_null)
+		{
+			// out_way_pointと一致している
+			bool same = (out_way_point->GetNum() == way_point->GetNum());
+
+			//除外したいものと一致していないとき
+			if (!same) { outed_way_points.push_back(way_point); }
+		}
+
+		//ここでwaypointの指定
+
+	}
+
+
+
+	return next_point;
+}
+
+
 VECTOR BaseEnemy::GetNearWayPointPos()
 {
 	auto way_points = navigation_->GetWayPoint();
@@ -183,8 +217,12 @@ void BaseEnemy::DecideFleepingPlace(std::shared_ptr<Player> player,std::shared_p
 
 	VECTOR player_pos = player->GetPos();
 
+	lerp_flag_ = TRUE;
+
 	//way_pointのneighborsをもらう
 
+
+	//関数を作る
 	auto neighbors = navigation_->GetNeighbors(way_point);
 
 	// beforeのwaypointを所持させておきたい
@@ -193,27 +231,16 @@ void BaseEnemy::DecideFleepingPlace(std::shared_ptr<Player> player,std::shared_p
 
 	target_pos_ = my_way_point_->GetPos();
 
+	//今から作る関数にはway_pointと除外するものを入れる
+
+
+
+	bool in_fov = IsInFov(pos_, target_pos_, player_pos, fov_);
+
+
+
+
 	
-
-	//一番遠いwaypointの方向にplayerがいるなら辞めさせる
-
-	VECTOR n_enemy_to_player = VNorm(VSub(player_pos, pos_));		//enemyからplayer
-	VECTOR n_enemy_to_target = VNorm(VSub(target_pos_, pos_));		//enemyからさきほどきめたtarget(way_point)
-
-	//dotで求める
-	float dot		= VDot(n_enemy_to_player, n_enemy_to_target);
-	float herf_fov	= fov_ * 0.5f;
-
-	// 視界ない
-	if (dot <= herf_fov)
-	{
-		// そのwaypointを除外させる
-		
-
-	}
-
-
-	lerp_flag_ = TRUE;
 
 }
 

@@ -202,6 +202,7 @@
     <ClCompile Include="weapon_UI.cpp" />
     <ClCompile Include="weapon_base.cpp" />
     <ClCompile Include="wizard_staff.cpp" />
+    <ClCompile Include="fov_function.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="alert.h" />
@@ -274,6 +275,7 @@
     <ClInclude Include="warp_rod.h" />
     <ClInclude Include="weapon_UI.h" />
     <ClInclude Include="wizard_staff.h" />
+    <ClInclude Include="fov_function.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

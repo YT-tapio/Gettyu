@@ -223,6 +223,9 @@
     <Filter Include="ソース ファイル\lerp">
       <UniqueIdentifier>{c66272aa-7e64-422d-be5d-def24790f329}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\fov_function">
+      <UniqueIdentifier>{d0ed3a0b-23e8-48c1-8895-25931eb5e5c5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -419,6 +422,9 @@
     </ClCompile>
     <ClCompile Include="lerp.cpp">
       <Filter>ソース ファイル\lerp</Filter>
+    </ClCompile>
+    <ClCompile Include="fov_function.cpp">
+      <Filter>ソース ファイル\fov_function</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -631,6 +637,9 @@
     </ClInclude>
     <ClInclude Include="lerp.h">
       <Filter>ソース ファイル\lerp</Filter>
+    </ClInclude>
+    <ClInclude Include="fov_function.h">
+      <Filter>ソース ファイル\fov_function</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
