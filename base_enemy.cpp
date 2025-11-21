@@ -121,12 +121,26 @@ std::shared_ptr<WayPoint> BaseEnemy::DecideNextWayPoint(const VECTOR& player_pos
 			//除外したいものと一致していないとき
 			if (!same) { outed_way_points.push_back(way_point); }
 		}
+		else
+		{
+			//nullの時は除外しなくていい
+			outed_way_points.push_back(way_point);
 
-		//ここでwaypointの指定
-
+		}
 	}
 
+	// 除外し終わったものの中から遠いものを選ぶ
+	next_point = GetFarWayPoint(player_pos, outed_way_points);
 
+	// 選んだwaypointの方向にplayerがいるならそこをやめる
+
+	bool in_fov = IsInFov(pos_, next_point->GetPos(), player_pos, 0.1f);
+
+	if (in_fov)
+	{
+		//近くにいるのなら
+		next_point = DecideNextWayPoint(player_pos, outed_way_points, next_point);
+	}
 
 	return next_point;
 }
@@ -219,27 +233,14 @@ void BaseEnemy::DecideFleepingPlace(std::shared_ptr<Player> player,std::shared_p
 
 	lerp_flag_ = TRUE;
 
-	//way_pointのneighborsをもらう
-
-
-	//関数を作る
+	//自分のところからいける場所
 	auto neighbors = navigation_->GetNeighbors(way_point);
 
 	// beforeのwaypointを所持させておきたい
 	before_way_point_ = my_way_point_;
-	my_way_point_ = GetFarWayPoint(player_pos, neighbors);		//一番遠い場所にする
+	my_way_point_ = DecideNextWayPoint(player_pos, neighbors,nullptr);		//一番遠い場所にする
 
 	target_pos_ = my_way_point_->GetPos();
-
-	//今から作る関数にはway_pointと除外するものを入れる
-
-
-
-	bool in_fov = IsInFov(pos_, target_pos_, player_pos, fov_);
-
-
-
-
 	
 
 }

@@ -36,6 +36,7 @@ NormalEnemy::~NormalEnemy()
 
 void NormalEnemy::DecideNextPos()
 {
+
 	// ここで次行く場所の指定を行う
 
 	// 今いるwaypointの知り合いを受け取る
@@ -265,9 +266,7 @@ void NormalEnemy::Patrolling()
 		if (wait_timer_->GetIsEnd())
 		{
 			// ここで次の場所を指定する
-
 			DecideNextPos();
-
 		}
 		else
 		{
