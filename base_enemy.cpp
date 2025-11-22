@@ -139,6 +139,9 @@ std::shared_ptr<WayPoint> BaseEnemy::DecideNextWayPoint(const VECTOR& player_pos
 
 
 
+			//その中から一番高い評価のやつを
+
+
 
 			//nullの時は除外しなくていい
 			outed_way_points.push_back(way_point);
@@ -173,6 +176,30 @@ std::shared_ptr<WayPoint> BaseEnemy::DecideNextWayPoint(const VECTOR& player_pos
 	return next_point;
 }
 
+
+float BaseEnemy::MakeWayPointScore(const VECTOR& player_pos, std::shared_ptr<WayPoint> way_point)
+{
+	const float kRadHerf = kOneRad * 90;
+	float score = 0.f;
+
+	// playerとway_pointのきょりをだして
+	
+	VECTOR dist = VSub(player_pos, way_point->GetPos());
+	
+	// fovの角度を出す
+
+	VECTOR plane_pos			= VectorAssistant::GetPlane(pos_);
+	VECTOR plane_way_point_pos	= VectorAssistant::GetPlane(way_point->GetPos());
+	VECTOR plane_player_pos		= VectorAssistant::GetPlane(player_pos);
+
+	// dotの量によってスコアの変化
+	float dot = GetDotRad(plane_pos, plane_way_point_pos, plane_player_pos);
+	float dot_percent = dot / kRadHerf;		// 比を出す
+	// distのsizeを
+	float dist_percent;
+
+	return 0.f;
+}
 
 VECTOR BaseEnemy::GetNearWayPointPos()
 {

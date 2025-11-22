@@ -36,6 +36,10 @@ private:
 	
 	std::shared_ptr<WayPoint> DecideNextWayPoint(const VECTOR& player_pos, std::vector<std::shared_ptr<WayPoint>>way_points, std::shared_ptr<WayPoint> out_way_point);
 
+	float MakeWayPointScore(const VECTOR& player_pos, std::shared_ptr<WayPoint> way_point);
+
+
+
 protected:
 
 	CollisionData collision_data_;

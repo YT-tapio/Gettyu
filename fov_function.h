@@ -8,3 +8,8 @@
 /// @param fov Ž‹–ìŠp
 /// @return ’†‚É‚¢‚é‚©‚Ç‚¤‚©
 bool IsInFov(const VECTOR& pos1, const VECTOR& pos2, const VECTOR& pos3, const float& fov);
+
+
+
+
+float GetDotRad(const VECTOR& pos1, const VECTOR& pos2, const VECTOR& pos3);
