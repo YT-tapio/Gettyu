@@ -1,5 +1,6 @@
 #include<map>
 #include<math.h>
+#include<algorithm>
 #include"base_enemy.h"
 #include"situation.h"
 #include"patrolling.h"
@@ -7,7 +8,7 @@
 #include"animation.h"
 #include"const_rad.h"
 #include"fov_function.h"
-#include"vector_assistance.h"
+#include"vector_assistant.h"
 
 BaseEnemy::BaseEnemy(const int model, const VECTOR& pos,
 	const VECTOR& scale, const VECTOR& rot, Effect* get_effect,Effect* got_effect,float speed, float fleeping_speed, AlertState alert, float fov)
@@ -101,7 +102,7 @@ BaseEnemy::~BaseEnemy()
 }
 
 
-std::shared_ptr<WayPoint> BaseEnemy::DecideNextWayPoint(const VECTOR& player_pos, std::vector<std::shared_ptr<WayPoint>> way_points, std::shared_ptr<WayPoint> out_way_point)
+std::shared_ptr<WayPoint> BaseEnemy::DecideNextWayPoint(const VECTOR& player_pos, std::vector<std::shared_ptr<WayPoint>> way_points)
 {
 
 	float max_score = 0;
@@ -109,68 +110,22 @@ std::shared_ptr<WayPoint> BaseEnemy::DecideNextWayPoint(const VECTOR& player_pos
 	//次のway_point
 	std::shared_ptr<WayPoint> next_point = nullptr;
 
-	//除外終わりのやつ
-	std::vector<std::shared_ptr<WayPoint>> outed_way_points;
-
-	std::map<float, std::shared_ptr<WayPoint>> score_way_points;
-
-	bool way_point_null = (out_way_point == nullptr);
-
-	
-	
-
 
 	for (auto& way_point : way_points)
 	{
-		//nullではないとき
-		if (!way_point_null)
+		// ここでscoreを付けよう
+		// 遠いときのscoreも高く、fov外でもscoreを高くする
+		float score = MakeWayPointScore(player_pos, way_point);
+
+		//スコアが高いならそのway_pointを代入
+
+		if (score > max_score)
 		{
-			// out_way_pointと一致している
-			bool same = (out_way_point->GetNum() == way_point->GetNum());
-
-			//除外したいものと一致していないとき
-			if (!same) { outed_way_points.push_back(way_point); }
+			next_point = way_point;
+			max_score = score;
 		}
-		else
-		{
-			// ここでscoreを付けよう
-			// 遠いときのscoreも高く、fov外でもscoreを高くする
 
-
-
-
-			//その中から一番高い評価のやつを
-
-
-
-			//nullの時は除外しなくていい
-			outed_way_points.push_back(way_point);
-
-		}
-	}
-
-	
-
-
-	// 除外し終わったものの中から遠いものを選ぶ
-	next_point = GetFarWayPoint(player_pos, outed_way_points);
-
-	// 選んだwaypointの方向にplayerがいるならそこをやめる
-
-	//fovの調整をする視野角に高さは加味しない
-
-	VECTOR plane_pos			= VectorAssistant::GetPlane(pos_);
-	VECTOR plane_next_point_pos = VectorAssistant::GetPlane(next_point->GetPos());
-	VECTOR plane_player_pos		= VectorAssistant::GetPlane(player_pos);
-
-	bool in_fov = IsInFov(plane_pos, plane_next_point_pos, plane_player_pos, kOneRad * 30.f);
-
-	
-
-	if (in_fov)
-	{
-		//近くにいるのなら
-		next_point = DecideNextWayPoint(player_pos, outed_way_points, next_point);
+		
 	}
 
 	return next_point;
@@ -180,6 +135,8 @@ std::shared_ptr<WayPoint> BaseEnemy::DecideNextWayPoint(const VECTOR& player_pos
 float BaseEnemy::MakeWayPointScore(const VECTOR& player_pos, std::shared_ptr<WayPoint> way_point)
 {
 	const float kRadHerf = kOneRad * 90;
+	const float kDistMax = 50.f;
+	const float kScoreMax = 100.f;
 	float score = 0.f;
 
 	// playerとway_pointのきょりをだして
@@ -194,11 +151,21 @@ float BaseEnemy::MakeWayPointScore(const VECTOR& player_pos, std::shared_ptr<Way
 
 	// dotの量によってスコアの変化
 	float dot = GetDotRad(plane_pos, plane_way_point_pos, plane_player_pos);
-	float dot_percent = dot / kRadHerf;		// 比を出す
-	// distのsizeを
-	float dist_percent;
+	float reverce_dot = (kRadHerf - dot);
+	float dot_percent =  reverce_dot / kRadHerf;		// 比を出す
+	// distのsize
+	float dist_percent = VSize(dist) / kDistMax;
+	float percent_max = 1.f;
 
-	return 0.f;
+	dist_percent = (dist_percent > percent_max) ? percent_max : dist_percent;
+
+
+	//たまにplayerの近くに来る
+
+	//percentの平均をとりmaxのスコアにかける
+	score = kScoreMax * ((dot_percent + dist_percent) * 0.5f);
+
+	return score;
 }
 
 VECTOR BaseEnemy::GetNearWayPointPos()
@@ -293,13 +260,13 @@ void BaseEnemy::DecideFleepingPlace(std::shared_ptr<Player> player,std::shared_p
 
 	// beforeのwaypointを所持させておきたい
 	before_way_point_ = my_way_point_;
-	my_way_point_ = DecideNextWayPoint(player_pos, neighbors,nullptr);		//一番遠い場所にする
+	my_way_point_ = DecideNextWayPoint(player_pos, neighbors);		//一番遠い場所にする
 
 	target_pos_ = my_way_point_->GetPos();
 
 	//dirを作る
-	dir_ = VectorAssistant::GetDir(pos_, target_pos_);
-
+	dir_ = VectorAssistant::GetDir(target_pos_, pos_);
+	rot_.y = VectorAssistant::GetPlaneRot(dir_);
 
 }
 
@@ -335,10 +302,6 @@ std::shared_ptr<WayPoint> BaseEnemy::GetFarWayPoint(const VECTOR& pos, std::vect
 				}
 
 			}
-		}
-		else
-		{
-			printfDx("おかしいぞい\n");
 		}
 	}
 
@@ -503,7 +466,7 @@ void BaseEnemy::Debug(int i)
 		DrawFov();
 		
 		//way_pointと結びつける
-		DrawLine3D(near_way_point_pos_, pos_, GetColor(255, 255, 255));
+		DrawLine3D(target_pos_, pos_, GetColor(255, 255, 255));
 
 		//enemy名
 		DrawFormatString(0, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), debug_color_, "----------enemy%d----------", i);

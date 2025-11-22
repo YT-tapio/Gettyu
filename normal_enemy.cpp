@@ -8,6 +8,7 @@
 #include"situation.h"
 #include"rot_function.h"
 #include"Lerp.h"
+#include"vector_assistant.h"
 
 
 NormalEnemy::NormalEnemy(const TCHAR* model_path, const VECTOR& pos, const VECTOR& scale, const VECTOR& dir, Effect* get_effect, Effect* got_effect, float speed, float fleeping_speed, AlertState alert, float fov)
@@ -97,6 +98,8 @@ void NormalEnemy::PatrollingInit(std::shared_ptr<Player> player)
 	// どこに行くかを決めて、dirを返してくれる関数を用意する
 	dir_ = DecideNextPlace();
 
+	rot_.y = VectorAssistant::GetPlaneRot(dir_);
+
 	lerp_timer_ = 0.f;
 	lerp_flag_ = TRUE;
 	// 線形保管で移動するのでposを保存
@@ -145,28 +148,14 @@ void NormalEnemy::FleepingInit(std::shared_ptr<Player> player)
 
 	DecideFirstFleepingPlace(player);
 
-	 
-	if (FALSE)
-	{
-		VECTOR enemy_to_player_dist = VSub(player->GetCenterPos(), pos_);
-
-		VECTOR norm_dist = VNorm(enemy_to_player_dist);
-
-		rot_.y = atan2f(norm_dist.x, norm_dist.z);
-
-		dir_ = VGet(-sinf(rot_.y), 0.f, -cosf(rot_.y));
-		total_vel_ = VGet(0, 0, 0);
-
-		
-		
-	}
-
 	//waypointが決まったのでway_pointに向かわせる
 
 	is_fleeping_ = TRUE;
 	lerp_flag_ = TRUE;
 	now_anim_type_ = AnimationType::kFastRun;
 
+	dir_ = VectorAssistant::GetDir(target_pos_, pos_);
+	rot_.y = VectorAssistant::GetPlaneRot(dir_);
 }
 
 

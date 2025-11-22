@@ -429,7 +429,7 @@
     <ClCompile Include="fov_function.cpp">
       <Filter>ソース ファイル\fov_function</Filter>
     </ClCompile>
-    <ClCompile Include="vector_assistance.cpp">
+    <ClCompile Include="vector_assistant.cpp">
       <Filter>ソース ファイル\vector_assistant</Filter>
     </ClCompile>
   </ItemGroup>
@@ -647,7 +647,7 @@
     <ClInclude Include="fov_function.h">
       <Filter>ソース ファイル\fov_function</Filter>
     </ClInclude>
-    <ClInclude Include="vector_assistance.h">
+    <ClInclude Include="vector_assistant.h">
       <Filter>ソース ファイル\vector_assistant</Filter>
     </ClInclude>
   </ItemGroup>
