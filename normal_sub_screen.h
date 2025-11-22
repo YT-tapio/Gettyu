@@ -8,7 +8,8 @@ private:
 
 public:
 
-	NormalSubScreen(const VECTOR& pos, const int screen_width,const int screen_height,const int width, const int height, bool alpha, AlphaColorType color_type, const int param, bool is_blend);
+	NormalSubScreen(const VECTOR& pos, const int screen_width,const int screen_height,const int width, const int height,
+		bool alpha, AlphaColorType color_type, const int param, bool is_blend);
 
 	~NormalSubScreen() override;
 

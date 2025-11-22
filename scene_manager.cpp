@@ -50,6 +50,8 @@ SceneManager::SceneManager()
 
     SetMouseDispFlag(FALSE);
 
+    SetUseSetDrawScreenSettingReset(false);
+
 	now_scene_ = std::make_shared<Title>();
 
 	now_scene_->Init();

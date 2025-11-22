@@ -3,10 +3,11 @@
 #include"debug.h"
 #include"keyconfig.h"
 #include"mask.h"
+#include"normal_sub_screen.h"
 Game::Game()
     :BaseScene(SceneName::kGame)
 {
-
+    
 }
 
 Game::~Game()
@@ -28,6 +29,39 @@ void Game::DrawShadowMap()
     //SetUseLighting(TRUE);
 
     shadow_map_->EndDrawShadowMap();
+}
+
+
+void Game::ScreenDraw()
+{
+    screen_->Up();
+
+    player_->Draw();
+    enemy_manager_->Draw();
+
+    sky_dom_->Draw();
+
+    SetUseLighting(FALSE);
+    stage_->Draw();
+    SetUseLighting(TRUE);
+
+
+    Camera::GetInstance().Draw();
+    effect_player_->Draw();
+    concentration_line_->Draw();
+
+    
+
+    if (Debug::GetInstance().GetDisp())
+    {
+        stage_->Debug();
+        player_->Debug();
+        Input::GetInstance().Debug();
+        enemy_manager_->Debug();
+    }
+
+    screen_->Down();
+
 }
 
 //
@@ -102,15 +136,15 @@ void Game::Init()
 
     brain_ = std::make_shared<Brain>(player_->GetCenterPos());
 
-    camera_ = std::make_shared<Camera>(brain_->GetPositionFromTarget(player_->GetCenterPos()),
+    Camera::GetInstance().Awake(brain_->GetPositionFromTarget(player_->GetCenterPos()),
         player_->GetCenterPos(), (DX_PI_F / 180.0f) * 75.0f);
 
     int model_data = MV1LoadModel("data/model/map/arena/map.mv1");
 
     stage_ = std::make_shared<Stage>(model_data, VGet(0, 0, 0), 1.0f);
 
-    brain_->Init(camera_->GetPos(), player_->GetCenterPos());
-    camera_->Init(brain_->GetVelocity());
+    brain_->Init(Camera::GetInstance().GetPos(), player_->GetCenterPos());
+    Camera::GetInstance().Init(brain_->GetVelocity());
 
     /*---プレイヤーにアニメーションを追加---*/
 
@@ -128,11 +162,16 @@ void Game::Init()
 
     enemy_manager_->Init();
 
-    sky_dom_                  = std::make_shared<SkyDom>("data/skydome/Dome_SS601.mv1", camera_->GetPos());
-    concentration_line_     = std::make_shared<ConcentrationLine>(kGameWidth, kGameHeight, TRUE);
+    sky_dom_                    = std::make_shared<SkyDom>("data/skydome/Dome_SS601.mv1", Camera::GetInstance().GetPos());
+    concentration_line_         = std::make_shared<ConcentrationLine>(kGameWidth, kGameHeight, TRUE);
 
-    weapon_UI_               = std::make_shared<WeaponUI>();
-    super_attack_UI_        = std::make_shared<SuperAttackUI>();
+    weapon_UI_                  = std::make_shared<WeaponUI>();
+    super_attack_UI_            = std::make_shared<SuperAttackUI>();
+
+    screen_ = std::make_shared<NormalSubScreen>(VGet((kGameWidth * 0.5f), (kGameHeight * 0.5f), 0.f), kGameWidth, kGameHeight,
+        kGameWidth, kGameHeight, FALSE, AlphaColorType::kBlack, 0.f, FALSE);
+
+    screen_->SetIsDisp(TRUE);
 }
 
 void Game::Update(SceneName& name)
@@ -169,23 +208,26 @@ void Game::Update(SceneName& name)
     
 
     enemy_manager_->Update(player_);
-    player_->Update(camera_->GetPos(), brain_->GetSideRad(), *stage_);
+    player_->Update(Camera::GetInstance().GetPos(), brain_->GetSideRad(), *stage_);
 
 
     //マウスでの操作
-    brain_->Update(camera_->GetTargetPos(), camera_->GetPos(), player_);
+    brain_->Update(Camera::GetInstance().GetTargetPos(), Camera::GetInstance().GetPos(), player_);
 
     //UIのアップデート
     weapon_UI_->Update();
     super_attack_UI_->Update();
     
-
-    camera_->Update(brain_->GetVelocity(), brain_->GetTargetVelocity());
+    Camera::GetInstance().Update(brain_->GetVelocity(), brain_->GetTargetVelocity());
     effect_player_->Update();
+    sky_dom_->SetPos(player_->GetVelocity());
 
+    //makscreenの中で描画する
+    ScreenDraw();
+    SetUseLighting(TRUE);
     
 
-    sky_dom_->SetPos(player_->GetVelocity());
+    
     if (CheckHitKey(KEY_INPUT_RIGHT))
     {
         time_scale += 0.01;
@@ -220,52 +262,17 @@ void Game::Update(SceneName& name)
 
     FPS::GetInstance().SetTimeScale(time_scale);
 
+    // name = SceneName::kResult;
 }
 
 void Game::Draw()
 {
-   
-    DrawShadowMap();
-
-
-    shadow_map_->UseShadowMap();
-
+    screen_->Draw();
     
-
-    player_->Draw();
-    enemy_manager_->Draw();
-
-    sky_dom_->Draw();
-
-    SetUseLighting(FALSE);
-    stage_->Draw();
-    SetUseLighting(TRUE);
-    
-
-    shadow_map_->UnuseShadowMap();
-
-    
-
-    camera_->Draw();
-    effect_player_->Draw();
-    concentration_line_->Draw();
-
     weapon_UI_->Draw();
     super_attack_UI_->Draw();
 
-    if (Debug::GetInstance().GetDisp())
-    {
-        stage_->Debug();
-        player_->Debug();
-        Input::GetInstance().Debug();
-        enemy_manager_->Debug();
-    }
-
-    
-
     DrawFormatString((kGameWidth - 300), (kGameHeight - 30), GetColor(0, 0, 0), "TAB / BACK Button : result");
-
-    SetUseLighting(TRUE);
 }
 
 

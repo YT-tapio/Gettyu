@@ -32,7 +32,6 @@ private:
 	std::shared_ptr<EffectManager>effect_player_;
 	std::shared_ptr<Player>player_;
 	std::shared_ptr<Brain>brain_;
-	std::shared_ptr<Camera>camera_;
 	std::shared_ptr<Stage>stage_;
 	std::shared_ptr<EnemyManager>enemy_manager_;
 	std::shared_ptr<SkyDom> sky_dom_;
@@ -40,11 +39,15 @@ private:
 
 	std::shared_ptr<ShadowMap> shadow_map_ = std::make_shared<ShadowMap>();
 
+	std::shared_ptr<NormalSubScreen> screen_;
+
 	//UIŒQ
 	std::shared_ptr<WeaponUI> weapon_UI_;
 	std::shared_ptr<SuperAttackUI> super_attack_UI_;
 
 	void DrawShadowMap();
+
+	void ScreenDraw();
 
 public:
 

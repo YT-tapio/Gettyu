@@ -22,6 +22,7 @@ BaseSubScreen::~BaseSubScreen()
 
 void BaseSubScreen::Up()
 {
+	
 	//‚±‚Ì‰æ–Ê‚ð‹N“®‚·‚é
 	SetDrawScreen(handle_);
 	ClearDrawScreen();

@@ -25,6 +25,8 @@ void Result::Update(SceneName& name)
 	{
 		name = SceneName::kTitle;
 	}
+
+	//name = SceneName::kTitle;
 }
 
 void Result::Draw()

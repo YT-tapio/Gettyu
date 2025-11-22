@@ -25,6 +25,8 @@ void Title::Update(SceneName& name)
 	{
 		name = SceneName::kGame;
 	}
+
+	// name = SceneName::kGame;
 }
 
 void Title::Draw()
