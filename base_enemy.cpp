@@ -1,3 +1,4 @@
+#include<map>
 #include<math.h>
 #include"base_enemy.h"
 #include"situation.h"
@@ -6,6 +7,8 @@
 #include"animation.h"
 #include"const_rad.h"
 #include"fov_function.h"
+#include"vector_assistance.h"
+
 BaseEnemy::BaseEnemy(const int model, const VECTOR& pos,
 	const VECTOR& scale, const VECTOR& rot, Effect* get_effect,Effect* got_effect,float speed, float fleeping_speed, AlertState alert, float fov)
 {
@@ -100,15 +103,22 @@ BaseEnemy::~BaseEnemy()
 
 std::shared_ptr<WayPoint> BaseEnemy::DecideNextWayPoint(const VECTOR& player_pos, std::vector<std::shared_ptr<WayPoint>> way_points, std::shared_ptr<WayPoint> out_way_point)
 {
+
+	float max_score = 0;
+
 	//次のway_point
 	std::shared_ptr<WayPoint> next_point = nullptr;
 
 	//除外終わりのやつ
 	std::vector<std::shared_ptr<WayPoint>> outed_way_points;
 
+	std::map<float, std::shared_ptr<WayPoint>> score_way_points;
+
 	bool way_point_null = (out_way_point == nullptr);
 
-	 
+	
+	
+
 
 	for (auto& way_point : way_points)
 	{
@@ -123,18 +133,36 @@ std::shared_ptr<WayPoint> BaseEnemy::DecideNextWayPoint(const VECTOR& player_pos
 		}
 		else
 		{
+			// ここでscoreを付けよう
+			// 遠いときのscoreも高く、fov外でもscoreを高くする
+
+
+
+
+
 			//nullの時は除外しなくていい
 			outed_way_points.push_back(way_point);
 
 		}
 	}
 
+	
+
+
 	// 除外し終わったものの中から遠いものを選ぶ
 	next_point = GetFarWayPoint(player_pos, outed_way_points);
 
 	// 選んだwaypointの方向にplayerがいるならそこをやめる
 
-	bool in_fov = IsInFov(pos_, next_point->GetPos(), player_pos, 0.1f);
+	//fovの調整をする視野角に高さは加味しない
+
+	VECTOR plane_pos			= VectorAssistant::GetPlane(pos_);
+	VECTOR plane_next_point_pos = VectorAssistant::GetPlane(next_point->GetPos());
+	VECTOR plane_player_pos		= VectorAssistant::GetPlane(player_pos);
+
+	bool in_fov = IsInFov(plane_pos, plane_next_point_pos, plane_player_pos, kOneRad * 30.f);
+
+	
 
 	if (in_fov)
 	{
@@ -241,13 +269,15 @@ void BaseEnemy::DecideFleepingPlace(std::shared_ptr<Player> player,std::shared_p
 	my_way_point_ = DecideNextWayPoint(player_pos, neighbors,nullptr);		//一番遠い場所にする
 
 	target_pos_ = my_way_point_->GetPos();
-	
+
+	//dirを作る
+	dir_ = VectorAssistant::GetDir(pos_, target_pos_);
+
 
 }
 
 std::shared_ptr<WayPoint> BaseEnemy::GetFarWayPoint(const VECTOR& pos, std::vector<std::shared_ptr<WayPoint>> way_points)
 {
-	//beforeとmyのどっちが近いのかの判断
 
 	std::shared_ptr<WayPoint> point = nullptr;
 	float most_far_size = 0.f;
@@ -278,6 +308,10 @@ std::shared_ptr<WayPoint> BaseEnemy::GetFarWayPoint(const VECTOR& pos, std::vect
 				}
 
 			}
+		}
+		else
+		{
+			printfDx("おかしいぞい\n");
 		}
 	}
 

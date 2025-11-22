@@ -226,6 +226,9 @@
     <Filter Include="ソース ファイル\fov_function">
       <UniqueIdentifier>{d0ed3a0b-23e8-48c1-8895-25931eb5e5c5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\vector_assistant">
+      <UniqueIdentifier>{8d50a7c1-2d4f-417a-8bdd-c1cfe610425a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -425,6 +428,9 @@
     </ClCompile>
     <ClCompile Include="fov_function.cpp">
       <Filter>ソース ファイル\fov_function</Filter>
+    </ClCompile>
+    <ClCompile Include="vector_assistance.cpp">
+      <Filter>ソース ファイル\vector_assistant</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -640,6 +646,9 @@
     </ClInclude>
     <ClInclude Include="fov_function.h">
       <Filter>ソース ファイル\fov_function</Filter>
+    </ClInclude>
+    <ClInclude Include="vector_assistance.h">
+      <Filter>ソース ファイル\vector_assistant</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

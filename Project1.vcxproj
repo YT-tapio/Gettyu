@@ -173,6 +173,7 @@
     <ClCompile Include="super_attack_cool_time.cpp" />
     <ClCompile Include="super_attac_UI.cpp" />
     <ClCompile Include="UI_data.cpp" />
+    <ClCompile Include="vector_assistance.cpp" />
     <ClCompile Include="weapon_checker.cpp" />
     <ClCompile Include="patrolling.cpp" />
     <ClCompile Include="player.cpp" />
@@ -244,6 +245,7 @@
     <ClInclude Include="const_rad.h" />
     <ClInclude Include="super_attack_cool_time.h" />
     <ClInclude Include="super_attack_UI.h" />
+    <ClInclude Include="vector_assistance.h" />
     <ClInclude Include="weapon_checker.h" />
     <ClInclude Include="patrolling.h" />
     <ClInclude Include="player.h" />
