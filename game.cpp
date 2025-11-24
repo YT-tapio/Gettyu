@@ -61,6 +61,7 @@ void Game::ScreenDraw()
     }
 
     screen_->Down();
+    
 
 }
 
@@ -168,6 +169,8 @@ void Game::Init()
     weapon_UI_                  = std::make_shared<WeaponUI>();
     super_attack_UI_            = std::make_shared<SuperAttackUI>();
 
+    enemy_count_UI_ = std::make_shared<EnemyCountUI>();
+
     screen_ = std::make_shared<NormalSubScreen>(VGet((kGameWidth * 0.5f), (kGameHeight * 0.5f), 0.f), kGameWidth, kGameHeight,
         kGameWidth, kGameHeight, FALSE, AlphaColorType::kBlack, 0.f, FALSE);
 
@@ -217,6 +220,7 @@ void Game::Update(SceneName& name)
     //UIのアップデート
     weapon_UI_->Update();
     super_attack_UI_->Update();
+    enemy_count_UI_->Update();
     
     Camera::GetInstance().Update(brain_->GetVelocity(), brain_->GetTargetVelocity());
     effect_player_->Update();
@@ -271,6 +275,7 @@ void Game::Draw()
     
     weapon_UI_->Draw();
     super_attack_UI_->Draw();
+    enemy_count_UI_->Draw();
 
     DrawFormatString((kGameWidth - 300), (kGameHeight - 30), GetColor(0, 0, 0), "TAB / BACK Button : result");
 }

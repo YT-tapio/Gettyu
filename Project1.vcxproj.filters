@@ -229,6 +229,9 @@
     <Filter Include="ソース ファイル\vector_assistant">
       <UniqueIdentifier>{8d50a7c1-2d4f-417a-8bdd-c1cfe610425a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\UI\enemy">
+      <UniqueIdentifier>{5e9f603c-5535-4c61-bee8-702d1c3301cc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -431,6 +434,9 @@
     </ClCompile>
     <ClCompile Include="vector_assistant.cpp">
       <Filter>ソース ファイル\vector_assistant</Filter>
+    </ClCompile>
+    <ClCompile Include="enemy_count_UI.cpp">
+      <Filter>ソース ファイル\UI\enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -649,6 +655,9 @@
     </ClInclude>
     <ClInclude Include="vector_assistant.h">
       <Filter>ソース ファイル\vector_assistant</Filter>
+    </ClInclude>
+    <ClInclude Include="enemy_count_UI.h">
+      <Filter>ソース ファイル\UI\enemy</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

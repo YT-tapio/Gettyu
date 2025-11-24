@@ -22,6 +22,7 @@
 #include"shadow_map.h"
 #include"weapon_UI.h"
 #include"super_attack_UI.h"
+#include"enemy_count_UI.h"
 
 class BaseScene;
 
@@ -44,6 +45,7 @@ private:
 	//UIŒQ
 	std::shared_ptr<WeaponUI> weapon_UI_;
 	std::shared_ptr<SuperAttackUI> super_attack_UI_;
+	std::shared_ptr<EnemyCountUI> enemy_count_UI_;
 
 	void DrawShadowMap();
 

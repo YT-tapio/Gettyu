@@ -17,3 +17,10 @@ Type TheNumPower(const Type& num, int power)
 	return value;
 }
 
+template<typename T>
+
+float GetRatio(T num, T num2)
+{
+	return num / (num + num2);
+}
+
