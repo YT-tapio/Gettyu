@@ -104,6 +104,9 @@ void EnemyManager::Update(std::shared_ptr<Player> player)
 
 		}
 		(*itr)->EffectUpdate();
+
+		
+
 	}
 	
 	
