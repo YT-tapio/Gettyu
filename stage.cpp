@@ -12,17 +12,22 @@ VECTOR GetProjectionVector(const VECTOR& vector, const VECTOR& vector2)
 	VECTOR projection = VGet(0.f, 0.f, 0.f);
 
 	//分母
-	float denominator;
+	float denominator = 0.f;
 
-	denominator = (vector.x * vector.x) + (vector.y * vector.y)
-		+ (vector.z * vector.z);
+	//vectorのサイズを受け取る
+
+	float vec_size = VSize(vector);
+
+	denominator = vec_size * vec_size;
 
 	//分子
 	float molecule;
 
-	molecule = vector.x * vector2.x + vector.y * vector2.y + vector.z * vector2.z;
+	molecule = VDot(vector, vector2);
 
-	projection = VScale(vector, (molecule / denominator));
+	float num = (molecule / denominator);
+
+	projection = VScale(vector, num);
 
 
 	return projection;
@@ -137,7 +142,25 @@ VECTOR Stage::CheckEnemyCollision(BaseEnemy* enemy, const VECTOR& velocity)
 	*/
 	VECTOR fixed_vel = velocity;
 
+	auto before_col = enemy->GetCollisionData();
+	CollisionData future_col = before_col;
+
+	future_col.pos = VAdd(future_col.pos, velocity);
+
+	//丸とポリゴンの当たり判定を行う
+
+	auto hit_dim = MV1CollCheck_Capsule(model_,
+		-1, before_col.pos, future_col.pos,
+		(before_col.r));
+
+	if (hit_dim.HitNum == 0)
+	{
+		return fixed_vel;
+	}
+
 	
+
+
 
 	return fixed_vel;
 }
@@ -371,20 +394,6 @@ VECTOR Stage::CheckEntityCollisionFixedPos(Player& player, MV1_COLL_RESULT_POLY*
 				VECTOR poly_to_old = VSub(old_pos, poly_center_pos);			//old
 				VECTOR poly_to_next;
 
-				if (FALSE)
-				{
-					poly_to_next = VSub(next_player_capsule.start_pos,
-						poly_center_pos);			//next
-				}
-				else
-				{
-					poly_to_next = VSub(next_pos,
-						poly_center_pos);			//next
-				}
-
-
-
-
 
 				//正射影ベクトルを出す
 				VECTOR poly_to_old_proj_vec = GetProjectionVector(poly.Normal, poly_to_old);
@@ -417,8 +426,8 @@ VECTOR Stage::CheckEntityCollisionFixedPos(Player& player, MV1_COLL_RESULT_POLY*
 
 						//ポリゴンの中点からの距離を見てから、そのあと正射影ベクトルを出す。
 							//センターからの距離
-						poly_to_old = VSub(old_pos, poly_center_pos);			//old
-						poly_to_next = VSub(next_pos, poly_center_pos);			//next
+						poly_to_old = VSub(old_player_capsule.start_pos, poly_center_pos);			//old
+						poly_to_next = VSub(next_player_capsule.start_pos, poly_center_pos);			//next
 
 						//nowのpoly.normalの向きを逆にする
 						auto reverce_norm = VScale(poly.Normal, -1);
@@ -430,11 +439,9 @@ VECTOR Stage::CheckEntityCollisionFixedPos(Player& player, MV1_COLL_RESULT_POLY*
 						poly_to_next_proj_vec = GetProjectionVector(poly.Normal, poly_to_next);
 
 						// 各ベクターの大きさを出す
-						float poly_to_old_size = fabs((sqrt((poly_to_old_proj_vec.x * poly_to_old_proj_vec.x) +
-							(poly_to_old_proj_vec.y * poly_to_old_proj_vec.y) + (poly_to_old_proj_vec.z * poly_to_old_proj_vec.z))));
+						float poly_to_old_size = VSize(poly_to_old_proj_vec);
 
-						float poly_to_next_size = fabs((sqrt((poly_to_next_proj_vec.x * poly_to_next_proj_vec.x) +
-							(poly_to_next_proj_vec.y * poly_to_next_proj_vec.y) + (poly_to_next_proj_vec.z * poly_to_next_proj_vec.z))));
+						float poly_to_next_size = VSize(poly_to_next_proj_vec);
 
 						// その比をみて、全体の移動量にかける。調べたい比 単体/全体
 						float ratio = fabs(poly_to_old_size) / (fabs(poly_to_old_size) + poly_to_next_size);
@@ -445,7 +452,7 @@ VECTOR Stage::CheckEntityCollisionFixedPos(Player& player, MV1_COLL_RESULT_POLY*
 
 						if (TRUE)
 						{
-							VECTOR offset_pos = VAdd(next_pos, VScale(poly.Normal, poly_to_next_size));
+							VECTOR offset_pos = VAdd(next_player_capsule.start_pos, VScale(poly.Normal, poly_to_next_size));
 
 							if (poly.Normal.y <= 0.f)
 							{
@@ -454,7 +461,7 @@ VECTOR Stage::CheckEntityCollisionFixedPos(Player& player, MV1_COLL_RESULT_POLY*
 
 							}
 
-							offset_vel = VSub(offset_pos, old_pos);
+							offset_vel = VSub(offset_pos, old_player_capsule.start_pos);
 						}
 						else
 						{
@@ -465,7 +472,7 @@ VECTOR Stage::CheckEntityCollisionFixedPos(Player& player, MV1_COLL_RESULT_POLY*
 
 
 						//offset分足したカプセルの座標
-						next_player_capsule.start_pos = VAdd(old_pos, offset_vel);
+						next_player_capsule.start_pos = VAdd(old_player_capsule.start_pos, offset_vel);
 						next_player_capsule.start_pos.y += next_player_capsule.r;
 						next_player_capsule.end_pos = next_player_capsule.start_pos;
 						next_player_capsule.end_pos.y += next_player_capsule.vertical_num;
@@ -571,9 +578,7 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 	auto next_player_capsule = old_player_capsule;
 
 	//未来のカプセルの座標を更新
-	next_player_capsule.start_pos = next_pos;
-	next_player_capsule.start_pos.y += next_player_capsule.r;
-	next_player_capsule.end_pos = next_player_capsule.start_pos;
+	next_player_capsule.start_pos = VAdd(old_player_capsule.start_pos,velocity);
 	next_player_capsule.end_pos.y += next_player_capsule.vertical_num;
 	//printfDx("next_cap_r:%.2f\n", next_player_capsule.r);
 	// ミライのベクトルから現在のベクトルまでのカプセルを作
@@ -700,7 +705,8 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 
 					//衝突しているとき
 					if (HitCheck_Capsule_Triangle(next_player_capsule.start_pos, next_player_capsule.end_pos
-						, next_player_capsule.r, poly.Position[0], poly.Position[1], poly.Position[2]) || HitCheck_Line_Triangle(old_pos, next_pos, poly.Position[0], poly.Position[1], poly.Position[2]).HitFlag == 1)
+						, next_player_capsule.r, poly.Position[0], poly.Position[1], poly.Position[2]) ||
+						(HitCheck_Line_Triangle(old_player_capsule.start_pos, next_player_capsule.start_pos, poly.Position[0], poly.Position[1], poly.Position[2]).HitFlag) == 1)
 					{
 
 						//中点を出す
@@ -716,27 +722,15 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 						//ポリゴンの中点からの距離を見てから、そのあと正射影ベクトルを出す。
 						//センターからの距離
 						//カプセルの開始の位置
-						VECTOR poly_to_old = VSub(old_player_capsule.start_pos, poly_center_pos);			//old
+						VECTOR poly_to_old;			//old
 						VECTOR poly_to_next;
 
-						if (TRUE)
-						{
-							poly_to_next = VSub(next_player_capsule.start_pos,
-								poly_center_pos);			//next
-						}
-						else
-						{
-							poly_to_next = VSub(next_pos,
-								poly_center_pos);			//next
-						}
-
-
-
+						
 
 
 						//正射影ベクトルを出す
-						VECTOR poly_to_old_proj_vec = GetProjectionVector(poly.Normal, poly_to_old);
-						VECTOR poly_to_next_proj_vec = GetProjectionVector(poly.Normal, poly_to_next);
+						VECTOR poly_to_old_proj_vec;
+						VECTOR poly_to_next_proj_vec;
 
 						if (FALSE)
 						{
@@ -754,7 +748,7 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 								if (poly.Normal.y <= 0.f)
 								{
 
-
+									
 								}
 								else
 								{
@@ -764,8 +758,8 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 
 								//ポリゴンの中点からの距離を見てから、そのあと正射影ベクトルを出す。
 								//センターからの距離
-								poly_to_old = VSub(old_player_capsule.start_pos , poly_center_pos);			//old
-								poly_to_next = VSub(next_player_capsule.start_pos, poly_center_pos);			//next
+								poly_to_old		= VSub(old_player_capsule.start_pos , poly_center_pos);			//old
+								poly_to_next	= VSub(next_player_capsule.start_pos, poly_center_pos);			//next
 
 								//nowのpoly.normalの向きを逆にする
 								auto reverce_norm = VScale(poly.Normal, -1);
@@ -774,7 +768,7 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 								poly_to_old_proj_vec = GetProjectionVector(poly.Normal, poly_to_old);
 
 								// 次のposから
-								poly_to_next_proj_vec = GetProjectionVector(poly.Normal, poly_to_next);
+								poly_to_next_proj_vec = GetProjectionVector(reverce_norm, poly_to_next);
 
 								// 各ベクターの大きさを出す
 								float poly_to_old_size = VSize(poly_to_old_proj_vec);
@@ -782,10 +776,10 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 								float poly_to_next_size = VSize(poly_to_next_proj_vec);
 
 								//正射影ベクトルの全体のサイズ
-								float all_size = (fabs(poly_to_old_size) + poly_to_next_size);
+								float all_size = (poly_to_old_size + poly_to_next_size);
 
 								// その比をみて、全体の移動量にかける。調べたい比 単体/全体
-								float old_ratio = fabs(poly_to_old_size) / all_size;
+								float old_ratio = poly_to_old_size / all_size;
 
 								//ここ次の距離までの移動量のnextの比
 								float next_ratio = poly_to_next_size / all_size;
@@ -794,7 +788,7 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 								if (TRUE)
 								{
 									// velocityを足し終わった後に法線分三角形にめり込んでいる分を押し出す
-									VECTOR offset_pos = VAdd(next_pos, VScale(poly.Normal, poly_to_next_size));
+									VECTOR offset_pos = VAdd(next_pos, poly_to_next_proj_vec);
 
 									//　元のposから、offsetした後のposの差を見る
 									offset_vel = VSub(offset_pos, old_pos);
