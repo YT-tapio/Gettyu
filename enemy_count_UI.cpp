@@ -2,8 +2,8 @@
 #include"enemy_count_UI.h"
 
 
-EnemyCountUI::EnemyCountUI()
-	:enemys_count_(0)
+EnemyCountUI::EnemyCountUI(int *p)
+	:enemys_count_(p)
 {
 
 	float all_size = (kGameWidth + kGameHeight);
@@ -36,14 +36,10 @@ void EnemyCountUI::CountDraw()
 {
 	//Žc‚è‚Ì“G‚ðŽó‚¯Žæ‚é
 
-
-
 	int size = GetFontSize();
 	SetFontSize(100);
-	DrawFormatString(static_cast<int>(kInitCountPos.x), static_cast<int>(kInitCountPos.y), GetColor(0, 255, 255), "%d", enemys_count_);
+	DrawFormatString(static_cast<int>(kInitCountPos.x), static_cast<int>(kInitCountPos.y), GetColor(0, 255, 255), "%d", *enemys_count_);
 	SetFontSize(size);
-
-
 
 }
 

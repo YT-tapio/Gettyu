@@ -24,8 +24,11 @@ private:
 	Effect* get_effect_ = new Effect("data/effect/MAGICALxSPIRAL/A_Salamander4.efkefc", VGet(0.f, 0.f, 0.f), VGet(0.f, 0.f, 0.f), 7.0f, 10.f, 300.f, FALSE);
 	Effect* got_effect_ = new Effect("data/effect/NitoriBox/Explosion.efkefc", VGet(0.f, 0.f, 0.f), VGet(0.f, 0.f, 0.f), 6.0f, 10.f, 200.f, FALSE);
 
+	
+
 public:
 
+	int not_get_count_;
 
 	EnemyManager();
 

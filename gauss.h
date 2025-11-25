@@ -17,6 +17,12 @@ public:
 	Gauss(const Gauss&) = delete;
 	Gauss& operator = (const Gauss&) = delete;
 
-	void Update(const VECTOR& pos, int width, int height, int handle, int pixel_width, int param);
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="handle"></param>
+	/// <param name="pixel_width"></param>
+	/// <param name="param"></param>
+	void Update(int handle, int pixel_width, int param);
 
 };

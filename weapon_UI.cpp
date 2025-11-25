@@ -199,7 +199,7 @@ void WeaponUI::Update()
 
 	circle_gauss_->Down();
 
-	Gauss::GetInstance().Update(VGet(kGameWidth * 0.5f, kGameHeight * 0.5f, 0.f), kGameWidth, kGameHeight, circle_gauss_->GetHandle(), kPixelWidthHigh, kCircleGaussParam);
+	Gauss::GetInstance().Update(circle_gauss_->GetHandle(), kPixelWidthHigh, kCircleGaussParam);
 	
 	sub_screen_->Up();			// screen‚ð‹N“®
 

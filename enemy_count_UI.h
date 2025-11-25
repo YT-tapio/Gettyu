@@ -17,7 +17,7 @@ private:
 	const float kHeight		= 1000.f;
 
 	//残りの敵の数を知っておく必要がある
-	int enemys_count_;
+	int* enemys_count_;
 	
 
 	void CountDraw();
@@ -26,7 +26,7 @@ private:
 public:
 
 
-	EnemyCountUI();
+	EnemyCountUI(int *p);
 
 
 	~EnemyCountUI();

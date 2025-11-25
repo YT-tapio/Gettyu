@@ -2,6 +2,7 @@
 #include"input.h"
 #include"debug.h"
 #include"keyconfig.h"
+#include"gauss.h"
 #include"mask.h"
 #include"normal_sub_screen.h"
 Game::Game()
@@ -169,7 +170,7 @@ void Game::Init()
     weapon_UI_                  = std::make_shared<WeaponUI>();
     super_attack_UI_            = std::make_shared<SuperAttackUI>();
 
-    enemy_count_UI_ = std::make_shared<EnemyCountUI>();
+    enemy_count_UI_ = std::make_shared<EnemyCountUI>(&enemy_manager_->not_get_count_);
 
     screen_ = std::make_shared<NormalSubScreen>(VGet((kGameWidth * 0.5f), (kGameHeight * 0.5f), 0.f), kGameWidth, kGameHeight,
         kGameWidth, kGameHeight, FALSE, AlphaColorType::kBlack, 0.f, FALSE);
@@ -221,13 +222,27 @@ void Game::Update(SceneName& name)
     weapon_UI_->Update();
     super_attack_UI_->Update();
     enemy_count_UI_->Update();
-    
+   
+
     Camera::GetInstance().Update(brain_->GetVelocity(), brain_->GetTargetVelocity());
     effect_player_->Update();
     sky_dom_->SetPos(player_->GetVelocity());
 
     //makscreen‚Ì’†‚Å•`‰æ‚·‚é
     ScreenDraw();
+
+    static int param = 100;
+    static int pixel = 8;
+    
+    
+    if (Input::GetInstance().CheckInputKey(KEY_INPUT_UP) == InputState::kOn)
+    {
+        Gauss::GetInstance().Update(screen_->GetHandle(), pixel, param);
+    }
+    
+
+    //printfDx("GaussF%d\n", pixel);
+
     SetUseLighting(TRUE);
     
 
@@ -271,6 +286,8 @@ void Game::Update(SceneName& name)
 
 void Game::Draw()
 {
+    
+
     screen_->Draw();
     
     weapon_UI_->Draw();

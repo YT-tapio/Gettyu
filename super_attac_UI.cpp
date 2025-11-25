@@ -263,7 +263,7 @@ void SuperAttackUI::Update()
 	SetLightDirection(light_dir);
 	weapon_screen_->Down();
 
-	Gauss::GetInstance().Update(VGet((kGameWidth * 0.5f), (kGameHeight * 0.5f), 0.f), kGameWidth, kGameHeight, back_screen_->GetHandle(), kPixelWidthMiddle, kBackGaussParam);
+	Gauss::GetInstance().Update(back_screen_->GetHandle(), kPixelWidthMiddle, kBackGaussParam);
 }
 
 void SuperAttackUI::Draw()

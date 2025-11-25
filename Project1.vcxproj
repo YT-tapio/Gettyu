@@ -150,6 +150,7 @@
     <ClCompile Include="calculation.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="collision.cpp" />
+    <ClCompile Include="collision_data.cpp" />
     <ClCompile Include="condition_timer.cpp" />
     <ClCompile Include="debug.cpp" />
     <ClCompile Include="effect.cpp" />

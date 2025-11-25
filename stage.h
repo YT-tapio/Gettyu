@@ -62,6 +62,8 @@ public:
 
 	void Debug() override;
 
+	VECTOR CheckEnemyCollision(BaseEnemy* enemy, const VECTOR& velocity);
+
 	VECTOR CheckCollision(Player& player, const VECTOR& velocity);
 
 
