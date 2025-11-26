@@ -12,14 +12,12 @@ class ObjectBase
 private:
 
 
-
 protected:
 
 	VECTOR pos_;
 	VECTOR rot_;
 	VECTOR scale_;
 	MATRIX mat_;
-
 
 	//モデルのデータ
 	int model_;
@@ -30,19 +28,19 @@ public:
 
 	
 
-	ObjectBase(const VECTOR& pos, int model_handle);
+	ObjectBase(const VECTOR& pos, const VECTOR& rot, const VECTOR& scale, int model_handle);
 
 
 	virtual ~ObjectBase();
 
 
-	virtual void Init() {};
+	virtual void Init();
 
 
-	virtual void Update() {};
+	virtual void Update();
 
 
-	virtual void Draw() {};
+	virtual void Draw();
 
 	virtual void Debug() {};
 

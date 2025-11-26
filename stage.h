@@ -15,7 +15,7 @@ private:
 
 	std::vector<std::shared_ptr<WayPoint>> way_points_;
 
-	VECTOR scale_;	//モデルの大きさ
+	//VECTOR scale_;	//モデルの大きさ
 
 
 	// HACK: 壁はXZ平面に垂直である前提で成り立っている。それ以外を置くとバグる
@@ -35,6 +35,9 @@ private:
 
 	void MakeCollCheckCapsule(CapsuleData old_cap, CapsuleData next_cap);
 
+	bool IsStair(const VECTOR& pos, const VECTOR& entity_pos, const MV1_COLL_RESULT_POLY_DIM& hit_dim);
+
+
 	// 壁ポリゴンとの当たりをチェックし、補正すべき移動ベクトルを返す
 	VECTOR CheckHitWithWall(Player& player, const VECTOR& check_position);
 
@@ -48,7 +51,11 @@ public:
 
 	Stage(int model_handle, VECTOR pos, float scale);
 
-	~Stage();
+	~Stage() override;
+
+	void Init() override;
+
+	void Update()override;
 
 	void Draw() override;
 

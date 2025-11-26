@@ -9,16 +9,13 @@
 
 
 Stage::Stage(int model_handle, VECTOR pos, float scale)
-	: ObjectBase(pos, model_handle)
-	, scale_(VGet(scale,scale,scale))
+	: ObjectBase(pos, VectorAssistant::GetZeroVec(), VGet(scale, scale, scale), model_handle)
 	, wall_num_(0)
 	, floor_num_(0)
 	, wall_{ nullptr }
 	, floor_{ nullptr }
 {
 	MV1SetupCollInfo(model_, -1);
-
-	
 
 
 	MATRIX scale_matrix = MGetScale(scale_);
@@ -98,11 +95,51 @@ void Stage::AnalyzeWallAndFloor(MV1_COLL_RESULT_POLY_DIM hit_dim, const VECTOR& 
 
 void Stage::MakeCollCheckCapsule(CapsuleData old_cap, CapsuleData next_cap)
 {
-	next_to_old_cap_.start_pos = VScale(VAdd(next_cap.start_pos, next_cap.end_pos), 0.5f);
-	next_to_old_cap_.end_pos = VScale(VAdd(old_cap.start_pos, old_cap.end_pos), 0.5f);
+	next_to_old_cap_.start_pos			= VScale(VAdd(old_cap.start_pos, old_cap.end_pos), 0.5f);
+	next_to_old_cap_.end_pos				= VScale(VAdd(next_cap.start_pos, next_cap.end_pos), 0.5f);
 
-	next_to_old_cap_.r = (old_cap.r + (next_to_old_cap_.vertical_num * 0.5f));
-	next_to_old_cap_.vertical_num = (VSize(VSub(next_cap.end_pos, next_cap.start_pos)));
+	next_to_old_cap_.r							= (old_cap.r	+ (old_cap.vertical_num * 0.5f));
+	next_to_old_cap_.vertical_num		= (VSize(VSub(next_to_old_cap_.start_pos, next_to_old_cap_.end_pos)));
+}
+
+
+bool Stage::IsStair(const VECTOR& poly_pos, const VECTOR& entity_pos,const MV1_COLL_RESULT_POLY_DIM& hit_dim)
+{
+	const int kPolyMax = 3;
+	const float kMaxHeightDist = 3.f;
+	//階段かどうかの判定
+	bool is_stair = FALSE;
+	//元のposから一番離れているところ
+	float max_dist = 0.f;
+
+
+
+	for (int i = 0; i < hit_dim.HitNum; i++)
+	{
+		auto poly = hit_dim.Dim[i];
+
+		//3つの頂点から一番低いvecを受け取る
+		
+		for (int j = 0; j < kPolyMax; j++)
+		{
+			//entityよりもposが高いのなら
+			if (poly.Position[j].x > entity_pos.y) { continue; }
+
+			float height_dist = poly_pos.y - poly.Position[j].y;
+
+			//判定するポリゴンの位置よりも低いとき
+			max_dist = (height_dist > max_dist) ? height_dist : max_dist;
+
+		}
+	}
+
+	if (max_dist == 0.f)
+	{
+		return TRUE;
+	}
+
+	// heightdistよりもしただとみなす
+	return max_dist < kMaxHeightDist;
 }
 
 
@@ -333,6 +370,16 @@ VECTOR Stage::CheckHitWithFloor(Player& player, const VECTOR& check_position)
 /*------------public------------*/
 
 
+void Stage::Init()
+{
+
+}
+
+void Stage::Update()
+{
+
+}
+
 void Stage::Draw()
 {
 	MATRIX scale_matrix = MGetScale(scale_);
@@ -385,7 +432,7 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 
 	//未来のカプセルの座標を更新
 	next_player_capsule.start_pos = VAdd(old_player_capsule.start_pos,velocity);
-	next_player_capsule.end_pos.y += next_player_capsule.vertical_num;
+	next_player_capsule.end_pos = VAdd(old_player_capsule.end_pos, velocity);
 	//printfDx("next_cap_r:%.2f\n", next_player_capsule.r);
 	// ミライのベクトルから現在のベクトルまでのカプセルを作
 		// 各カプセルの中心の座標を検出する
@@ -399,11 +446,22 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 
 	// HACK: ステージポリゴンが複数ある場合、ここが繰り返し処理になる
 	{
+
+		
+
 		// プレイヤーの周囲にあるステージポリゴンを取得する
 		// ( 検出する範囲は移動距離も考慮する )
 		auto hit_dim = MV1CollCheck_Capsule(model_, 
 			-1, next_to_old_cap_.start_pos, next_to_old_cap_.end_pos,
-			(next_to_old_cap_.r));
+			next_to_old_cap_.r);
+
+
+		//playerが動いていない場合も考えたい
+
+		if (VSize(velocity) == 0.f)
+		{
+			hit_dim = MV1CollCheck_Capsule(model_, -1, next_player_capsule.start_pos, next_player_capsule.end_pos, next_player_capsule.r);
+		}
 
 		if (before_hit_num_ != hit_dim.HitNum)
 		{
@@ -425,11 +483,9 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 
 				auto check_capsule = next_player_capsule;
 				//少し下を見る
-				check_capsule.start_pos = VAdd(old_pos, VGet(0.f, -0.1f, 0.f));
-				check_capsule.start_pos.y += check_capsule.r;
-				check_capsule.end_pos = check_capsule.start_pos;
-				check_capsule.end_pos.y += check_capsule.vertical_num;
-
+				check_capsule.start_pos		= VAdd(check_capsule.start_pos, VGet(0.f, -0.1f, 0.f));
+				check_capsule.end_pos		= VAdd(check_capsule.end_pos, VGet(0.f, -0.1f, 0.f));
+				
 				auto gravity_check_hit_dim = MV1CollCheck_Capsule(model_,
 					-1, check_capsule.start_pos, check_capsule.end_pos,
 					check_capsule.r);
@@ -517,6 +573,11 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 							(poly.Position[0].z + poly.Position[1].z + poly.Position[2].z) / 3
 						);
 
+					// 俺的には最初で判断していいと思う
+					// フラグを返す関数を作るそれがTRUEの時はそいつを除外するような感じにしたい
+					// 地面時に判断するようにする
+					if ((!(poly.Normal.y <= 0.f)) && !IsStair(poly_center_pos, next_player_capsule.start_pos,hit_dim)) { continue; }
+
 
 					/*----------ここからはセグメントのやつ(capsuleのstart_posのやつ)------------*/
 
@@ -568,9 +629,9 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 
 					//offset分足したカプセルの座標
 					next_player_capsule.start_pos = VAdd(old_player_capsule.start_pos, offset_vel);
-					next_player_capsule.start_pos.y += next_player_capsule.r;
-					next_player_capsule.end_pos = next_player_capsule.start_pos;
-					next_player_capsule.end_pos.y += next_player_capsule.vertical_num;
+					//next_player_capsule.start_pos.y += next_player_capsule.r;
+					next_player_capsule.end_pos = VAdd(old_player_capsule.end_pos,offset_vel);
+					
 
 					//当たり判定の更新
 					MakeCollCheckCapsule(old_player_capsule, next_player_capsule);

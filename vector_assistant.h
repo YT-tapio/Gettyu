@@ -5,6 +5,12 @@
 
 namespace VectorAssistant
 {
+
+	inline VECTOR GetZeroVec()
+	{
+		return VGet(0.f, 0.f, 0.f);
+	}
+
 	/// @brief y‚ð–³Ž‹‚µ‚½vector
 	/// @param  
 	/// @return 
