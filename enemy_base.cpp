@@ -1,7 +1,7 @@
 #include<map>
 #include<math.h>
 #include<algorithm>
-#include"base_enemy.h"
+#include"enemy_base.h"
 #include"situation.h"
 #include"patrolling.h"
 #include"debug.h"
@@ -10,7 +10,7 @@
 #include"fov_function.h"
 #include"vector_assistant.h"
 
-BaseEnemy::BaseEnemy(const int model, const VECTOR& pos,
+EnemyBase::EnemyBase(const int model, const VECTOR& pos,
 	const VECTOR& scale, const VECTOR& rot, Effect* get_effect,Effect* got_effect,float speed, float fleeping_speed, AlertState alert, float fov)
 {
 	fsm_		= std::make_shared<EnemyFSM>();
@@ -95,14 +95,14 @@ BaseEnemy::BaseEnemy(const int model, const VECTOR& pos,
 	debug_color_ = GetColor(255, 255, 255);
 }
 
-BaseEnemy::~BaseEnemy()
+EnemyBase::~EnemyBase()
 {
 	//delete get_effect_;
 	//delete got_effect_;
 }
 
 
-std::shared_ptr<WayPoint> BaseEnemy::DecideNextWayPoint(const VECTOR& player_pos, std::vector<std::shared_ptr<WayPoint>> way_points)
+std::shared_ptr<WayPoint> EnemyBase::DecideNextWayPoint(const VECTOR& player_pos, std::vector<std::shared_ptr<WayPoint>> way_points)
 {
 
 	float max_score = 0;
@@ -132,7 +132,7 @@ std::shared_ptr<WayPoint> BaseEnemy::DecideNextWayPoint(const VECTOR& player_pos
 }
 
 
-float BaseEnemy::MakeWayPointScore(const VECTOR& player_pos, std::shared_ptr<WayPoint> way_point)
+float EnemyBase::MakeWayPointScore(const VECTOR& player_pos, std::shared_ptr<WayPoint> way_point)
 {
 	const float kRadHerf = kOneRad * 90;
 	const float kDistMax = 50.f;
@@ -168,7 +168,7 @@ float BaseEnemy::MakeWayPointScore(const VECTOR& player_pos, std::shared_ptr<Way
 	return score;
 }
 
-VECTOR BaseEnemy::GetNearWayPointPos()
+VECTOR EnemyBase::GetNearWayPointPos()
 {
 	auto way_points = navigation_->GetWayPoint();
 
@@ -206,7 +206,7 @@ VECTOR BaseEnemy::GetNearWayPointPos()
 }
 
 
-std::vector<VECTOR> BaseEnemy::GetWayPointNeighborsPos()
+std::vector<VECTOR> EnemyBase::GetWayPointNeighborsPos()
 {
 	auto neighbors = GetNeighbors();
 	std::vector<VECTOR> way_point_pos;
@@ -219,12 +219,12 @@ std::vector<VECTOR> BaseEnemy::GetWayPointNeighborsPos()
 	return way_point_pos;
 }
 
-std::vector<std::shared_ptr<WayPoint>> BaseEnemy::GetNeighbors()
+std::vector<std::shared_ptr<WayPoint>> EnemyBase::GetNeighbors()
 {
 	return navigation_->GetNeighbors(my_way_point_);
 }
 
-void BaseEnemy::DecideFirstFleepingPlace(std::shared_ptr<Player> player)
+void EnemyBase::DecideFirstFleepingPlace(std::shared_ptr<Player> player)
 {
 	// playerのposから遠い場所を指定する
 	
@@ -248,7 +248,7 @@ void BaseEnemy::DecideFirstFleepingPlace(std::shared_ptr<Player> player)
 
 }
 
-void BaseEnemy::DecideFleepingPlace(std::shared_ptr<Player> player,std::shared_ptr<WayPoint> way_point)
+void EnemyBase::DecideFleepingPlace(std::shared_ptr<Player> player,std::shared_ptr<WayPoint> way_point)
 {
 
 	VECTOR player_pos = player->GetPos();
@@ -270,7 +270,7 @@ void BaseEnemy::DecideFleepingPlace(std::shared_ptr<Player> player,std::shared_p
 
 }
 
-std::shared_ptr<WayPoint> BaseEnemy::GetFarWayPoint(const VECTOR& pos, std::vector<std::shared_ptr<WayPoint>> way_points)
+std::shared_ptr<WayPoint> EnemyBase::GetFarWayPoint(const VECTOR& pos, std::vector<std::shared_ptr<WayPoint>> way_points)
 {
 
 	std::shared_ptr<WayPoint> point = nullptr;
@@ -310,7 +310,7 @@ std::shared_ptr<WayPoint> BaseEnemy::GetFarWayPoint(const VECTOR& pos, std::vect
 	
 }
 
-void BaseEnemy::EffectUpdate()
+void EnemyBase::EffectUpdate()
 {
 	if (Situation::GetInstance().GetSituationName() == SituationName::kGet)
 	{
@@ -332,7 +332,7 @@ void BaseEnemy::EffectUpdate()
 }
 
 
-void BaseEnemy::AnimationUpdate()
+void EnemyBase::AnimationUpdate()
 {
 	if (before_anim_type_ != now_anim_type_)
 	{
@@ -372,19 +372,19 @@ void BaseEnemy::AnimationUpdate()
 	}
 }
 
-void BaseEnemy::PlayGetEffect()
+void EnemyBase::PlayGetEffect()
 {
 	get_effect_->Play();
 }
 
 
-void BaseEnemy::EndGetEffect()
+void EnemyBase::EndGetEffect()
 {
 	get_effect_->End();
 }
 
 
-void BaseEnemy::Draw(int i)
+void EnemyBase::Draw(int i)
 {
 
 	mat_ = MMult(MMult(MGetRotY(rot_.y), MGetScale(scale_)), MGetTranslate(pos_));
@@ -412,7 +412,7 @@ void BaseEnemy::Draw(int i)
 }
 
 
-void BaseEnemy::DrawFov()
+void EnemyBase::DrawFov()
 {
 	const float angle_scale = 5.f;
 
@@ -433,7 +433,7 @@ void BaseEnemy::DrawFov()
 	DrawLine3D(pos_, fov_pos2, GetColor(255, 255, 255));
 }
 
-void BaseEnemy::Debug(int i)
+void EnemyBase::Debug(int i)
 {
 	//でばっくのシングルトンから今までのデバックのログ数を受け取りその量を受け取る
 	if (Debug::GetInstance().GetDisp())
@@ -534,12 +534,12 @@ void BaseEnemy::Debug(int i)
 
 }
 
-void BaseEnemy::SetColor(int color)
+void EnemyBase::SetColor(int color)
 {
 	debug_color_ = color;
 }
 
-void BaseEnemy::SetDeltaTime(float delta_time)
+void EnemyBase::SetDeltaTime(float delta_time)
 {
 	delta_time_ = delta_time;
 	animation_->SetDeltaTime(delta_time_);
@@ -548,37 +548,37 @@ void BaseEnemy::SetDeltaTime(float delta_time)
 
 }
 
-void BaseEnemy::SetIsGet(bool flag)
+void EnemyBase::SetIsGet(bool flag)
 {
 	is_get_ = flag;
 }
 
-void BaseEnemy::SetVelocity(const VECTOR& vel)
+void EnemyBase::SetVelocity(const VECTOR& vel)
 {
 	velocity_ = vel;
 }
 
-void BaseEnemy::AddVelocity(const VECTOR& vel)
+void EnemyBase::AddVelocity(const VECTOR& vel)
 {
 	velocity_ = VAdd(velocity_, vel);
 }
 
-void BaseEnemy::SetGetEffectPos(const VECTOR& pos)
+void EnemyBase::SetGetEffectPos(const VECTOR& pos)
 {
 	get_effect_->SetPos(pos);
 }
 
-void BaseEnemy::SetGotEffectPos(const VECTOR& pos)
+void EnemyBase::SetGotEffectPos(const VECTOR& pos)
 {
 	got_effect_->SetPos(pos);
 }
 
-void BaseEnemy::SetPos(const VECTOR& pos)
+void EnemyBase::SetPos(const VECTOR& pos)
 {
 	pos_ = pos;
 }
 
-void BaseEnemy::SetPosIsGot(const VECTOR& pos)
+void EnemyBase::SetPosIsGot(const VECTOR& pos)
 {
 	//collisionの位置更新も行うsetposとなります
 	pos_ = pos;
@@ -586,7 +586,7 @@ void BaseEnemy::SetPosIsGot(const VECTOR& pos)
 	pos_.y -= collision_data_.r;
 }
 
-VECTOR BaseEnemy::DecideNextPlace()
+VECTOR EnemyBase::DecideNextPlace()
 {
 	
 	float rot = 0.f;

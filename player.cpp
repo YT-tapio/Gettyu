@@ -1029,7 +1029,7 @@ void Player::MakeLine(float& constant, const VECTOR& pos)
 }
 
 
-void Player::IsHitEnemy(BaseEnemy* enemy, bool& got)
+void Player::IsHitEnemy(EnemyBase* enemy, bool& got)
 {
 	
 	//ここでweaponのアップデートをする

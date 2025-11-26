@@ -19,7 +19,7 @@ EnemyFSM::~EnemyFSM()
 
 /*--------private----------*/
 
-std::shared_ptr<BaseEnemyState> EnemyFSM::ChangeAlert(std::shared_ptr<BaseEnemyState> now_state, std::shared_ptr<Player> player,BaseEnemy* enemy)
+std::shared_ptr<BaseEnemyState> EnemyFSM::ChangeAlert(std::shared_ptr<BaseEnemyState> now_state, std::shared_ptr<Player> player,EnemyBase* enemy)
 {
 
 	//playerからサウンドのようなものを受け取る
@@ -57,7 +57,7 @@ std::shared_ptr<BaseEnemyState> EnemyFSM::ChangeAlert(std::shared_ptr<BaseEnemyS
 }
 
 
-std::shared_ptr<BaseEnemyState> EnemyFSM::ChangeFleeping(std::shared_ptr<BaseEnemyState> now_state, std::shared_ptr<Player> player, BaseEnemy* enemy)
+std::shared_ptr<BaseEnemyState> EnemyFSM::ChangeFleeping(std::shared_ptr<BaseEnemyState> now_state, std::shared_ptr<Player> player, EnemyBase* enemy)
 {
 	//逃げているのなら範囲外まで
 	if (enemy->GetIsFleeping())
@@ -129,7 +129,7 @@ std::shared_ptr<BaseEnemyState> EnemyFSM::ChangeFleeping(std::shared_ptr<BaseEne
 	return std::make_shared<EnemyPatrolling>();
 }
 
-std::shared_ptr<BaseEnemyState> EnemyFSM::Surprise(BaseEnemy* enemy)
+std::shared_ptr<BaseEnemyState> EnemyFSM::Surprise(EnemyBase* enemy)
 {
 	// stateは驚きの時入ってくる
 	// 入ってきたらenemyのanimationが終わっているのかを判断
@@ -150,7 +150,7 @@ std::shared_ptr<BaseEnemyState> EnemyFSM::Surprise(BaseEnemy* enemy)
 
 /*--------public---------*/
 
-std::shared_ptr<BaseEnemyState> EnemyFSM::UpdateState(std::shared_ptr<BaseEnemyState> now_state,std::shared_ptr<Player> player, BaseEnemy* enemy)
+std::shared_ptr<BaseEnemyState> EnemyFSM::UpdateState(std::shared_ptr<BaseEnemyState> now_state,std::shared_ptr<Player> player, EnemyBase* enemy)
 {
 
 	if (now_state == nullptr)

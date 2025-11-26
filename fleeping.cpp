@@ -13,22 +13,22 @@ EnemyFleeping::~EnemyFleeping()
 	
 }
 
-void EnemyFleeping::Entry(BaseEnemy* enemy, std::shared_ptr<Player> player)
+void EnemyFleeping::Entry(EnemyBase* enemy, std::shared_ptr<Player> player)
 {
 	enemy->FleepingInit(player);
 }
 
-void EnemyFleeping::Update(BaseEnemy* enemy, std::shared_ptr<Player>player)
+void EnemyFleeping::Update(EnemyBase* enemy, std::shared_ptr<Player>player)
 {
 	enemy->Fleeping(player);
 }
 
-void EnemyFleeping::Exit(BaseEnemy* enemy)
+void EnemyFleeping::Exit(EnemyBase* enemy)
 {
 
 }
 
-std::shared_ptr<BaseEnemyState> EnemyFleeping::ChangeState(BaseEnemy* enemy, std::shared_ptr<Player> player)
+std::shared_ptr<BaseEnemyState> EnemyFleeping::ChangeState(EnemyBase* enemy, std::shared_ptr<Player> player)
 {
 	
 	//player‚ªenemy‚Ì”ÍˆÍ“à‚É‚¢‚È‚¢‚Ì‚È‚ç‚â‚ß‚é

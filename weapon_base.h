@@ -4,7 +4,7 @@
 #include<list>
 
 #include"collision_data.h"
-#include"base_enemy.h"
+#include"enemy_base.h"
 //#include"player.h"
 
 //struct CollisionData;
@@ -27,7 +27,7 @@ struct Weapondata
 	int model;
 };
 
-//class BaseEnemy;
+//class EnemyBase;
 
 
 class WeaponBase
@@ -68,7 +68,7 @@ public:
 
 	virtual ~WeaponBase();
 
-	virtual void Update(BaseEnemy* enemy,const float spin_rad);
+	virtual void Update(EnemyBase* enemy,const float spin_rad);
 
 	/// <summary>
 	/// ”ÍˆÍ“à‚É‚¢‚é‚Æ‚«

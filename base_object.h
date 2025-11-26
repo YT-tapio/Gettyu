@@ -7,7 +7,7 @@ enum target_type
 	camera
 };
 
-class BaseObject
+class ObjectBase
 {
 private:
 
@@ -15,29 +15,28 @@ private:
 
 protected:
 
-	VECTOR position_;
-	MATRIX matrix_;
+	VECTOR pos_;
+	VECTOR rot_;
+	VECTOR scale_;
+	MATRIX mat_;
 
 
 	//モデルのデータ
 	int model_;
 
+
+
 public:
 
 	
 
-	BaseObject(VECTOR position,int model_handle)
-		: position_(position)
-		, model_(model_handle)
-		,matrix_(MGetTranslate(position_))
-	{
-
-	};
-
-	virtual ~BaseObject() {};
+	ObjectBase(const VECTOR& pos, int model_handle);
 
 
-	virtual void Init(VECTOR position) {};
+	virtual ~ObjectBase();
+
+
+	virtual void Init() {};
 
 
 	virtual void Update() {};
@@ -49,9 +48,9 @@ public:
 
 	/*-----------------*/
 
-	void SetPos(const VECTOR& position) { position_ = position; }
+	void SetPos(const VECTOR& position) { pos_ = position; }
 
-	const VECTOR GetPos() const { return position_; }
+	const VECTOR GetPos() const { return pos_; }
 
 	
 

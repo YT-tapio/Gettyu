@@ -19,7 +19,7 @@ WizardStaff::~WizardStaff()
 	
 }
 
-void WizardStaff::Update(BaseEnemy* enemy, const float spin_rad)
+void WizardStaff::Update(EnemyBase* enemy, const float spin_rad)
 {
 	//“G‚ª‹z‚¢ž‚Ý”ÍˆÍ“à‚É‚¢‚È‚¢‚Æ‚«‚Í‘ŠúƒŠƒ^[ƒ“
 	VECTOR vel = VSub(pos_, enemy->GetPos());

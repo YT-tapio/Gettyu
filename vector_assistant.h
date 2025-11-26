@@ -35,4 +35,38 @@ namespace VectorAssistant
 		return atan2f(dir.x, dir.z);
 	}
 
+	/// <summary>
+	/// 正射影vec1に映るvec2の影
+	/// </summary>
+	/// <param name="vec1"></param>
+	/// <param name="vec2"></param>
+	/// <returns></returns>
+	inline VECTOR GetProj(const VECTOR& vec1, const VECTOR& vec2)
+	{
+		VECTOR proj = VGet(0.f, 0.f, 0.f);
+
+		//分母
+		float denominator = 0.f;
+
+		//vectorのサイズを受け取る
+
+		float vec_size = VSize(vec1);
+
+		denominator = vec_size * vec_size;
+
+		//分子
+		float molecule;
+
+		molecule = VDot(vec1, vec2);
+
+		float num = (molecule / denominator);
+
+		proj = VScale(vec1, num);
+
+
+		return proj;
+
+
+	}
+
 }

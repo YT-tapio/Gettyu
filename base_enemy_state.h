@@ -1,8 +1,8 @@
 #pragma once
-#include"base_enemy.h"
+#include"enemy_base.h"
 
 
-class BaseEnemy;
+class EnemyBase;
 class Player;
 
 enum class StateName
@@ -35,22 +35,22 @@ public:
 	/// <summary>
 	/// ‚»‚Ìstate‚É‚È‚éğŒ
 	/// </summary>
-	virtual void Entry(BaseEnemy* enemy, std::shared_ptr<Player> player) = 0;
+	virtual void Entry(EnemyBase* enemy, std::shared_ptr<Player> player) = 0;
 
 
 	/// <summary>
 	/// enemy‚Ì’†‚É‚ ‚é‚»‚ê‚¼‚ê‚Ìupdate‚ğ“Ç‚ñ‚Å‚ ‚°‚é
 	/// </summary>
 	/// <param name="enemy"></param>
-	virtual void Update(BaseEnemy* enemy, std::shared_ptr<Player> player) = 0;
+	virtual void Update(EnemyBase* enemy, std::shared_ptr<Player> player) = 0;
 
 	/// <summary>
 	/// I—¹ğŒ
 	/// </summary>
-	virtual void Exit(BaseEnemy* enemy) = 0;
+	virtual void Exit(EnemyBase* enemy) = 0;
 
 
-	virtual std::shared_ptr<BaseEnemyState> ChangeState(BaseEnemy* enemy, std::shared_ptr<Player> player) = 0;
+	virtual std::shared_ptr<BaseEnemyState> ChangeState(EnemyBase* enemy, std::shared_ptr<Player> player) = 0;
 
 	const StateName GetName() const { return name_; }
 

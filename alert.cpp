@@ -15,22 +15,22 @@ EnemyAlert::~EnemyAlert()
 }
 
 
-void EnemyAlert::Entry(BaseEnemy* enemy, std::shared_ptr<Player> player)
+void EnemyAlert::Entry(EnemyBase* enemy, std::shared_ptr<Player> player)
 {
 	enemy->AlertInit(player);
 }
 
-void EnemyAlert::Update(BaseEnemy* enemy, std::shared_ptr<Player> player)
+void EnemyAlert::Update(EnemyBase* enemy, std::shared_ptr<Player> player)
 {
 	enemy->Alert(player);
 }
 
-void EnemyAlert::Exit(BaseEnemy* enemy)
+void EnemyAlert::Exit(EnemyBase* enemy)
 {
 
 }
 
-std::shared_ptr<BaseEnemyState> EnemyAlert::ChangeState(BaseEnemy* enemy, std::shared_ptr<Player> player)
+std::shared_ptr<BaseEnemyState> EnemyAlert::ChangeState(EnemyBase* enemy, std::shared_ptr<Player> player)
 {
 	//ステートの切り替え
 	//警戒し終わったら

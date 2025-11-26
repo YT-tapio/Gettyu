@@ -11,7 +11,6 @@
 #include"effect_manager.h"
 #include"FPS.h"
 #include"base_object.h"
-#include"still_object.h"
 #include"brain.h"
 #include"stage.h"
 #include"enemy_manager.h"

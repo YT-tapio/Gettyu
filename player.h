@@ -2,7 +2,7 @@
 #include"DxLib.h"
 #include"animation.h"
 #include"super_attack.h"
-#include"base_enemy.h"
+#include"enemy_base.h"
 #include"vibration.h"
 #include"sound_vibration.h"
 
@@ -13,7 +13,7 @@ class Stage;
 class Bat;
 class WarpRod;
 class WizardStaff;
-class BaseEnemy;
+class EnemyBase;
 class SoundVibration;
 enum class WeaponName;
 
@@ -176,7 +176,7 @@ public:
 
 
 	//“G‚ğ•ß‚Ü‚¦‚½‚©‚Ç‚¤‚©‚Ìˆ—‚ğs‚¤
-	void IsHitEnemy(BaseEnemy* enemy, bool& got);
+	void IsHitEnemy(EnemyBase* enemy, bool& got);
 
 
 	void Vibration(const VibrationData& data);

@@ -232,6 +232,9 @@
     <Filter Include="ソース ファイル\UI\enemy">
       <UniqueIdentifier>{5e9f603c-5535-4c61-bee8-702d1c3301cc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\charecter_base">
+      <UniqueIdentifier>{55f31b01-6e94-4bca-8879-5070916cdde3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -247,9 +250,6 @@
       <Filter>ソース ファイル\animation</Filter>
     </ClCompile>
     <ClCompile Include="base_object.cpp">
-      <Filter>ソース ファイル\object</Filter>
-    </ClCompile>
-    <ClCompile Include="still_object.cpp">
       <Filter>ソース ファイル\object</Filter>
     </ClCompile>
     <ClCompile Include="FPS.cpp">
@@ -270,7 +270,7 @@
     <ClCompile Include="enemy_manager.cpp">
       <Filter>ソース ファイル\enemy\enemy_manager</Filter>
     </ClCompile>
-    <ClCompile Include="base_enemy.cpp">
+    <ClCompile Include="enemy_base.cpp">
       <Filter>ソース ファイル\enemy\base_enemy</Filter>
     </ClCompile>
     <ClCompile Include="normal_enemy.cpp">
@@ -441,6 +441,9 @@
     <ClCompile Include="collision_data.cpp">
       <Filter>ソース ファイル\collision</Filter>
     </ClCompile>
+    <ClCompile Include="character_base.cpp">
+      <Filter>ソース ファイル\charecter_base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="keyconfig.h">
@@ -467,9 +470,6 @@
     <ClInclude Include="base_object.h">
       <Filter>ソース ファイル\object</Filter>
     </ClInclude>
-    <ClInclude Include="still_object.h">
-      <Filter>ソース ファイル\object</Filter>
-    </ClInclude>
     <ClInclude Include="FPS.h">
       <Filter>ソース ファイル\Singleton\FPS</Filter>
     </ClInclude>
@@ -488,7 +488,7 @@
     <ClInclude Include="enemy_manager.h">
       <Filter>ソース ファイル\enemy\enemy_manager</Filter>
     </ClInclude>
-    <ClInclude Include="base_enemy.h">
+    <ClInclude Include="enemy_base.h">
       <Filter>ソース ファイル\enemy\base_enemy</Filter>
     </ClInclude>
     <ClInclude Include="normal_enemy.h">
@@ -661,6 +661,9 @@
     </ClInclude>
     <ClInclude Include="enemy_count_UI.h">
       <Filter>ソース ファイル\UI\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="character_base.h">
+      <Filter>ソース ファイル\charecter_base</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

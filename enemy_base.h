@@ -16,7 +16,7 @@ class Animation;
 class BaseEnemyState;
 class EnemyFSM;
 
-class BaseEnemy
+class EnemyBase
 {
 private:
 	
@@ -107,11 +107,11 @@ protected:
 
 public:
 
-	BaseEnemy(const int model, const VECTOR& pos,
+	EnemyBase(const int model, const VECTOR& pos,
 		const VECTOR& scale, const VECTOR& rot, Effect* effect, Effect* got_effect, float speed, float fleeping_speed, AlertState alert, float fov);
 
 
-	virtual ~BaseEnemy() = 0;
+	virtual ~EnemyBase() = 0;
 
 
 	virtual void Init(const VECTOR& pos, const VECTOR scale) = 0;

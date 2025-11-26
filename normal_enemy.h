@@ -1,12 +1,12 @@
 #pragma once
 #include"DxLib.h"
-#include"base_enemy.h"
+#include"enemy_base.h"
 
 
 class Player;
-class BaseEnemy;
+class EnemyBase;
 
-class NormalEnemy : public BaseEnemy
+class NormalEnemy : public EnemyBase
 {
 private:
 

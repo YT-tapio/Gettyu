@@ -13,11 +13,11 @@ public:
 
 	~EnemySurprise() override;
 
-	void Entry(BaseEnemy* enemy, std::shared_ptr<Player> player) override;
+	void Entry(EnemyBase* enemy, std::shared_ptr<Player> player) override;
 
-	void Update(BaseEnemy* enemy, std::shared_ptr<Player> player) override;
+	void Update(EnemyBase* enemy, std::shared_ptr<Player> player) override;
 
-	void Exit(BaseEnemy* enemy) override;
+	void Exit(EnemyBase* enemy) override;
 
-	std::shared_ptr<BaseEnemyState> ChangeState(BaseEnemy* enemy, std::shared_ptr<Player> player) override;
+	std::shared_ptr<BaseEnemyState> ChangeState(EnemyBase* enemy, std::shared_ptr<Player> player) override;
 };

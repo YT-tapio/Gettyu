@@ -4,11 +4,11 @@
 #include<list>
 
 #include"DxLib.h"
-#include"base_enemy.h"
+#include"enemy_base.h"
 #include"normal_enemy.h"
 
 class Player;
-class BaseEnemy;
+class EnemyBase;
 class NormalEnemy;
 class Player;
 
@@ -18,7 +18,7 @@ class EnemyManager
 private:
 
 	//ステージごとに何体のサルかを切り替えたい
-	std::vector<std::shared_ptr<BaseEnemy>> enemies_;
+	std::vector<std::shared_ptr<EnemyBase>> enemies_;
 
 	//baseにeffectを渡してあげる
 	Effect* get_effect_ = new Effect("data/effect/MAGICALxSPIRAL/A_Salamander4.efkefc", VGet(0.f, 0.f, 0.f), VGet(0.f, 0.f, 0.f), 7.0f, 10.f, 300.f, FALSE);

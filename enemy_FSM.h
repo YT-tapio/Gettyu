@@ -15,12 +15,12 @@ private:
 	//各ステートに切り替える条件
 
 	//
-	std::shared_ptr<BaseEnemyState> ChangeAlert(std::shared_ptr<BaseEnemyState> now_state, std::shared_ptr<Player> player, BaseEnemy* enemy);
+	std::shared_ptr<BaseEnemyState> ChangeAlert(std::shared_ptr<BaseEnemyState> now_state, std::shared_ptr<Player> player, EnemyBase* enemy);
 
 	//逃走
-	std::shared_ptr<BaseEnemyState> ChangeFleeping(std::shared_ptr<BaseEnemyState> now_state, std::shared_ptr<Player> player, BaseEnemy* enemy);
+	std::shared_ptr<BaseEnemyState> ChangeFleeping(std::shared_ptr<BaseEnemyState> now_state, std::shared_ptr<Player> player, EnemyBase* enemy);
 
-	std::shared_ptr<BaseEnemyState> Surprise(BaseEnemy* enemy);
+	std::shared_ptr<BaseEnemyState> Surprise(EnemyBase* enemy);
 
 public:
 
@@ -30,6 +30,6 @@ public:
 
 
 	//どのステートに切りかえるかの判断をし、それを返してあげる
-	std::shared_ptr<BaseEnemyState> UpdateState(std::shared_ptr<BaseEnemyState> now_state, std::shared_ptr<Player> player, BaseEnemy* enemy);
+	std::shared_ptr<BaseEnemyState> UpdateState(std::shared_ptr<BaseEnemyState> now_state, std::shared_ptr<Player> player, EnemyBase* enemy);
 
 };

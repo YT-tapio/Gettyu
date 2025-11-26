@@ -1,19 +1,11 @@
 #pragma once
 #include"base_object.h"
 
-/// <summary>
-/// 正射影ベクトルを出す
-/// </summary>
-/// <param name="vector">地面</param>
-/// <param name="vector2">調べたい影</param>
-/// <returns></returns>
-VECTOR GetProjectionVector(const VECTOR& vector, const VECTOR& vector2);
-
 struct CapsuleData;
 class Player;
 class WayPoint;
 
-class Stage : public BaseObject
+class Stage : public ObjectBase
 {
 private:
 
@@ -50,7 +42,7 @@ private:
 	VECTOR CheckHitWithFloor(Player& player, const VECTOR& check_position);
 
 	// 壁or床の情報を受け取って調整したposを返す
-	VECTOR CheckEntityCollisionFixedPos(Player& player, MV1_COLL_RESULT_POLY* entity, int hit_num,const VECTOR& pos, const VECTOR& vel);
+	VECTOR CheckEntityCollisionFixedPos(Player& player, MV1_COLL_RESULT_POLY* entity, int hit_num, CollisionData& old_cap, CollisionData& future_cap);
 
 public:
 
@@ -62,7 +54,7 @@ public:
 
 	void Debug() override;
 
-	VECTOR CheckEnemyCollision(BaseEnemy* enemy, const VECTOR& velocity);
+	VECTOR CheckEnemyCollision(EnemyBase* enemy, const VECTOR& velocity);
 
 	VECTOR CheckCollision(Player& player, const VECTOR& velocity);
 

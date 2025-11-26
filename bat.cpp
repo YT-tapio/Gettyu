@@ -21,7 +21,7 @@ Bat::~Bat()
 }
 
 
-void Bat::Update(BaseEnemy* enemy, const float spin_rad)
+void Bat::Update(EnemyBase* enemy, const float spin_rad)
 {
 
 }

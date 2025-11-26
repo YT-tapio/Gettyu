@@ -140,7 +140,7 @@
     <ClCompile Include="alert.cpp" />
     <ClCompile Include="alert_state.cpp" />
     <ClCompile Include="animation.cpp" />
-    <ClCompile Include="base_enemy.cpp" />
+    <ClCompile Include="enemy_base.cpp" />
     <ClCompile Include="base_object.cpp" />
     <ClCompile Include="base_scene.cpp" />
     <ClCompile Include="base_enemy_state.cpp" />
@@ -149,6 +149,7 @@
     <ClCompile Include="brain.cpp" />
     <ClCompile Include="calculation.cpp" />
     <ClCompile Include="camera.cpp" />
+    <ClCompile Include="character_base.cpp" />
     <ClCompile Include="collision.cpp" />
     <ClCompile Include="collision_data.cpp" />
     <ClCompile Include="condition_timer.cpp" />
@@ -187,7 +188,6 @@
     <ClCompile Include="sky_dom.cpp" />
     <ClCompile Include="sphere_camera.cpp" />
     <ClCompile Include="stage.cpp" />
-    <ClCompile Include="still_object.cpp" />
     <ClCompile Include="sub_screen.cpp" />
     <ClCompile Include="super_attack_camera.cpp" />
     <ClCompile Include="super_attack.cpp" />
@@ -211,7 +211,7 @@
     <ClInclude Include="alert.h" />
     <ClInclude Include="alert_state.h" />
     <ClInclude Include="animation.h" />
-    <ClInclude Include="base_enemy.h" />
+    <ClInclude Include="enemy_base.h" />
     <ClInclude Include="base_object.h" />
     <ClInclude Include="base_scene.h" />
     <ClInclude Include="base_enemy_state.h" />
@@ -220,6 +220,7 @@
     <ClInclude Include="brain.h" />
     <ClInclude Include="Calculation.h" />
     <ClInclude Include="camera.h" />
+    <ClInclude Include="character_base.h" />
     <ClInclude Include="collision.h" />
     <ClInclude Include="collision_data.h" />
     <ClInclude Include="condition_timer.h" />
@@ -261,7 +262,6 @@
     <ClInclude Include="sky_dom.h" />
     <ClInclude Include="sphere_camera.h" />
     <ClInclude Include="stage.h" />
-    <ClInclude Include="still_object.h" />
     <ClInclude Include="sub_screen.h" />
     <ClInclude Include="super_attack.h" />
     <ClInclude Include="super_attack_camera.h" />

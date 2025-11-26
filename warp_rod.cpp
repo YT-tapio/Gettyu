@@ -20,7 +20,7 @@ WarpRod::~WarpRod()
 
 }
 
-void WarpRod::Update(BaseEnemy* enemy, const float spin_rad)
+void WarpRod::Update(EnemyBase* enemy, const float spin_rad)
 {
 	
 

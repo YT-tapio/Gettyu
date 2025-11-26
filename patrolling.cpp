@@ -14,24 +14,24 @@ EnemyPatrolling::~EnemyPatrolling()
 }
 
 
-void EnemyPatrolling::Entry(BaseEnemy* enemy, std::shared_ptr<Player> player)
+void EnemyPatrolling::Entry(EnemyBase* enemy, std::shared_ptr<Player> player)
 {
 	enemy->PatrollingInit(player);
 }
 
 
-void EnemyPatrolling::Update(BaseEnemy* enemy, std::shared_ptr<Player> player)
+void EnemyPatrolling::Update(EnemyBase* enemy, std::shared_ptr<Player> player)
 {
 	//‚±‚Ì’†‚ÅU•à‚ğ‚³‚¹‚Ä‚¢‚­
 	enemy->Patrolling();
 }
 
-void EnemyPatrolling::Exit(BaseEnemy* enemy)
+void EnemyPatrolling::Exit(EnemyBase* enemy)
 {
 
 }
 
-std::shared_ptr<BaseEnemyState> EnemyPatrolling::ChangeState(BaseEnemy* enemy, std::shared_ptr<Player> player)
+std::shared_ptr<BaseEnemyState> EnemyPatrolling::ChangeState(EnemyBase* enemy, std::shared_ptr<Player> player)
 {
 	//‹ŠE‚Éplayer‚ª‚¢‚éA‚à‚µ‚­‚ÍAâ‘Î“¦‚°‚é‹——£‚Éplayer‚ª‚¢‚éê‡
 
