@@ -3,7 +3,7 @@
 #include<math.h>
 
 #include"DxLib.h"
-#include"Player.h"
+#include"player.h"
 #include"stage.h"
 #include"vector_assistant.h"
 
@@ -26,7 +26,7 @@ Stage::Stage(int model_handle, VECTOR pos, float scale)
 
 	MV1SetMatrix(model_, mat_);
 
-	next_to_old_cap_.div_num = 20.f;
+	next_to_old_cap_.div_num = 0.f;
 }
 
 

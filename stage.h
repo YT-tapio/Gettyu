@@ -1,5 +1,5 @@
 #pragma once
-#include"base_object.h"
+#include"object_base.h"
 
 struct CapsuleData;
 class Player;
@@ -13,7 +13,7 @@ private:
 	static constexpr int	kHitTryNum = 16;		// 壁押し出し処理の最大試行回数
 	static constexpr float	kHitSlideLength = 5.0f;		// 一度の壁押し出し処理でスライドさせる距離
 
-	std::vector<std::shared_ptr<WayPoint>> way_points_;
+	//std::vector<std::shared_ptr<WayPoint>> way_points_;
 
 	//VECTOR scale_;	//モデルの大きさ
 

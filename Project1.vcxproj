@@ -140,8 +140,11 @@
     <ClCompile Include="alert.cpp" />
     <ClCompile Include="alert_state.cpp" />
     <ClCompile Include="animation.cpp" />
+    <ClCompile Include="collision_base.cpp" />
+    <ClCompile Include="collision_capsule.cpp" />
+    <ClCompile Include="collision_sphere.cpp" />
     <ClCompile Include="enemy_base.cpp" />
-    <ClCompile Include="base_object.cpp" />
+    <ClCompile Include="object_base.cpp" />
     <ClCompile Include="base_scene.cpp" />
     <ClCompile Include="base_enemy_state.cpp" />
     <ClCompile Include="base_sub_screen.cpp" />
@@ -211,8 +214,11 @@
     <ClInclude Include="alert.h" />
     <ClInclude Include="alert_state.h" />
     <ClInclude Include="animation.h" />
+    <ClInclude Include="collision_base.h" />
+    <ClInclude Include="collision_capsule.h" />
+    <ClInclude Include="collision_sphere.h" />
     <ClInclude Include="enemy_base.h" />
-    <ClInclude Include="base_object.h" />
+    <ClInclude Include="object_base.h" />
     <ClInclude Include="base_scene.h" />
     <ClInclude Include="base_enemy_state.h" />
     <ClInclude Include="base_sub_screen.h" />

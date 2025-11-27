@@ -1,4 +1,4 @@
-#include"base_object.h"
+#include"object_base.h"
 
 
 ObjectBase::ObjectBase(const VECTOR& pos, const VECTOR& rot, const VECTOR& scale,int model_handle)

@@ -10,7 +10,7 @@
 #include"camera.h"
 #include"effect_manager.h"
 #include"FPS.h"
-#include"base_object.h"
+#include"object_base.h"
 #include"brain.h"
 #include"stage.h"
 #include"enemy_manager.h"

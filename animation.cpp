@@ -38,6 +38,13 @@ Animation::Animation()
 Animation::~Animation()
 {
     //なし
+    //アニメーションのデータ解放
+    for (auto& anim : animation_data_)
+    {
+
+        MV1DeleteModel(anim.animation_handle);
+    }
+
 }
 
 void Animation::InitBlend(AnimationType now, AnimationType before)

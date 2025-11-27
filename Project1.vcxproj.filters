@@ -31,9 +31,6 @@
     <Filter Include="ソース ファイル\super_arts">
       <UniqueIdentifier>{4999ca3b-8115-4d54-a0a9-b43522d00428}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\effect">
-      <UniqueIdentifier>{1e514953-09da-49bd-99c6-47158c0329a5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\weapon">
       <UniqueIdentifier>{9e3922bc-ea56-4d45-a6ac-fee487c98310}</UniqueIdentifier>
     </Filter>
@@ -235,6 +232,18 @@
     <Filter Include="ソース ファイル\charecter_base">
       <UniqueIdentifier>{55f31b01-6e94-4bca-8879-5070916cdde3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\collision\base">
+      <UniqueIdentifier>{c97fcea4-9272-4e29-aa26-359015558be6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\effect">
+      <UniqueIdentifier>{1e514953-09da-49bd-99c6-47158c0329a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\collision\sphere">
+      <UniqueIdentifier>{6001a373-cf10-461a-b853-457bdcc2711e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\collision\capsule">
+      <UniqueIdentifier>{012ebb18-ca16-4e45-a4d8-538d9f5007e0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -249,7 +258,7 @@
     <ClCompile Include="animation.cpp">
       <Filter>ソース ファイル\animation</Filter>
     </ClCompile>
-    <ClCompile Include="base_object.cpp">
+    <ClCompile Include="object_base.cpp">
       <Filter>ソース ファイル\object</Filter>
     </ClCompile>
     <ClCompile Include="FPS.cpp">
@@ -444,6 +453,15 @@
     <ClCompile Include="character_base.cpp">
       <Filter>ソース ファイル\charecter_base</Filter>
     </ClCompile>
+    <ClCompile Include="collision_base.cpp">
+      <Filter>ソース ファイル\collision\base</Filter>
+    </ClCompile>
+    <ClCompile Include="collision_sphere.cpp">
+      <Filter>ソース ファイル\collision\sphere</Filter>
+    </ClCompile>
+    <ClCompile Include="collision_capsule.cpp">
+      <Filter>ソース ファイル\collision\capsule</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="keyconfig.h">
@@ -467,7 +485,7 @@
     <ClInclude Include="animation.h">
       <Filter>ソース ファイル\animation</Filter>
     </ClInclude>
-    <ClInclude Include="base_object.h">
+    <ClInclude Include="object_base.h">
       <Filter>ソース ファイル\object</Filter>
     </ClInclude>
     <ClInclude Include="FPS.h">
@@ -664,6 +682,15 @@
     </ClInclude>
     <ClInclude Include="character_base.h">
       <Filter>ソース ファイル\charecter_base</Filter>
+    </ClInclude>
+    <ClInclude Include="collision_base.h">
+      <Filter>ソース ファイル\collision\base</Filter>
+    </ClInclude>
+    <ClInclude Include="collision_sphere.h">
+      <Filter>ソース ファイル\collision\sphere</Filter>
+    </ClInclude>
+    <ClInclude Include="collision_capsule.h">
+      <Filter>ソース ファイル\collision\capsule</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
