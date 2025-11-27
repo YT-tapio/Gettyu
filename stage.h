@@ -4,6 +4,7 @@
 struct CapsuleData;
 class Player;
 class WayPoint;
+class CollisionBase;
 
 class Stage : public ObjectBase
 {
@@ -27,7 +28,6 @@ private:
 	MV1_COLL_RESULT_POLY* wall_[kMaxHitColl];	// 壁ポリゴンと判断されたポリゴンの構造体のアドレスを保存しておくためのポインタ配列
 	MV1_COLL_RESULT_POLY* floor_[kMaxHitColl];	// 床ポリゴンと判断されたポリゴンの構造体のアドレスを保存しておくためのポインタ配列
 
-	CapsuleData next_to_old_cap_;
 
 
 	// 検出されたポリゴンが壁ポリゴン( ＸＺ平面に垂直なポリゴン )か床ポリゴン( ＸＺ平面に垂直ではないポリゴン )かを判断し、保存する
@@ -61,7 +61,14 @@ public:
 
 	void Debug() override;
 
-	VECTOR CheckEnemyCollision(EnemyBase* enemy, const VECTOR& velocity);
+	/// <summary>
+	/// 少し下に下げた時にあたっているかのcheck
+	/// </summary>
+	/// <param name="coll"></param>
+	/// <returns></returns>
+	bool CheckDownColl(std::shared_ptr<CollisionBase> coll);
+
+	//VECTOR CheckEnemyCollision(EnemyBase* enemy, const VECTOR& velocity);
 
 	VECTOR CheckCollision(Player& player, const VECTOR& velocity);
 

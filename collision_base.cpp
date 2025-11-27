@@ -20,6 +20,11 @@ void CollisionBase::Update(const VECTOR& vel)
 	pos_ = VAdd(pos_, vel);
 }
 
+void CollisionBase::Debug()
+{
+	DrawSphere3D(pos_, radius_, kDivNum, kDebugColor, kDebugColor, FALSE);
+}
+
 MV1_COLL_RESULT_POLY_DIM CollisionBase::GetCollInfo(const int model)
 {
 	return MV1CollCheck_Sphere(model, -1, pos_, radius_);

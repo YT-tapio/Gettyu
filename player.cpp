@@ -6,6 +6,8 @@
 
 //#include"mixamo_fram.h"
 #include"player.h"
+#include"camera.h"
+#include"brain.h"
 #include"keyconfig.h"
 #include"weapon_base.h"
 #include"input.h"
@@ -17,17 +19,18 @@
 #include"situation.h"
 #include"debug.h"
 #include"weapon_checker.h"
+#include"character_base.h"
 
 
-
-Player::Player(VECTOR pos, int model,int pad_num,int div, float r, float vertical_num)
-	: model_(model)
+Player::Player(VECTOR pos, int pad_num,int div, float r, float vertical_num,float* rotation)
+	: model_(MV1LoadModel(kModelPath))
 	, pad_input_num_(pad_num)
 	, weapon_(nullptr)
 	, now_type_(AnimationType::kNothing)
 	, target_rot_(0.0f)
 	, before_rot_(0.0f)
 	, now_state_(PlayerState::kStand)
+	, camera_rotation_(rotation)
 {
 	capsule_.r = r;
 	capsule_.div_num = div;
@@ -144,7 +147,7 @@ void Player::Init(VECTOR pos)
 	
 	now_type_ = AnimationType::kIdle;
 
-	//animation_.Attach(now_type_);
+	//animation_->Attach(now_type_);
 
 	before_type_ = AnimationType::kNothing;
 	before_before_type_ = AnimationType::kNothing;
@@ -214,10 +217,73 @@ void Player::Debug()
 }
 
 
-void Player::AddAnim(const AnimationData& animation_data)
+void Player::AddAnim()
 {
+
+	/*--キャラクターのダウンロード--*/
+
+	
+
+	/*-----ダウンロードするアニメーション----*/
+
+
+	AnimationData idle;
+	AnimationData walk;
+	AnimationData slow_run;
+	AnimationData fast_run;
+	AnimationData jumping_up;
+	AnimationData jumping_down;
+	AnimationData sword_slash_attack;
+	AnimationData super_attack_first;
+
+	
+
+
+
+	char idle_path[256] = "data/animation/Idle.mv1";
+	char walk_path[256] = "data/animation/Walking.mv1";
+	char slow_run_path[256] = "data/animation/Slow_Run.mv1";
+	char fast_run_path[256] = "data/animation/Fast_Run.mv1";
+	char jumping_up_path[256] = "data/animation/Jumping_Up.mv1";
+	char jumping_down_path[256] = "data/animation/Jumping_Down.mv1";
+	char sword_slash_path[256] = "data/animation/SwordSlash.mv1";
+	char super_attack_path[256] = "data/animation/Standing_2H_Cast_Spell_01.mv1";
+
+	//アニメーションのロード
+
+	Load(idle, idle_path,
+		AnimationType::kIdle, model_, 0, 3.0f);
+
+	Load(walk, walk_path,
+		AnimationType::kWalk, model_, 0, 3.0f);
+
+	Load(slow_run, slow_run_path,
+		AnimationType::kSlowRun, model_, 0, 3.0f);
+
+	Load(fast_run, fast_run_path,
+		AnimationType::kFastRun, model_, 0, 3.0f);
+
+	Load(jumping_up, jumping_up_path,
+		AnimationType::kJumpUp, model_, 0, 2.0f);
+
+	Load(jumping_down, jumping_down_path,
+		AnimationType::kJumpDown, model_, 0, 2.0f);
+
+	Load(sword_slash_attack, sword_slash_path,
+		AnimationType::kSwordSlash, model_, 0, 4.0f);
+
+	Load(super_attack_first, super_attack_path,
+		AnimationType::kSuperAttackFirst, model_, 0, 3.0f);
+
 	//アニメーションを追加
-	animation_.Add(animation_data);
+	animation_->Add(idle);
+	animation_->Add(walk);
+	animation_->Add(slow_run);
+	animation_->Add(fast_run);
+	animation_->Add(jumping_up);
+	animation_->Add(jumping_down);
+	animation_->Add(sword_slash_attack);
+	animation_->Add(super_attack_first);
 }
 
 void Player::SetDeltaTime(float delta_time)
@@ -227,14 +293,14 @@ void Player::SetDeltaTime(float delta_time)
 	if (Situation::GetInstance().GetSituationName() == SituationName::kGet)
 	{
 		delta_time_ = 0.0f;
-		animation_.SetDeltaTime(delta_time_);
+		animation_->SetDeltaTime(delta_time_);
 		super_attack_->SetDeltaTime(delta_time_);
 		weapon_->SetDeltaTime(delta_time_);
 	}
 	else
 	{
 		delta_time_ = delta_time;
-		animation_.SetDeltaTime(delta_time);
+		animation_->SetDeltaTime(delta_time);
 		super_attack_->SetDeltaTime(delta_time_);
 		weapon_->SetDeltaTime(delta_time_);
 		
@@ -244,10 +310,6 @@ void Player::SetDeltaTime(float delta_time)
 }
 
 
-void Player::InputState()
-{
-	
-}
 
 
 void Player::AttachWeapon(WeaponName name)
@@ -312,9 +374,9 @@ void Player::AttachWeapon(WeaponName name)
 }
 
 
-void Player::Update(const VECTOR& pos, const float& rotation, Stage& stage)
+void Player::Update(Stage& stage)
 {
-
+	VECTOR camera_pos = Camera::GetInstance().GetPos();
 	//サウンドのリセット
 	sound_vibration_->Reset();
 
@@ -322,11 +384,11 @@ void Player::Update(const VECTOR& pos, const float& rotation, Stage& stage)
 	// ターゲットを切り替えた時のrotationを色んな奴に持たすわけにはいかないのでplayerに持たせる、
 	// updateにはposだけにしといていいと思う(引き数)
 
-	float target_rot = rotation;
+	float target_rot = *camera_rotation_;
 
 	super_attack_->Update();
 
-	InputMovement(pos, target_rot);
+	InputMovement(camera_pos, target_rot);
 
 	if (VSize(velocity_) != 0.f)
 	{
@@ -527,7 +589,7 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 
 	if (before_type_ > AnimationType::kAttack)
 	{
-		if (animation_.IsPlay())
+		if (animation_->IsPlay())
 		{
 			now_type_ = before_type_;
 		}
@@ -590,27 +652,27 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 	if (before_type_ != now_type_)
 	{
 		
-		if (!(animation_.GetBlendFlag()))
+		if (!(animation_->GetBlendFlag()))
 		{
 			if (!(before_type_ == AnimationType::kNothing))
 			{
-				animation_.InitBlend(now_type_, before_type_);
+				animation_->InitBlend(now_type_, before_type_);
 			}
 
-			animation_.Attach(now_type_);
+			animation_->Attach(now_type_);
 
 			before_before_type_ = before_type_;
 			before_type_ = now_type_;
 
-			animation_.SetBlend(TRUE);
+			animation_->SetBlend(TRUE);
 
 		}
 		else
 		{
 			if (now_type_ == AnimationType::kSuperAttackFirst)
 			{
-				animation_.Detach(before_type_);
-				animation_.Attach(now_type_);
+				animation_->Detach(before_type_);
+				animation_->Attach(now_type_);
 				before_before_type_ = before_type_;
 				before_type_ = now_type_;
 
@@ -618,10 +680,10 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 		}
 	}
 
-	animation_.Update(now_type_);
-	if (animation_.GetBlendFlag())
+	animation_->Update(now_type_);
+	if (animation_->GetBlendFlag())
 	{
-		animation_.Update(before_type_);
+		animation_->Update(before_type_);
 	}
 
 	

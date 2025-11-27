@@ -9,6 +9,9 @@ private:
 
 protected:
 
+	const int kDivNum = 20;
+	const int kDebugColor = GetColor(255, 255, 255);
+
 	VECTOR pos_;
 	float radius_;
 
@@ -19,6 +22,8 @@ public:
 	virtual ~CollisionBase();
 
 	virtual void Update(const VECTOR& vel);
+
+	virtual void Debug();
 
 	/// @brief @brief カプセルに当たっているモデルの情報を返す
 	/// @param model モデル

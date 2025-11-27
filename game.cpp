@@ -76,65 +76,12 @@ void Game::Init()
     int blue = GetColor(0, 0, 255);
 
     
-    /*--キャラクターのダウンロード--*/
-
-    int chara = MV1LoadModel("data/model/character/Dreyar_By_M.Aure.mv1");
-
-    /*-----ダウンロードするアニメーション----*/
-
-
-    AnimationData idle;
-    AnimationData walk;
-    AnimationData slow_run;
-    AnimationData fast_run;
-    AnimationData jumping_up;
-    AnimationData jumping_down;
-    AnimationData sword_slash_attack;
-    AnimationData super_attack_first;
-
     effect_player_ =
         std::make_shared<EffectManager>("", 1.0f, 120);
 
-
-
-    char idle_path[256] = "data/animation/Idle.mv1";
-    char walk_path[256] = "data/animation/Walking.mv1";
-    char slow_run_path[256] = "data/animation/Slow_Run.mv1";
-    char fast_run_path[256] = "data/animation/Fast_Run.mv1";
-    char jumping_up_path[256] = "data/animation/Jumping_Up.mv1";
-    char jumping_down_path[256] = "data/animation/Jumping_Down.mv1";
-    char sword_slash_path[256] = "data/animation/SwordSlash.mv1";
-    char super_attack_path[256] = "data/animation/Standing_2H_Cast_Spell_01.mv1";
-
-    //アニメーションのロード
-
-    Load(idle, idle_path,
-        AnimationType::kIdle,chara, 0,3.0f);
-
-    Load(walk, walk_path,
-        AnimationType::kWalk, chara, 0, 3.0f);
-
-    Load(slow_run, slow_run_path,
-        AnimationType::kSlowRun, chara, 0, 3.0f);
-
-    Load(fast_run, fast_run_path,
-        AnimationType::kFastRun, chara, 0, 3.0f);
-
-    Load(jumping_up, jumping_up_path,
-        AnimationType::kJumpUp, chara, 0, 2.0f);
-
-    Load(jumping_down, jumping_down_path,
-        AnimationType::kJumpDown, chara, 0, 2.0f);
-
-    Load(sword_slash_attack, sword_slash_path,
-        AnimationType::kSwordSlash, chara, 0, 4.0f);
-
-    Load(super_attack_first, super_attack_path,
-        AnimationType::kSuperAttackFirst, chara, 0, 3.0f);
-
     //playerを生成
     player_ =
-        std::make_shared<Player>(VGet(0, 10, 100), chara, DX_INPUT_PAD1, 20, 1.5f, 5.0f);
+        std::make_shared<Player>(VGet(0, 10, 100), DX_INPUT_PAD1, 20, 1.5f, 5.0f);
 
     brain_ = std::make_shared<Brain>(player_->GetCenterPos());
 
@@ -150,14 +97,6 @@ void Game::Init()
 
     /*---プレイヤーにアニメーションを追加---*/
 
-    player_->AddAnim(idle);
-    player_->AddAnim(walk);
-    player_->AddAnim(slow_run);
-    player_->AddAnim(fast_run);
-    player_->AddAnim(jumping_up);
-    player_->AddAnim(jumping_down);
-    player_->AddAnim(sword_slash_attack);
-    player_->AddAnim(super_attack_first);
 
     enemy_manager_ =
         std::make_shared<EnemyManager>();
@@ -207,12 +146,10 @@ void Game::Update(SceneName& name)
     concentration_line_->SetIsDisp(player_->GetIsVacuum());
     
 
-    player_->InputState();
-
     
 
     enemy_manager_->Update(player_);
-    player_->Update(Camera::GetInstance().GetPos(), brain_->GetSideRad(), *stage_);
+    player_->Update(*stage_);
 
 
     //マウスでの操作

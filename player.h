@@ -8,6 +8,7 @@
 
 
 struct MixamoBonePath;
+class CharacterBase;
 class WeaponBase;
 class Input;
 class Stage;
@@ -42,7 +43,7 @@ class Player
 {
 private:
 
-	
+	const char* kModelPath = "data/model/character/Dreyar_By_M.Aure.mv1";
 
 	const float kWalkSpeed			= 1.0f;
 	const float kNormalSpeed		= 2.5f;
@@ -74,7 +75,7 @@ private:
 
 	MATRIX model_matrix_;				//
 
-	Animation animation_;
+	std::shared_ptr<Animation> animation_;
 	AnimationType now_type_;            //現在のプレイヤーのアニメ～しょん
 	AnimationType before_type_;			//1つ前のアニメーション
 	AnimationType before_before_type_;	//2つ前のアニメーション
@@ -95,7 +96,7 @@ private:
 	float before_rot_;
 	float target_rot_;
 
-	
+	float* camera_rotation_;
 
 	bool is_ground_;					//地面の上にいるとき
 	bool is_target_;					///ターゲットしているかどうか
@@ -131,7 +132,7 @@ private:
 public:
 
 
-	Player(VECTOR pos, int model, int pad_num, int div, float r, float vertical_num);
+	Player(VECTOR pos, int pad_num, int div, float r, float vertical_num, float* rotation);
 
 	~Player();
 
@@ -144,19 +145,16 @@ public:
 	void Debug();
 
 
-	void AddAnim(const AnimationData& animation_data);
+	void AddAnim();
 
 
 	void SetDeltaTime(float delta_time);
 
 
-	void InputState();
-
-
 	void AttachWeapon(WeaponName name);
 
 
-	void Update(const VECTOR& pos, const float& rotation, Stage& stage);
+	void Update(Stage& stage);
 	
 
 	void InputMovement(const VECTOR& pos, float& rotation);

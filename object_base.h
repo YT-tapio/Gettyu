@@ -22,7 +22,7 @@ protected:
 	//モデルのデータ
 	int model_;
 
-
+	float delta_time_;
 
 public:
 
@@ -33,6 +33,7 @@ public:
 
 	virtual ~ObjectBase();
 
+	virtual void SetDeltaTime();
 
 	virtual void Init();
 

@@ -6,7 +6,8 @@
 #include"player.h"
 #include"stage.h"
 #include"vector_assistant.h"
-
+#include"collision_base.h"
+#include"collision_base.h"
 
 Stage::Stage(int model_handle, VECTOR pos, float scale)
 	: ObjectBase(pos, VectorAssistant::GetZeroVec(), VGet(scale, scale, scale), model_handle)
@@ -26,7 +27,6 @@ Stage::Stage(int model_handle, VECTOR pos, float scale)
 
 	MV1SetMatrix(model_, mat_);
 
-	next_to_old_cap_.div_num = 0.f;
 }
 
 
@@ -95,11 +95,7 @@ void Stage::AnalyzeWallAndFloor(MV1_COLL_RESULT_POLY_DIM hit_dim, const VECTOR& 
 
 void Stage::MakeCollCheckCapsule(CapsuleData old_cap, CapsuleData next_cap)
 {
-	next_to_old_cap_.start_pos			= VScale(VAdd(old_cap.start_pos, old_cap.end_pos), 0.5f);
-	next_to_old_cap_.end_pos				= VScale(VAdd(next_cap.start_pos, next_cap.end_pos), 0.5f);
 
-	next_to_old_cap_.r							= (old_cap.r	+ (old_cap.vertical_num * 0.5f));
-	next_to_old_cap_.vertical_num		= (VSize(VSub(next_to_old_cap_.start_pos, next_to_old_cap_.end_pos)));
 }
 
 
@@ -142,52 +138,42 @@ bool Stage::IsStair(const VECTOR& poly_pos, const VECTOR& entity_pos,const MV1_C
 	return max_dist < kMaxHeightDist;
 }
 
-
-VECTOR Stage::CheckEnemyCollision(EnemyBase* enemy, const VECTOR& velocity)
+bool Stage::CheckDownColl(std::shared_ptr<CollisionBase> coll)
 {
-	/*
-	auto before_col = enemy->GetCollisionData();
-
-	//当たり判定の更新
-	CollisionData future_col = CollisionDataUpdate(before_col, velocity);
-
-	// とりあえず判定する
-	// 当たっているかの判定
-	auto hit_dim = MV1CollCheck_Capsule(model_,
-		-1, before_col.pos, future_col.pos,
-		(before_col.r));
-
-	// 何も当たっていないのなら
-
-	if (hit_dim.HitNum == 0)
-	{
-		return fixed_vel;
-	}
-	*/
-	VECTOR fixed_vel = velocity;
-
-	auto before_col = enemy->GetCollisionData();
-	CollisionData future_col = before_col;
-
-	future_col.pos = VAdd(future_col.pos, velocity);
-
-	//丸とポリゴンの当たり判定を行う
-
-	auto hit_dim = MV1CollCheck_Capsule(model_,
-		-1, before_col.pos, future_col.pos,
-		(before_col.r));
-
-	if (hit_dim.HitNum == 0)
-	{
-		return fixed_vel;
-	}
-
+	bool flag = FALSE;				//こいつが返す
+	const VECTOR kDownVel = VGet(0.f, -0.1f, 0.f);
+	//最初になにも当たっていないかを確認
 	
+	auto hit_dim = coll->GetCollInfo(model_);
 
+	if (hit_dim.HitNum == 0)
+	{
+		//下に下げるためのcoll
+		auto down_coll = coll;
 
+		down_coll->Update(kDownVel);
 
-	return fixed_vel;
+		hit_dim = down_coll->GetCollInfo(model_);
+
+		//下に少し下げてもなんとも当たらないのなら
+		if (hit_dim.HitNum == 0)
+		{
+			flag = TRUE;
+		}
+
+	}
+	else
+	{
+		flag = FALSE;
+	}
+
+	//データ開放
+	MV1CollResultPolyDimTerminate(hit_dim);
+
+	return flag;
+	
 }
+
 
 
 VECTOR Stage::CheckHitWithWall(Player& player, const VECTOR& check_position)
@@ -403,7 +389,7 @@ void Stage::Draw()
 
 void Stage::Debug()
 {
-	DrawCapsule3D(next_to_old_cap_.start_pos, next_to_old_cap_.end_pos, next_to_old_cap_.r, next_to_old_cap_.div_num, GetColor(255, 255, 255), GetColor(255, 255, 255), FALSE);
+	
 }
 
 
@@ -423,6 +409,11 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 
 	// 今の当たり判定は未来のカプセルのとこだけになっているので、カプセルを大ききくしたやつにする(nowとnextの合計のもの)
 
+	//
+	auto old_coll = object_coll;
+	auto next_coll = object_coll;
+
+	next_coll->Update(velocity);
 
 	//printfDx("x:%.2f,y:%.2f,z:%.2f\n", old_pos.x, old_pos.y, old_pos.z);
 	//printfDx("y:%.2f\n",old_pos.y);
@@ -433,15 +424,6 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 	//未来のカプセルの座標を更新
 	next_player_capsule.start_pos = VAdd(old_player_capsule.start_pos,velocity);
 	next_player_capsule.end_pos = VAdd(old_player_capsule.end_pos, velocity);
-	//printfDx("next_cap_r:%.2f\n", next_player_capsule.r);
-	// ミライのベクトルから現在のベクトルまでのカプセルを作
-		// 各カプセルの中心の座標を検出する
-		// それをCapsuleDataのstart_posとend_posに当てはめる
-		// 半径は(vertical_num + (r * 0.5f))
-
-	MakeCollCheckCapsule(old_player_capsule, next_player_capsule);
-	// 当たり判定を素晴らしくしましょう
-	// 壁と地面で分けたほうがよさそうです
 
 
 	// HACK: ステージポリゴンが複数ある場合、ここが繰り返し処理になる

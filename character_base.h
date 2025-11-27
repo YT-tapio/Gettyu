@@ -1,7 +1,9 @@
 #pragma once
 #include"DxLib.h"
 
+
 class ObjectBase;
+class CollisionBase;
 class Animation;
 class Stage;
 
@@ -15,6 +17,9 @@ protected:
 	//stageをポインタでもっておく
 	Stage* stage_;
 
+	//当たり判定
+	std::shared_ptr<CollisionBase> coll_;
+
 	//characterはanimationを持っている
 	std::shared_ptr<Animation> animation_;
 	
@@ -23,18 +28,22 @@ protected:
 	AnimationType before_before_anim_type;
 
 	VECTOR velocity_;
+	VECTOR dir_;
 
 	bool is_ground_;
+	bool is_move_;
 
+	float fall_speed_;
+
+	
 
 	/// @brief 地面に接触しているか
-	/// @return 
-	bool IsOnGround();
+	void CheckIsGround();
 
 
 public:
 
-	CharacterBase(Stage* stage,const VECTOR& pos,const VECTOR& rot,const VECTOR& scale,const int model_handle);
+	CharacterBase(Stage* stage,std::shared_ptr<CollisionBase> coll,const VECTOR& pos,const VECTOR& rot,const VECTOR& scale,const int model_handle);
 
 
 	virtual ~CharacterBase() override;
@@ -42,6 +51,8 @@ public:
 
 
 	/*仮想関数*/
+
+	virtual void SetDeltaTime() override;
 
 	virtual void Init() override;
 

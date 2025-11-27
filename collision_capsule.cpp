@@ -20,6 +20,11 @@ void CollisionCapsule::Update(const VECTOR& vel)
 	end_pos_ = VAdd(end_pos_, vel);
 }
 
+void CollisionCapsule::Debug()
+{
+	DrawCapsule3D(pos_, end_pos_, radius_, kDivNum, kDebugColor, kDebugColor, TRUE);
+}
+
 MV1_COLL_RESULT_POLY_DIM CollisionCapsule::GetCollInfo(const int model)
 {
 	return MV1CollCheck_Capsule(model, -1, pos_, end_pos_, radius_);

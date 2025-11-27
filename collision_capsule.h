@@ -14,7 +14,9 @@ public:
 
 	~CollisionCapsule() override;
 
-	virtual void Update(const VECTOR& vel);
+	void Update(const VECTOR& vel) override;
+
+	void Debug() override;
 
 	MV1_COLL_RESULT_POLY_DIM GetCollInfo(const int model) override;
 
