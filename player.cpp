@@ -408,9 +408,11 @@ void Player::Update(Stage& stage,float target_rot)
 	if (AnimationType::kAttack > now_type_  && !is_super_attack_)
 	{
 		VECTOR before_pos = pos_;
-		velocity_ = stage.CheckCollision(*this, coll_,velocity_);
+		pos_ = stage.CheckCollision(*this, coll_,velocity_);
 
-		pos_ = VAdd(pos_, velocity_);
+		velocity_ = VSub(pos_, before_pos);
+
+		//pos_ = VAdd(pos_, velocity_);
 		//“–‚½‚è”»’è‚ÌXV
 		coll_->Update(velocity_);
 		capsule_.start_pos = pos_;

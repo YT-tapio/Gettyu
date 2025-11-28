@@ -574,8 +574,8 @@ VECTOR Stage::CheckCollision(Player& player, std::shared_ptr<CollisionBase> obje
 
 					//ポリゴンの中点からの距離を見てから、そのあと正射影ベクトルを出す。
 					//センターからの距離
-					poly_to_old = VSub(old_coll->GetPos(), poly_center_pos);			//old
-					poly_to_next = VSub(next_coll->GetPos(), poly_center_pos);			//next
+					poly_to_old = VSub(old_pos, poly_center_pos);			//old
+					poly_to_next = VSub(next_pos, poly_center_pos);			//next
 
 					//nowのpoly.normalの向きを逆にする
 					auto reverce_norm = VScale(poly.Normal, -1);
@@ -598,10 +598,13 @@ VECTOR Stage::CheckCollision(Player& player, std::shared_ptr<CollisionBase> obje
 					next_pos = VAdd(old_pos, offset_vel);
 
 					//offset分足したカプセルの座標
+					next_coll = old_coll;
 					next_coll->Update(offset_vel);
 					
+					coll_end_pos = next_coll->GetCenterPos();
+
 					//当たり判定検出の位置を更新
-					next_to_old_cap->Update(offset_vel);
+					next_to_old_cap = std::make_shared<CollisionCapsule>(coll_start_pos, coll_end_pos, coll_radius);
 
 					//移動後にもう一度何かと当たっているのかを調べる
 					for (int j = 0; j < hit_dim.HitNum; j++)
@@ -658,7 +661,7 @@ VECTOR Stage::CheckCollision(Player& player, std::shared_ptr<CollisionBase> obje
 
 	//printfDx("x:%.2f,y:%.2f,z:%.2f\n", offset_vel.x, offset_vel.y, offset_vel.z);
 
-	return offset_vel;
+	return next_pos;
 
 }
 
