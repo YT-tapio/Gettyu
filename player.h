@@ -17,6 +17,7 @@ class WarpRod;
 class WizardStaff;
 class EnemyBase;
 class SoundVibration;
+class CollisionBase;
 enum class WeaponName;
 
 struct CapsuleData
@@ -90,13 +91,14 @@ private:
 
 	CapsuleData capsule_;
 
+	std::shared_ptr<CollisionBase> coll_;
+
 	//const VibrationData kVacuumVibration = { 500,700 };
 
 
 	float before_rot_;
 	float target_rot_;
 
-	float* camera_rotation_;
 
 	bool is_ground_;					//地面の上にいるとき
 	bool is_target_;					///ターゲットしているかどうか
@@ -132,7 +134,7 @@ private:
 public:
 
 
-	Player(VECTOR pos, int pad_num, int div, float r, float vertical_num, float* rotation);
+	Player(VECTOR pos, int pad_num, int div, float r, float vertical_num);
 
 	~Player();
 
@@ -148,13 +150,13 @@ public:
 	void AddAnim();
 
 
-	void SetDeltaTime(float delta_time);
+	void SetDeltaTime(const float& delta_time);
 
 
 	void AttachWeapon(WeaponName name);
 
 
-	void Update(Stage& stage);
+	void Update(Stage& stage, float target_rot);
 	
 
 	void InputMovement(const VECTOR& pos, float& rotation);

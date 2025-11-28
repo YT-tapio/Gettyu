@@ -115,6 +115,7 @@ void Game::Init()
         kGameWidth, kGameHeight, FALSE, AlphaColorType::kBlack, 0.f, FALSE);
 
     screen_->SetIsDisp(TRUE);
+
 }
 
 void Game::Update(SceneName& name)
@@ -149,7 +150,7 @@ void Game::Update(SceneName& name)
     
 
     enemy_manager_->Update(player_);
-    player_->Update(*stage_);
+    player_->Update(*stage_,brain_->GetSideRad());
 
 
     //ƒ}ƒEƒX‚Å‚Ì‘€ì

@@ -70,7 +70,7 @@ public:
 
 	//VECTOR CheckEnemyCollision(EnemyBase* enemy, const VECTOR& velocity);
 
-	VECTOR CheckCollision(Player& player, const VECTOR& velocity);
+	VECTOR CheckCollision(Player& player, std::shared_ptr<CollisionBase> object_coll,const VECTOR& velocity);
 
 
 

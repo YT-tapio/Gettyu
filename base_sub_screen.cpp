@@ -54,6 +54,7 @@ void BaseSubScreen::Draw()
 		{
 			GraphFilter(handle_, DX_GRAPH_FILTER_BRIGHT_CLIP, DX_CMP_GREATER, param_, TRUE, GetColor(0, 255, 0), 0);
 		}
+
 	}
 	
 

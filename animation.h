@@ -110,7 +110,7 @@ public:
     /// デルタタイムの更新
     /// </summary>
     /// <param name="delta_time"></param>
-    void SetDeltaTime(float delta_time)
+    void SetDeltaTime(const float& delta_time)
     {
         delta_time_ = delta_time;
     }

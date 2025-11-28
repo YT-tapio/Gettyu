@@ -18,6 +18,10 @@ public:
 
 	void Debug() override;
 
+	float GetWidth() override;
+
+	VECTOR GetCenterPos() override;
+
 	MV1_COLL_RESULT_POLY_DIM GetCollInfo(const int model) override;
 
 

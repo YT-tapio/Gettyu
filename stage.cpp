@@ -7,7 +7,8 @@
 #include"stage.h"
 #include"vector_assistant.h"
 #include"collision_base.h"
-#include"collision_base.h"
+#include"collision_sphere.h"
+#include"collision_capsule.h"
 
 Stage::Stage(int model_handle, VECTOR pos, float scale)
 	: ObjectBase(pos, VectorAssistant::GetZeroVec(), VGet(scale, scale, scale), model_handle)
@@ -393,9 +394,9 @@ void Stage::Debug()
 }
 
 
-VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
+VECTOR Stage::CheckCollision(Player& player, std::shared_ptr<CollisionBase> object_coll, const VECTOR& velocity)
 {
-	VECTOR old_pos = player.GetPos();
+	VECTOR old_pos = object_coll->GetPos();
 	VECTOR offset_vel = velocity;
 	VECTOR next_pos = VAdd(old_pos, offset_vel);
 	
@@ -409,22 +410,21 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 
 	// 今の当たり判定は未来のカプセルのとこだけになっているので、カプセルを大ききくしたやつにする(nowとnextの合計のもの)
 
-	//
+	//新しくこいつで当たり判定を行う
 	auto old_coll = object_coll;
 	auto next_coll = object_coll;
 
-	next_coll->Update(velocity);
-
-	//printfDx("x:%.2f,y:%.2f,z:%.2f\n", old_pos.x, old_pos.y, old_pos.z);
-	//printfDx("y:%.2f\n",old_pos.y);
+	next_coll->Update(offset_vel);
 
 	auto old_player_capsule = player.GetCapsuleData();
 	auto next_player_capsule = old_player_capsule;
 
-	//未来のカプセルの座標を更新
-	next_player_capsule.start_pos = VAdd(old_player_capsule.start_pos,velocity);
-	next_player_capsule.end_pos = VAdd(old_player_capsule.end_pos, velocity);
 
+	VECTOR coll_start_pos = old_coll->GetCenterPos();
+	VECTOR coll_end_pos = next_coll->GetCenterPos();
+	float coll_radius = old_coll->GetWidth();
+	//当たり判定の検出のカプセルを作る
+	std::shared_ptr<CollisionBase> next_to_old_cap = std::make_shared<CollisionCapsule>(coll_start_pos, coll_end_pos, coll_radius);
 
 	// HACK: ステージポリゴンが複数ある場合、ここが繰り返し処理になる
 	{
@@ -433,17 +433,10 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 
 		// プレイヤーの周囲にあるステージポリゴンを取得する
 		// ( 検出する範囲は移動距離も考慮する )
-		auto hit_dim = MV1CollCheck_Capsule(model_, 
-			-1, next_to_old_cap_.start_pos, next_to_old_cap_.end_pos,
-			next_to_old_cap_.r);
+		auto hit_dim = next_to_old_cap->GetCollInfo(model_);
 
 
 		//playerが動いていない場合も考えたい
-
-		if (VSize(velocity) == 0.f)
-		{
-			hit_dim = MV1CollCheck_Capsule(model_, -1, next_player_capsule.start_pos, next_player_capsule.end_pos, next_player_capsule.r);
-		}
 
 		if (before_hit_num_ != hit_dim.HitNum)
 		{
@@ -463,14 +456,11 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 			if (player.GetFallSpeed() == 0.f)
 			{
 
-				auto check_capsule = next_player_capsule;
+				auto check_capsule = old_coll;
 				//少し下を見る
-				check_capsule.start_pos		= VAdd(check_capsule.start_pos, VGet(0.f, -0.1f, 0.f));
-				check_capsule.end_pos		= VAdd(check_capsule.end_pos, VGet(0.f, -0.1f, 0.f));
-				
-				auto gravity_check_hit_dim = MV1CollCheck_Capsule(model_,
-					-1, check_capsule.start_pos, check_capsule.end_pos,
-					check_capsule.r);
+				check_capsule->Update(VGet(0.f, -0.1f, 0.f));
+
+				auto gravity_check_hit_dim = check_capsule->GetCollInfo(model_);
 
 				//下の座標を見た時何にも触れていなかったら重力あり
 				if (gravity_check_hit_dim.HitNum == 0)
@@ -482,8 +472,7 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 					for (int i = 0; i < gravity_check_hit_dim.HitNum; i++)
 					{
 						auto poly = gravity_check_hit_dim.Dim[i];
-						if (HitCheck_Capsule_Triangle(check_capsule.start_pos, check_capsule.end_pos
-							, check_capsule.r, poly.Position[0], poly.Position[1], poly.Position[2]))
+						if (check_capsule->IsHitTriangle(poly.Position[0], poly.Position[1], poly.Position[2]))
 						{
 							player.SetIsGround(TRUE);
 						}
@@ -543,9 +532,8 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 				auto poly = hit_dim.Dim[i];
 
 				//衝突しているとき
-				if (HitCheck_Capsule_Triangle(next_player_capsule.start_pos, next_player_capsule.end_pos
-					, next_player_capsule.r, poly.Position[0], poly.Position[1], poly.Position[2]) ||
-					(HitCheck_Line_Triangle(old_player_capsule.start_pos, next_player_capsule.start_pos, poly.Position[0], poly.Position[1], poly.Position[2]).HitFlag) == 1)
+				if (next_coll->IsHitTriangle(poly.Position[0], poly.Position[1], poly.Position[2]) ||
+					(HitCheck_Line_Triangle(old_coll->GetPos(), next_coll->GetPos(), poly.Position[0], poly.Position[1], poly.Position[2]).HitFlag) == 1)
 				{
 
 					//中点を出す
@@ -558,7 +546,7 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 					// 俺的には最初で判断していいと思う
 					// フラグを返す関数を作るそれがTRUEの時はそいつを除外するような感じにしたい
 					// 地面時に判断するようにする
-					if ((!(poly.Normal.y <= 0.f)) && !IsStair(poly_center_pos, next_player_capsule.start_pos,hit_dim)) { continue; }
+					if ((!(poly.Normal.y <= 0.f)) && !IsStair(poly_center_pos, next_coll->GetPos(), hit_dim)) { continue; }
 
 
 					/*----------ここからはセグメントのやつ(capsuleのstart_posのやつ)------------*/
@@ -586,8 +574,8 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 
 					//ポリゴンの中点からの距離を見てから、そのあと正射影ベクトルを出す。
 					//センターからの距離
-					poly_to_old = VSub(old_player_capsule.start_pos, poly_center_pos);			//old
-					poly_to_next = VSub(next_player_capsule.start_pos, poly_center_pos);			//next
+					poly_to_old = VSub(old_coll->GetPos(), poly_center_pos);			//old
+					poly_to_next = VSub(next_coll->GetPos(), poly_center_pos);			//next
 
 					//nowのpoly.normalの向きを逆にする
 					auto reverce_norm = VScale(poly.Normal, -1);
@@ -601,7 +589,7 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 
 					// velocityを足し終わった後に法線分三角形にめり込んでいる分を押し出す
 					VECTOR offset_pos = VSub(next_pos, poly_to_next_proj_vec);
-					offset_pos = VAdd(offset_pos, VScale(poly.Normal, old_player_capsule.r));
+					offset_pos = VAdd(offset_pos, VScale(poly.Normal, old_coll->GetRadius()));
 
 					//　元のposから、offsetした後のposの差を見る
 					offset_vel = VSub(offset_pos, old_pos);
@@ -610,22 +598,17 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 					next_pos = VAdd(old_pos, offset_vel);
 
 					//offset分足したカプセルの座標
-					next_player_capsule.start_pos = VAdd(old_player_capsule.start_pos, offset_vel);
-					//next_player_capsule.start_pos.y += next_player_capsule.r;
-					next_player_capsule.end_pos = VAdd(old_player_capsule.end_pos,offset_vel);
+					next_coll->Update(offset_vel);
 					
-
-					//当たり判定の更新
-					MakeCollCheckCapsule(old_player_capsule, next_player_capsule);
-
+					//当たり判定検出の位置を更新
+					next_to_old_cap->Update(offset_vel);
 
 					//移動後にもう一度何かと当たっているのかを調べる
 					for (int j = 0; j < hit_dim.HitNum; j++)
 					{
 						poly = hit_dim.Dim[j];
 
-						if (HitCheck_Capsule_Triangle(next_player_capsule.start_pos, next_player_capsule.end_pos
-							, next_player_capsule.r, poly.Position[0], poly.Position[1], poly.Position[2]))
+						if (next_to_old_cap->IsHitTriangle(poly.Position[0], poly.Position[1], poly.Position[2]))
 						{
 							is_hit = TRUE;
 							break;
@@ -675,7 +658,7 @@ VECTOR Stage::CheckCollision(Player& player, const VECTOR& velocity)
 
 	//printfDx("x:%.2f,y:%.2f,z:%.2f\n", offset_vel.x, offset_vel.y, offset_vel.z);
 
-	return next_pos;
+	return offset_vel;
 
 }
 

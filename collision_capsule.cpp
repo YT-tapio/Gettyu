@@ -1,5 +1,7 @@
 #include"collision_base.h"
 #include"collision_capsule.h"
+#include"vector_assistant.h"
+#include"debug.h"
 
 CollisionCapsule::CollisionCapsule(const VECTOR& pos,const VECTOR& end_pos,const float& r)
 	:CollisionBase(pos,CollisionName::kSphere,r)
@@ -22,7 +24,28 @@ void CollisionCapsule::Update(const VECTOR& vel)
 
 void CollisionCapsule::Debug()
 {
-	DrawCapsule3D(pos_, end_pos_, radius_, kDivNum, kDebugColor, kDebugColor, TRUE);
+	DrawCapsule3D(pos_, end_pos_, radius_, kDivNum, kDebugColor, kDebugColor, FALSE);
+	DrawFormatString(0, Debug::GetInstance().GetCurrentNum() * Debug::GetInstance().GetFontSize(), GetColor(255, 255, 255), "/*----capsule---*/");
+	Debug::GetInstance().Add();
+	Debug::GetInstance().VectorDraw(pos_);
+}
+
+float CollisionCapsule::GetWidth()
+{
+	float width = 0.f;
+
+	VECTOR start_to_end = VSub(end_pos_, pos_);
+	float size = VSize(start_to_end);
+	width = (size * 0.5f);
+
+	return width;
+}
+
+VECTOR CollisionCapsule::GetCenterPos()
+{
+	VECTOR center_pos = VectorAssistant::GetHerf(VAdd(pos_, end_pos_));
+	
+	return center_pos;
 }
 
 MV1_COLL_RESULT_POLY_DIM CollisionCapsule::GetCollInfo(const int model)

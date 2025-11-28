@@ -20,9 +20,11 @@
 #include"debug.h"
 #include"weapon_checker.h"
 #include"character_base.h"
+#include"collision_base.h"
+#include"collision_capsule.h"
 
 
-Player::Player(VECTOR pos, int pad_num,int div, float r, float vertical_num,float* rotation)
+Player::Player(VECTOR pos, int pad_num,int div, float r, float vertical_num)
 	: model_(MV1LoadModel(kModelPath))
 	, pad_input_num_(pad_num)
 	, weapon_(nullptr)
@@ -30,7 +32,6 @@ Player::Player(VECTOR pos, int pad_num,int div, float r, float vertical_num,floa
 	, target_rot_(0.0f)
 	, before_rot_(0.0f)
 	, now_state_(PlayerState::kStand)
-	, camera_rotation_(rotation)
 {
 	capsule_.r = r;
 	capsule_.div_num = div;
@@ -40,8 +41,12 @@ Player::Player(VECTOR pos, int pad_num,int div, float r, float vertical_num,floa
 	is_attack_ = FALSE;
 	is_super_attack_ = FALSE;
 	is_switch_weapon_ = FALSE;
+	animation_ = std::make_shared<Animation>();
 	Init(pos);
 	super_attack_ = new SuperAttack(VGet(0, 0, 0), "");
+
+	
+	coll_ = std::make_shared<CollisionCapsule>(VAdd(pos, VGet(0.f, r, 0.f)), VAdd(pos, VGet(0.f, vertical_num, 0.f)), r);
 
 	MATRIX pos_matrix = MGetTranslate(pos_);
 
@@ -169,6 +174,7 @@ void Player::Init(VECTOR pos)
 	is_target_ = FALSE;
 	
 	now_weapon_name_ = WeaponName::kBat;
+	AddAnim();
 	AttachWeapon(now_weapon_name_);
 
 }
@@ -197,7 +203,7 @@ void Player::Debug()
 	if (Debug::GetInstance().GetDisp())
 	{
 		
-		DrawCapsule3D(capsule_.start_pos, capsule_.end_pos, capsule_.r, 20.f, GetColor(255, 255, 255), GetColor(255, 255, 255), FALSE);
+		coll_->Debug();
 
 		//
 		DrawFormatString(0, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), GetColor(0, 0, 0), "---------player--------");
@@ -286,7 +292,7 @@ void Player::AddAnim()
 	animation_->Add(super_attack_first);
 }
 
-void Player::SetDeltaTime(float delta_time)
+void Player::SetDeltaTime(const float& delta_time)
 {
 
 	//ゲット時はデルタタイムをゼロにする
@@ -374,7 +380,7 @@ void Player::AttachWeapon(WeaponName name)
 }
 
 
-void Player::Update(Stage& stage)
+void Player::Update(Stage& stage,float target_rot)
 {
 	VECTOR camera_pos = Camera::GetInstance().GetPos();
 	//サウンドのリセット
@@ -383,8 +389,6 @@ void Player::Update(Stage& stage)
 	//AttachWeapon(frame_path_->RIGHT_HAND);
 	// ターゲットを切り替えた時のrotationを色んな奴に持たすわけにはいかないのでplayerに持たせる、
 	// updateにはposだけにしといていいと思う(引き数)
-
-	float target_rot = *camera_rotation_;
 
 	super_attack_->Update();
 
@@ -404,9 +408,11 @@ void Player::Update(Stage& stage)
 	if (AnimationType::kAttack > now_type_  && !is_super_attack_)
 	{
 		VECTOR before_pos = pos_;
-		pos_ = stage.CheckCollision(*this, velocity_);
+		velocity_ = stage.CheckCollision(*this, coll_,velocity_);
 
-		velocity_ = VSub(pos_,before_pos);
+		pos_ = VAdd(pos_, velocity_);
+		//当たり判定の更新
+		coll_->Update(velocity_);
 		capsule_.start_pos = pos_;
 		capsule_.start_pos.y += capsule_.r;
 		capsule_.end_pos = capsule_.start_pos;
@@ -437,7 +443,7 @@ void Player::Update(Stage& stage)
 		}
 
 	}
-	
+
 	
 
 }

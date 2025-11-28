@@ -25,6 +25,10 @@ public:
 
 	virtual void Debug();
 
+	virtual float GetWidth();
+
+	virtual VECTOR GetCenterPos();
+
 	/// @brief @brief カプセルに当たっているモデルの情報を返す
 	/// @param model モデル
 	/// @return 当たっているポリゴンの情報

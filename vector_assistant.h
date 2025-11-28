@@ -28,6 +28,11 @@ namespace VectorAssistant
 		return VNorm(VSub(other, me));
 	}
 
+	inline VECTOR GetHerf(const VECTOR& pos)
+	{
+		return VScale(pos, 0.5f);
+	}
+
 	/// @brief yŽ²‚Ì‰ñ“]—Ê‚ð•Ô‚·
 	/// @param dir 
 	/// @return 
