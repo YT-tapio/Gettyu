@@ -396,9 +396,7 @@ void Stage::Debug()
 
 VECTOR Stage::CheckCollision(Player& player, std::shared_ptr<CollisionBase> object_coll, const VECTOR& velocity)
 {
-	VECTOR old_pos = object_coll->GetPos();
 	VECTOR offset_vel = velocity;
-	VECTOR next_pos = VAdd(old_pos, offset_vel);
 	
 	//壁に当たっているのを検知する
 	bool is_hit_wall = FALSE;
@@ -411,18 +409,20 @@ VECTOR Stage::CheckCollision(Player& player, std::shared_ptr<CollisionBase> obje
 	// 今の当たり判定は未来のカプセルのとこだけになっているので、カプセルを大ききくしたやつにする(nowとnextの合計のもの)
 
 	//新しくこいつで当たり判定を行う
-	auto old_coll = object_coll;
-	auto next_coll = object_coll;
+	auto old_coll			= object_coll;
+	auto next_coll			= object_coll;
 
 	next_coll->Update(offset_vel);
 
-	auto old_player_capsule = player.GetCapsuleData();
-	auto next_player_capsule = old_player_capsule;
+	//auto old_player_capsule = player.GetCapsuleData();
+	//auto next_player_capsule = old_player_capsule;
 
+	VECTOR old_pos			= old_coll->GetPos();
+	VECTOR next_pos			= next_coll->GetPos();
 
-	VECTOR coll_start_pos = old_coll->GetCenterPos();
-	VECTOR coll_end_pos = next_coll->GetCenterPos();
-	float coll_radius = old_coll->GetWidth();
+	VECTOR coll_start_pos	= old_coll->GetCenterPos();
+	VECTOR coll_end_pos		= next_coll->GetCenterPos();
+	float coll_radius		= old_coll->GetWidth();
 	//当たり判定の検出のカプセルを作る
 	std::shared_ptr<CollisionBase> next_to_old_cap = std::make_shared<CollisionCapsule>(coll_start_pos, coll_end_pos, coll_radius);
 
@@ -472,7 +472,8 @@ VECTOR Stage::CheckCollision(Player& player, std::shared_ptr<CollisionBase> obje
 					for (int i = 0; i < gravity_check_hit_dim.HitNum; i++)
 					{
 						auto poly = gravity_check_hit_dim.Dim[i];
-						if (check_capsule->IsHitTriangle(poly.Position[0], poly.Position[1], poly.Position[2]))
+						if (check_capsule->IsHitTriangle(poly.Position[0], poly.Position[1], poly.Position[2]) || 
+							(HitCheck_Line_Triangle(old_coll->GetPos(), check_capsule->GetPos(), poly.Position[0], poly.Position[1], poly.Position[2]).HitFlag) == 1)
 						{
 							player.SetIsGround(TRUE);
 						}
@@ -487,7 +488,6 @@ VECTOR Stage::CheckCollision(Player& player, std::shared_ptr<CollisionBase> obje
 				MV1CollResultPolyDimTerminate(gravity_check_hit_dim);
 
 			}
-
 
 
 		}
@@ -595,7 +595,7 @@ VECTOR Stage::CheckCollision(Player& player, std::shared_ptr<CollisionBase> obje
 					offset_vel = VSub(offset_pos, old_pos);
 
 
-					next_pos = VAdd(old_pos, offset_vel);
+					//next_pos = VAdd(old_pos, offset_vel);
 
 					//offset分足したカプセルの座標
 					next_coll = old_coll;
@@ -611,8 +611,10 @@ VECTOR Stage::CheckCollision(Player& player, std::shared_ptr<CollisionBase> obje
 					{
 						poly = hit_dim.Dim[j];
 
-						if (next_to_old_cap->IsHitTriangle(poly.Position[0], poly.Position[1], poly.Position[2]))
+						if (next_to_old_cap->IsHitTriangle(poly.Position[0], poly.Position[1], poly.Position[2])
+							|| (HitCheck_Line_Triangle(old_pos, next_pos, poly.Position[0], poly.Position[1], poly.Position[2]).HitFlag) == 1)
 						{
+
 							is_hit = TRUE;
 							break;
 						}
@@ -657,11 +659,11 @@ VECTOR Stage::CheckCollision(Player& player, std::shared_ptr<CollisionBase> obje
 		MV1CollResultPolyDimTerminate(hit_dim);
 	}
 
-	next_pos = VAdd(old_pos, offset_vel);
+	//next_pos = VAdd(old_pos, offset_vel);
 
 	//printfDx("x:%.2f,y:%.2f,z:%.2f\n", offset_vel.x, offset_vel.y, offset_vel.z);
 
-	return next_pos;
+	return offset_vel;
 
 }
 

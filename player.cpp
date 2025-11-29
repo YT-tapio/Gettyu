@@ -45,8 +45,10 @@ Player::Player(VECTOR pos, int pad_num,int div, float r, float vertical_num)
 	Init(pos);
 	super_attack_ = new SuperAttack(VGet(0, 0, 0), "");
 
-	
-	coll_ = std::make_shared<CollisionCapsule>(VAdd(pos, VGet(0.f, r, 0.f)), VAdd(pos, VGet(0.f, vertical_num, 0.f)), r);
+	VECTOR coll_start_pos	= VAdd(pos, VGet(0.f, r, 0.f));
+	VECTOR coll_end_pos		= VAdd(coll_start_pos, VGet(0.f, vertical_num, 0.f));
+
+	coll_ = std::make_shared<CollisionCapsule>(coll_start_pos, coll_end_pos, r);
 
 	MATRIX pos_matrix = MGetTranslate(pos_);
 
@@ -306,7 +308,7 @@ void Player::SetDeltaTime(const float& delta_time)
 	else
 	{
 		delta_time_ = delta_time;
-		animation_->SetDeltaTime(delta_time);
+		animation_->SetDeltaTime(delta_time_);
 		super_attack_->SetDeltaTime(delta_time_);
 		weapon_->SetDeltaTime(delta_time_);
 		
@@ -408,11 +410,11 @@ void Player::Update(Stage& stage,float target_rot)
 	if (AnimationType::kAttack > now_type_  && !is_super_attack_)
 	{
 		VECTOR before_pos = pos_;
-		pos_ = stage.CheckCollision(*this, coll_,velocity_);
+		velocity_ = stage.CheckCollision(*this, coll_,velocity_);
 
-		velocity_ = VSub(pos_, before_pos);
+		//velocity_ = VSub(pos_, before_pos);
 
-		//pos_ = VAdd(pos_, velocity_);
+		pos_ = VAdd(pos_, velocity_);
 		//“–‚½‚è”»’è‚ÌXV
 		coll_->Update(velocity_);
 		capsule_.start_pos = pos_;
@@ -693,8 +695,6 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 	{
 		animation_->Update(before_type_);
 	}
-
-	
 }
 
 

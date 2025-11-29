@@ -37,6 +37,7 @@ float CollisionCapsule::GetWidth()
 	VECTOR start_to_end = VSub(end_pos_, pos_);
 	float size = VSize(start_to_end);
 	width = (size * 0.5f);
+	width = width + radius_;
 
 	return width;
 }
