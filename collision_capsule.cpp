@@ -30,6 +30,8 @@ void CollisionCapsule::Debug()
 	Debug::GetInstance().VectorDraw(pos_);
 }
 
+
+
 float CollisionCapsule::GetWidth()
 {
 	float width = 0.f;

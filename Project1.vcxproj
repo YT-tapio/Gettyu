@@ -140,6 +140,8 @@
     <ClCompile Include="alert.cpp" />
     <ClCompile Include="alert_state.cpp" />
     <ClCompile Include="animation.cpp" />
+    <ClCompile Include="button.cpp" />
+    <ClCompile Include="collision2D.cpp" />
     <ClCompile Include="collision_base.cpp" />
     <ClCompile Include="collision_capsule.cpp" />
     <ClCompile Include="collision_sphere.cpp" />
@@ -214,6 +216,8 @@
     <ClInclude Include="alert.h" />
     <ClInclude Include="alert_state.h" />
     <ClInclude Include="animation.h" />
+    <ClInclude Include="button.h" />
+    <ClInclude Include="collision2D.h" />
     <ClInclude Include="collision_base.h" />
     <ClInclude Include="collision_capsule.h" />
     <ClInclude Include="collision_sphere.h" />

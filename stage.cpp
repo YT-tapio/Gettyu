@@ -25,6 +25,7 @@ Stage::Stage(int model_handle, VECTOR pos, float scale)
 	MATRIX pos_matrix = MGetTranslate(pos_);
 	mat_ = MMult(scale_matrix, pos_matrix);
 
+	next_to_old_cap_ = std::make_shared<CollisionCapsule>(VectorAssistant::GetZeroVec(), VectorAssistant::GetZeroVec(), 0.f);
 
 	MV1SetMatrix(model_, mat_);
 
@@ -120,7 +121,7 @@ bool Stage::IsStair(const VECTOR& poly_pos, const VECTOR& entity_pos,const MV1_C
 		for (int j = 0; j < kPolyMax; j++)
 		{
 			//entityよりもposが高いのなら
-			if (poly.Position[j].x > entity_pos.y) { continue; }
+			if (poly.Position[j].x < entity_pos.y) { continue; }
 
 			float height_dist = poly_pos.y - poly.Position[j].y;
 
@@ -139,7 +140,7 @@ bool Stage::IsStair(const VECTOR& poly_pos, const VECTOR& entity_pos,const MV1_C
 	return max_dist < kMaxHeightDist;
 }
 
-bool Stage::CheckDownColl(std::shared_ptr<CollisionBase> coll)
+bool Stage::CheckDownColl(const std::shared_ptr<CollisionBase> coll)
 {
 	bool flag = FALSE;				//こいつが返す
 	const VECTOR kDownVel = VGet(0.f, -0.1f, 0.f);
@@ -150,7 +151,7 @@ bool Stage::CheckDownColl(std::shared_ptr<CollisionBase> coll)
 	if (hit_dim.HitNum == 0)
 	{
 		//下に下げるためのcoll
-		auto down_coll = coll;
+		auto down_coll = coll->Clone();
 
 		down_coll->Update(kDownVel);
 
@@ -390,11 +391,11 @@ void Stage::Draw()
 
 void Stage::Debug()
 {
-	
+	next_to_old_cap_->Debug();
 }
 
 
-VECTOR Stage::CheckCollision(Player& player, std::shared_ptr<CollisionBase> object_coll, const VECTOR& velocity)
+VECTOR Stage::CheckCollision(std::shared_ptr<CollisionBase> object_coll, const VECTOR& velocity)
 {
 	VECTOR offset_vel = velocity;
 	
@@ -409,8 +410,8 @@ VECTOR Stage::CheckCollision(Player& player, std::shared_ptr<CollisionBase> obje
 	// 今の当たり判定は未来のカプセルのとこだけになっているので、カプセルを大ききくしたやつにする(nowとnextの合計のもの)
 
 	//新しくこいつで当たり判定を行う
-	auto old_coll			= object_coll;
-	auto next_coll			= object_coll;
+	auto old_coll					= object_coll->Clone();
+	auto next_coll				= object_coll->Clone();
 
 	next_coll->Update(offset_vel);
 
@@ -422,9 +423,9 @@ VECTOR Stage::CheckCollision(Player& player, std::shared_ptr<CollisionBase> obje
 
 	VECTOR coll_start_pos	= old_coll->GetCenterPos();
 	VECTOR coll_end_pos		= next_coll->GetCenterPos();
-	float coll_radius		= old_coll->GetWidth();
+	float coll_radius				= old_coll->GetWidth();
 	//当たり判定の検出のカプセルを作る
-	std::shared_ptr<CollisionBase> next_to_old_cap = std::make_shared<CollisionCapsule>(coll_start_pos, coll_end_pos, coll_radius);
+	next_to_old_cap_ = std::make_shared<CollisionCapsule>(coll_start_pos, coll_end_pos, coll_radius);
 
 	// HACK: ステージポリゴンが複数ある場合、ここが繰り返し処理になる
 	{
@@ -433,65 +434,10 @@ VECTOR Stage::CheckCollision(Player& player, std::shared_ptr<CollisionBase> obje
 
 		// プレイヤーの周囲にあるステージポリゴンを取得する
 		// ( 検出する範囲は移動距離も考慮する )
-		auto hit_dim = next_to_old_cap->GetCollInfo(model_);
+		auto hit_dim = next_to_old_cap_->GetCollInfo(model_);
 
 
-		//playerが動いていない場合も考えたい
-
-		if (before_hit_num_ != hit_dim.HitNum)
-		{
-			//printfDx("%d\n", hit_dim.HitNum);
-			before_hit_num_ = hit_dim.HitNum;
-		}
-
-		
-		
-
-		//printfDx("r:%.2f\n", next_player_capsule.r);
-
-		// 何も触れていないときに重力判定をする
-		if (hit_dim.HitNum == 0)
-		{
-
-			if (player.GetFallSpeed() == 0.f)
-			{
-
-				auto check_capsule = old_coll;
-				//少し下を見る
-				check_capsule->Update(VGet(0.f, -0.1f, 0.f));
-
-				auto gravity_check_hit_dim = check_capsule->GetCollInfo(model_);
-
-				//下の座標を見た時何にも触れていなかったら重力あり
-				if (gravity_check_hit_dim.HitNum == 0)
-				{
-					player.SetIsGround(FALSE);
-				}
-				else
-				{
-					for (int i = 0; i < gravity_check_hit_dim.HitNum; i++)
-					{
-						auto poly = gravity_check_hit_dim.Dim[i];
-						if (check_capsule->IsHitTriangle(poly.Position[0], poly.Position[1], poly.Position[2]) || 
-							(HitCheck_Line_Triangle(old_coll->GetPos(), check_capsule->GetPos(), poly.Position[0], poly.Position[1], poly.Position[2]).HitFlag) == 1)
-						{
-							player.SetIsGround(TRUE);
-						}
-						else
-						{
-							player.SetIsGround(FALSE);
-						}
-					}
-				}
-
-				//ポリゴン情報を解放する
-				MV1CollResultPolyDimTerminate(gravity_check_hit_dim);
-
-			}
-
-
-		}
-
+		//playerが動いていない場合も考えたい	
 		
 		//さきにかべに当たっているのなら検知させておく
 		
@@ -564,13 +510,6 @@ VECTOR Stage::CheckCollision(Player& player, std::shared_ptr<CollisionBase> obje
 					VECTOR poly_to_old_proj_vec;
 					VECTOR poly_to_next_proj_vec;
 
-					// 地面の判定(法線のY座標が0以下なら)
-					if (!poly.Normal.y <= 0.f)
-					{
-						player.SetIsGround(TRUE);
-						player.ResetFallSpeed();
-					}
-
 
 					//ポリゴンの中点からの距離を見てから、そのあと正射影ベクトルを出す。
 					//センターからの距離
@@ -594,27 +533,25 @@ VECTOR Stage::CheckCollision(Player& player, std::shared_ptr<CollisionBase> obje
 					//　元のposから、offsetした後のposの差を見る
 					offset_vel = VSub(offset_pos, old_pos);
 
-
-					//next_pos = VAdd(old_pos, offset_vel);
+					
 
 					//offset分足したカプセルの座標
-					next_coll = old_coll;
+					next_coll = old_coll->Clone();
 					next_coll->Update(offset_vel);
-					
+					next_pos = next_coll->GetPos();
 					coll_end_pos = next_coll->GetCenterPos();
 
 					//当たり判定検出の位置を更新
-					next_to_old_cap = std::make_shared<CollisionCapsule>(coll_start_pos, coll_end_pos, coll_radius);
+					next_to_old_cap_ = std::make_shared<CollisionCapsule>(coll_start_pos, coll_end_pos, coll_radius);
 
 					//移動後にもう一度何かと当たっているのかを調べる
 					for (int j = 0; j < hit_dim.HitNum; j++)
 					{
 						poly = hit_dim.Dim[j];
 
-						if (next_to_old_cap->IsHitTriangle(poly.Position[0], poly.Position[1], poly.Position[2])
+						if (next_to_old_cap_->IsHitTriangle(poly.Position[0], poly.Position[1], poly.Position[2])
 							|| (HitCheck_Line_Triangle(old_pos, next_pos, poly.Position[0], poly.Position[1], poly.Position[2]).HitFlag) == 1)
 						{
-
 							is_hit = TRUE;
 							break;
 						}

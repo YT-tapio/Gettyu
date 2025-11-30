@@ -131,6 +131,8 @@ private:
 
 	bool SuperAttackCondition();
 
+	void CheckIsGround(Stage& stage);
+
 public:
 
 

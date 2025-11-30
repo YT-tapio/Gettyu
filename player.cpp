@@ -22,6 +22,7 @@
 #include"character_base.h"
 #include"collision_base.h"
 #include"collision_capsule.h"
+#include"vector_assistant.h"
 
 
 Player::Player(VECTOR pos, int pad_num,int div, float r, float vertical_num)
@@ -144,6 +145,19 @@ bool Player::SuperAttackCondition()
 	}
 
 	return TRUE;
+}
+
+void Player::CheckIsGround(Stage& stage)
+{
+
+	is_ground_ = !stage.CheckDownColl(coll_);
+
+	
+
+	if (is_ground_)
+	{
+		fall_speed_ = 0.f;
+	}
 }
 
 /*------------------------public---------------------------*/
@@ -392,6 +406,9 @@ void Player::Update(Stage& stage,float target_rot)
 	// ターゲットを切り替えた時のrotationを色んな奴に持たすわけにはいかないのでplayerに持たせる、
 	// updateにはposだけにしといていいと思う(引き数)
 
+	//ここで着地しているかの判断を行う
+	CheckIsGround(stage);
+
 	super_attack_->Update();
 
 	InputMovement(camera_pos, target_rot);
@@ -410,7 +427,7 @@ void Player::Update(Stage& stage,float target_rot)
 	if (AnimationType::kAttack > now_type_  && !is_super_attack_)
 	{
 		VECTOR before_pos = pos_;
-		velocity_ = stage.CheckCollision(*this, coll_,velocity_);
+		velocity_ = stage.CheckCollision(coll_,velocity_);
 
 		//velocity_ = VSub(pos_, before_pos);
 

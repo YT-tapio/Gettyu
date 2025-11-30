@@ -18,6 +18,11 @@ public:
 
 	void Debug() override;
 
+	std::shared_ptr<CollisionBase> Clone() const override 
+	{
+		return std::make_shared < CollisionCapsule >(pos_, end_pos_, radius_);
+	}
+
 	float GetWidth() override;
 
 	VECTOR GetCenterPos() override;

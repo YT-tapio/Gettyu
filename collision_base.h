@@ -1,4 +1,5 @@
 #pragma once
+#include<memory>
 #include"collision_data.h"
 
 class CollisionBase
@@ -40,6 +41,8 @@ public:
 	/// @param tri_3 
 	/// @return TRUE : “–‚½‚Á‚Ä‚¢‚é
 	virtual bool IsHitTriangle(const VECTOR& tri_1, const VECTOR& tri_2, const VECTOR& tri_3);
+
+	virtual std::shared_ptr<CollisionBase> Clone() const = 0;
 
 	const float GetRadius() const { return radius_; }
 

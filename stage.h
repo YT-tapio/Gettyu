@@ -28,7 +28,7 @@ private:
 	MV1_COLL_RESULT_POLY* wall_[kMaxHitColl];	// 壁ポリゴンと判断されたポリゴンの構造体のアドレスを保存しておくためのポインタ配列
 	MV1_COLL_RESULT_POLY* floor_[kMaxHitColl];	// 床ポリゴンと判断されたポリゴンの構造体のアドレスを保存しておくためのポインタ配列
 
-
+	std::shared_ptr<CollisionBase> next_to_old_cap_;
 
 	// 検出されたポリゴンが壁ポリゴン( ＸＺ平面に垂直なポリゴン )か床ポリゴン( ＸＺ平面に垂直ではないポリゴン )かを判断し、保存する
 	void AnalyzeWallAndFloor(MV1_COLL_RESULT_POLY_DIM hit_dim, const VECTOR& check_position);
@@ -70,7 +70,7 @@ public:
 
 	//VECTOR CheckEnemyCollision(EnemyBase* enemy, const VECTOR& velocity);
 
-	VECTOR CheckCollision(Player& player, std::shared_ptr<CollisionBase> object_coll,const VECTOR& velocity);
+	VECTOR CheckCollision(std::shared_ptr<CollisionBase> object_coll,const VECTOR& velocity);
 
 
 

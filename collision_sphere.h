@@ -15,6 +15,6 @@ public:
 
 	~CollisionSphere()override;
 
-	
+	std::shared_ptr<CollisionBase> Clone() const override { return std::make_shared<CollisionSphere>(pos_, radius_); }
 
 };

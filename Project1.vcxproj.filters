@@ -244,6 +244,12 @@
     <Filter Include="ソース ファイル\collision\capsule">
       <UniqueIdentifier>{012ebb18-ca16-4e45-a4d8-538d9f5007e0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\button">
+      <UniqueIdentifier>{23e020cb-39d2-46d7-87a4-4780f4634fbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\collision\2DCollision">
+      <UniqueIdentifier>{748f9655-8783-414f-8ca7-cb144962091a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -461,6 +467,12 @@
     </ClCompile>
     <ClCompile Include="collision_capsule.cpp">
       <Filter>ソース ファイル\collision\capsule</Filter>
+    </ClCompile>
+    <ClCompile Include="button.cpp">
+      <Filter>ソース ファイル\button</Filter>
+    </ClCompile>
+    <ClCompile Include="collision2D.cpp">
+      <Filter>ソース ファイル\collision\2DCollision</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -691,6 +703,12 @@
     </ClInclude>
     <ClInclude Include="collision_capsule.h">
       <Filter>ソース ファイル\collision\capsule</Filter>
+    </ClInclude>
+    <ClInclude Include="button.h">
+      <Filter>ソース ファイル\button</Filter>
+    </ClInclude>
+    <ClInclude Include="collision2D.h">
+      <Filter>ソース ファイル\collision\2DCollision</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
