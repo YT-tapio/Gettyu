@@ -48,7 +48,7 @@ SceneManager::SceneManager()
     SetUseZBufferFlag(TRUE);		// Ｚバッファを使用する
     SetUseBackCulling(TRUE);		// バックカリングを行う
 
-    SetMouseDispFlag(FALSE);
+    
 
     SetUseSetDrawScreenSettingReset(false);
 

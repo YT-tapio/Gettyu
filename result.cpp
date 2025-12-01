@@ -15,7 +15,7 @@ Result::~Result()
 
 void Result::Init()
 {
-
+	SetMouseDispFlag(TRUE);
 }
 
 void Result::Update(SceneName& name)

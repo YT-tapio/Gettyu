@@ -145,6 +145,7 @@
     <ClCompile Include="collision_base.cpp" />
     <ClCompile Include="collision_capsule.cpp" />
     <ClCompile Include="collision_sphere.cpp" />
+    <ClCompile Include="Draw2D.cpp" />
     <ClCompile Include="enemy_base.cpp" />
     <ClCompile Include="object_base.cpp" />
     <ClCompile Include="base_scene.cpp" />
@@ -178,6 +179,7 @@
     <ClCompile Include="navigation.cpp" />
     <ClCompile Include="normal_enemy.cpp" />
     <ClCompile Include="normal_sub_screen.cpp" />
+    <ClCompile Include="offset_assistant.cpp" />
     <ClCompile Include="super_attack_cool_time.cpp" />
     <ClCompile Include="super_attac_UI.cpp" />
     <ClCompile Include="UI_data.cpp" />
@@ -213,6 +215,7 @@
     <ClCompile Include="fov_function.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Draw2D.h" />
     <ClInclude Include="alert.h" />
     <ClInclude Include="alert_state.h" />
     <ClInclude Include="animation.h" />
@@ -257,6 +260,7 @@
     <ClInclude Include="normal_enemy.h" />
     <ClInclude Include="normal_sub_screen.h" />
     <ClInclude Include="const_rad.h" />
+    <ClInclude Include="offset_assistant.h" />
     <ClInclude Include="super_attack_cool_time.h" />
     <ClInclude Include="super_attack_UI.h" />
     <ClInclude Include="vector_assistant.h" />

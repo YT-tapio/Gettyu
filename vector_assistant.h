@@ -11,6 +11,12 @@ namespace VectorAssistant
 		return VGet(0.f, 0.f, 0.f);
 	}
 
+
+	inline VECTOR Get2DVec(const float& x, const float& y)
+	{
+		return VGet(x, y, 0.f);
+	}
+
 	/// @brief y‚ð–³Ž‹‚µ‚½vector
 	/// @param  
 	/// @return 

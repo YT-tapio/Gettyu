@@ -250,6 +250,12 @@
     <Filter Include="ソース ファイル\collision\2DCollision">
       <UniqueIdentifier>{748f9655-8783-414f-8ca7-cb144962091a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Draw2D">
+      <UniqueIdentifier>{78f49be5-ba26-4d20-9389-3189af55d72e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\offset_assistant">
+      <UniqueIdentifier>{8dce84a4-0737-4d6b-a170-f7b792d6b28e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -473,6 +479,12 @@
     </ClCompile>
     <ClCompile Include="collision2D.cpp">
       <Filter>ソース ファイル\collision\2DCollision</Filter>
+    </ClCompile>
+    <ClCompile Include="Draw2D.cpp">
+      <Filter>ソース ファイル\Draw2D</Filter>
+    </ClCompile>
+    <ClCompile Include="offset_assistant.cpp">
+      <Filter>ソース ファイル\offset_assistant</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -709,6 +721,12 @@
     </ClInclude>
     <ClInclude Include="collision2D.h">
       <Filter>ソース ファイル\collision\2DCollision</Filter>
+    </ClInclude>
+    <ClInclude Include="Draw2D.h">
+      <Filter>ソース ファイル\Draw2D</Filter>
+    </ClInclude>
+    <ClInclude Include="offset_assistant.h">
+      <Filter>ソース ファイル\offset_assistant</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

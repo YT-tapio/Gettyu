@@ -126,6 +126,8 @@ public:
 
 	void ResetMousePoint();
 
+	
+
 	// ƒL[“ü—Í‚ğŒ©‚é
 	InputState CheckInputKey(int key_code);
 
@@ -152,6 +154,9 @@ public:
 	float GetMousePercent(int control);
 
 	float GetStickSpin(int type);
+
+	const int GetMousePosX() const { return now_type_state_.mouse_x; }
+	const int GetMousePosY() const { return now_type_state_.mouse_y; }
 
 	const InputType GetNowTypeState() const { return now_type_state_; }
 	const InputType GetBeforeTypeState() const { return before_type_state_; }

@@ -71,6 +71,8 @@ void Game::ScreenDraw()
 
 void Game::Init()
 {
+    SetMouseDispFlag(FALSE);
+
     int red = GetColor(255, 0, 0);
     int green = GetColor(0, 255, 0);
     int blue = GetColor(0, 0, 255);

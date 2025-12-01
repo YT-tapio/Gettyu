@@ -2,10 +2,14 @@
 #include"base_scene.h"
 
 class BaseScene;
+class Button;
 
 class Title : public BaseScene
 {
 private:
+
+
+	std::shared_ptr<Button> button_;
 
 
 public:
