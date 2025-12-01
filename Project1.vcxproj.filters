@@ -486,6 +486,9 @@
     <ClCompile Include="offset_assistant.cpp">
       <Filter>ソース ファイル\offset_assistant</Filter>
     </ClCompile>
+    <ClCompile Include="button_manager.cpp">
+      <Filter>ソース ファイル\button</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="keyconfig.h">
@@ -727,6 +730,12 @@
     </ClInclude>
     <ClInclude Include="offset_assistant.h">
       <Filter>ソース ファイル\offset_assistant</Filter>
+    </ClInclude>
+    <ClInclude Include="button_state.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="button_manager.h">
+      <Filter>ソース ファイル\button</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-#include<iostream>
+
 #include"title.h"
 #include"input.h"
 #include"button.h"
@@ -7,6 +7,7 @@
 
 Title::Title()
 	:BaseScene(SceneName::kTitle)
+	,button_num_(0)
 {
 	
 }
@@ -20,7 +21,9 @@ Title::~Title()
 void Title::Init()
 {
 	SetMouseDispFlag(TRUE);
-	button_ = std::make_shared<Button>(VectorAssistant::Get2DVec(100.f, 200.f), 100, 100, "", 0);
+	buttons_.push_back(std::make_shared<Button>(VectorAssistant::Get2DVec(100.f, 200.f), 100, 100, "", 0));
+	buttons_.push_back(std::make_shared<Button>(VectorAssistant::Get2DVec(250.f, 200.f), 100, 100, "", 1));
+	buttons_.push_back(std::make_shared<Button>(VectorAssistant::Get2DVec(400.f, 200.f), 100, 100, "", 2));
 }
 
 void Title::Update(SceneName& name)
@@ -30,7 +33,22 @@ void Title::Update(SceneName& name)
 	{
 		name = SceneName::kGame;
 	}
-	button_->Update(1);
+
+	for (auto& button : buttons_)
+	{
+		button->Update(button_num_);
+
+		if (button->GetState() == ButtonState::kSelect)
+		{
+			button_num_ = button->GetNum();
+		}
+
+	}
+
+	
+
+	
+	
 
 	// name = SceneName::kGame;
 }
@@ -40,7 +58,12 @@ void Title::Draw()
 	DrawFormatString(20, 20, GetColor(255, 255, 255), "Title");
 	DrawFormatString(20, 35, GetColor(255, 255, 255), "SPACE / A Button : game start");
 
-	button_->Draw();
+	for (const auto& button : buttons_)
+	{
+		button->Draw();
+	}
+
+	
 
 }
 

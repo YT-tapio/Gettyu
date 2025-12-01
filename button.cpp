@@ -3,19 +3,31 @@
 
 #include"input.h"
 #include"vector_assistant.h"
+#include"offset_assistant.h"
 #include"keyconfig.h"
 #include"collision2D.h"
 #include"Draw2D.h"
 
-Button::Button(const VECTOR pos,const int width,const int height,const char* path,const int& num)
+Button::Button(const VECTOR pos,const float width,const float height,const char* path,const int& num)
 	: pos_(pos)
+	, init_width_(width)
+	, init_height_(height)
 	, width_(width)
 	, height_(height)
 	, is_select_(FALSE)
-	, is_push_(FALSE)
-	,num_(num)
+	, is_pussed_(FALSE)
+	, num_(num)
+	, width_ratio_(0.f)
+	,height_ratio_(0.f)
+	, state_(ButtonState::kDefault)
 {
 	model_ = LoadGraph(path);
+
+	float sum = width + height;
+
+	//選択されたときのspeed
+	width_ratio_ = width / sum;
+	height_ratio_ = height / sum;
 
 	if (model_ == -1)
 	{
@@ -30,31 +42,34 @@ Button::~Button()
 
 /*private----------------------------------*/
 
-bool Button::IsPushCondition()
+bool Button::IsPushConditionMouse()
 {
-	//選択のkey
-	if (Input::GetInstance().CheckInputKey(KeyConfig::kSelectKey) == InputState::kPush)					{ return TRUE; }
-	if (Input::GetInstance().CheckInputMouse(KeyConfig::kSelectMouseButton) == InputState::kPush)		{ return TRUE; }
-	if (Input::GetInstance().CheckInputPadButton(KeyConfig::kSelectMouseButton) == InputState::kPush)	{ return TRUE; }
+	if (Input::GetInstance().CheckInputMouse(KeyConfig::kSelectMouseButton) == InputState::kPush) { return TRUE; }
 	return FALSE;
 }
 
+bool Button::IsPushConditionButton()
+{
+	if (Input::GetInstance().CheckInputKey(KeyConfig::kSelectKey) == InputState::kPush) { return TRUE; }
+	if (Input::GetInstance().CheckInputPadButton(KeyConfig::kSelectMouseButton) == InputState::kPush) { return TRUE; }
+	return FALSE;
+}
 
 bool Button::IsReleaseCondition()
 {
-	if (Input::GetInstance().CheckInputKey(KeyConfig::kSelectKey) == InputState::kRelease)					{ return TRUE; }
 	if (Input::GetInstance().CheckInputMouse(KeyConfig::kSelectMouseButton) == InputState::kRelease)		{ return TRUE; }
-	if (Input::GetInstance().CheckInputPadButton(KeyConfig::kSelectMouseButton) == InputState::kRelease)	{ return TRUE; }
 	return FALSE;
-	
 }
 
-bool Button::IsOnMouse(const int& num)
+void Button::IsOnMouse(const int& num)
 {
+	width_		= init_width_;
+	height_		= init_height_;
 	//自分と同じの時は早期リターン
 	if (num == num_)
 	{
-		return TRUE;
+		state_ = ButtonState::kSelect;
+		return;
 	}
 
 	//同じじゃないときはmouse_posが自分の場所にいるかの判断を行う
@@ -64,32 +79,57 @@ bool Button::IsOnMouse(const int& num)
 		static_cast<float>(Input::GetInstance().GetMousePosY()));
 
 	
-
-	return Collision2D::IsInBox(mouse_pos, pos_, width_, height_);
+	state_ = (Collision2D::IsInBox(mouse_pos, pos_, width_, height_)) ? ButtonState::kSelect : state_;
 }
 
 
 
-bool Button::IsPush()
+void Button::SelectUpdate()
 {
+	const float kOffsetSize		= 20.f;
 
-	if (!is_select_) { return FALSE; }
+	float target_width			= init_width_ + (kOffsetSize * width_ratio_);
+	float target_height			= init_height_ + (kOffsetSize * height_ratio_);
 
+	//大きくする処理をはさむ
+	OffsetAssistant::UniformBigf(width_, target_width,kSpeed);
+	OffsetAssistant::UniformBigf(height_, target_height,kSpeed);
 
-	// この時にpushしたら
-	if (IsPushCondition())
+	if (IsPushConditionMouse())
 	{
-		return TRUE;
+		state_ = ButtonState::kPressed;
 	}
 
-	return FALSE;
+	if (IsPushConditionButton())
+	{
+		//ボタンを押したという判定になる
+
+	}
+
+
 }
 
-void Button::IsPushUpdate()
+void Button::PressedUpdate()
 {
-	//実行されないようにする
+	//このなかでbuttonの範囲内で離されたならその選択は除外される
 
-	
+	// 押したかの判断
+	VECTOR mouse_pos = VectorAssistant::Get2DVec(static_cast<float>(Input::GetInstance().GetMousePosX()),
+		static_cast<float>(Input::GetInstance().GetMousePosY()));
+	//boxの範囲内の検出
+	if (Collision2D::IsInBox(mouse_pos, pos_, width_, height_))
+	{
+		//離した判定になる
+		if(Input::GetInstance().CheckInputMouse(KeyConfig::kSelectMouseButton) == InputState::kRelease) 
+		{
+			//押したというような判定になる
+		}
+	}
+	else
+	{
+		state_ = ButtonState::kDefault;
+	}
+
 
 }
 
@@ -97,26 +137,30 @@ void Button::IsPushUpdate()
 
 void Button::Update(const int& num)
 {
-	is_select_ = IsOnMouse(num);
-
-	//セレクトされていないときは早期リターン
-	if (!is_select_) 
-	{ 
-		is_push_ = FALSE;
-
-		//選択されていないときは画像をもとのサイズに戻す
-		//printfDx("選択されていない\n");
-	}
-	else
+	//自分が選択状態じゃないなら
+	if (num != num_)
 	{
-		is_push_ = IsPush();
-		//printfDx("選択されている\n");
+		state_ = ButtonState::kDefault;
 	}
 
-	// 押されているとき時の
-	
+	switch (state_)
+	{
+	case ButtonState::kDefault:
+		IsOnMouse(num);
+		printfDx("Defaults\n");
+		break;
 
+	case ButtonState::kSelect:
+		SelectUpdate();
+		printfDx("Select\n");
+		break;
 
+	case ButtonState::kPressed:
+		PressedUpdate();
+		printfDx("Pressed\n");
+		break;
+
+	}
 }
 
 
@@ -124,11 +168,11 @@ void Button::Draw()
 {
 	if (model_ == -1)
 	{
-		Draw2D::Box(pos_, width_, height_, GetColor(255, 255, 255), TRUE);
+		Draw2D::Box(pos_, static_cast<int>(width_), static_cast<int>(height_), GetColor(255, 255, 255), TRUE);
 	}
 	else
 	{
-		Draw2D::ExtendGraph(pos_, width_, height_, model_, TRUE);
+		Draw2D::ExtendGraph(pos_, static_cast<int>(width_), static_cast<int>(height_), model_, TRUE);
 	}
 
 }

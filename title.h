@@ -1,4 +1,6 @@
 #pragma once
+#include<iostream>
+#include<vector>
 #include"base_scene.h"
 
 class BaseScene;
@@ -8,8 +10,8 @@ class Title : public BaseScene
 {
 private:
 
-
-	std::shared_ptr<Button> button_;
+	int button_num_;
+	std::vector<std::shared_ptr<Button>> buttons_;
 
 
 public:

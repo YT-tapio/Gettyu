@@ -141,6 +141,7 @@
     <ClCompile Include="alert_state.cpp" />
     <ClCompile Include="animation.cpp" />
     <ClCompile Include="button.cpp" />
+    <ClCompile Include="button_manager.cpp" />
     <ClCompile Include="collision2D.cpp" />
     <ClCompile Include="collision_base.cpp" />
     <ClCompile Include="collision_capsule.cpp" />
@@ -215,6 +216,8 @@
     <ClCompile Include="fov_function.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="button_manager.h" />
+    <ClInclude Include="button_state.h" />
     <ClInclude Include="Draw2D.h" />
     <ClInclude Include="alert.h" />
     <ClInclude Include="alert_state.h" />
