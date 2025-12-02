@@ -20,6 +20,7 @@ void Result::Init()
 
 void Result::Update(SceneName& name)
 {
+	//name = SceneName::kTitle;
 	if (Input::GetInstance().CheckInputKey(KeyConfig::kChangeSceneKey) == InputState::kPush ||
 		Input::GetInstance().CheckInputPadButton(PadConfig::kChangeSceneButton) == InputState::kPush)
 	{

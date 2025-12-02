@@ -4,6 +4,7 @@
 #include"base_scene.h"
 
 class BaseScene;
+class ButtonSelecter;
 class Button;
 
 class Title : public BaseScene
@@ -12,7 +13,11 @@ private:
 
 	int button_num_;
 	std::vector<std::shared_ptr<Button>> buttons_;
+	std::shared_ptr<ButtonSelecter> selecter_;
 
+	bool start_;
+	bool flag1_;
+	bool flag2_;
 
 public:
 

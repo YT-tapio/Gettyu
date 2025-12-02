@@ -51,6 +51,8 @@ struct Control
 	static const int kY = 1;
 };
 
+
+
 class Input
 {
 
@@ -101,6 +103,17 @@ private:
 	/// <param name="max">最大値</param>
 	/// <returns></returns>
 	float MakePercent(float value, float min, float max);
+
+	/// <summary>
+	/// スティックがnumよりも先に行ってるかどうか
+	/// </summary>
+	/// <param name="pad_num"></param>
+	/// <param name="num"></param>
+	/// <param name="plus"></param>
+	/// <returns></returns>
+	bool CheckPadNum(short stick_num, int num, bool plus);
+
+	bool CheckControlPadNum(int type, int control, int num, bool plus);
 
 	// コンストラクタ
 	Input();
@@ -154,6 +167,19 @@ public:
 	float GetMousePercent(int control);
 
 	float GetStickSpin(int type);
+
+	/// <summary>
+	/// 引数以上に動いているかの判別
+	/// </summary>
+	/// <param name="num"></param>
+	/// <returns></returns>
+	bool GetPadMove(int type,int cotrol,int num);
+	
+	/// <summary>
+	/// マウスの移動が発生したのかを検知する
+	/// </summary>
+	/// <returns></returns>
+	bool GetMouseMove();
 
 	const int GetMousePosX() const { return now_type_state_.mouse_x; }
 	const int GetMousePosY() const { return now_type_state_.mouse_y; }

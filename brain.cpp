@@ -45,6 +45,8 @@ Brain::~Brain()
 	delete super_attack_camera_[0];
 	delete super_attack_camera_[1];
 	delete super_attack_camera_[2];
+	delete tracking_camera_;
+	delete vacuum_camera_;
 }
 
 /*----------------private-----------------*/

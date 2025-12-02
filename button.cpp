@@ -8,7 +8,7 @@
 #include"collision2D.h"
 #include"Draw2D.h"
 
-Button::Button(const VECTOR pos,const float width,const float height,const char* path,const int& num)
+Button::Button(const VECTOR pos,const float width,const float height,const char* path,const int& num,bool* flag)
 	: pos_(pos)
 	, init_width_(width)
 	, init_height_(height)
@@ -20,7 +20,9 @@ Button::Button(const VECTOR pos,const float width,const float height,const char*
 	, width_ratio_(0.f)
 	,height_ratio_(0.f)
 	, state_(ButtonState::kDefault)
+	,flag_(flag)
 {
+	debug_color_ = kWhite;
 	model_ = LoadGraph(path);
 
 	float sum = width + height;
@@ -51,7 +53,7 @@ bool Button::IsPushConditionMouse()
 bool Button::IsPushConditionButton()
 {
 	if (Input::GetInstance().CheckInputKey(KeyConfig::kSelectKey) == InputState::kPush) { return TRUE; }
-	if (Input::GetInstance().CheckInputPadButton(KeyConfig::kSelectMouseButton) == InputState::kPush) { return TRUE; }
+	if (Input::GetInstance().CheckInputPadButton(PadConfig::kSelectButton) == InputState::kPush) { return TRUE; }
 	return FALSE;
 }
 
@@ -73,12 +75,23 @@ void Button::IsOnMouse(const int& num)
 	}
 
 	//同じじゃないときはmouse_posが自分の場所にいるかの判断を行う
-
-	// 押したかの判断
 	VECTOR mouse_pos = VectorAssistant::Get2DVec(static_cast<float>(Input::GetInstance().GetMousePosX()),
 		static_cast<float>(Input::GetInstance().GetMousePosY()));
 
-	
+	//マウスが動いていないなら早期リターン
+	if (!(Input::GetInstance().GetMouseMove())) 
+	{
+		//もしボタンをクリックしたならこいつに変える
+		if (Collision2D::IsInBox(mouse_pos, pos_, width_, height_))
+		{
+			if (IsPushConditionMouse())
+			{
+				state_ = ButtonState::kPressed;
+			}
+		}
+		return;
+	}
+
 	state_ = (Collision2D::IsInBox(mouse_pos, pos_, width_, height_)) ? ButtonState::kSelect : state_;
 }
 
@@ -103,7 +116,7 @@ void Button::SelectUpdate()
 	if (IsPushConditionButton())
 	{
 		//ボタンを押したという判定になる
-
+		*flag_ = TRUE;
 	}
 
 
@@ -111,6 +124,15 @@ void Button::SelectUpdate()
 
 void Button::PressedUpdate()
 {
+	const float kOffsetSize = 20.f;
+
+	float target_width = init_width_ + (kOffsetSize * width_ratio_);
+	float target_height = init_height_ + (kOffsetSize * height_ratio_);
+
+	// 大きくする処理をはさむ
+	OffsetAssistant::UniformBigf(width_, target_width, kSpeed);
+	OffsetAssistant::UniformBigf(height_, target_height, kSpeed);
+
 	//このなかでbuttonの範囲内で離されたならその選択は除外される
 
 	// 押したかの判断
@@ -123,6 +145,7 @@ void Button::PressedUpdate()
 		if(Input::GetInstance().CheckInputMouse(KeyConfig::kSelectMouseButton) == InputState::kRelease) 
 		{
 			//押したというような判定になる
+			*flag_ = TRUE;
 		}
 	}
 	else
@@ -137,6 +160,7 @@ void Button::PressedUpdate()
 
 void Button::Update(const int& num)
 {
+	
 	//自分が選択状態じゃないなら
 	if (num != num_)
 	{
@@ -148,16 +172,19 @@ void Button::Update(const int& num)
 	case ButtonState::kDefault:
 		IsOnMouse(num);
 		printfDx("Defaults\n");
+		debug_color_ = kWhite;
 		break;
 
 	case ButtonState::kSelect:
 		SelectUpdate();
 		printfDx("Select\n");
+		debug_color_ = kRightGray;
 		break;
 
 	case ButtonState::kPressed:
 		PressedUpdate();
 		printfDx("Pressed\n");
+		debug_color_ = kGray;
 		break;
 
 	}
@@ -166,13 +193,18 @@ void Button::Update(const int& num)
 
 void Button::Draw()
 {
+	
 	if (model_ == -1)
-	{
-		Draw2D::Box(pos_, static_cast<int>(width_), static_cast<int>(height_), GetColor(255, 255, 255), TRUE);
+	{	
+		Draw2D::Box(pos_, static_cast<int>(width_), static_cast<int>(height_), kWhite, TRUE);
 	}
 	else
 	{
+		
 		Draw2D::ExtendGraph(pos_, static_cast<int>(width_), static_cast<int>(height_), model_, TRUE);
 	}
+
+	//選択しているものは上から倒壊した物をかぶせる
+	if (state_ != ButtonState::kDefault) { Draw2D::BlendBox(pos_, static_cast<int>(width_), static_cast<int>(height_), debug_color_, TRUE, 128); }
 
 }

@@ -8,14 +8,30 @@ namespace Draw2D
 	/// @param width ‚æ‚±
 	/// @param height ‚½‚Ä
 	/// @param color F
-	/// @param flag ˜g‚ğo‚·‚Ì‚©‚Ç‚¤‚© , TRUE ‘S•”•`‰æ : FALSE ˜g‚¾‚¯
-	inline void Box(const VECTOR& pos, int width, int height, int color,const bool flag)
+	/// @param alpha ˜g‚ğo‚·‚Ì‚©‚Ç‚¤‚© , TRUE ‘S•”•`‰æ : FALSE ˜g‚¾‚¯
+	inline void Box(const VECTOR& pos, int width, int height, int color,const bool alpha)
 	{
 		DrawBox(static_cast<int>(pos.x - (float(width) * 0.5f)),
 			static_cast<int>(pos.y - (float(width) * 0.5f)),
 			static_cast<int>(pos.x + (float(width) * 0.5f)),
 			static_cast<int>(pos.y + (float(width) * 0.5f)),
-			color, flag);
+			color, alpha);
+	}
+
+	/// <summary>
+	/// box‚Ì“§‰ß‚ğs‚¤
+	/// </summary>
+	/// <param name="pos">’†SÀ•W</param>
+	/// <param name="width">‚æ‚±</param>
+	/// <param name="height">‚½‚Ä</param>
+	/// <param name="color">F</param>
+	/// <param name="alpha">˜g‚ğo‚·‚Ì‚©‚Ç‚¤‚© , TRUE ‘S•”•`‰æ : FALSE ˜g‚¾‚¯</param>
+	/// <param name="alpha_num">“§‰ß ; ‘å‚«‚­‚·‚é‚Æ•`‰æ‚³‚ê‚È‚¢ max 255</param>
+	inline void BlendBox(const VECTOR& pos, int width, int height, int color, const bool& alpha, const int& alpha_num)
+	{
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha_num);
+		Box(pos, width, height, color, alpha);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}
 
 	/// @brief ’²®‚µ‚½‰æ‘œ‚ğ•`‰æ

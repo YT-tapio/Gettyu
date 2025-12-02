@@ -83,7 +83,7 @@ void Game::Init()
 
     //playerを生成
     player_ =
-        std::make_shared<Player>(VGet(0, 10, 100), DX_INPUT_PAD1, 20, 1.5f, 5.0f);
+        std::make_shared<Player>(VGet(0, 10, 100), DX_INPUT_PAD1, 20, 1.5f, 10.0f);
 
     brain_ = std::make_shared<Brain>(player_->GetCenterPos());
 
@@ -122,6 +122,7 @@ void Game::Init()
 
 void Game::Update(SceneName& name)
 {
+    //name = SceneName::kResult;
     //全体のタイムスケール
     static float time_scale = 1.0f;
     
@@ -240,6 +241,5 @@ void Game::Draw()
 
 void Game::End()
 {
-    Effkseer_End();
-    DxLib_End();
+
 }

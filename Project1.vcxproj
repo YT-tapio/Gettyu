@@ -142,6 +142,7 @@
     <ClCompile Include="animation.cpp" />
     <ClCompile Include="button.cpp" />
     <ClCompile Include="button_manager.cpp" />
+    <ClCompile Include="button_selecter.cpp" />
     <ClCompile Include="collision2D.cpp" />
     <ClCompile Include="collision_base.cpp" />
     <ClCompile Include="collision_capsule.cpp" />
@@ -217,6 +218,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="button_manager.h" />
+    <ClInclude Include="button_selecter.h" />
     <ClInclude Include="button_state.h" />
     <ClInclude Include="Draw2D.h" />
     <ClInclude Include="alert.h" />
@@ -264,6 +266,7 @@
     <ClInclude Include="normal_sub_screen.h" />
     <ClInclude Include="const_rad.h" />
     <ClInclude Include="offset_assistant.h" />
+    <ClInclude Include="select_type.h" />
     <ClInclude Include="super_attack_cool_time.h" />
     <ClInclude Include="super_attack_UI.h" />
     <ClInclude Include="vector_assistant.h" />

@@ -6,7 +6,10 @@ class Button
 {
 private:
 
-	const float kSpeed = 5.f;
+	const int kWhite		= GetColor(255, 255, 255);
+	const int kRightGray			= GetColor(192, 192, 192);
+	const int kGray		= GetColor(128, 128, 128);
+	const float kSpeed		= 5.f;
 
 	ButtonState state_;
 
@@ -14,20 +17,24 @@ private:
 
 	int model_;
 
+	int num_;				//自分の識別番号
+
+	int debug_color_;
+
+
 	float init_width_;		// 初期のサイズ	(横)
 	float init_height_;		// 初期のサイズ	(縦)
 	float width_;				// 今のサイズ		(横)
 	float height_;			// 今のサイズ		(縦)
 	
-	int num_;				//自分の識別番号
-
+	
 	float width_ratio_;
 	float height_ratio_;
 
 	bool is_select_;
 	bool is_pussed_;
 
-	
+	bool* flag_;
 
 	bool IsPushConditionMouse();
 
@@ -51,7 +58,7 @@ public:
 	/// @param height たて
 	/// @param path モデルのパス
 	/// @param num_ 自分の識別番号
-	Button(const VECTOR pos, const float width, const float height, const char* path, const int& num_);
+	Button(const VECTOR pos, const float width, const float height, const char* path, const int& num_,bool* flag);
 
 	~Button();
 

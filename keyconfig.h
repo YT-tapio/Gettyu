@@ -1,6 +1,10 @@
 #pragma once
 #include"DxLib.h"
 
+const int kSelectUpSize      = 2;
+const int kSelectDownSize    = 2;
+const int kSelectRightSize   = 2;
+const int kSelectLeftSize    = 2;
 /*-------操作条件-------*/
 
 struct KeyConfig
@@ -28,8 +32,14 @@ struct KeyConfig
     static const int kSwicthBatKey          = KEY_INPUT_2;
     static const int kSwicthWarpRodKey      = KEY_INPUT_1;
 
+    // 選択ボタン
     static const int kSelectKey             = KEY_INPUT_RETURN;
     static const int kSelectMouseButton     = MOUSE_INPUT_1;
+
+    static constexpr int kSelectUpKey[kSelectUpSize] = { KEY_INPUT_UP,KEY_INPUT_W };
+    static constexpr int kSelectDownKey[kSelectDownSize] = { KEY_INPUT_DOWN,KEY_INPUT_S };
+    static constexpr int kSelectRightKey[kSelectRightSize] = { KEY_INPUT_RIGHT,KEY_INPUT_D };
+    static constexpr int kSelectLeftKey[kSelectLeftSize] = { KEY_INPUT_LEFT,KEY_INPUT_A };
 };
 
 struct PadConfig
@@ -53,4 +63,18 @@ struct PadConfig
     static const int kSwitchWarpRodButton   = XINPUT_BUTTON_Y;
     static const int kSwitchBatButton       = XINPUT_BUTTON_X;
     static const int kSwitchDashHoopButton  = XINPUT_BUTTON_B;
+
+    // 選択ボタン
+    static const int kSelectButton          = XINPUT_BUTTON_A;
+    static const int kSelectCancelButton    = XINPUT_BUTTON_B;
+
+    static const int kSelectUpButton        = XINPUT_BUTTON_DPAD_UP;
+    static const int kSelectDownButton      = XINPUT_BUTTON_DPAD_DOWN;
+    static const int kSelectRightButton     = XINPUT_BUTTON_DPAD_RIGHT;
+    static const int kSelectLeftButton      = XINPUT_BUTTON_DPAD_LEFT;
+
+    static const int kSelectUpStick         = 1000;
+    static const int kSelectDownStick       = -1000;
+    static const int kSelectLeftStick       = -1000;
+    static const int kSelectRightStick      = 1000;
 };

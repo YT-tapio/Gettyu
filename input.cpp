@@ -181,6 +181,94 @@ float Input::MakePercent(float value, float min, float max)
 
 }
 
+
+bool Input::CheckPadNum(short pad_num, int num, bool plus)
+{
+
+	if (plus)
+	{
+		if (pad_num >= num)
+		{
+			return TRUE;
+		}
+		else
+		{
+			return FALSE;
+		}
+	}
+	else
+	{
+		//パッド上では低い方がスティックを倒している
+		if (pad_num <= num)
+		{
+			return TRUE;
+		}
+		else
+		{
+			return FALSE;
+		}
+
+
+	}
+
+
+
+	return FALSE;
+}
+
+
+bool Input::CheckControlPadNum(int type,int control, int num, bool plus)
+{
+
+	if (type == StickType::kLeft)
+	{
+		switch (control)
+		{
+		case Control::kX:
+
+			return CheckPadNum(now_type_state_.pad.ThumbLX, num, plus);
+
+			break;
+
+		case Control::kY:
+
+			return CheckPadNum(now_type_state_.pad.ThumbLY, num, plus);
+
+			break;
+
+		default:
+			printfDx("引数おかしい\n");
+			break;
+		}
+
+	}
+	else if(type == StickType::kRight)
+	{
+		switch (control)
+		{
+		case Control::kX:
+
+			return CheckPadNum(now_type_state_.pad.ThumbRX, num, plus);
+
+			break;
+
+		case Control::kY:
+
+			return CheckPadNum(now_type_state_.pad.ThumbRY, num, plus);
+
+			break;
+
+		default:
+			printfDx("引数おかしい\n");
+			break;
+		}
+
+	}
+
+	
+	return FALSE;
+}
+
 /*-----------public-----------*/
 
 void Input::Awake(const int num)
@@ -198,6 +286,9 @@ void Input::Update()
 
 	before_type_state_.left_stick_rad = now_type_state_.left_stick_rad;
 	before_type_state_.right_stick_rad = now_type_state_.right_stick_rad;
+
+	before_type_state_.mouse_x = now_type_state_.mouse_x;
+	before_type_state_.mouse_y = now_type_state_.mouse_y;
 
 	GetHitKeyStateAll(now_type_state_.key);
 
@@ -529,64 +620,44 @@ float Input::GetMousePercent(int control)
 	return percent_num;
 }
 
+bool Input::GetPadMove(int type, int control, int num)
+{
+	bool plus = TRUE;
+	if (num < 0)
+	{
+		plus = FALSE;
+	}
+
+	
+	return CheckControlPadNum(type, control, num, plus);
+
+}
+
+bool Input::GetMouseMove()
+{
+	const int kMinMove = 1;
+	//差をみる
+	int x_sub = abs(now_type_state_.mouse_x - before_type_state_.mouse_x);
+	int y_sub = abs(now_type_state_.mouse_y - before_type_state_.mouse_y);
+
+
+	if (x_sub > kMinMove)
+	{
+		return TRUE;
+	}
+
+	if (y_sub > kMinMove)
+	{
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
 float Input::GetStickSpin(int type)
 {
 
-	/*
-	//余弦定理によってcosθを取得し、acosfによって角度を求める
-
-	//二辺のVECTORを用意する
-	VECTOR center_to_before_velocity = VGet(0.f, 0.f, 0.f);		//中心からbeforeの距離を求める変数
-	VECTOR center_to_now_velocity    = VGet(0.f, 0.f, 0.f);		//中心からnowの距離を求める変数
-
-	if (type == StickType::kLeft)
-	{
-		//左スティックの回転量を取得
-		center_to_before_velocity.x = before_type_state_.pad.ThumbLX;
-		center_to_before_velocity.y = before_type_state_.pad.ThumbLY;
-
-		center_to_now_velocity.x    = now_type_state_.pad.ThumbLX;
-		center_to_now_velocity.y    = now_type_state_.pad.ThumbLY;
-	}
-	else if (type == StickType::kRight)
-	{
-		//右スティックの回転量を取得
-		center_to_before_velocity.x = before_type_state_.pad.ThumbRX;
-		center_to_before_velocity.y = before_type_state_.pad.ThumbRY;
-
-		center_to_now_velocity.x    = now_type_state_.pad.ThumbRX;
-		center_to_now_velocity.y    = now_type_state_.pad.ThumbRY;
-	}
-	else
-	{
-		printfDx("error\n");
-	}
-
-
-	//三角形を作ります
-	//今2辺作れている
-
-	//θの対になる辺のVECTORを用意
-	// VSubで用意する
-	VECTOR opposite = VSub(center_to_now_velocity, center_to_before_velocity);
-
-	//3辺のサイズを取得
-	float center_to_before_size		= VSize(center_to_before_velocity);
-	float center_to_now_size		= VSize(center_to_now_velocity);
-	float opposite_size				= VSize(opposite);
-
-	//ここから余弦定理の出番です
-	//余弦定理
-	//cosC = a^2 + b^2 - c^2 / 2 * a * b
-
-	//余弦定理の結果を入れておく
-	float cos_num = (center_to_before_size * center_to_before_size) + (center_to_now_size * center_to_now_size)
-		- (opposite_size * opposite_size) / 2 * center_to_before_size * center_to_now_size;
-
-	//アークコサインにradの値を返してもらう
-
-	*/
-	//float now_rad = GetPadStickRad(StickType::kRight);
+	
 	if (type == StickType::kRight)
 	{
 		

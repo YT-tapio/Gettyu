@@ -489,6 +489,9 @@
     <ClCompile Include="button_manager.cpp">
       <Filter>ソース ファイル\button</Filter>
     </ClCompile>
+    <ClCompile Include="button_selecter.cpp">
+      <Filter>ソース ファイル\button</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="keyconfig.h">
@@ -735,6 +738,12 @@
       <Filter>ソース ファイル</Filter>
     </ClInclude>
     <ClInclude Include="button_manager.h">
+      <Filter>ソース ファイル\button</Filter>
+    </ClInclude>
+    <ClInclude Include="button_selecter.h">
+      <Filter>ソース ファイル\button</Filter>
+    </ClInclude>
+    <ClInclude Include="select_type.h">
       <Filter>ソース ファイル\button</Filter>
     </ClInclude>
   </ItemGroup>
