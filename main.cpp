@@ -12,6 +12,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     scene_manager->Update();
     
     scene_manager->End();
-
+    DxLib_End();
     return 0;
 }
