@@ -9,7 +9,7 @@ class SceneManager
 {
 private:
 
-	std::shared_ptr<BaseScene>now_scene_;
+	std::shared_ptr<BaseScene> now_scene_;
 	SceneName now_scene_name_;
 
 
@@ -21,4 +21,5 @@ public:
 
 	void Update();
 
+	void End();
 };

@@ -41,7 +41,6 @@ Animation::~Animation()
     //アニメーションのデータ解放
     for (auto& anim : animation_data_)
     {
-
         MV1DeleteModel(anim.animation_handle);
     }
 

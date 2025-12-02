@@ -39,7 +39,11 @@ Button::Button(const VECTOR pos,const float width,const float height,const char*
 
 Button::~Button()
 {
-	DeleteGraph(model_);
+	if (model_ != -1)
+	{
+		DeleteGraph(model_);
+		model_ = -1;
+	}
 }
 
 /*private----------------------------------*/
@@ -171,19 +175,19 @@ void Button::Update(const int& num)
 	{
 	case ButtonState::kDefault:
 		IsOnMouse(num);
-		printfDx("Defaults\n");
+		//printfDx("Defaults\n");
 		debug_color_ = kWhite;
 		break;
 
 	case ButtonState::kSelect:
 		SelectUpdate();
-		printfDx("Select\n");
+		//printfDx("Select\n");
 		debug_color_ = kRightGray;
 		break;
 
 	case ButtonState::kPressed:
 		PressedUpdate();
-		printfDx("Pressed\n");
+		//printfDx("Pressed\n");
 		debug_color_ = kGray;
 		break;
 

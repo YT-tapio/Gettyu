@@ -214,7 +214,7 @@ public:
 
 	/*----------virttual_camera‚ÌInit-----------*/
 
-
+	void SphereInit();
 
 	void GetInit(const VECTOR& camera_pos, const VECTOR& enemy_pos);
 

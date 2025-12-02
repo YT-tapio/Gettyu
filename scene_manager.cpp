@@ -64,7 +64,7 @@ SceneManager::SceneManager()
 
 SceneManager::~SceneManager()
 {
-
+    
 }
 
 void SceneManager::Update()
@@ -129,8 +129,13 @@ void SceneManager::Update()
 
 
     }
+    
+    now_scene_ = nullptr;
 
+}
+
+void SceneManager::End()
+{
     Effkseer_End();
     DxLib_End();
-    
 }

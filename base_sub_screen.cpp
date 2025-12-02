@@ -16,7 +16,7 @@ BaseSubScreen::BaseSubScreen(const VECTOR& pos,const int screen_width, const int
 
 BaseSubScreen::~BaseSubScreen()
 {
-
+	DeleteGraph(handle_);
 }
 
 

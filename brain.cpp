@@ -1,5 +1,4 @@
 
-
 #include"DxLib.h"
 #include"player.h"
 #include"weapon_base.h"
@@ -323,6 +322,14 @@ void Brain::Init(const VECTOR& camera_pos,const VECTOR& player_pos)
 }
 
 
+void Brain::SphereInit()
+{
+	// もともとのカメラの位置に戻る
+
+
+
+}
+
 void Brain::GetInit(const VECTOR& camera_pos,const VECTOR& enemy_pos)
 {
 	// ゲット時のinitを行います
@@ -390,7 +397,7 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 	//何もないとき(kNothing)は、Trackingに切り替える
 	if (camera_name_ == VirtualCameraName::kNothing) 
 	{ 
-		camera_name_ = tracking_camera_->GetCameraName();
+		camera_name_ = sphere_camera_->GetCameraName();
 
 		if (before_camera_name == VirtualCameraName::kNothing)
 		{
@@ -418,7 +425,7 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 			{
 			case SituationName::kNothing:
 
-				camera_name_ = VirtualCameraName::kTracking;
+				camera_name_ = VirtualCameraName::kSphere;
 
 				break;
 
@@ -491,6 +498,9 @@ void Brain::ChangeCameraInit(int& before_camera_name,const VECTOR& camera_pos,st
 		{
 		case VirtualCameraName::kSphere:
 
+
+			//sphere_initを作る
+
 			next_pos_			= sphere_camera_->GetPos();
 			is_target_blend_	= TRUE;
 			sphere_camera_->SetTargetPos(player->GetCenterPos());
@@ -547,19 +557,7 @@ void Brain::ChangeCameraInit(int& before_camera_name,const VECTOR& camera_pos,st
 				target_velocity_ = VSub(tracking_camera_->GetTargetPos(), now_target_pos);
 				//is_blend_tracking_ = TRUE;
 				is_init = TRUE;
-				/*
-				next_pos_ = tracking_camera_->GetPos();
-				tracking_camera_->SetTargetPos(player->GetCenterPos());
-				start_target_pos_ = now_target_pos;
-				next_target_pos_ = player->GetCenterPos();
-
-				is_blend_ = FALSE;
-				is_target_blend_ = FALSE;
-				//velocityの調整
-				velocity_ = VSub(next_pos_, camera_pos);
-				target_velocity_ = VSub(tracking_camera_->GetTargetPos(), now_target_pos);
-				is_init = TRUE;
-				*/
+				
 			}
 			else 
 			{

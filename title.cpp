@@ -23,8 +23,8 @@ Title::~Title()
 
 void Title::Init()
 {
-	selecter_ = std::make_shared<ButtonSelecter>();
 	SetMouseDispFlag(TRUE);
+	selecter_ = std::make_shared<ButtonSelecter>();
 	buttons_.push_back(std::make_shared<Button>(VectorAssistant::Get2DVec(100.f, 200.f), 100, 100, "", 0,&start_));
 	buttons_.push_back(std::make_shared<Button>(VectorAssistant::Get2DVec(250.f, 200.f), 100, 100, "", 1, &flag1_));
 	buttons_.push_back(std::make_shared<Button>(VectorAssistant::Get2DVec(400.f, 200.f), 100, 100, "", 2, &flag2_));

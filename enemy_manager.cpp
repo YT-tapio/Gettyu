@@ -16,6 +16,8 @@ EnemyManager::EnemyManager()
 EnemyManager::~EnemyManager()
 {
 	
+	enemies_.clear();
+
 	delete get_effect_;
 	delete got_effect_;
 }
@@ -35,12 +37,6 @@ void EnemyManager::Init()
 
 	enemies_.push_back(std::make_shared<NormalEnemy>(normal_model_path,
 		VGet(20.f, 3.f, 5.f), scale, VGet(0.f, static_cast<float>((M_PI / 180) * 90), 0.0f), get_effect_, got_effect_, 0.5f, 2.5f, AlertState::kHigh, static_cast<float>((M_PI / 180) * 100)));
-	
-	
-	
-
-	
-	
 
 
 	

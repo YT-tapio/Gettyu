@@ -65,6 +65,7 @@ Player::Player(VECTOR pos, int pad_num,int div, float r, float vertical_num)
 
 Player::~Player()
 {
+	MV1DeleteModel(model_);
 	delete weapon_;
 	delete super_attack_;
 	delete super_weapon_spin_effect_;
