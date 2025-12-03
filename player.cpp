@@ -4,7 +4,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-//#include"mixamo_fram.h"
+//#include"mixamo_frame.h"
 #include"player.h"
 #include"camera.h"
 #include"brain.h"
@@ -24,7 +24,6 @@
 #include"collision_capsule.h"
 #include"vector_assistant.h"
 
-
 Player::Player(VECTOR pos, int pad_num,int div, float r, float vertical_num)
 	: model_(MV1LoadModel(kModelPath))
 	, pad_input_num_(pad_num)
@@ -34,33 +33,29 @@ Player::Player(VECTOR pos, int pad_num,int div, float r, float vertical_num)
 	, before_rot_(0.0f)
 	, now_state_(PlayerState::kStand)
 {
-	capsule_.r = r;
-	capsule_.div_num = div;
-	capsule_.vertical_num = vertical_num;
-	is_move_ = FALSE;
-	is_camera_blend_ = FALSE;
-	is_attack_ = FALSE;
-	is_super_attack_ = FALSE;
-	is_switch_weapon_ = FALSE;
-	animation_ = std::make_shared<Animation>();
+	capsule_.r				= r;
+	capsule_.div_num		= div;
+	capsule_.vertical_num	= vertical_num;
+	is_move_				= FALSE;
+	is_camera_blend_		= FALSE;
+	is_attack_				= FALSE;
+	is_super_attack_		= FALSE;
+	is_switch_weapon_		= FALSE;
+	animation_				= std::make_shared<Animation>();
+	super_attack_			= new SuperAttack(VGet(0, 0, 0), "");
 	Init(pos);
-	super_attack_ = new SuperAttack(VGet(0, 0, 0), "");
 
-	VECTOR coll_start_pos	= VAdd(pos, VGet(0.f, r, 0.f));
-	VECTOR coll_end_pos		= VAdd(coll_start_pos, VGet(0.f, vertical_num, 0.f));
+	VECTOR capsule_start_pos	= VAdd(pos, VGet(0.f, r, 0.f));
+	VECTOR capsule_end_pos		= VAdd(capsule_start_pos, VGet(0.f, vertical_num, 0.f));
 
-	coll_ = std::make_shared<CollisionCapsule>(coll_start_pos, coll_end_pos, r);
+	coll_ = std::make_shared<CollisionCapsule>(capsule_start_pos, capsule_end_pos, r);
 
-	MATRIX pos_matrix = MGetTranslate(pos_);
+	MATRIX pos_matrix		= MGetTranslate(pos_);
+	MATRIX rotation_matrix	= MGetRotY(rotation_.y);
 
-	MATRIX rotation_matrix = MGetRotY(rotation_.y);
-
-	model_matrix_ = MMult(MMult(
-		MGetRotY(rotation_.y), MGetScale(VGet(0.01f, 0.01f, 0.01f))), pos_matrix);
-
+	model_matrix_ = MMult(MMult(MGetRotY(rotation_.y), MGetScale(VGet(0.01f, 0.01f, 0.01f))), pos_matrix);
 
 	MV1SetMatrix(model_, model_matrix_);
-
 }
 
 Player::~Player()
@@ -77,7 +72,6 @@ Player::~Player()
 
 void Player::MakeTargetRot(const VECTOR& target_pos, float& target_rot)
 {
-	
 	//新しいVECTORを作る(rotation)
 	VECTOR rot_vec = VGet(target_pos.x - pos_.x,0.0f,target_pos.z - pos_.z);
 
@@ -88,30 +82,23 @@ void Player::MakeTargetRot(const VECTOR& target_pos, float& target_rot)
 	{
 		if (rot_vec.z > 0.0f)
 		{
-			target_rot = static_cast<float>((M_PI / 180) * 90);
+			target_rot = (DX_PI_F / 180.f) * 90.f;
 		}
 		else
 		{
-			target_rot = -1 * (static_cast<float>((M_PI / 180) * 90));
+			target_rot = -1 * (DX_PI_F / 180.f) * 90.f;
 		}
-		
 	}
 	else
 	{
-		tan_num = rot_vec.z / rot_vec.x;
-		target_rot = atanf(tan_num);
+		tan_num		= rot_vec.z / rot_vec.x;
+		target_rot	= atanf(tan_num);
 	}
-	
-	
-	///printfDx("%f", target_rot);
-
-
 }
 
 
 bool Player::SuperAttackCondition()
 {
-
 	if (!(super_attack_->GetIsReady()))
 	{
 		return FALSE;
@@ -137,8 +124,6 @@ bool Player::SuperAttackCondition()
 		return FALSE;
 	}
 
-
-
 	if (!(Input::GetInstance().CheckInputPadButton(PadConfig::kSuperAttackButton) == InputState::kPush ||
 		Input::GetInstance().CheckInputMouse(KeyConfig::kSuperAttackKey) == InputState::kPush))
 	{
@@ -150,10 +135,7 @@ bool Player::SuperAttackCondition()
 
 void Player::CheckIsGround(Stage& stage)
 {
-
-	is_ground_ = !stage.CheckDownColl(coll_);
-
-	
+	is_ground_ = !stage.CheckDownColl(coll_);	
 
 	if (is_ground_)
 	{
@@ -161,45 +143,42 @@ void Player::CheckIsGround(Stage& stage)
 	}
 }
 
+void Player::ClearUpdate()
+{
+
+}
+
 /*------------------------public---------------------------*/
 
 void Player::Init(VECTOR pos)
 {
-	
-	
 	now_type_ = AnimationType::kIdle;
 
 	//animation_->Attach(now_type_);
 
-	before_type_ = AnimationType::kNothing;
+	before_type_		= AnimationType::kNothing;
 	before_before_type_ = AnimationType::kNothing;
 
-	//int
 	frame_num_ = 0;
 
-	//float
-	pos_ = pos;
+	pos_		= pos;
 	fall_speed_ = 0.0f;
-	velocity_ = VGet(0, 0, 0);
-	direction_ = VGet(0, 0, 0);
-	rotation_ = VGet(0, 0, 0);
+	velocity_	= VGet(0, 0, 0);
+	direction_	= VGet(0, 0, 0);
+	rotation_	= VGet(0, 0, 0);
 	before_rot_ = 0.0f;
 
-
-	//bool
 	is_ground_ = TRUE;
 	is_target_ = FALSE;
 	
 	now_weapon_name_ = WeaponName::kBat;
 	AddAnim();
 	AttachWeapon(now_weapon_name_);
-
 }
 
 
 void Player::Draw()
 {
-
 	//キャラクター表示
 	//MV1SetDifColorScale(model_, GetColorF(1.0f, 0.0f, 0.0f, 1.0f));
 	MV1DrawModel(model_);
@@ -209,17 +188,12 @@ void Player::Draw()
 		weapon_->Draw(delta_time_);
 		//Situation::GetInstance().SetGetSituationPos(weapon_->GetCollisionData().pos);
 	}
-
-	
-
 }
-
 
 void Player::Debug()
 {
 	if (Debug::GetInstance().GetDisp())
 	{
-		
 		coll_->Debug();
 
 		//
@@ -235,14 +209,12 @@ void Player::Debug()
 		Debug::GetInstance().Add();
 
 		super_attack_->Debug();
-
 	}
 }
 
 
 void Player::AddAnim()
 {
-
 	/*--キャラクターのダウンロード--*/
 
 	
@@ -258,31 +230,24 @@ void Player::AddAnim()
 	AnimationData jumping_down;
 	AnimationData sword_slash_attack;
 	AnimationData super_attack_first;
-
-	
-
+	AnimationData clear_dance;
 
 
-	char idle_path[256] = "data/animation/Idle.mv1";
-	char walk_path[256] = "data/animation/Walking.mv1";
-	char slow_run_path[256] = "data/animation/Slow_Run.mv1";
-	char fast_run_path[256] = "data/animation/Fast_Run.mv1";
-	char jumping_up_path[256] = "data/animation/Jumping_Up.mv1";
+	char idle_path[256]			= "data/animation/Idle.mv1";
+	char walk_path[256]			= "data/animation/Walking.mv1";
+	char slow_run_path[256]		= "data/animation/Slow_Run.mv1";
+	char fast_run_path[256]		= "data/animation/Fast_Run.mv1";
+	char jumping_up_path[256]	= "data/animation/Jumping_Up.mv1";
 	char jumping_down_path[256] = "data/animation/Jumping_Down.mv1";
-	char sword_slash_path[256] = "data/animation/SwordSlash.mv1";
+	char sword_slash_path[256]	= "data/animation/SwordSlash.mv1";
 	char super_attack_path[256] = "data/animation/Standing_2H_Cast_Spell_01.mv1";
+	char clear_dance_path[256]	= "data/animation/.mv1";
 
 	//アニメーションのロード
 
-	Load(idle, idle_path,
-		AnimationType::kIdle, model_, 0, 3.0f);
-
-	Load(walk, walk_path,
-		AnimationType::kWalk, model_, 0, 3.0f);
-
-	Load(slow_run, slow_run_path,
-		AnimationType::kSlowRun, model_, 0, 3.0f);
-
+	Load(idle, idle_path		, AnimationType::kIdle	 , model_, 0, 3.0f);
+	Load(walk, walk_path		, AnimationType::kWalk	 , model_, 0, 3.0f);
+	Load(slow_run, slow_run_path, AnimationType::kSlowRun, model_, 0, 3.0f);
 	Load(fast_run, fast_run_path,
 		AnimationType::kFastRun, model_, 0, 3.0f);
 
@@ -298,6 +263,9 @@ void Player::AddAnim()
 	Load(super_attack_first, super_attack_path,
 		AnimationType::kSuperAttackFirst, model_, 0, 3.0f);
 
+	Load(clear_dance, clear_dance_path,
+		AnimationType::kClearDance, model_, 0, 3.0f);
+
 	//アニメーションを追加
 	animation_->Add(idle);
 	animation_->Add(walk);
@@ -307,11 +275,11 @@ void Player::AddAnim()
 	animation_->Add(jumping_down);
 	animation_->Add(sword_slash_attack);
 	animation_->Add(super_attack_first);
+	animation_->Add(clear_dance);
 }
 
 void Player::SetDeltaTime(const float& delta_time)
 {
-
 	//ゲット時はデルタタイムをゼロにする
 	if (Situation::GetInstance().GetSituationName() == SituationName::kGet)
 	{
@@ -329,10 +297,7 @@ void Player::SetDeltaTime(const float& delta_time)
 		
 	}
 	super_weapon_spin_effect_->SetDeltaTime(delta_time);
-	
 }
-
-
 
 
 void Player::AttachWeapon(WeaponName name)
@@ -341,8 +306,6 @@ void Player::AttachWeapon(WeaponName name)
 	{
 		weapon_ = nullptr;
 	}
-	
-
 
 	MATRIX pos_matrix = MGetTranslate(pos_);
 	MATRIX rotation_matrix = MGetRotY(rotation_.y);
@@ -357,48 +320,47 @@ void Player::AttachWeapon(WeaponName name)
 	MATRIX frame_mat = 
 		MV1GetFrameLocalWorldMatrix(model_, frame_num_);
 
-
-	
-
 	//名前によってかえる
-
 	switch (name)
 	{
-
 	case WeaponName::kBat:
-
 		weapon_ = new Bat();
-
 		break;
 
 	case WeaponName::kBugNet:
-
 		weapon_ = new WarpRod();
-
 		break;
 
 	case WeaponName::kWizardStaff:
-
 		weapon_ = new WizardStaff();
-
 		break;
 	}
 
 	now_weapon_name_ = name;
 	WeaponChecker::GetInstance().SetWeaponName(now_weapon_name_);
 
-
 	if (weapon_ != nullptr)
 	{
 		weapon_->SetModelMatrix(frame_mat);
 		weapon_->SetPos(MV1GetFramePosition(model_, frame_num_));
 	}
-	
 }
 
 
 void Player::Update(Stage& stage,float target_rot)
 {
+	if (Situation::GetInstance().GetSituationName() == SituationName::kClear)
+	{
+		// クリア判定になったらアニメーションを違うのに切り替える
+		ClearUpdate();
+
+		return;
+	}
+	else
+	{
+
+	}
+
 	VECTOR camera_pos = Camera::GetInstance().GetPos();
 	//サウンドのリセット
 	sound_vibration_->Reset();
@@ -435,10 +397,10 @@ void Player::Update(Stage& stage,float target_rot)
 		pos_ = VAdd(pos_, velocity_);
 		//当たり判定の更新
 		coll_->Update(velocity_);
-		capsule_.start_pos = pos_;
-		capsule_.start_pos.y += capsule_.r;
-		capsule_.end_pos = capsule_.start_pos;
-		capsule_.end_pos.y += capsule_.vertical_num;
+		capsule_.start_pos		= pos_;
+		capsule_.start_pos.y	+= capsule_.r;
+		capsule_.end_pos		= capsule_.start_pos;
+		capsule_.end_pos.y		= capsule_.vertical_num;
 	}
 
 	//ここで位置の更新もしておく
@@ -446,8 +408,8 @@ void Player::Update(Stage& stage,float target_rot)
 	
 	if (Situation::GetInstance().GetSituationName() != SituationName::kGet)
 	{
-		MATRIX pos_matrix = MGetTranslate(pos_);
-		MATRIX rotation_matrix = MGetRotY(rotation_.y);
+		MATRIX pos_matrix		= MGetTranslate(pos_);
+		MATRIX rotation_matrix	= MGetRotY(rotation_.y);
 
 		model_matrix_ = MMult(MMult(
 			MGetRotY(rotation_.y), MGetScale(VGet(0.01f, 0.01f, 0.01f))), pos_matrix);
@@ -463,16 +425,11 @@ void Player::Update(Stage& stage,float target_rot)
 			weapon_->SetModelMatrix(test);
 			weapon_->SetPos(MV1GetFramePosition(model_, frame_num_));
 		}
-
 	}
-
-	
-
 }
 
 void Player::InputMovement(const VECTOR& pos,float& rotation)
 {
-	
 	VECTOR velocity = { 0.0f,0.0f,0.0f };
 
 	float speed = 0.0f;
@@ -482,8 +439,6 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 	//direction_ = VGet(0, 0, 0);
 
 	/*(PadConfig::kLeftButton)*/
-
-	
 
 	CheckDirection(pos, rotation);
 
@@ -526,8 +481,6 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 		{
 			
 		}
-		
-
 	}
 	
 	velocity = VScale(direction_, speed);
@@ -535,24 +488,18 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 	{
 		direction_ = VNorm(velocity);
 	}
-	
 
 	JumpAction(velocity);
 
-
 	if (is_super_attack_)
-	{
-		
+	{	
 		velocity_ = VGet(0.f, 0.f, 0.f);
 	}
 
 	velocity_ = VScale(velocity, delta_time_);
-	
 
 	if (!is_ground_)
 	{
-		
-
 		if (velocity_.y > 0.0f)
 		{
 			now_type_ = AnimationType::kJumpUp;
@@ -567,12 +514,7 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 		{
 			now_type_ = before_type_;
 		}
-
-
-		
 	}
-
-
 
 	//必殺技(カメラが動いてない)
 	//攻撃
@@ -611,9 +553,7 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 			now_type_ = AnimationType::kIdle;
 			now_state_ = PlayerState::kStand;
 		}
-		
 	}
-	
 
 	if (before_type_ > AnimationType::kAttack)
 	{
@@ -627,8 +567,6 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 			now_type_ = AnimationType::kIdle;
 		}
 	}
-
-	
 
 	//武器切り替えのやーつ
 	if (!(now_type_ > AnimationType::kAttack) && !is_super_attack_)
@@ -646,18 +584,12 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 		{
 			next_name = WeaponName::kBat;
 		}
-		
-
 
 		if (now_weapon_name_ != next_name && next_name != WeaponName::kNothing)
 		{
 			AttachWeapon(next_name);
 		}
-
 	}
-
-	
-
 
 	/*----------------武器が吸引機のときはカメラを適応させる---------------*/
 
@@ -665,17 +597,14 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 	{
 		if (now_weapon_name_ >= WeaponName::kWizardStaff)
 		{
-			Situation::GetInstance().SetSituation(SituationName::kVacuum);
+			Situation::GetInstance().SetSituationName(SituationName::kVacuum);
 		}
 		else
 		{
-			Situation::GetInstance().SetSituation(SituationName::kNothing);
+			Situation::GetInstance().SetSituationName(SituationName::kNothing);
 			is_vacuum_ = FALSE;
 		}
 	}
-
-	
-
 	
 	if (before_type_ != now_type_)
 	{
@@ -717,15 +646,12 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 
 
 void Player::CheckDirection(const VECTOR& pos, float& rotation)
-{
-	
+{	
 	float constant = 0.0f;
 
 	MakeLine(constant, pos);
 
 	VECTOR direction = VGet(0, 0, 0);
-
-
 
 	//どちらが前かの判別
 	//原点からの距離を見る
@@ -857,7 +783,6 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 		{
 			direction_ = VNorm(direction_);
 		}
-
 	}
 
 	/*---棒を振る--*/
@@ -869,7 +794,6 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 		//元から振っているときはダメにする
 		if (is_ground_ && !is_attack_ && !rejected)
 		{
-			
 			target_rot_ = rotation + Input::GetInstance().GetPadStickRad(StickType::kRight);
 			now_type_ = AnimationType::kSwordSlash;
 			now_state_ = PlayerState::kAttack;
@@ -887,7 +811,6 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 			before_rot_ = target_rot_;
 			rejected = TRUE;
 		}
-		
 	}
 	else
 	{
@@ -918,7 +841,6 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 
 	//printfDx("%f\n", rotation);
 	CheckReverseRot(rotation_.y, target_rot_);
-	
 }
 
 
@@ -973,9 +895,7 @@ void Player::CheckReverseRot(float& now_rot, float target_rot)
 				{
 					now_rot = target_rot;
 				}
-
 			}
-
 		}
 		else  //+なら
 		{
@@ -994,7 +914,6 @@ void Player::CheckReverseRot(float& now_rot, float target_rot)
 				{
 					now_rot = target_rot;
 				}
-
 			}
 		}
 	}
@@ -1019,11 +938,7 @@ void Player::CheckReverseRot(float& now_rot, float target_rot)
 			}
 		}
 	}
-	
-
 }
-
-
 
 void  Player::JumpAction(VECTOR& velocity)
 {
@@ -1033,10 +948,8 @@ void  Player::JumpAction(VECTOR& velocity)
 	//地面にいるかの判定
 	//is_ground_ = CheckGround();
 
-
 	if (is_ground_)
 	{
-
 		if (Input::GetInstance().CheckInputKey(KeyConfig::kJumpKey) == InputState::kPush ||
 			Input::GetInstance().CheckInputPadButton(PadConfig::kJumpButton) == InputState::kPush)
 		{
@@ -1053,8 +966,6 @@ void  Player::JumpAction(VECTOR& velocity)
 	
 	VECTOR fall_velocity = VGet(0, fall_speed_, 0);
 	velocity = VAdd(velocity, fall_velocity);
-
-
 }
 
 
@@ -1064,7 +975,6 @@ bool Player::CheckGround()
 	{
 		fall_speed_ = 0.0f;
 		return TRUE;
-		
 	}
 	else
 	{
@@ -1089,16 +999,12 @@ void Player::TestFunc()
 {
 	frame_num_ = MV1GetFrameNum(model_);
 
-
 	for (int i = 0; i < frame_num_; i++)
 	{
 		// フレーム名の描画
 		DrawFormatString(0, i * 15, GetColor(255, 255, 255), "Name         %s", MV1GetFrameName(model_, i));
 	}
-
-
 }
-
 
 void Player::MakeLine(float& constant, const VECTOR& pos)
 {
@@ -1113,20 +1019,16 @@ void Player::MakeLine(float& constant, const VECTOR& pos)
 	{
 		constant = distance.z;
 	}
-
 }
-
 
 void Player::IsHitEnemy(EnemyBase* enemy, bool& got)
 {
-	
 	//ここでweaponのアップデートをする
 
 	if (weapon_->GetName() == WeaponName::kWizardStaff)
 	{
 		//回しているradの値を受け取る
 		float stick_spin_rad = Input::GetInstance().GetStickSpin(StickType::kRight);
-
 
 		if (stick_spin_rad != 0.f && (Input::GetInstance().GetPadStickVertical(StickType::kRight) > kPadSpinMin))
 		{
@@ -1143,12 +1045,11 @@ void Player::IsHitEnemy(EnemyBase* enemy, bool& got)
 			super_weapon_spin_effect_->End();
 			if (Situation::GetInstance().GetSituationName() == SituationName::kVacuum)
 			{
-				Situation::GetInstance().SetSituation(SituationName::kNothing);
+				Situation::GetInstance().SetSituationName(SituationName::kNothing);
 			}
 			is_vacuum_ = FALSE;
 		}
 	}
-
 
 	//他のものが攻撃にあたっている時は処理を回さない
 
@@ -1157,8 +1058,6 @@ void Player::IsHitEnemy(EnemyBase* enemy, bool& got)
 		// 武器と敵の当たり判定をします
 		if (SphereCapsuleCollision(weapon_->GetCollisionData(), enemy->GetCollisionData()))
 		{
-			
-			
 			//武器が違うときは違う結果にしたい
 
 			switch (weapon_->GetName())
@@ -1170,7 +1069,6 @@ void Player::IsHitEnemy(EnemyBase* enemy, bool& got)
 				printfDx("に当たっています\n");
 
 				//ここでsituationを切り替える
-
 
 				break;
 
@@ -1184,7 +1082,7 @@ void Player::IsHitEnemy(EnemyBase* enemy, bool& got)
 				enemy->SetPosIsGot(weapon_->GetCollisionData().pos);
 				
 				//ここでsituationを切り替える(getにする)
-				Situation::GetInstance().SetSituation(SituationName::kGet);
+				Situation::GetInstance().SetSituationName(SituationName::kGet);
 				Situation::GetInstance().SetGetSituationPos(enemy->GetCollisionData().pos);
 				enemy->SetGetEffectPos(enemy->GetPos());
 				enemy->SetGotEffectPos(enemy->GetPos());
@@ -1201,8 +1099,6 @@ void Player::IsHitEnemy(EnemyBase* enemy, bool& got)
 
 
 				break;
-
-
 			}
 
 			// 当たっているときにカメラの処理も一緒にしたい
@@ -1219,7 +1115,6 @@ void Player::IsHitEnemy(EnemyBase* enemy, bool& got)
 	{
 		//printfDx("必殺weapon");
 	}
-	
 }
 
 void Player::Vibration(const VibrationData& data)
@@ -1228,7 +1123,6 @@ void Player::Vibration(const VibrationData& data)
 	// パッドしんどう
 	StartJoypadVibration(Input::GetInstance().GetPadNom(), data.power, data.time, -1);
 }
-
 
 MATRIX Player::GetFrameMatrix()
 {
@@ -1239,4 +1133,3 @@ VECTOR Player::GetWeaponPos()
 {
 	return weapon_->GetPos();
 }
-

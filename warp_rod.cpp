@@ -17,7 +17,7 @@ WarpRod::WarpRod()
 
 WarpRod::~WarpRod()
 {
-
+	MV1DeleteModel(model_);
 }
 
 void WarpRod::Update(EnemyBase* enemy, const float spin_rad)

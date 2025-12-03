@@ -402,16 +402,15 @@ VECTOR Stage::CheckCollision(std::shared_ptr<CollisionBase> object_coll, const V
 	//壁に当たっているのを検知する
 	bool is_hit_wall = FALSE;
 
-
 	// wall_num_,floor_num_の初期化
-	wall_num_ = 0;
-	floor_num_ = 0;
+	wall_num_	= 0;
+	floor_num_	= 0;
 
 	// 今の当たり判定は未来のカプセルのとこだけになっているので、カプセルを大ききくしたやつにする(nowとnextの合計のもの)
 
 	//新しくこいつで当たり判定を行う
-	auto old_coll					= object_coll->Clone();
-	auto next_coll				= object_coll->Clone();
+	auto old_coll	= object_coll->Clone();
+	auto next_coll	= object_coll->Clone();
 
 	next_coll->Update(offset_vel);
 
@@ -421,11 +420,11 @@ VECTOR Stage::CheckCollision(std::shared_ptr<CollisionBase> object_coll, const V
 	VECTOR old_pos			= old_coll->GetPos();
 	VECTOR next_pos			= next_coll->GetPos();
 
-	VECTOR coll_start_pos	= old_coll->GetCenterPos();
-	VECTOR coll_end_pos		= next_coll->GetCenterPos();
+	VECTOR capsule_start_pos	= old_coll->GetCenterPos();
+	VECTOR capsule_end_pos		= next_coll->GetCenterPos();
 	float coll_radius				= old_coll->GetWidth();
 	//当たり判定の検出のカプセルを作る
-	next_to_old_cap_ = std::make_shared<CollisionCapsule>(coll_start_pos, coll_end_pos, coll_radius);
+	next_to_old_cap_ = std::make_shared<CollisionCapsule>(capsule_start_pos, capsule_end_pos, coll_radius);
 
 	// HACK: ステージポリゴンが複数ある場合、ここが繰り返し処理になる
 	{
@@ -460,8 +459,6 @@ VECTOR Stage::CheckCollision(std::shared_ptr<CollisionBase> object_coll, const V
 			}
 
 		}
-		
-		
 
 		//壁と床に分けるのでそれを変えます
 
@@ -503,13 +500,9 @@ VECTOR Stage::CheckCollision(std::shared_ptr<CollisionBase> object_coll, const V
 					VECTOR poly_to_old;			//old
 					VECTOR poly_to_next;
 
-
-
-
 					//正射影ベクトルを出す
 					VECTOR poly_to_old_proj_vec;
 					VECTOR poly_to_next_proj_vec;
-
 
 					//ポリゴンの中点からの距離を見てから、そのあと正射影ベクトルを出す。
 					//センターからの距離
@@ -533,16 +526,15 @@ VECTOR Stage::CheckCollision(std::shared_ptr<CollisionBase> object_coll, const V
 					//　元のposから、offsetした後のposの差を見る
 					offset_vel = VSub(offset_pos, old_pos);
 
-					
 
 					//offset分足したカプセルの座標
 					next_coll = old_coll->Clone();
 					next_coll->Update(offset_vel);
 					next_pos = next_coll->GetPos();
-					coll_end_pos = next_coll->GetCenterPos();
+					capsule_end_pos = next_coll->GetCenterPos();
 
 					//当たり判定検出の位置を更新
-					next_to_old_cap_ = std::make_shared<CollisionCapsule>(coll_start_pos, coll_end_pos, coll_radius);
+					next_to_old_cap_ = std::make_shared<CollisionCapsule>(capsule_start_pos, capsule_end_pos, coll_radius);
 
 					//移動後にもう一度何かと当たっているのかを調べる
 					for (int j = 0; j < hit_dim.HitNum; j++)
@@ -558,22 +550,13 @@ VECTOR Stage::CheckCollision(std::shared_ptr<CollisionBase> object_coll, const V
 
 					}
 
-
 					//全てのポリゴンと当たっていない場合ループ終了
 					if (!is_hit)
 					{
 						break;
 					}
-
-
-
 				}
-
-
-
-
 			}
-
 
 			// 全部のポリゴンで押し出しを試みる前に
 			// 全ての壁ポリゴンと接触しなくなったらループから抜ける
@@ -584,35 +567,9 @@ VECTOR Stage::CheckCollision(std::shared_ptr<CollisionBase> object_coll, const V
 
 		}
 
-
-		
-
-		
-		
-
-		
-
 		// 検出したプレイヤーの周囲のポリゴン情報を開放する
 		MV1CollResultPolyDimTerminate(hit_dim);
 	}
 
-	//next_pos = VAdd(old_pos, offset_vel);
-
-	//printfDx("x:%.2f,y:%.2f,z:%.2f\n", offset_vel.x, offset_vel.y, offset_vel.z);
-
 	return offset_vel;
-
 }
-
-
-
-
-
-/*
-
-
-
-
-
-*/
-

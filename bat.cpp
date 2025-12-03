@@ -17,7 +17,7 @@ Bat::Bat()
 
 Bat::~Bat()
 {
-
+	MV1DeleteModel(model_);
 }
 
 

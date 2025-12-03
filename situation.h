@@ -8,7 +8,8 @@ enum class SituationName
     kNothing,                //何もない
     kGet,                      //ゲット時
     kAttack,                  //
-    kVacuum                 //吸引中
+    kVacuum,                 // 吸引中
+    kClear
 };
 
 //ゲームの今起きている現象を管理する
@@ -45,7 +46,7 @@ public:
     /// 今の状況をセット
     /// </summary>
     /// <param name="num"></param>
-    void SetSituation(SituationName num)
+    void SetSituationName(SituationName num)
     {
         now_situation_ = num;
     }

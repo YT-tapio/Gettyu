@@ -133,6 +133,8 @@ private:
 
 	void CheckIsGround(Stage& stage);
 
+	void ClearUpdate();
+
 public:
 
 

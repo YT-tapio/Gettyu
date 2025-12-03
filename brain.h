@@ -11,21 +11,15 @@
 class Player;
 class Input;
 
-
-
 struct MousePoint
 {
 	int x;
 	int y;
 };
 
-
 class Brain
 {
 private:
-
-	
-	
 
 	const float kMaxMouseDiff = 35.0f;
 
@@ -85,6 +79,9 @@ private:
 	int vibration_count_;
 	int super_attack_vibration_power_;
 
+	float blend_timer_ = 0.f;
+	float blend_timer_max_ = 0.f;
+
 	bool is_change_;
 	bool no_update_;
 	bool is_blend_;			// 座標のブレンド
@@ -117,6 +114,7 @@ private:
 
 	float blend_speed_ = 0.f;
 	float target_blend_speed_ = 10.f;
+	float target_blend_timer_ = 0.f;
 
 	float get_dist_ = 0.f;
 	float offset_line_timer_ = 0.f;
@@ -128,10 +126,7 @@ private:
 
 	MousePoint dead_zone_;
 
-	
-
 	void MakeVertical();
-
 
 	//受け取った引数のポジションから指定したdist分のradの位置を返す
 	VECTOR GetRotatedByTheDistanceFromThePos(const float ver_rad, const float side_rad, const float dist,const VECTOR& center_pos);
@@ -171,8 +166,6 @@ private:
 
 	bool CheckMousePoint(MousePoint now_point, MousePoint before_point);
 
-
-
 	bool CheckSamePos(const VECTOR& pos1, const VECTOR& pos2)
 	{
 		//これでいいわけがない(同じにならない可能性が大いにあるので許容範囲を決める
@@ -194,9 +187,6 @@ private:
 		}
 	}
 
-
-
-
 	/// <summary>
 	/// 定まった角度の距離を受け取る
 	/// </summary>
@@ -205,21 +195,18 @@ private:
 public:
 
 	Brain(const VECTOR& next_target_pos);
-
-
 	~Brain();
-
 
 	void Init(const VECTOR& camera_pos, const VECTOR& player_pos);
 
 	/*----------virttual_cameraのInit-----------*/
 
-	void SphereInit();
+	void InitSphere(std::shared_ptr<Player> player, const VECTOR& now_targget_pos);
 
-	void GetInit(const VECTOR& camera_pos, const VECTOR& enemy_pos);
+	void InitGet(const VECTOR& camera_pos, const VECTOR& enemy_pos);
 
-	//ついびのinit
-	void TrackingInit(const VECTOR& center_pos);
+	// ついびのinit
+	void InitTracking(const VECTOR& center_pos);
 
 
 	void Update(const VECTOR& target_pos, const VECTOR& camera_pos, std::shared_ptr<Player> player);
@@ -249,10 +236,6 @@ public:
 	/// </summary>
 	void GetCameraUpdate(const VECTOR& pos,const VECTOR& camera_pos, const VECTOR& target_pos);
 
-
-	void ChangeCamera();
-
-	
 	void Vibration();
 
 

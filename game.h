@@ -46,6 +46,8 @@ private:
 	std::shared_ptr<SuperAttackUI> super_attack_UI_;
 	std::shared_ptr<EnemyCountUI> enemy_count_UI_;
 
+	std::shared_ptr<ConditionTimer> clear_timer_;
+
 	void DrawShadowMap();
 
 	void ScreenDraw();

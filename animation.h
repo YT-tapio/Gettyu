@@ -15,7 +15,8 @@ enum class AnimationType
     kSurprise,
     kAttack,        //ここより先は攻撃アニメーション(最後になるとアニメーションを終了)
     kSwordSlash,
-    kSuperAttackFirst
+    kSuperAttackFirst,
+    kClearDance
 };
 
 

@@ -16,7 +16,7 @@ WizardStaff::WizardStaff()
 
 WizardStaff::~WizardStaff()
 {
-	
+	MV1DeleteModel(model_);
 }
 
 void WizardStaff::Update(EnemyBase* enemy, const float spin_rad)

@@ -71,6 +71,10 @@ void Game::ScreenDraw()
 
 void Game::Init()
 {
+    int mouse_init_pos_x = kGameWidth * 0.5f;
+    int mouse_init_pos_y = kGameHeight * 0.5f;
+
+    
     SetMouseDispFlag(FALSE);
 
     int red = GetColor(255, 0, 0);
@@ -117,7 +121,9 @@ void Game::Init()
         kGameWidth, kGameHeight, FALSE, AlphaColorType::kBlack, 0.f, FALSE);
 
     screen_->SetIsDisp(TRUE);
+    SetMousePoint(mouse_init_pos_x, mouse_init_pos_y);
 
+    clear_timer_ = std::make_shared<ConditionTimer>(10.f);
 }
 
 void Game::Update(SceneName& name)
@@ -127,7 +133,7 @@ void Game::Update(SceneName& name)
     static float time_scale = 1.0f;
     
     //現在の時間を取得
-    
+
     //camera->GetPos();
 
     //デバッグ用
@@ -213,6 +219,12 @@ void Game::Update(SceneName& name)
     //ここら辺で終わりのやつを作りたいです
 
     if (enemy_manager_->CheckIsEnemy())
+    {
+        Situation::GetInstance().SetSituationName(SituationName::kClear);
+        clear_timer_->Update();
+    }
+
+    if (clear_timer_->GetIsEnd())
     {
         //ここで終了
         name = SceneName::kResult;

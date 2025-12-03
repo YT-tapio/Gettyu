@@ -734,9 +734,6 @@
     <ClInclude Include="offset_assistant.h">
       <Filter>ソース ファイル\offset_assistant</Filter>
     </ClInclude>
-    <ClInclude Include="button_state.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="button_manager.h">
       <Filter>ソース ファイル\button</Filter>
     </ClInclude>
@@ -744,6 +741,9 @@
       <Filter>ソース ファイル\button</Filter>
     </ClInclude>
     <ClInclude Include="select_type.h">
+      <Filter>ソース ファイル\button</Filter>
+    </ClInclude>
+    <ClInclude Include="button_state.h">
       <Filter>ソース ファイル\button</Filter>
     </ClInclude>
   </ItemGroup>
