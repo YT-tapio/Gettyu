@@ -97,8 +97,8 @@ EnemyBase::EnemyBase(const int model, const VECTOR& pos,
 
 EnemyBase::~EnemyBase()
 {
-	//delete get_effect_;
-	//delete got_effect_;
+	MV1DeleteModel(model_);
+	delete alert_timer_;
 }
 
 

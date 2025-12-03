@@ -28,7 +28,7 @@ public:
 
 	
 
-	ObjectBase(const VECTOR& pos, const VECTOR& rot, const VECTOR& scale, int model_handle);
+	ObjectBase(const VECTOR& pos, const VECTOR& rot, const VECTOR& scale, const char* path);
 
 
 	virtual ~ObjectBase();

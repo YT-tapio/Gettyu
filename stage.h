@@ -49,7 +49,7 @@ private:
 
 public:
 
-	Stage(int model_handle, VECTOR pos, float scale);
+	Stage(const char* path, VECTOR pos, float scale);
 
 	~Stage() override;
 

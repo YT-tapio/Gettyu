@@ -58,6 +58,8 @@ private:
 	
 	const float kVacuumSound		= 2.f;				// 
 
+	const VECTOR kScale = VGet(0.01f, 0.01f, 0.01f);
+
 	//MixamoBonePath bone_;
 
 	//¡‰½‚Ì•Ší‚ğ‚Á‚Ä‚¢‚é‚©‚ğ‚½‚¹‚Ä‚¨‚­
@@ -134,6 +136,8 @@ private:
 	void CheckIsGround(Stage& stage);
 
 	void ClearUpdate();
+
+	void DecideAnimation();
 
 public:
 

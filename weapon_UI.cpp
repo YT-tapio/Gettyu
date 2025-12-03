@@ -84,8 +84,13 @@ WeaponUI::WeaponUI()
 
 WeaponUI::~WeaponUI()
 {
-	DeleteGraph(bat_button_.handle);
-	DeleteGraph(warprod_button_.handle);
+	DeleteGraph(kXButtonHandle);
+	DeleteGraph(kYButtonHandle);
+	DeleteGraph(kOneKeyHandle);
+	DeleteGraph(kTwoKeyHandle);
+	DeleteGraph(kSuperAttackGaugeFrameHandle);
+	MV1DeleteModel(kBatHandle);
+	MV1DeleteModel(kWarprodHandle);
 }
 
 

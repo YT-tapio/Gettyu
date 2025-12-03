@@ -1,11 +1,11 @@
 #include"object_base.h"
 #include"FPS.h"
 
-ObjectBase::ObjectBase(const VECTOR& pos, const VECTOR& rot, const VECTOR& scale,int model_handle)
+ObjectBase::ObjectBase(const VECTOR& pos, const VECTOR& rot, const VECTOR& scale,const char* path)
 	: pos_(pos)
 	, rot_(rot)
 	, scale_(scale)
-	, model_(model_handle)
+	, model_(MV1LoadModel(path))
 {
 	mat_ = MGetTranslate(pos_);
 };

@@ -15,9 +15,6 @@ EnemyManager::EnemyManager()
 
 EnemyManager::~EnemyManager()
 {
-	
-	enemies_.clear();
-
 	delete get_effect_;
 	delete got_effect_;
 }

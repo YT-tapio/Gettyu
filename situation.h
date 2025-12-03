@@ -42,6 +42,11 @@ public:
     Situation(const Situation&) = delete;
     Situation& operator=(const Situation&) = delete;
     
+    void Init()
+    {
+        now_situation_ = SituationName::kNothing;
+    }
+
     /// <summary>
     /// ¡‚Ìó‹µ‚ğƒZƒbƒg
     /// </summary>

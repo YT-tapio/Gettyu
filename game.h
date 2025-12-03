@@ -37,7 +37,6 @@ private:
 	std::shared_ptr<SkyDom> sky_dom_;
 	std::shared_ptr<BaseSubScreen> concentration_line_;
 
-	std::shared_ptr<ShadowMap> shadow_map_ = std::make_shared<ShadowMap>();
 
 	std::shared_ptr<NormalSubScreen> screen_;
 

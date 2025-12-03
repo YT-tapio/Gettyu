@@ -35,7 +35,7 @@ public:
 
 	BaseSubScreen(const VECTOR& pos,const int screen_width, const int screen_height, const int width,const int height,bool alpha,AlphaColorType color_type, const int param,bool is_blend);
 
-	virtual ~BaseSubScreen() = 0;
+	virtual ~BaseSubScreen();
 
 	//起動てきなの,このscreenを使うという意思表示
 	void Up();

@@ -53,7 +53,7 @@ Player::Player(VECTOR pos, int pad_num,int div, float r, float vertical_num)
 	MATRIX pos_matrix		= MGetTranslate(pos_);
 	MATRIX rotation_matrix	= MGetRotY(rotation_.y);
 
-	model_matrix_ = MMult(MMult(MGetRotY(rotation_.y), MGetScale(VGet(0.01f, 0.01f, 0.01f))), pos_matrix);
+	model_matrix_ = MMult(MMult(MGetRotY(rotation_.y), MGetScale(kScale)), pos_matrix);
 
 	MV1SetMatrix(model_, model_matrix_);
 }
@@ -145,6 +145,49 @@ void Player::CheckIsGround(Stage& stage)
 
 void Player::ClearUpdate()
 {
+	now_type_ = AnimationType::kClearDance;
+}
+
+void Player::DecideAnimation()
+{
+	//ここでアニメーションの指定を行う
+
+	if (before_type_ != now_type_)
+	{
+
+		if (!(animation_->GetBlendFlag()))
+		{
+			if (!(before_type_ == AnimationType::kNothing))
+			{
+				animation_->InitBlend(now_type_, before_type_);
+			}
+
+			animation_->Attach(now_type_);
+
+			before_before_type_ = before_type_;
+			before_type_ = now_type_;
+
+			animation_->SetBlend(TRUE);
+
+		}
+		else
+		{
+			if (now_type_ == AnimationType::kSuperAttackFirst)
+			{
+				animation_->Detach(before_type_);
+				animation_->Attach(now_type_);
+				before_before_type_ = before_type_;
+				before_type_ = now_type_;
+
+			}
+		}
+	}
+
+	animation_->Update(now_type_);
+	if (animation_->GetBlendFlag())
+	{
+		animation_->Update(before_type_);
+	}
 
 }
 
@@ -241,30 +284,18 @@ void Player::AddAnim()
 	char jumping_down_path[256] = "data/animation/Jumping_Down.mv1";
 	char sword_slash_path[256]	= "data/animation/SwordSlash.mv1";
 	char super_attack_path[256] = "data/animation/Standing_2H_Cast_Spell_01.mv1";
-	char clear_dance_path[256]	= "data/animation/.mv1";
+	char clear_dance_path[256]	= "data/animation/Breakdance_Freezes.mv1";
 
 	//アニメーションのロード
-
-	Load(idle, idle_path		, AnimationType::kIdle	 , model_, 0, 3.0f);
-	Load(walk, walk_path		, AnimationType::kWalk	 , model_, 0, 3.0f);
-	Load(slow_run, slow_run_path, AnimationType::kSlowRun, model_, 0, 3.0f);
-	Load(fast_run, fast_run_path,
-		AnimationType::kFastRun, model_, 0, 3.0f);
-
-	Load(jumping_up, jumping_up_path,
-		AnimationType::kJumpUp, model_, 0, 2.0f);
-
-	Load(jumping_down, jumping_down_path,
-		AnimationType::kJumpDown, model_, 0, 2.0f);
-
-	Load(sword_slash_attack, sword_slash_path,
-		AnimationType::kSwordSlash, model_, 0, 4.0f);
-
-	Load(super_attack_first, super_attack_path,
-		AnimationType::kSuperAttackFirst, model_, 0, 3.0f);
-
-	Load(clear_dance, clear_dance_path,
-		AnimationType::kClearDance, model_, 0, 3.0f);
+	Load(idle, idle_path									, AnimationType::kIdle					, model_, 0, 3.0f);
+	Load(walk, walk_path									, AnimationType::kWalk					, model_, 0, 3.0f);
+	Load(slow_run, slow_run_path					, AnimationType::kSlowRun				, model_, 0, 3.0f);
+	Load(fast_run, fast_run_path						,AnimationType::kFastRun				, model_, 0, 3.0f);
+	Load(jumping_up, jumping_up_path			,AnimationType::kJumpUp				, model_, 0, 2.0f);
+	Load(jumping_down, jumping_down_path	,AnimationType::kJumpDown			, model_, 0, 2.0f);
+	Load(sword_slash_attack, sword_slash_path,AnimationType::kSwordSlash			, model_, 0, 4.0f);
+	Load(super_attack_first, super_attack_path	,AnimationType::kSuperAttackFirst	, model_, 0, 3.0f);
+	Load(clear_dance, clear_dance_path			,AnimationType::kClearDance			, model_, 0, 3.0f);
 
 	//アニメーションを追加
 	animation_->Add(idle);
@@ -349,59 +380,57 @@ void Player::AttachWeapon(WeaponName name)
 
 void Player::Update(Stage& stage,float target_rot)
 {
-	if (Situation::GetInstance().GetSituationName() == SituationName::kClear)
+	if (Situation::GetInstance().GetSituationName() != SituationName::kClear)
 	{
-		// クリア判定になったらアニメーションを違うのに切り替える
-		ClearUpdate();
+		VECTOR camera_pos = Camera::GetInstance().GetPos();
+		//サウンドのリセット
+		sound_vibration_->Reset();
 
-		return;
+		//AttachWeapon(frame_path_->RIGHT_HAND);
+		// ターゲットを切り替えた時のrotationを色んな奴に持たすわけにはいかないのでplayerに持たせる、
+		// updateにはposだけにしといていいと思う(引き数)
+
+		//ここで着地しているかの判断を行う
+		CheckIsGround(stage);
+
+		super_attack_->Update();
+
+		InputMovement(camera_pos, target_rot);
+
+		if (VSize(velocity_) != 0.f)
+		{
+			direction_ = VNorm(velocity_);
+		}
+
+		if (is_super_attack_)
+		{
+			super_attack_->SetPos(VAdd(pos_, VGet(0, 150, 0)), pos_);
+			super_attack_->EffectUpdate();
+		}
+
+		if (AnimationType::kAttack > now_type_ && !is_super_attack_)
+		{
+			velocity_ = stage.CheckCollision(coll_, velocity_);
+
+			//velocity_ = VSub(pos_, before_pos);
+
+			pos_ = VAdd(pos_, velocity_);
+			//当たり判定の更新
+			coll_->Update(velocity_);
+			capsule_.start_pos = pos_;
+			capsule_.start_pos.y += capsule_.r;
+			capsule_.end_pos = capsule_.start_pos;
+			capsule_.end_pos.y = capsule_.vertical_num;
+		}
 	}
 	else
 	{
-
+		// クリア判定になったらアニメーションを違うのに切り替える
+		ClearUpdate();
+		DecideAnimation();
 	}
 
-	VECTOR camera_pos = Camera::GetInstance().GetPos();
-	//サウンドのリセット
-	sound_vibration_->Reset();
 
-	//AttachWeapon(frame_path_->RIGHT_HAND);
-	// ターゲットを切り替えた時のrotationを色んな奴に持たすわけにはいかないのでplayerに持たせる、
-	// updateにはposだけにしといていいと思う(引き数)
-
-	//ここで着地しているかの判断を行う
-	CheckIsGround(stage);
-
-	super_attack_->Update();
-
-	InputMovement(camera_pos, target_rot);
-
-	if (VSize(velocity_) != 0.f)
-	{
-		direction_ = VNorm(velocity_);
-	}
-	
-	if (is_super_attack_)
-	{
-		super_attack_->SetPos(VAdd(pos_, VGet(0, 150, 0)),pos_);
-		super_attack_->EffectUpdate();
-	}
-
-	if (AnimationType::kAttack > now_type_  && !is_super_attack_)
-	{
-		VECTOR before_pos = pos_;
-		velocity_ = stage.CheckCollision(coll_,velocity_);
-
-		//velocity_ = VSub(pos_, before_pos);
-
-		pos_ = VAdd(pos_, velocity_);
-		//当たり判定の更新
-		coll_->Update(velocity_);
-		capsule_.start_pos		= pos_;
-		capsule_.start_pos.y	+= capsule_.r;
-		capsule_.end_pos		= capsule_.start_pos;
-		capsule_.end_pos.y		= capsule_.vertical_num;
-	}
 
 	//ここで位置の更新もしておく
 	//ここでのsetをやめる(ゲット時)
@@ -412,7 +441,7 @@ void Player::Update(Stage& stage,float target_rot)
 		MATRIX rotation_matrix	= MGetRotY(rotation_.y);
 
 		model_matrix_ = MMult(MMult(
-			MGetRotY(rotation_.y), MGetScale(VGet(0.01f, 0.01f, 0.01f))), pos_matrix);
+			MGetRotY(rotation_.y), MGetScale(kScale)), pos_matrix);
 
 		MV1SetMatrix(model_, model_matrix_);
 
@@ -606,42 +635,9 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 		}
 	}
 	
-	if (before_type_ != now_type_)
-	{
-		
-		if (!(animation_->GetBlendFlag()))
-		{
-			if (!(before_type_ == AnimationType::kNothing))
-			{
-				animation_->InitBlend(now_type_, before_type_);
-			}
+	DecideAnimation();
 
-			animation_->Attach(now_type_);
 
-			before_before_type_ = before_type_;
-			before_type_ = now_type_;
-
-			animation_->SetBlend(TRUE);
-
-		}
-		else
-		{
-			if (now_type_ == AnimationType::kSuperAttackFirst)
-			{
-				animation_->Detach(before_type_);
-				animation_->Attach(now_type_);
-				before_before_type_ = before_type_;
-				before_type_ = now_type_;
-
-			}
-		}
-	}
-
-	animation_->Update(now_type_);
-	if (animation_->GetBlendFlag())
-	{
-		animation_->Update(before_type_);
-	}
 }
 
 

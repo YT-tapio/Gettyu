@@ -19,17 +19,10 @@ Game::~Game()
 
 void Game::DrawShadowMap()
 {
-    shadow_map_->SetupDrawShadowMap();
-
     player_->Draw();
     enemy_manager_->Draw();
 
-
     stage_->Draw();
-
-    //SetUseLighting(TRUE);
-
-    shadow_map_->EndDrawShadowMap();
 }
 
 
@@ -71,6 +64,8 @@ void Game::ScreenDraw()
 
 void Game::Init()
 {
+    Situation::GetInstance().Init();
+
     int mouse_init_pos_x = kGameWidth * 0.5f;
     int mouse_init_pos_y = kGameHeight * 0.5f;
 
@@ -94,9 +89,9 @@ void Game::Init()
     Camera::GetInstance().Awake(brain_->GetPositionFromTarget(player_->GetCenterPos()),
         player_->GetCenterPos(), (DX_PI_F / 180.0f) * 75.0f);
 
-    int model_data = MV1LoadModel("data/model/map/arena/map.mv1");
+    const char* kStagePath = "data/model/map/arena/map.mv1";
 
-    stage_ = std::make_shared<Stage>(model_data, VGet(0, 0, 0), 1.0f);
+    stage_ = std::make_shared<Stage>(kStagePath, VGet(0, 0, 0), 1.0f);
 
     brain_->Init(Camera::GetInstance().GetPos(), player_->GetCenterPos());
     Camera::GetInstance().Init(brain_->GetVelocity());

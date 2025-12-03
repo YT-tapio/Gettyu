@@ -43,7 +43,7 @@ protected:
 
 public:
 
-	CharacterBase(Stage* stage,std::shared_ptr<CollisionBase> coll,const VECTOR& pos,const VECTOR& rot,const VECTOR& scale,const int model_handle);
+	CharacterBase(Stage* stage,std::shared_ptr<CollisionBase> coll,const VECTOR& pos,const VECTOR& rot,const VECTOR& scale,const char* path);
 
 
 	virtual ~CharacterBase() override;

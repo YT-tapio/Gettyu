@@ -10,8 +10,8 @@
 #include"collision_sphere.h"
 #include"collision_capsule.h"
 
-Stage::Stage(int model_handle, VECTOR pos, float scale)
-	: ObjectBase(pos, VectorAssistant::GetZeroVec(), VGet(scale, scale, scale), model_handle)
+Stage::Stage(const char* path, VECTOR pos, float scale)
+	: ObjectBase(pos, VectorAssistant::GetZeroVec(), VGet(scale, scale, scale), path)
 	, wall_num_(0)
 	, floor_num_(0)
 	, wall_{ nullptr }
@@ -34,7 +34,7 @@ Stage::Stage(int model_handle, VECTOR pos, float scale)
 
 Stage::~Stage()
 {
-
+	
 }
 
 
