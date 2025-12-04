@@ -9,6 +9,7 @@ enum class SituationName
     kGet,                      //ƒQƒbƒgŽž
     kAttack,                  //
     kVacuum,                 // ‹zˆø’†
+    kClearOffset,
     kClear
 };
 

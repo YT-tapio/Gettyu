@@ -6,7 +6,7 @@
 #include"base_enemy_state.h"
 
 class BaseEnemyState;
-class player;
+class Player;
 
 class EnemyFSM
 {

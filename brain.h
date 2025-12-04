@@ -8,6 +8,7 @@
 #include"sphere_camera.h"
 #include"get_camera.h"
 #include"vacuum_camera.h"
+#include"game_clear.h"
 class Player;
 class Input;
 
@@ -21,17 +22,17 @@ class Brain
 {
 private:
 
-	const float kMaxMouseDiff = 35.0f;
+	const float kMaxMouseDiff		= 35.0f;
 
-	const float kMaxMoveDistance = 0.0f;
-	const float kCameraSpeed = 1.3f;
+	const float kMaxMoveDistance	= 0.0f;
+	const float kCameraSpeed		= 0.35f;
 
-	const float kSuperAttackZeroDist = 25.0f;
+	const float kSuperAttackZeroDist		= 25.0f;
 	const float kSuperAttackCameraMoveSpeed = 2.0f;
 
-	const float kSuperAttackFirstDist = 50.0f;
-	const float kSuperAttackFirstCameraMoveSpeed = 2.0f;
-	const float kSuperAttackFirstSideRad = 0;
+	const float kSuperAttackFirstDist				= 50.0f;
+	const float kSuperAttackFirstCameraMoveSpeed	= 2.0f;
+	const float kSuperAttackFirstSideRad			= 0;
 	
 	//カメラの見る位置をoffsetするときのスピード
 	const float kSuperAttackCameraTargetPosSpeed = 1.3f;
@@ -54,6 +55,9 @@ private:
 
 	//吸い込んでいるときのカメラ
 	BaseVirtualCamera* vacuum_camera_;
+
+	
+	BaseVirtualCamera* game_clear_camera_;
 
 	ChangeType change_type_;
 
@@ -79,8 +83,8 @@ private:
 	int vibration_count_;
 	int super_attack_vibration_power_;
 
-	float blend_timer_ = 0.f;
-	float blend_timer_max_ = 0.f;
+	float blend_timer_		= 0.f;
+	float blend_timer_max_	= 0.f;
 
 	bool is_change_;
 	bool no_update_;
@@ -208,38 +212,39 @@ public:
 	// ついびのinit
 	void InitTracking(const VECTOR& center_pos);
 
+	//
+	void InitGameClear(const VECTOR& camera_pos, const VECTOR& player_pos);
 
+	//
 	void Update(const VECTOR& target_pos, const VECTOR& camera_pos, std::shared_ptr<Player> player);
-
 
 	//
 	void ChangeCameraInit(int& before_camera_name, const VECTOR& camera_pos, std::shared_ptr<Player>player, const VECTOR& now_target_pos, bool& is_init);
 
 	//
-	void VirtualCameraUpdate(std::shared_ptr<Player>player, const VECTOR& camera_pos, const VECTOR& now_target_pos);
+	void UpdateVirtualCamera(std::shared_ptr<Player>player, const VECTOR& camera_pos, const VECTOR& now_target_pos);
 
 	/// <summary>
 	/// カメラが球体上に回る処理
 	/// </summary>
-	void SphereUpdate(const VECTOR& target_pos, const VECTOR& camera_pos);
+	void UpdateSphere(const VECTOR& target_pos, const VECTOR& camera_pos);
 
 	//追尾のアップデート
-	void TrackingUpdate(const VECTOR& now_camera_pos, std::shared_ptr<Player> player);
+	void UpdateTracking(const VECTOR& now_camera_pos, std::shared_ptr<Player> player);
 
 	//吸引時のカメラのアプデ
-	void VacuumUpdate(std::shared_ptr<Player>player, const VECTOR& camera_pos);
-
-	void SuperAttackUpdate(const VECTOR& camera_pos, const VECTOR& now_target_pos, std::shared_ptr<Player> player);
+	void UpdateVacuum(std::shared_ptr<Player>player, const VECTOR& camera_pos);
 
 	/// <summary>
 	/// ゲットしたときのカメラの更新処理
 	/// </summary>
-	void GetCameraUpdate(const VECTOR& pos,const VECTOR& camera_pos, const VECTOR& target_pos);
+	void UpdateGetCamera(const VECTOR& pos,const VECTOR& camera_pos, const VECTOR& target_pos);
+
+	/// @brief ゲームクリアのカメラ更新
+	/// @param pos playerのpos
+	void UpdateGameClear(const VECTOR& camera_pos, const VECTOR& player_pos);
 
 	void Vibration();
-
-
-	void VacuumVibration();
 
 	void SetRad(const VECTOR& target_pos, const VECTOR& player_pos);
 

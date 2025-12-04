@@ -45,11 +45,15 @@ private:
 	std::shared_ptr<SuperAttackUI> super_attack_UI_;
 	std::shared_ptr<EnemyCountUI> enemy_count_UI_;
 
+	//タイマー
+	std::shared_ptr<ConditionTimer>	clear_offset_timer_;
 	std::shared_ptr<ConditionTimer> clear_timer_;
 
 	void DrawShadowMap();
 
 	void ScreenDraw();
+
+	void GameClear(SceneName& name);
 
 public:
 

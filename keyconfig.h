@@ -73,8 +73,8 @@ struct PadConfig
     static const int kSelectRightButton     = XINPUT_BUTTON_DPAD_RIGHT;
     static const int kSelectLeftButton      = XINPUT_BUTTON_DPAD_LEFT;
 
-    static const int kSelectUpStick         = 1000;
-    static const int kSelectDownStick       = -1000;
-    static const int kSelectLeftStick       = -1000;
-    static const int kSelectRightStick      = 1000;
+    static const int kSelectUpStick         = 10000;
+    static const int kSelectDownStick       = -10000;
+    static const int kSelectLeftStick       = -10000;
+    static const int kSelectRightStick      = 10000;
 };

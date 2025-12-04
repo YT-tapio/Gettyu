@@ -5,8 +5,10 @@ class ButtonSelecter
 {
 private:
 
-	bool is_slide_;
-
+	bool is_slide_up_;
+	bool is_slide_down_;
+	bool is_slide_right_;
+	bool is_slide_left_;
 	/// <summary>
 	/// ã“ü—Í‚³‚ê‚Ä‚¢‚é‚©
 	/// </summary>

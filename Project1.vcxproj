@@ -149,6 +149,7 @@
     <ClCompile Include="collision_sphere.cpp" />
     <ClCompile Include="Draw2D.cpp" />
     <ClCompile Include="enemy_base.cpp" />
+    <ClCompile Include="game_clear.cpp" />
     <ClCompile Include="object_base.cpp" />
     <ClCompile Include="base_scene.cpp" />
     <ClCompile Include="base_enemy_state.cpp" />
@@ -230,6 +231,7 @@
     <ClInclude Include="collision_capsule.h" />
     <ClInclude Include="collision_sphere.h" />
     <ClInclude Include="enemy_base.h" />
+    <ClInclude Include="game_clear.h" />
     <ClInclude Include="object_base.h" />
     <ClInclude Include="base_scene.h" />
     <ClInclude Include="base_enemy_state.h" />

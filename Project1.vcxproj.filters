@@ -256,6 +256,9 @@
     <Filter Include="ソース ファイル\offset_assistant">
       <UniqueIdentifier>{8dce84a4-0737-4d6b-a170-f7b792d6b28e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\camera\virtual_camera\game_clear">
+      <UniqueIdentifier>{d52564d4-00a2-4fd0-a786-652f6872a79d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -491,6 +494,9 @@
     </ClCompile>
     <ClCompile Include="button_selecter.cpp">
       <Filter>ソース ファイル\button</Filter>
+    </ClCompile>
+    <ClCompile Include="game_clear.cpp">
+      <Filter>ソース ファイル\camera\virtual_camera\game_clear</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -745,6 +751,9 @@
     </ClInclude>
     <ClInclude Include="button_state.h">
       <Filter>ソース ファイル\button</Filter>
+    </ClInclude>
+    <ClInclude Include="game_clear.h">
+      <Filter>ソース ファイル\camera\virtual_camera\game_clear</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

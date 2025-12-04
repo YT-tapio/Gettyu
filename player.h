@@ -135,7 +135,7 @@ private:
 
 	void CheckIsGround(Stage& stage);
 
-	void ClearUpdate();
+	void ClearUpdate(const VECTOR& camera_pos);
 
 	void DecideAnimation();
 

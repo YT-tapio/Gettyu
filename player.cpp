@@ -23,6 +23,7 @@
 #include"collision_base.h"
 #include"collision_capsule.h"
 #include"vector_assistant.h"
+#include"const_rad.h"
 
 Player::Player(VECTOR pos, int pad_num,int div, float r, float vertical_num)
 	: model_(MV1LoadModel(kModelPath))
@@ -143,8 +144,22 @@ void Player::CheckIsGround(Stage& stage)
 	}
 }
 
-void Player::ClearUpdate()
+void Player::ClearUpdate(const VECTOR& camera_pos)
 {
+
+	//カメラの方向に向く
+	direction_ = VectorAssistant::GetDir(pos_, camera_pos);
+
+	
+	//dirが決まったのでrotも出します
+	rotation_.y = (VectorAssistant::GetPlaneRad(direction_) + kReverceRad);
+
+	if (rotation_.y > kReverceRad)
+	{
+		rotation_.y -= (kReverceRad + kReverceRad);
+	}
+
+
 	now_type_ = AnimationType::kClearDance;
 }
 
@@ -287,13 +302,13 @@ void Player::AddAnim()
 	char clear_dance_path[256]	= "data/animation/Breakdance_Freezes.mv1";
 
 	//アニメーションのロード
-	Load(idle, idle_path									, AnimationType::kIdle					, model_, 0, 3.0f);
-	Load(walk, walk_path									, AnimationType::kWalk					, model_, 0, 3.0f);
-	Load(slow_run, slow_run_path					, AnimationType::kSlowRun				, model_, 0, 3.0f);
-	Load(fast_run, fast_run_path						,AnimationType::kFastRun				, model_, 0, 3.0f);
+	Load(idle, idle_path						,AnimationType::kIdle				, model_, 0, 3.0f);
+	Load(walk, walk_path						,AnimationType::kWalk				, model_, 0, 3.0f);
+	Load(slow_run, slow_run_path				,AnimationType::kSlowRun			, model_, 0, 3.0f);
+	Load(fast_run, fast_run_path				,AnimationType::kFastRun			, model_, 0, 3.0f);
 	Load(jumping_up, jumping_up_path			,AnimationType::kJumpUp				, model_, 0, 2.0f);
-	Load(jumping_down, jumping_down_path	,AnimationType::kJumpDown			, model_, 0, 2.0f);
-	Load(sword_slash_attack, sword_slash_path,AnimationType::kSwordSlash			, model_, 0, 4.0f);
+	Load(jumping_down, jumping_down_path		,AnimationType::kJumpDown			, model_, 0, 2.0f);
+	Load(sword_slash_attack, sword_slash_path	,AnimationType::kSwordSlash			, model_, 0, 4.0f);
 	Load(super_attack_first, super_attack_path	,AnimationType::kSuperAttackFirst	, model_, 0, 3.0f);
 	Load(clear_dance, clear_dance_path			,AnimationType::kClearDance			, model_, 0, 3.0f);
 
@@ -380,9 +395,10 @@ void Player::AttachWeapon(WeaponName name)
 
 void Player::Update(Stage& stage,float target_rot)
 {
-	if (Situation::GetInstance().GetSituationName() != SituationName::kClear)
+	VECTOR camera_pos = Camera::GetInstance().GetPos();
+	if (Situation::GetInstance().GetSituationName() < SituationName::kClearOffset)
 	{
-		VECTOR camera_pos = Camera::GetInstance().GetPos();
+		
 		//サウンドのリセット
 		sound_vibration_->Reset();
 
@@ -426,10 +442,9 @@ void Player::Update(Stage& stage,float target_rot)
 	else
 	{
 		// クリア判定になったらアニメーションを違うのに切り替える
-		ClearUpdate();
+		ClearUpdate(camera_pos);
 		DecideAnimation();
 	}
-
 
 
 	//ここで位置の更新もしておく
@@ -813,8 +828,7 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 		rejected = FALSE;
 	}
 	
-	//
-	SetLightDirection(VGet(direction.x, 0, direction.x * constant));
+	
 
 	if (input_count != 0 && !is_attack_)
 	{
@@ -832,6 +846,8 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 
 		before_rot_ = rot / input_count;
 	}
+
+	SetLightDirection(VGet(direction.x, 0.f, direction.x* constant));
 
 	camera_offset_dir = VGet(direction.x * constant, 0, -direction.x);
 
@@ -1117,7 +1133,11 @@ void Player::Vibration(const VibrationData& data)
 {
 	// ほしいのは時間と、振動の強さ
 	// パッドしんどう
-	StartJoypadVibration(Input::GetInstance().GetPadNom(), data.power, data.time, -1);
+
+	if (Input::GetInstance().GetDeviceType() == InputDeviceType::kPad)
+	{
+		StartJoypadVibration(Input::GetInstance().GetPadNom(), data.power, data.time, -1);
+	}
 }
 
 MATRIX Player::GetFrameMatrix()

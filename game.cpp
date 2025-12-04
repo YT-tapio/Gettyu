@@ -59,6 +59,31 @@ void Game::ScreenDraw()
 
 }
 
+
+void Game::GameClear(SceneName& name)
+{
+    if (enemy_manager_->CheckIsEnemy()) { return; }
+
+    //ここら辺で終わりのやつを作りたいです
+    if (!clear_offset_timer_->GetIsEnd())
+    {
+        Situation::GetInstance().SetSituationName(SituationName::kClearOffset);
+        clear_offset_timer_->Update();
+    }
+    else
+    {
+        //offset_timerのカウントが終わっているなら
+        Situation::GetInstance().SetSituationName(SituationName::kClear);
+        clear_timer_->Update();
+
+        if (clear_timer_->GetIsEnd())
+        {
+            //ここで終了
+            name = SceneName::kResult;
+        }
+    }
+}
+
 //
 
 
@@ -77,12 +102,10 @@ void Game::Init()
     int blue = GetColor(0, 0, 255);
 
     
-    effect_player_ =
-        std::make_shared<EffectManager>("", 1.0f, 120);
+    effect_player_ = std::make_shared<EffectManager>("", 1.0f, 120);
 
     //playerを生成
-    player_ =
-        std::make_shared<Player>(VGet(0, 10, 100), DX_INPUT_PAD1, 20, 1.5f, 10.0f);
+    player_ = std::make_shared<Player>(VGet(0, 10, 100), DX_INPUT_PAD1, 20, 1.5f, 10.0f);
 
     brain_ = std::make_shared<Brain>(player_->GetCenterPos());
 
@@ -96,11 +119,7 @@ void Game::Init()
     brain_->Init(Camera::GetInstance().GetPos(), player_->GetCenterPos());
     Camera::GetInstance().Init(brain_->GetVelocity());
 
-    /*---プレイヤーにアニメーションを追加---*/
-
-
-    enemy_manager_ =
-        std::make_shared<EnemyManager>();
+    enemy_manager_ =std::make_shared<EnemyManager>();
 
     enemy_manager_->Init();
 
@@ -110,15 +129,15 @@ void Game::Init()
     weapon_UI_                  = std::make_shared<WeaponUI>();
     super_attack_UI_            = std::make_shared<SuperAttackUI>();
 
-    enemy_count_UI_ = std::make_shared<EnemyCountUI>(&enemy_manager_->not_get_count_);
+    enemy_count_UI_             = std::make_shared<EnemyCountUI>(&enemy_manager_->not_get_count_);
 
-    screen_ = std::make_shared<NormalSubScreen>(VGet((kGameWidth * 0.5f), (kGameHeight * 0.5f), 0.f), kGameWidth, kGameHeight,
-        kGameWidth, kGameHeight, FALSE, AlphaColorType::kBlack, 0.f, FALSE);
+    screen_                     = std::make_shared<NormalSubScreen>(VGet((kGameWidth * 0.5f), (kGameHeight * 0.5f), 0.f), kGameWidth, kGameHeight, kGameWidth, kGameHeight, FALSE, AlphaColorType::kBlack, 0.f, FALSE);
 
     screen_->SetIsDisp(TRUE);
     SetMousePoint(mouse_init_pos_x, mouse_init_pos_y);
 
-    clear_timer_ = std::make_shared<ConditionTimer>(10.f);
+    clear_timer_        = std::make_shared<ConditionTimer>(10.f);
+    clear_offset_timer_ = std::make_shared<ConditionTimer>(1.f);
 }
 
 void Game::Update(SceneName& name)
@@ -211,19 +230,7 @@ void Game::Update(SceneName& name)
 
     
 
-    //ここら辺で終わりのやつを作りたいです
-
-    if (enemy_manager_->CheckIsEnemy())
-    {
-        Situation::GetInstance().SetSituationName(SituationName::kClear);
-        clear_timer_->Update();
-    }
-
-    if (clear_timer_->GetIsEnd())
-    {
-        //ここで終了
-        name = SceneName::kResult;
-    }
+    GameClear(name);
 
     
 

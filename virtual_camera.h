@@ -8,7 +8,8 @@ struct VirtualCameraName
 	static const int kGet = 2;
 	static const int kTracking = 3;
 	static const int kVacuum = 4;
-	static const int kSuperAttack = 5;	//•KE‹Z‚ÌƒJƒƒ‰
+	static const int kGameClear = 5;
+	static const int kSuperAttack = 6;	//•KE‹Z‚ÌƒJƒƒ‰
 	static const int kSuperAttackFirst = kSuperAttack + 1;
 	static const int kSuperAttackSecond = kSuperAttack+ 2;
 	static const int kSuperAttackThird = kSuperAttack + 3;

@@ -159,5 +159,5 @@ void EnemyManager::SetDeltaTime(float delta_time)
 
 bool EnemyManager::CheckIsEnemy()
 {
-	return enemies_.empty();
+	return not_get_count_ != 0;
 }

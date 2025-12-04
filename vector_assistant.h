@@ -34,6 +34,17 @@ namespace VectorAssistant
 		return VNorm(VSub(other, me));
 	}
 
+	/// @brief dirからrad角度を出す
+	/// @param dir 
+	/// @return 
+	inline float GetPlaneRad(const VECTOR& dir)
+	{
+		return atan2f(dir.x, dir.z);
+	}
+
+	/// @brief 自分の半分を出す
+	/// @param pos 
+	/// @return 
 	inline VECTOR GetHerf(const VECTOR& pos)
 	{
 		return VScale(pos, 0.5f);
@@ -50,6 +61,15 @@ namespace VectorAssistant
 		}
 
 		return atan2f(dir.x, dir.z);
+	}
+
+	/// @brief 自身のposからほかのposまでの距離を取る
+	/// @param me 自分
+	/// @param other 他
+	/// @return 距離
+	inline float GetDistSize(const VECTOR& me, const VECTOR& other)
+	{
+		return VSize(VSub(me, other));
 	}
 
 	/// <summary>

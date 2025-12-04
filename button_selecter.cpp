@@ -4,7 +4,10 @@
 #include"input.h"
 
 ButtonSelecter::ButtonSelecter()
-	:is_slide_(FALSE)
+	: is_slide_up_		(FALSE)
+	, is_slide_down_	(FALSE)
+	, is_slide_right_	(FALSE)
+	, is_slide_left_	(FALSE)
 {
 
 }
@@ -26,16 +29,16 @@ bool ButtonSelecter::IsInputUp()
 	if (Input::GetInstance().CheckInputPadButton(PadConfig::kSelectUpButton) == InputState::kPush) { return TRUE; }
 	if (Input::GetInstance().GetPadMove(StickType::kLeft, Control::kY, PadConfig::kSelectUpStick))
 	{
-		if (!is_slide_)
+		if (!is_slide_up_)
 		{
-			is_slide_ = TRUE;
+			is_slide_up_ = TRUE;
 			return TRUE;
 		}
 
 	}
 	else
 	{
-		is_slide_ = FALSE;
+		is_slide_up_ = FALSE;
 	}
 	 
 	return FALSE;
@@ -51,16 +54,16 @@ bool ButtonSelecter::IsInputDown()
 	if (Input::GetInstance().CheckInputPadButton(PadConfig::kSelectDownButton) == InputState::kPush) { return TRUE; }
 	if (Input::GetInstance().GetPadMove(StickType::kLeft, Control::kY, PadConfig::kSelectDownStick)) 
 	{ 
-		if (!is_slide_)
+		if (!is_slide_down_)
 		{
-			is_slide_ = TRUE;
+			is_slide_down_ = TRUE;
 			return TRUE;
 		}
 		
 	}
 	else
 	{
-		is_slide_ = FALSE;
+		is_slide_down_ = FALSE;
 	}
 
 	return FALSE;
@@ -76,16 +79,16 @@ bool ButtonSelecter::IsInputRight()
 	if (Input::GetInstance().CheckInputPadButton(PadConfig::kSelectRightButton) == InputState::kPush) { return TRUE; }
 	if (Input::GetInstance().GetPadMove(StickType::kLeft, Control::kX, PadConfig::kSelectRightStick))
 	{
-		if (!is_slide_)
+		if (!is_slide_right_)
 		{
-			is_slide_ = TRUE;
+			is_slide_right_ = TRUE;
 			return TRUE;
 		}
 
 	}
 	else
 	{
-		is_slide_ = FALSE;
+		is_slide_right_ = FALSE;
 	}
 
 	return FALSE;
@@ -101,16 +104,16 @@ bool ButtonSelecter::IsInputLeft()
 	if (Input::GetInstance().CheckInputPadButton(PadConfig::kSelectLeftButton) == InputState::kPush) { return TRUE; }
 	if (Input::GetInstance().GetPadMove(StickType::kLeft, Control::kX, PadConfig::kSelectLeftStick))
 	{
-		if (!is_slide_)
+		if (!is_slide_left_)
 		{
-			is_slide_ = TRUE;
+			is_slide_left_ = TRUE;
 			return TRUE;
 		}
 
 	}
 	else
 	{
-		is_slide_ = FALSE;
+		is_slide_left_ = FALSE;
 	}
 
 	return FALSE;

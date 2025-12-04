@@ -360,7 +360,6 @@ InputState Input::CheckInputMouse(int mouse)
 
 	if(now_type_state_.atai == -1)
 	{
-
 		//前回の入力を見て
 		//前回がpushなら
 		
@@ -373,14 +372,11 @@ InputState Input::CheckInputMouse(int mouse)
 		{
 			state = InputState::kOff;
 		}
-
 	}
 
 	//printfDx("%d\n", now_type_state_.atai);
 
 	return state;
-
-
 }
 
 InputState Input::CheckInputPadButton(int pad_button)
@@ -426,7 +422,6 @@ float Input::GetMouseVertical()
 		TheNumPower(vertical_vec.y, 2));
 
 	return vertical_num;
-
 }
 
 
@@ -507,7 +502,6 @@ float Input::GetPadStickRad(int type)
 float Input::GetPadStickPercent(int type, int control)
 {
 	float percent_num = 0.0f;
-	
 	
 
 	//スティックの左右
