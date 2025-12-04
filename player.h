@@ -44,19 +44,25 @@ class Player
 {
 private:
 
-	const char* kModelPath = "data/model/character/Dreyar_By_M.Aure.mv1";
+	const char* kModelPath					= "data/model/character/Dreyar_By_M.Aure.mv1";
+	const char* kGameClearEffectPath	= "data/effect/Pierre02/FeatherBomb.efkefc";
 
-	const float kWalkSpeed			= 1.0f;
-	const float kNormalSpeed		= 2.5f;
-	const float kDashSpeed			= 5.5f;
-	const float kGravity			= 0.75f;			// 重力
-	const float kJumpPower			= 3.5f;				// ジャンプ力
+	const float kWalkSpeed					= 1.0f;
+	const float kNormalSpeed				= 2.5f;
+	const float kDashSpeed					= 5.5f;
+	const float kGravity							= 0.75f;			// 重力
+	const float kJumpPower					= 3.5f;				// ジャンプ力
 
-	const float kFastRunSound		= 2.f;				// 大きい音
-	const float kNormalRunSound		= 1.f;				// 歩いているのが普通
-	const float kWalkSound			= 0.1f;				// ちょっとだけ聞かれているような
+	const float kFastRunSound				= 2.f;				// 大きい音
+	const float kNormalRunSound			= 1.f;				// 歩いているのが普通
+	const float kWalkSound					= 0.1f;				// ちょっとだけ聞かれているような
 	
-	const float kVacuumSound		= 2.f;				// 
+	const float kVacuumSound				= 2.f;				// 
+
+	const float kAttackAnimTimeMin		= 17.5f;
+	const float kAttackAnimTimeMax		= 21.f;
+
+	const float kDanceStop					= 106.4f;
 
 	const VECTOR kScale = VGet(0.01f, 0.01f, 0.01f);
 
@@ -70,6 +76,7 @@ private:
 	SuperAttack* super_attack_;
 
 	Effect* super_weapon_spin_effect_ = new Effect("data/effect/NextSoft01/MagicTornade.efkefc", VGet(0.f,0.f,0.f), VGet(0.f, 0.f, 0.f), 7.f, 7.f, 150.f, TRUE);
+	std::shared_ptr<Effect> game_clear_effect_;
 
 	SoundVibration* sound_vibration_ = new SoundVibration();
 

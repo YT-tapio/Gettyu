@@ -227,14 +227,13 @@ void Animation::Update(AnimationType type)
     BlendUpdate();
 }
 
-void Animation::Draw(const AnimationType& type)
+void Animation::Debug(const AnimationType& type)
 {
     for (auto& animation : animation_data_)
     {
         if (animation.type == type)
         {
-            DrawFormatString(200, 200, GetColor(255, 255, 255), "%d", animation.attach_index);
-            DrawFormatString(200, 100, GetColor(255, 255, 255), "%f", animation.total_time);
+            DrawFormatString(400, 100, GetColor(0, 0, 0), "%.3f", animation.play_time);
 
             break;
         }

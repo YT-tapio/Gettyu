@@ -156,9 +156,10 @@ public:
         {
             if (anim.type == type)
             {
-                return anim.play_speed;
+                return anim.play_time;
             }
         }
+        return -1.f;
     }
 
 
@@ -180,6 +181,7 @@ public:
         }
     }
 
+
     //デバッグ用
-    void Draw(const AnimationType& type);
+    void Debug(const AnimationType& type);
 };

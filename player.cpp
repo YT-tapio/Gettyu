@@ -34,6 +34,12 @@ Player::Player(VECTOR pos, int pad_num,int div, float r, float vertical_num)
 	, before_rot_(0.0f)
 	, now_state_(PlayerState::kStand)
 {
+	//ゲームをクリアした後のエフェクトの変数
+	const float kGameClearEffectSpeed = 5.f;
+	const float kGameClearEffectSize = 10.f;
+	const float kGameClearEffectCountMax = 120.f;
+
+
 	capsule_.r				= r;
 	capsule_.div_num		= div;
 	capsule_.vertical_num	= vertical_num;
@@ -44,6 +50,7 @@ Player::Player(VECTOR pos, int pad_num,int div, float r, float vertical_num)
 	is_switch_weapon_		= FALSE;
 	animation_				= std::make_shared<Animation>();
 	super_attack_			= new SuperAttack(VGet(0, 0, 0), "");
+	game_clear_effect_ = std::make_shared<Effect>(kGameClearEffectPath, VectorAssistant::GetZeroVec(), VectorAssistant::GetZeroVec(), kGameClearEffectSpeed, kGameClearEffectSize, kGameClearEffectCountMax, TRUE);
 	Init(pos);
 
 	VECTOR capsule_start_pos	= VAdd(pos, VGet(0.f, r, 0.f));
@@ -159,8 +166,22 @@ void Player::ClearUpdate(const VECTOR& camera_pos)
 		rotation_.y -= (kReverceRad + kReverceRad);
 	}
 
+	//ダンスエモートに切り替える
+	if (now_type_ != AnimationType::kClearDance) { now_type_ = AnimationType::kClearDance; }
+	
 
-	now_type_ = AnimationType::kClearDance;
+	if (animation_->GetPlayTime(now_type_) <= kDanceStop)
+	{
+		DecideAnimation();
+	}
+	else
+	{
+		// effectのupdate
+		game_clear_effect_->SetPos(pos_);
+		game_clear_effect_->Play();
+	}
+	
+
 }
 
 void Player::DecideAnimation()
@@ -266,6 +287,7 @@ void Player::Debug()
 		DrawFormatString(0, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), GetColor(0, 0, 0), "%.2f", sound_vibration_->GetNum());
 		Debug::GetInstance().Add();
 
+		animation_->Debug(now_type_);
 		super_attack_->Debug();
 	}
 }
@@ -343,6 +365,7 @@ void Player::SetDeltaTime(const float& delta_time)
 		
 	}
 	super_weapon_spin_effect_->SetDeltaTime(delta_time);
+	game_clear_effect_->SetDeltaTime(delta_time);
 }
 
 
@@ -443,7 +466,6 @@ void Player::Update(Stage& stage,float target_rot)
 	{
 		// クリア判定になったらアニメーションを違うのに切り替える
 		ClearUpdate(camera_pos);
-		DecideAnimation();
 	}
 
 
@@ -520,10 +542,6 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 				sound_vibration_->Add(kNormalRunSound);
 			}
 
-		}
-		else
-		{
-			
 		}
 	}
 	
@@ -1067,6 +1085,9 @@ void Player::IsHitEnemy(EnemyBase* enemy, bool& got)
 
 	if (now_state_ == PlayerState::kAttack)
 	{
+		auto anim_time = animation_->GetPlayTime(now_type_);
+		if (!(kAttackAnimTimeMin <= anim_time && anim_time <= kAttackAnimTimeMax)) { return; }
+
 		// 武器と敵の当たり判定をします
 		if (SphereCapsuleCollision(weapon_->GetCollisionData(), enemy->GetCollisionData()))
 		{
