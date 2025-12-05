@@ -21,6 +21,8 @@ public:
 
 	float GetTimeRatio();
 
+	const float GetNowTimer()const;
+
 	bool GetIsEnd();
 
 	void Debug();

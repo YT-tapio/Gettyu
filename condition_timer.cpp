@@ -39,6 +39,11 @@ float ConditionTimer::GetTimeRatio()
 	return timer_ / max_time_;
 }
 
+const float ConditionTimer::GetNowTimer() const
+{
+	return timer_;
+}
+
 
 bool ConditionTimer::GetIsEnd()
 {

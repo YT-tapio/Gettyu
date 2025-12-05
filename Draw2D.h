@@ -7,7 +7,7 @@
 namespace Draw2D
 {
 	// 中心座標の設定
-	VECTOR center_pos = VectorAssistant::Get2DVec((kGameWidth * 0.5f), (kGameHeight * 0.5f));
+	const VECTOR kCenterPos = VectorAssistant::Get2DVec((kGameWidth * 0.5f), (kGameHeight * 0.5f));
 
 	/// @brief ボックスの描画
 	/// @param pos 中心座標
@@ -18,9 +18,9 @@ namespace Draw2D
 	inline void Box(const VECTOR& pos, int width, int height, int color,const bool alpha)
 	{
 		DrawBox(static_cast<int>(pos.x - (float(width) * 0.5f)),
-			static_cast<int>(pos.y - (float(width) * 0.5f)),
+			static_cast<int>(pos.y - (float(height) * 0.5f)),
 			static_cast<int>(pos.x + (float(width) * 0.5f)),
-			static_cast<int>(pos.y + (float(width) * 0.5f)),
+			static_cast<int>(pos.y + (float(height) * 0.5f)),
 			color, alpha);
 	}
 
@@ -76,14 +76,14 @@ namespace Draw2D
 	/// @param alpha_num	透過率
 	inline void BlackBoxBlend(const int& alpha_num)
 	{
-		BlendBox(center_pos, kGameWidth, kGameHeight, Color::kBlack, TRUE, alpha_num);
+		BlendBox(kCenterPos, kGameWidth, kGameHeight, Color::kBlack, TRUE, alpha_num);
 	}
 
 	/// @brief 汎用性が高そうなので関数化しておく : 画面全体を覆う,white_outなどを行う
 	/// @param alpha_num	透過率
 	inline void WhiteBoxBlend(const int& alpha_num)
 	{
-		BlendBox(center_pos, kGameWidth, kGameHeight, Color::kWhite, TRUE, alpha_num);
+		BlendBox(kCenterPos, kGameWidth, kGameHeight, Color::kWhite, TRUE, alpha_num);
 	}
 
 	

@@ -5,6 +5,7 @@
 #include"gauss.h"
 #include"mask.h"
 #include"normal_sub_screen.h"
+#include"Draw2D.h"
 
 Game::Game()
     :BaseScene(SceneName::kGame)
@@ -83,12 +84,23 @@ void Game::GameClear(SceneName& name)
             name = SceneName::kResult;
         }
     }
+
+    FadeOut();
+
 }
 
 void Game::FadeOut()
 {
-    const float kFadeOutSpeed = 5.f;
-    fade_out_param_ += (kFadeOutSpeed * FPS::GetInstance().GetDeltaTime());
+    const float kFadeOutSpeed         = 5.f;
+    const float kFadeOutTime          = 4.5f;
+    const int kParamMax                 = 255;
+
+    if (clear_timer_->GetNowTimer() >= kFadeOutTime)
+    {
+        fade_out_param_ += (kFadeOutSpeed * FPS::GetInstance().GetDeltaTime());
+
+        fade_out_param_ = (fade_out_param_ > kParamMax) ? kParamMax : fade_out_param_;
+    }
 }
 
 //
@@ -211,8 +223,7 @@ void Game::Update(SceneName& name)
     }
     
 
-    //printfDx("GaussF%d\n", pixel);
-
+ 
     SetUseLighting(TRUE);
     
 
@@ -259,7 +270,7 @@ void Game::Draw()
     super_attack_UI_->Draw();
     enemy_count_UI_->Draw();
 
-    //Draw2D::BlackBoxBlend(static_cast<int>(fade_out_param_));
+    Draw2D::WhiteBoxBlend(static_cast<int>(fade_out_param_));
 
     DrawFormatString((kGameWidth - 300), (kGameHeight - 30), GetColor(0, 0, 0), "TAB / BACK Button : result");
 }
