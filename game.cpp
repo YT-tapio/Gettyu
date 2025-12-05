@@ -5,6 +5,7 @@
 #include"gauss.h"
 #include"mask.h"
 #include"normal_sub_screen.h"
+
 Game::Game()
     :BaseScene(SceneName::kGame)
 {
@@ -84,6 +85,12 @@ void Game::GameClear(SceneName& name)
     }
 }
 
+void Game::FadeOut()
+{
+    const float kFadeOutSpeed = 5.f;
+    fade_out_param_ += (kFadeOutSpeed * FPS::GetInstance().GetDeltaTime());
+}
+
 //
 
 
@@ -138,6 +145,8 @@ void Game::Init()
 
     clear_timer_        = std::make_shared<ConditionTimer>(10.f);
     clear_offset_timer_ = std::make_shared<ConditionTimer>(1.f);
+    
+    fade_out_param_ = 0.f;
 }
 
 void Game::Update(SceneName& name)
@@ -233,6 +242,7 @@ void Game::Update(SceneName& name)
     GameClear(name);
 
     
+    
 
     FPS::GetInstance().SetTimeScale(time_scale);
 
@@ -248,6 +258,8 @@ void Game::Draw()
     weapon_UI_->Draw();
     super_attack_UI_->Draw();
     enemy_count_UI_->Draw();
+
+    //Draw2D::BlackBoxBlend(static_cast<int>(fade_out_param_));
 
     DrawFormatString((kGameWidth - 300), (kGameHeight - 30), GetColor(0, 0, 0), "TAB / BACK Button : result");
 }

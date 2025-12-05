@@ -1,8 +1,14 @@
 #pragma once
 #include"DxLib.h"
+#include"screen.h"
+#include"color.h"
+#include"vector_assistant.h"
 
 namespace Draw2D
 {
+	// 中心座標の設定
+	VECTOR center_pos = VectorAssistant::Get2DVec((kGameWidth * 0.5f), (kGameHeight * 0.5f));
+
 	/// @brief ボックスの描画
 	/// @param pos 中心座標
 	/// @param width よこ
@@ -64,6 +70,20 @@ namespace Draw2D
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha_num);
 		ExtendGraph(pos, width, height, data, alpha);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	}
+
+	/// @brief 汎用性が高そうなので関数化しておく : 画面全体を覆う,black_outなどを行う
+	/// @param alpha_num	透過率
+	inline void BlackBoxBlend(const int& alpha_num)
+	{
+		BlendBox(center_pos, kGameWidth, kGameHeight, Color::kBlack, TRUE, alpha_num);
+	}
+
+	/// @brief 汎用性が高そうなので関数化しておく : 画面全体を覆う,white_outなどを行う
+	/// @param alpha_num	透過率
+	inline void WhiteBoxBlend(const int& alpha_num)
+	{
+		BlendBox(center_pos, kGameWidth, kGameHeight, Color::kWhite, TRUE, alpha_num);
 	}
 
 	

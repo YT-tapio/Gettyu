@@ -758,5 +758,8 @@
     <ClInclude Include="screen_state.h">
       <Filter>ソース ファイル\scene</Filter>
     </ClInclude>
+    <ClInclude Include="color.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

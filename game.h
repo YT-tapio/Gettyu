@@ -49,11 +49,15 @@ private:
 	std::shared_ptr<ConditionTimer>	clear_offset_timer_;
 	std::shared_ptr<ConditionTimer> clear_timer_;
 
+	float fade_out_param_;
+
 	void DrawShadowMap();
 
 	void ScreenDraw();
 
 	void GameClear(SceneName& name);
+
+	void FadeOut();
 
 public:
 

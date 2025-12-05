@@ -221,6 +221,7 @@
     <ClInclude Include="button_manager.h" />
     <ClInclude Include="button_selecter.h" />
     <ClInclude Include="button_state.h" />
+    <ClInclude Include="color.h" />
     <ClInclude Include="Draw2D.h" />
     <ClInclude Include="alert.h" />
     <ClInclude Include="alert_state.h" />
