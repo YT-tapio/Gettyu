@@ -755,5 +755,8 @@
     <ClInclude Include="game_clear.h">
       <Filter>ソース ファイル\camera\virtual_camera\game_clear</Filter>
     </ClInclude>
+    <ClInclude Include="screen_state.h">
+      <Filter>ソース ファイル\scene</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

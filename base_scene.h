@@ -5,7 +5,8 @@ enum class SceneName
 {
 	kTitle,
 	kGame,
-	kResult
+	kResult,
+	kEnd
 };
 
 

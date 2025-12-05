@@ -125,9 +125,7 @@ void SceneManager::Update()
         FPS::GetInstance().Wait();
         FPS::GetInstance().SetPrevTime();
 
-        
-
-
+        if (now_scene_name_ == SceneName::kEnd){ break; }
     }
     
     now_scene_ = nullptr;

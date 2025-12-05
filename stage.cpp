@@ -101,43 +101,10 @@ void Stage::MakeCollCheckCapsule(CapsuleData old_cap, CapsuleData next_cap)
 }
 
 
-bool Stage::IsStair(const VECTOR& poly_pos, const VECTOR& entity_pos,const MV1_COLL_RESULT_POLY_DIM& hit_dim)
+bool Stage::IsStair(const VECTOR& poly_pos, const VECTOR& entity_pos)
 {
-	const int kPolyMax = 3;
-	const float kMaxHeightDist = 3.f;
-	//階段かどうかの判定
-	bool is_stair = FALSE;
-	//元のposから一番離れているところ
-	float max_dist = 0.f;
-
-
-
-	for (int i = 0; i < hit_dim.HitNum; i++)
-	{
-		auto poly = hit_dim.Dim[i];
-
-		//3つの頂点から一番低いvecを受け取る
-		
-		for (int j = 0; j < kPolyMax; j++)
-		{
-			//entityよりもposが高いのなら
-			if (poly.Position[j].x < entity_pos.y) { continue; }
-
-			float height_dist = poly_pos.y - poly.Position[j].y;
-
-			//判定するポリゴンの位置よりも低いとき
-			max_dist = (height_dist > max_dist) ? height_dist : max_dist;
-
-		}
-	}
-
-	if (max_dist == 0.f)
-	{
-		return TRUE;
-	}
-
-	// heightdistよりもしただとみなす
-	return max_dist < kMaxHeightDist;
+	// polyの高さがentityのposよりも小さいのなら
+	return entity_pos.y > poly_pos.y;
 }
 
 bool Stage::CheckDownColl(const std::shared_ptr<CollisionBase> coll)
@@ -489,7 +456,7 @@ VECTOR Stage::CheckCollision(std::shared_ptr<CollisionBase> object_coll, const V
 					// 俺的には最初で判断していいと思う
 					// フラグを返す関数を作るそれがTRUEの時はそいつを除外するような感じにしたい
 					// 地面時に判断するようにする
-					if ((!(poly.Normal.y <= 0.f)) && !IsStair(poly_center_pos, next_coll->GetPos(), hit_dim)) { continue; }
+					if ((!(poly.Normal.y <= 0.f)) && !IsStair(poly_center_pos, next_coll->GetPos())) { continue; }
 
 
 					/*----------ここからはセグメントのやつ(capsuleのstart_posのやつ)------------*/

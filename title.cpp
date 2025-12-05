@@ -10,9 +10,9 @@ Title::Title()
 	:BaseScene(SceneName::kTitle)
 	,button_num_(0)
 {
-	start_ = FALSE;
-	flag1_ = FALSE;
-	flag2_ = FALSE;
+	start_			= FALSE;
+	go_input_type_	= FALSE;
+	game_end_		= FALSE;
 }
 
 
@@ -26,13 +26,13 @@ void Title::Init()
 	SetMouseDispFlag(TRUE);
 	selecter_ = std::make_shared<ButtonSelecter>();
 	buttons_.push_back(std::make_shared<Button>(VectorAssistant::Get2DVec(100.f, 200.f), 100, 100, "", 0,&start_));
-	buttons_.push_back(std::make_shared<Button>(VectorAssistant::Get2DVec(250.f, 200.f), 100, 100, "", 1, &flag1_));
-	buttons_.push_back(std::make_shared<Button>(VectorAssistant::Get2DVec(400.f, 200.f), 100, 100, "", 2, &flag2_));
+	buttons_.push_back(std::make_shared<Button>(VectorAssistant::Get2DVec(250.f, 200.f), 100, 100, "", 1, &go_input_type_));
+	buttons_.push_back(std::make_shared<Button>(VectorAssistant::Get2DVec(400.f, 200.f), 100, 100, "", 2, &game_end_));
 }
 
 void Title::Update(SceneName& name)
 {
-	//name = SceneName::kGame;
+	
 	if (Input::GetInstance().CheckInputKey(KeyConfig::kChangeSceneKey) == InputState::kPush || 
 		Input::GetInstance().CheckInputPadButton(PadConfig::kChangeSceneButton) == InputState::kPush)
 	{
@@ -67,7 +67,20 @@ void Title::Update(SceneName& name)
 		name = SceneName::kGame;
 	}
 
+
+	if(go_input_type_)
+	{
+		
+	}
+
+
+	if (game_end_)
+	{
+		name = SceneName::kEnd;
+	}
 	
+	
+
 	
 
 	// name = SceneName::kGame;

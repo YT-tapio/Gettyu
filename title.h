@@ -16,8 +16,8 @@ private:
 	std::shared_ptr<ButtonSelecter> selecter_;
 
 	bool start_;
-	bool flag1_;
-	bool flag2_;
+	bool go_input_type_;
+	bool game_end_;
 
 public:
 

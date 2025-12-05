@@ -336,7 +336,6 @@ void Brain::InitGet(const VECTOR& camera_pos,const VECTOR& enemy_pos)
 	get_dist_		= VSize(dist_vec);
 	
 	// enemyのポジションをセンターとするposを保存する
-
 	get_camera_vertical_rad_	= atan2f(sqrt((dist_vec.x * dist_vec.x) + (dist_vec.z * dist_vec.z)), dist_vec.y);
 	get_camera_side_rad_		= atan2f(dist_vec.x,dist_vec.z);
 	get_camera_target_pos_		= enemy_pos;
@@ -353,7 +352,7 @@ void Brain::InitTracking(const VECTOR& center_pos)
 	next_pos_ = GetRotatedByTheDistanceFromThePos(kInitVerRad, side_rad_, kInitDist, center_pos);
 }
 
-void Brain::InitGameClear(const VECTOR& camera_pos, const VECTOR& player_pos)
+void Brain::InitGameClear(const VECTOR& camera_pos,const VECTOR& target_pos, const VECTOR& player_pos,const VECTOR& player_center_pos)
 {
 
 	const float kOffsetSize = 10.f;
@@ -370,7 +369,13 @@ void Brain::InitGameClear(const VECTOR& camera_pos, const VECTOR& player_pos)
 	// カメラの最終位置を出す
 	next_pos_ = VAdd(camera_pos, offset_vel);
 
-	next_pos_.y = player_pos.y;												// 座標を合わせる
+	//playerの足元からの視線に合わせる
+	next_pos_.y = player_pos.y;
+
+	//player_center_posにtarget_posを合わせる
+
+	target_velocity_ = VSub(player_center_pos, target_pos);
+
 }
 
 void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::shared_ptr<Player> player)
@@ -637,7 +642,7 @@ void Brain::ChangeCameraInit(int& before_camera_name,const VECTOR& camera_pos,st
 			break;
 
 		case VirtualCameraName::kGameClear:
-			InitGameClear(camera_pos,player->GetPos());
+			InitGameClear(camera_pos,now_target_pos,player->GetPos(),player->GetCenterPos());
 			break;
 
 		}

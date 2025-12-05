@@ -68,9 +68,10 @@ void Effect::Play()
 	//ƒ‹[ƒv‚È‚µ‚Ìê‡
 	if (!loop_)
 	{
+
 		if (play_count_ > play_count_max_)
 		{
-			play_count_ = 0.0f;
+			// play_count_ = 0.0f;
 			StopEffekseer3DEffect(playing_handle_);
 			is_play_ = FALSE;
 			is_end_ = TRUE;

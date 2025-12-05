@@ -35,7 +35,14 @@ private:
 
 	void MakeCollCheckCapsule(CapsuleData old_cap, CapsuleData next_cap);
 
-	bool IsStair(const VECTOR& pos, const VECTOR& entity_pos, const MV1_COLL_RESULT_POLY_DIM& hit_dim);
+	/// <summary>
+	/// 階段かどうかの判別
+	/// </summary>
+	/// <param name="pos"></param>
+	/// <param name="entity_pos"></param>
+	/// <param name="hit_dim"></param>
+	/// <returns></returns>
+	bool IsStair(const VECTOR& pos, const VECTOR& entity_pos);
 
 
 	// 壁ポリゴンとの当たりをチェックし、補正すべき移動ベクトルを返す

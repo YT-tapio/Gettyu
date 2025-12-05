@@ -64,6 +64,8 @@ private:
 
 	const float kDanceStop					= 106.4f;
 
+	const float kGameClearEffectHideTime = 30.f;
+
 	const VECTOR kScale = VGet(0.01f, 0.01f, 0.01f);
 
 	//MixamoBonePath bone_;

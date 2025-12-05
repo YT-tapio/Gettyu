@@ -50,7 +50,7 @@ Player::Player(VECTOR pos, int pad_num,int div, float r, float vertical_num)
 	is_switch_weapon_		= FALSE;
 	animation_				= std::make_shared<Animation>();
 	super_attack_			= new SuperAttack(VGet(0, 0, 0), "");
-	game_clear_effect_ = std::make_shared<Effect>(kGameClearEffectPath, VectorAssistant::GetZeroVec(), VectorAssistant::GetZeroVec(), kGameClearEffectSpeed, kGameClearEffectSize, kGameClearEffectCountMax, TRUE);
+	game_clear_effect_ = std::make_shared<Effect>(kGameClearEffectPath, VectorAssistant::GetZeroVec(), VectorAssistant::GetZeroVec(), kGameClearEffectSpeed, kGameClearEffectSize, kGameClearEffectCountMax, FALSE);
 	Init(pos);
 
 	VECTOR capsule_start_pos	= VAdd(pos, VGet(0.f, r, 0.f));
@@ -260,6 +260,9 @@ void Player::Draw()
 {
 	//キャラクター表示
 	//MV1SetDifColorScale(model_, GetColorF(1.0f, 0.0f, 0.0f, 1.0f));
+
+	if (game_clear_effect_->GetPlayCount() > kGameClearEffectHideTime) { return; }
+
 	MV1DrawModel(model_);
 	super_attack_->Draw();
 	if (weapon_ != nullptr)
@@ -275,6 +278,8 @@ void Player::Debug()
 	{
 		coll_->Debug();
 
+
+
 		//
 		DrawFormatString(0, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), GetColor(0, 0, 0), "---------player--------");
 		Debug::GetInstance().Add();
@@ -285,6 +290,9 @@ void Player::Debug()
 		Debug::GetInstance().Add();
 
 		DrawFormatString(0, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), GetColor(0, 0, 0), "%.2f", sound_vibration_->GetNum());
+		Debug::GetInstance().Add();
+
+		DrawFormatString(0, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), GetColor(0, 0, 0), "%.2f", game_clear_effect_->GetPlayCount());
 		Debug::GetInstance().Add();
 
 		animation_->Debug(now_type_);
@@ -380,11 +388,13 @@ void Player::AttachWeapon(WeaponName name)
 	MATRIX rotation_matrix = MGetRotY(rotation_.y);
 
 	model_matrix_ = MMult(MMult(
-		MGetRotY(rotation_.y), MGetScale(VGet(0.01f, 0.01f, 0.01f))), pos_matrix);
+		MGetRotY(rotation_.y), MGetScale(kScale)), pos_matrix);
 
 	MV1SetMatrix(model_, model_matrix_);
 	
-	frame_num_ = MV1SearchFrame(model_, "mixamorig:RightHand");
+	const TCHAR* frame_path = "mixamorig:RightHand";
+
+	frame_num_ = MV1SearchFrame(model_, frame_path);
 
 	MATRIX frame_mat = 
 		MV1GetFrameLocalWorldMatrix(model_, frame_num_);

@@ -213,7 +213,7 @@ public:
 	void InitTracking(const VECTOR& center_pos);
 
 	//
-	void InitGameClear(const VECTOR& camera_pos, const VECTOR& player_pos);
+	void InitGameClear(const VECTOR& camera_pos, const VECTOR& target_pos, const VECTOR& player_pos, const VECTOR& player_center_pos);
 
 	//
 	void Update(const VECTOR& target_pos, const VECTOR& camera_pos, std::shared_ptr<Player> player);
