@@ -9,9 +9,12 @@
 #include"const_rad.h"
 #include"fov_function.h"
 #include"vector_assistant.h"
+#include"stage.h"
+#include"collision_base.h"
 
 EnemyBase::EnemyBase(const int model, const VECTOR& pos,
-	const VECTOR& scale, const VECTOR& rot, Effect* get_effect,Effect* got_effect,float speed, float fleeping_speed, AlertState alert, float fov)
+	const VECTOR& scale, const VECTOR& rot, Effect* get_effect, Effect* got_effect, float speed,
+	float fleeping_speed, AlertState alert, float fov,std::shared_ptr<Stage> stage,std::shared_ptr<CollisionBase> coll)
 {
 	fsm_		= std::make_shared<EnemyFSM>();
 	navigation_ = std::make_shared<Navigation>();
@@ -31,14 +34,14 @@ EnemyBase::EnemyBase(const int model, const VECTOR& pos,
 	state_ = nullptr;
 
 	//VECTOR
-	pos_ = pos;
-	dir_ = VGet(0.f, 0.f, 0.f);
-	rot_ = rot;
-	velocity_ = VGet(0.f, 0.f, 0.f);
-	scale_ = scale;
+	pos_			= pos;
+	dir_			= VGet(0.f, 0.f, 0.f);
+	rot_			= rot;
+	velocity_		= VGet(0.f, 0.f, 0.f);
+	scale_			= scale;
 
-	target_pos_ = VGet(0.f, 0.f, 0.f);
-	start_pos_ = VGet(0.f, 0.f, 0.f);
+	target_pos_		= VGet(0.f, 0.f, 0.f);
+	start_pos_		= VGet(0.f, 0.f, 0.f);
 
 	my_way_point_ = nullptr;
 	before_way_point_ = nullptr;
@@ -49,8 +52,11 @@ EnemyBase::EnemyBase(const int model, const VECTOR& pos,
 	mat_ = MMult(MMult(MGetRotY(0.0f), MGetScale(scale_)), 
 		MGetTranslate(pos_));
 
-	is_get_ = FALSE;
-	is_fleeping_ = FALSE;
+	is_get_			= FALSE;
+	is_fleeping_	= FALSE;
+
+	is_ground_		= FALSE;
+
 	delta_time_ = 0.0f;
 
 	get_effect_ = get_effect;
@@ -90,9 +96,10 @@ EnemyBase::EnemyBase(const int model, const VECTOR& pos,
 	//‚à‚Æ‚à‚Æ‚Ì‚â‚Â‚Æ‚Ì”ä‚ðì‚éA‚»‚Ì”ä‚ðtimer‚ÉŠ|‚¯‚é
 	alert_timer_ = new ConditionTimer(kNormalAlertTime * (alert_dist_ / kAlertNormal));
 
-
 	fov_ = fov;
 	debug_color_ = GetColor(255, 255, 255);
+	stage_ = stage;
+	coll_ = coll;
 }
 
 EnemyBase::~EnemyBase()
@@ -326,9 +333,6 @@ void EnemyBase::EffectUpdate()
 			got_effect_->Play();			
 		}
 	}
-
-	
-
 }
 
 
@@ -388,8 +392,6 @@ void EnemyBase::Draw(int i)
 {
 
 	mat_ = MMult(MMult(MGetRotY(rot_.y), MGetScale(scale_)), MGetTranslate(pos_));
-
-	
 	
 
 	if (model_ == -1)
@@ -445,8 +447,11 @@ void EnemyBase::Debug(int i)
 
 		case CollisionName::kSphere:
 
+			/*
 			DrawSphere3D(collision_data_.pos, 3.f, 15, GetColor(100 * (i), 255 - (70 * i), 100 - (0 * i)),
 				GetColor(50 * (i), 255 - (50 * i), 255), FALSE);
+			*/
+			
 
 			break;
 
@@ -457,6 +462,7 @@ void EnemyBase::Debug(int i)
 			break;
 		}
 
+		coll_->Debug();
 		
 		DrawSphere3D(pos_, alert_dist_, 20, debug_color_, debug_color_, FALSE);		// Œx‰ú‹——£‚ð‰ÂŽ‹‰»
 		DrawSphere3D(pos_, engagement_dist_, 20, red, red, FALSE);					// Ú“G‹——£
@@ -523,15 +529,10 @@ void EnemyBase::Debug(int i)
 		}
 
 		
-
-
-		
 		//navigation‚Ì‰ÂŽ‹‰»
 		navigation_->Debug();
 
 	}
-
-
 }
 
 void EnemyBase::SetColor(int color)

@@ -14,12 +14,17 @@ class BaseScene
 {
 private:
 
+	
 	SceneName name_;
+
+protected:
+
+	int player_model_;
 
 public:
 
 
-	BaseScene(SceneName name);
+	BaseScene(SceneName name,int model);
 
 	virtual ~BaseScene() = 0;
 

@@ -29,6 +29,7 @@ class Game : public BaseScene
 {
 private:
 
+
 	std::shared_ptr<EffectManager>effect_player_;
 	std::shared_ptr<Player>player_;
 	std::shared_ptr<Brain>brain_;
@@ -61,7 +62,7 @@ private:
 
 public:
 
-	Game();
+	Game(int model);
 
 	~Game() override;
 

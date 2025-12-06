@@ -11,10 +11,13 @@
 #include"alert_state.h"
 #include"navigation.h"
 
+
 class Player;
 class Animation;
 class BaseEnemyState;
 class EnemyFSM;
+class Stage;
+class CollisionBase;
 
 class EnemyBase
 {
@@ -34,7 +37,10 @@ private:
 	VECTOR near_way_point_pos_ = VGet(0, 0, 0);
 
 	
+
 	std::shared_ptr<WayPoint> DecideNextWayPoint(const VECTOR& player_pos, std::vector<std::shared_ptr<WayPoint>>way_points);
+
+	
 
 	float MakeWayPointScore(const VECTOR& player_pos, std::shared_ptr<WayPoint> way_point);
 
@@ -45,6 +51,8 @@ protected:
 	CollisionData collision_data_;
 	std::shared_ptr<BaseEnemyState> state_;		//一貫して最初はpatrolling
 	
+	std::shared_ptr<CollisionBase> coll_;
+
 	//AI
 	std::shared_ptr<EnemyFSM> fsm_;
 	std::shared_ptr<Navigation> navigation_;
@@ -54,6 +62,10 @@ protected:
 	AnimationType before_anim_type_;			//1つ前のアニメーション
 	AnimationType before_before_anim_type_;	//2つ前のアニメーション
 
+	//playerのインスタンスの保持
+	Player* player_;
+
+	std::shared_ptr<Stage> stage_;
 	//way_pointを保存しておく
 	std::shared_ptr<WayPoint> my_way_point_;
 	std::shared_ptr<WayPoint> before_way_point_;
@@ -79,6 +91,8 @@ protected:
 	bool is_alert_;
 	
 	bool lerp_flag_;			//移動の際のラープ
+
+	bool is_ground_;
 
 	int model_;
 	int debug_color_;
@@ -108,7 +122,8 @@ protected:
 public:
 
 	EnemyBase(const int model, const VECTOR& pos,
-		const VECTOR& scale, const VECTOR& rot, Effect* effect, Effect* got_effect, float speed, float fleeping_speed, AlertState alert, float fov);
+		const VECTOR& scale, const VECTOR& rot, Effect* effect, Effect* got_effect,
+		float speed, float fleeping_speed, AlertState alert, float fov, std::shared_ptr<Stage> stage,std::shared_ptr<CollisionBase> coll);
 
 
 	virtual ~EnemyBase() = 0;

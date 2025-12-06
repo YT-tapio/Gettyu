@@ -7,8 +7,8 @@
 #include"normal_sub_screen.h"
 #include"Draw2D.h"
 
-Game::Game()
-    :BaseScene(SceneName::kGame)
+Game::Game(int model)
+    :BaseScene(SceneName::kGame,model)
 {
     
 }
@@ -91,8 +91,8 @@ void Game::GameClear(SceneName& name)
 
 void Game::FadeOut()
 {
-    const float kFadeOutSpeed         = 5.f;
-    const float kFadeOutTime          = 4.5f;
+    const float kFadeOutSpeed         = 15.f;
+    const float kFadeOutTime          = 3.2f;
     const int kParamMax                 = 255;
 
     if (clear_timer_->GetNowTimer() >= kFadeOutTime)
@@ -124,7 +124,7 @@ void Game::Init()
     effect_player_ = std::make_shared<EffectManager>("", 1.0f, 120);
 
     //player‚ğ¶¬
-    player_ = std::make_shared<Player>(VGet(0, 10, 100), DX_INPUT_PAD1, 20, 2.0f, 10.0f);
+    player_ = std::make_shared<Player>(VGet(0, 10, 100), player_model_,DX_INPUT_PAD1, 20, 2.0f, 10.0f);
 
     brain_ = std::make_shared<Brain>(player_->GetCenterPos());
 
@@ -138,7 +138,7 @@ void Game::Init()
     brain_->Init(Camera::GetInstance().GetPos(), player_->GetCenterPos());
     Camera::GetInstance().Init(brain_->GetVelocity());
 
-    enemy_manager_ =std::make_shared<EnemyManager>();
+    enemy_manager_ = std::make_shared<EnemyManager>(stage_);
 
     enemy_manager_->Init();
 

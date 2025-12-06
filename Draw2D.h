@@ -85,7 +85,4 @@ namespace Draw2D
 	{
 		BlendBox(kCenterPos, kGameWidth, kGameHeight, Color::kWhite, TRUE, alpha_num);
 	}
-
-	
-
 }

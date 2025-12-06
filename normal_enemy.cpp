@@ -9,11 +9,14 @@
 #include"rot_function.h"
 #include"Lerp.h"
 #include"vector_assistant.h"
+#include"collision_base.h"
+#include"collision_sphere.h"
+#include"stage.h"
 
-
-NormalEnemy::NormalEnemy(const TCHAR* model_path, const VECTOR& pos, const VECTOR& scale, const VECTOR& dir, Effect* get_effect, Effect* got_effect, float speed, float fleeping_speed, AlertState alert, float fov)
-	:EnemyBase(MV1LoadModel(model_path),pos,scale,dir,get_effect,got_effect,speed,fleeping_speed,alert,fov)
+NormalEnemy::NormalEnemy(const TCHAR* model_path, const VECTOR& pos, const VECTOR& scale, const VECTOR& dir, Effect* get_effect, Effect* got_effect, float speed, float fleeping_speed, AlertState alert, float fov, std::shared_ptr<Stage> stage)
+	:EnemyBase(MV1LoadModel(model_path),pos,scale,dir,get_effect,got_effect,speed,fleeping_speed,alert,fov,stage, std::make_shared<CollisionSphere>(VGet(pos.x, (pos.y + 3.f), pos.z), 3.f))
 {
+	const float kCollRadius = 3.f;
 	collision_data_.name = CollisionName::kSphere;
 	collision_data_.pos = pos;
 	collision_data_.r = 3.f;
@@ -24,6 +27,8 @@ NormalEnemy::NormalEnemy(const TCHAR* model_path, const VECTOR& pos, const VECTO
 	target_rot_ = 0.f;
 	is_return_ = FALSE;
 	lerp_flag_ = FALSE;
+
+	fall_speed_ = 0.f;
 
 	wait_timer_ = new ConditionTimer(kWaitTime);
 }
@@ -70,6 +75,24 @@ void NormalEnemy::DecideNextPos()
 
 	wait_timer_->Reset();
 
+}
+
+bool NormalEnemy::CheckIsGound()
+{
+	return !stage_->CheckDownColl(coll_);
+}
+
+void NormalEnemy::Gravity()
+{
+	if (!is_ground_)
+	{
+		fall_speed_ -= kGravity * FPS::GetInstance().GetDeltaTime();
+		velocity_ = VAdd(velocity_, VGet(0.f, fall_speed_, 0.f));
+	}
+	else
+	{
+		fall_speed_ = 0.f;
+	}
 }
 
 
@@ -187,6 +210,10 @@ void NormalEnemy::Update(std::shared_ptr<Player> player, bool& got)
 
 	velocity_ = VGet(0, 0, 0);
 	
+	//着地判定
+	is_ground_ = CheckIsGound();
+	
+
 	//状態変化
 	const auto next_state = fsm_->UpdateState(state_, player, this);
 
@@ -225,13 +252,16 @@ void NormalEnemy::Update(std::shared_ptr<Player> player, bool& got)
 	//stateによるupdate
 	state_->Update(this, player);
 
+	Gravity();
+
 	//アニメーションの更新
 	AnimationUpdate();
 
+	velocity_ = stage_->CheckCollision(coll_, velocity_);
 	//ポジションの更新
 
 	pos_ = VAdd(pos_, velocity_);
-
+	coll_->Update(velocity_);
 	//当たり判定の位置は半径分上げる
 	collision_data_.pos = pos_;
 	collision_data_.pos.y += collision_data_.r;

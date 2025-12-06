@@ -42,8 +42,12 @@ private:
 	/// <param name="entity_pos"></param>
 	/// <param name="hit_dim"></param>
 	/// <returns></returns>
-	bool IsStair(const VECTOR& pos, const VECTOR& entity_pos);
+	bool IsStair(const VECTOR& pos, const VECTOR& entity_pos, const float& r);
 
+	/// @brief 平らなのかの判定を行う
+	/// @param norm 
+	/// @return 
+	bool IsFlat(const VECTOR& norm);
 
 	// 壁ポリゴンとの当たりをチェックし、補正すべき移動ベクトルを返す
 	VECTOR CheckHitWithWall(Player& player, const VECTOR& check_position);

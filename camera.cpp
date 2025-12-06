@@ -62,8 +62,4 @@ void Camera::Draw()
 
 		DrawSphere3D(target_pos_, 1, 20, GetColor(255, 255, 255), GetColor(255, 255, 255), FALSE);
 	}
-
-	
 }
-
-

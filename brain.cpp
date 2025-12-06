@@ -375,6 +375,7 @@ void Brain::InitGameClear(const VECTOR& camera_pos,const VECTOR& target_pos, con
 	//player_center_posÇ…target_posÇçáÇÌÇπÇÈ
 
 	target_velocity_ = VSub(player_center_pos, target_pos);
+	target_velocity_ = VAdd(target_velocity_, VGet(0.f, 3.f, 0.f));
 
 }
 
@@ -813,8 +814,8 @@ void Brain::UpdateSphere(const VECTOR& target_pos,const VECTOR& camera_pos)
 
 	if (mouse_side_rad_value == 0.0f && mouse_vertical_rad_value == 0.0f)
 	{
-		//decide_side_rad_value = pad_side_rad_value;
-		//decide_vertical_rad_value = pad_vertical_rad_value;
+		decide_side_rad_value = pad_side_rad_value;
+		decide_vertical_rad_value = pad_vertical_rad_value;
 	}
 
 	if (mouse_side_rad_value == 0.0f && mouse_vertical_rad_value == 0.0f &&

@@ -38,9 +38,4 @@ namespace Collision2D
 		}
 		return TRUE;
 	}
-
-
-
-	
-
 }

@@ -49,10 +49,9 @@ SceneManager::SceneManager()
     SetUseBackCulling(TRUE);		// バックカリングを行う
 
     
-
     SetUseSetDrawScreenSettingReset(false);
 
-	now_scene_ = std::make_shared<Title>();
+	now_scene_ = std::make_shared<Title>(player_model_);
 
 	now_scene_->Init();
 	now_scene_name_ = now_scene_->GetName();
@@ -60,11 +59,13 @@ SceneManager::SceneManager()
     FPS::GetInstance();
     Timer::GetInstance();
     Input::GetInstance().Awake(DX_INPUT_PAD1);
+
+    player_model_ = MV1LoadModel(kPlayerModelPath);
 }
 
 SceneManager::~SceneManager()
 {
-    
+    MV1DeleteModel(player_model_);
 }
 
 void SceneManager::Update()
@@ -84,15 +85,15 @@ void SceneManager::Update()
             switch (now_scene_name_)
             {
             case SceneName::kTitle:
-                now_scene_ = std::make_shared<Title>();
+                now_scene_ = std::make_shared<Title>(player_model_);
                 break;
 
             case SceneName::kGame:
-                now_scene_ = std::make_shared<Game>();
+                now_scene_ = std::make_shared<Game>(player_model_);
                 break;
 
             case SceneName::kResult:
-                now_scene_ = std::make_shared<Result>();
+                now_scene_ = std::make_shared<Result>(player_model_);
                 break;
             }
             

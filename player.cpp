@@ -25,8 +25,8 @@
 #include"vector_assistant.h"
 #include"const_rad.h"
 
-Player::Player(VECTOR pos, int pad_num,int div, float r, float vertical_num)
-	: model_(MV1LoadModel(kModelPath))
+Player::Player(VECTOR pos, int model, int pad_num,int div, float r, float vertical_num)
+	: model_(model)
 	, pad_input_num_(pad_num)
 	, weapon_(nullptr)
 	, now_type_(AnimationType::kNothing)
@@ -50,7 +50,7 @@ Player::Player(VECTOR pos, int pad_num,int div, float r, float vertical_num)
 	is_switch_weapon_		= FALSE;
 	animation_				= std::make_shared<Animation>();
 	super_attack_			= new SuperAttack(VGet(0, 0, 0), "");
-	game_clear_effect_ = std::make_shared<Effect>(kGameClearEffectPath, VectorAssistant::GetZeroVec(), VectorAssistant::GetZeroVec(), kGameClearEffectSpeed, kGameClearEffectSize, kGameClearEffectCountMax, FALSE);
+	game_clear_effect_		= std::make_shared<Effect>(kGameClearEffectPath, VectorAssistant::GetZeroVec(), VectorAssistant::GetZeroVec(), kGameClearEffectSpeed, kGameClearEffectSize, kGameClearEffectCountMax, FALSE);
 	Init(pos);
 
 	VECTOR capsule_start_pos	= VAdd(pos, VGet(0.f, r, 0.f));
@@ -59,16 +59,17 @@ Player::Player(VECTOR pos, int pad_num,int div, float r, float vertical_num)
 	coll_ = std::make_shared<CollisionCapsule>(capsule_start_pos, capsule_end_pos, r);
 
 	MATRIX pos_matrix		= MGetTranslate(pos_);
+	MATRIX scale_matrix		= MGetScale(kScale);
 	MATRIX rotation_matrix	= MGetRotY(rotation_.y);
 
-	model_matrix_ = MMult(MMult(MGetRotY(rotation_.y), MGetScale(kScale)), pos_matrix);
+	model_matrix_ = MMult(MMult(rotation_matrix, scale_matrix), pos_matrix);
 
 	MV1SetMatrix(model_, model_matrix_);
 }
 
 Player::~Player()
 {
-	MV1DeleteModel(model_);
+	//MV1DeleteModel(model_);
 	delete weapon_;
 	delete super_attack_;
 	delete super_weapon_spin_effect_;
@@ -151,7 +152,7 @@ void Player::CheckIsGround(Stage& stage)
 	}
 }
 
-void Player::ClearUpdate(const VECTOR& camera_pos)
+void Player::GameClearUpdate(const VECTOR& camera_pos)
 {
 
 	//カメラの方向に向く
@@ -242,9 +243,9 @@ void Player::Init(VECTOR pos)
 
 	pos_		= pos;
 	fall_speed_ = 0.0f;
-	velocity_	= VGet(0, 0, 0);
-	direction_	= VGet(0, 0, 0);
-	rotation_	= VGet(0, 0, 0);
+	velocity_	= VectorAssistant::GetZeroVec();
+	direction_	= VectorAssistant::GetZeroVec();
+	rotation_	= VectorAssistant::GetZeroVec();
 	before_rot_ = 0.0f;
 
 	is_ground_ = TRUE;
@@ -475,7 +476,7 @@ void Player::Update(Stage& stage,float target_rot)
 	else
 	{
 		// クリア判定になったらアニメーションを違うのに切り替える
-		ClearUpdate(camera_pos);
+		GameClearUpdate(camera_pos);
 	}
 
 
@@ -679,8 +680,6 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 	}
 	
 	DecideAnimation();
-
-
 }
 
 
@@ -828,28 +827,12 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 
 	//とりあえず右スティックの入力量を受け取る
 	//今連続でふれるようになってしまっている
-	if (Input::GetInstance().GetPadStickVertical(StickType::kRight) > 150.f && now_weapon_name_ != WeaponName::kWizardStaff)
+	if ((Input::GetInstance().CheckInputPadButton(PadConfig::kAttackButton) == InputState::kPush ) && now_weapon_name_ != WeaponName::kWizardStaff)
 	{
-		//元から振っているときはダメにする
-		if (is_ground_ && !is_attack_ && !rejected)
-		{
-			target_rot_ = rotation + Input::GetInstance().GetPadStickRad(StickType::kRight);
-			now_type_ = AnimationType::kSwordSlash;
-			now_state_ = PlayerState::kAttack;
-			is_attack_ = TRUE;
-			if (target_rot_ > (static_cast<float>((M_PI / 180) * 180)))
-			{
-				target_rot_ = target_rot_ - (static_cast<float>((M_PI / 180) * 360));
-			}
+		now_type_ = AnimationType::kSwordSlash;
+		now_state_ = PlayerState::kAttack;
+		is_attack_ = TRUE;
 
-			if (target_rot_ < -(static_cast<float>((M_PI / 180) * 180)))
-			{
-				target_rot_ = target_rot_ + (static_cast<float>((M_PI / 180) * 360));
-			}
-
-			before_rot_ = target_rot_;
-			rejected = TRUE;
-		}
 	}
 	else
 	{

@@ -17,4 +17,3 @@ struct CollisionData
 };
 
 inline CollisionData CollisionDataUpdate(const CollisionData& data, const VECTOR& vel);
-

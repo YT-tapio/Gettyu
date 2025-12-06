@@ -28,10 +28,5 @@ bool SphereCapsuleCollision(const CollisionData& one, const CollisionData& two)
 
 	}
 
-
-
-
-
-
 	return flag;
 }

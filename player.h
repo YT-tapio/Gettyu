@@ -44,8 +44,7 @@ class Player
 {
 private:
 
-	const char* kModelPath					= "data/model/character/Dreyar_By_M.Aure.mv1";
-	const char* kGameClearEffectPath	= "data/effect/Pierre02/FeatherBomb.efkefc";
+	const char* kGameClearEffectPath		= "data/effect/Pierre02/FeatherBomb.efkefc";
 
 	const float kWalkSpeed					= 1.0f;
 	const float kNormalSpeed				= 2.5f;
@@ -144,14 +143,14 @@ private:
 
 	void CheckIsGround(Stage& stage);
 
-	void ClearUpdate(const VECTOR& camera_pos);
+	void GameClearUpdate(const VECTOR& camera_pos);
 
 	void DecideAnimation();
 
 public:
 
 
-	Player(VECTOR pos, int pad_num, int div, float r, float vertical_num);
+	Player(VECTOR pos, int model, int pad_num, int div, float r, float vertical_num);
 
 	~Player();
 

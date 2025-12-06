@@ -5,17 +5,18 @@
 
 class Player;
 class EnemyBase;
+class CollisionBase;
+class CollisionSphere;
 
 class NormalEnemy : public EnemyBase
 {
 private:
 
-	
-
 	// ラジアンにした時の1度の値
 	const float kRad = static_cast<float>(M_PI / 180);
 	const float kReverceRad = kRad * 180;		//反転の値
 
+	const float kGravity = 0.75f;
 
 	const float kWaitTime = 2.5f;
 
@@ -30,16 +31,21 @@ private:
 	//反転するかどうか
 	bool is_return_ = FALSE;
 
-	
+	float fall_speed_;
 
 
 	void DecideNextPos();
+
+	bool CheckIsGound();
+
+	void Gravity();
 
 public:
 
 
 	NormalEnemy(const TCHAR* model_path, const VECTOR& pos,
-		const VECTOR& scale, const VECTOR& dir, Effect* get_effect, Effect* got_effect, float speed, float fleeping_speed, AlertState alert, float fov);
+		const VECTOR& scale, const VECTOR& dir, Effect* get_effect, Effect* got_effect,
+		float speed, float fleeping_speed, AlertState alert, float fov, std::shared_ptr<Stage> stage);
 
 
 	~NormalEnemy() override;

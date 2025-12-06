@@ -6,8 +6,9 @@
 #include"keyconfig.h"
 #include"vector_assistant.h"
 
-Title::Title()
-	:BaseScene(SceneName::kTitle)
+
+Title::Title(int model)
+	:BaseScene(SceneName::kTitle,model)
 	,button_num_(0)
 {
 	start_			= FALSE;
@@ -28,6 +29,8 @@ void Title::Init()
 	buttons_.push_back(std::make_shared<Button>(VectorAssistant::Get2DVec(100.f, 200.f), 100, 100, "", 0,&start_));
 	buttons_.push_back(std::make_shared<Button>(VectorAssistant::Get2DVec(250.f, 200.f), 100, 100, "", 1, &go_input_type_));
 	buttons_.push_back(std::make_shared<Button>(VectorAssistant::Get2DVec(400.f, 200.f), 100, 100, "", 2, &game_end_));
+
+	
 }
 
 void Title::Update(SceneName& name)
@@ -88,9 +91,10 @@ void Title::Update(SceneName& name)
 
 void Title::Draw()
 {
+	
 	DrawFormatString(20, 20, GetColor(255, 255, 255), "Title");
 	DrawFormatString(20, 35, GetColor(255, 255, 255), "SPACE / A Button : game start");
-
+	
 	for (const auto& button : buttons_)
 	{
 		button->Draw();

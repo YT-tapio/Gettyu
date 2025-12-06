@@ -1,8 +1,10 @@
 #include"base_scene.h"
 
-BaseScene::BaseScene(SceneName name)
+BaseScene::BaseScene(SceneName name, int model)
+	:name_(name)
+	,player_model_(model)
 {
-	name_ = name;
+
 }
 
 BaseScene::~BaseScene()

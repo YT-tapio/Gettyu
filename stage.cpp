@@ -40,13 +40,7 @@ Stage::~Stage()
 
 VECTOR Stage::CheckEntityCollisionFixedPos(Player& player, MV1_COLL_RESULT_POLY* entity, int hit_num,CollisionData& old_cap,CollisionData& future_cap)
 {
-
-	
-
-
-	return VGet(0, 0, 0);
-
-	
+	return VGet(0, 0, 0);	
 }
 
 
@@ -101,16 +95,29 @@ void Stage::MakeCollCheckCapsule(CapsuleData old_cap, CapsuleData next_cap)
 }
 
 
-bool Stage::IsStair(const VECTOR& poly_pos, const VECTOR& entity_pos)
+bool Stage::IsStair(const VECTOR& poly_pos, const VECTOR& entity_pos,const float& r)
 {
-	// polyの高さがentityのposよりも小さいのなら
-	return entity_pos.y > poly_pos.y;
+	// polyの高さがentityのposよりも小さく半径内なら
+
+	if (entity_pos.y > poly_pos.y)
+	{
+		//polyとentityの距離が半径分離れている
+		float sub = entity_pos.y - poly_pos.y;
+		return sub < r;		//半径よりも低い
+	}
+	
+	return FALSE;
+}
+
+bool Stage::IsFlat(const VECTOR& norm)
+{
+	return norm.y > 0.f;
 }
 
 bool Stage::CheckDownColl(const std::shared_ptr<CollisionBase> coll)
 {
 	bool flag = FALSE;				//こいつが返す
-	const VECTOR kDownVel = VGet(0.f, -0.1f, 0.f);
+	const VECTOR kDownVel = VGet(0.f, -0.3f, 0.f);
 	//最初になにも当たっていないかを確認
 	
 	auto hit_dim = coll->GetCollInfo(model_);
@@ -140,7 +147,6 @@ bool Stage::CheckDownColl(const std::shared_ptr<CollisionBase> coll)
 	MV1CollResultPolyDimTerminate(hit_dim);
 
 	return flag;
-	
 }
 
 
@@ -201,8 +207,6 @@ VECTOR Stage::CheckHitWithWall(Player& player, const VECTOR& check_position)
 		{
 			break;
 		}
-
-
 	}
 
 
@@ -261,12 +265,11 @@ VECTOR Stage::CheckHitWithFloor(Player& player, const VECTOR& check_position)
 			fixed_pos.y = minY - (player.GetCapsuleData().end_pos.y - player.GetCapsuleData().start_pos.y);
 			player.OnHitRoof();
 		}
-
 	}
 	else
 	{
-		bool isHitFloor = false;
-		float maxY = 0.0f;
+		bool	isHitFloor	= false;
+		float	maxY		= 0.0f;
 
 		//床ポリゴンの数だけ繰り返し
 		for (int i = 0; i < floor_num_; i++)
@@ -375,20 +378,18 @@ VECTOR Stage::CheckCollision(std::shared_ptr<CollisionBase> object_coll, const V
 
 	// 今の当たり判定は未来のカプセルのとこだけになっているので、カプセルを大ききくしたやつにする(nowとnextの合計のもの)
 
-	//新しくこいつで当たり判定を行う
+	// 新しくこいつで当たり判定を行う
 	auto old_coll	= object_coll->Clone();
 	auto next_coll	= object_coll->Clone();
 
 	next_coll->Update(offset_vel);
 
-	//auto old_player_capsule = player.GetCapsuleData();
-	//auto next_player_capsule = old_player_capsule;
-
+	
 	VECTOR old_pos			= old_coll->GetPos();
 	VECTOR next_pos			= next_coll->GetPos();
 
-	VECTOR capsule_start_pos	= old_coll->GetCenterPos();
-	VECTOR capsule_end_pos		= next_coll->GetCenterPos();
+	VECTOR capsule_start_pos		= old_coll->GetCenterPos();
+	VECTOR capsule_end_pos			= next_coll->GetCenterPos();
 	float coll_radius				= old_coll->GetWidth();
 	//当たり判定の検出のカプセルを作る
 	next_to_old_cap_ = std::make_shared<CollisionCapsule>(capsule_start_pos, capsule_end_pos, coll_radius);
@@ -453,10 +454,14 @@ VECTOR Stage::CheckCollision(std::shared_ptr<CollisionBase> object_coll, const V
 							(poly.Position[0].z + poly.Position[1].z + poly.Position[2].z) / 3
 						);
 
-					// 俺的には最初で判断していいと思う
-					// フラグを返す関数を作るそれがTRUEの時はそいつを除外するような感じにしたい
-					// 地面時に判断するようにする
-					if ((!(poly.Normal.y <= 0.f)) && !IsStair(poly_center_pos, next_coll->GetPos())) { continue; }
+					// 床のとき
+					if (IsFlat(poly.Normal))
+					{
+						// 階段じゃないのなら判定を行わない,ありえない高さものぼれるようになってしまうので　
+						if (!IsStair(poly_center_pos, next_coll->GetPos(),old_coll->GetRadius())) { continue; }
+					}
+
+					
 
 
 					/*----------ここからはセグメントのやつ(capsuleのstart_posのやつ)------------*/
@@ -514,7 +519,6 @@ VECTOR Stage::CheckCollision(std::shared_ptr<CollisionBase> object_coll, const V
 							is_hit = TRUE;
 							break;
 						}
-
 					}
 
 					//全てのポリゴンと当たっていない場合ループ終了

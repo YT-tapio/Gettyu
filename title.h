@@ -11,6 +11,8 @@ class Title : public BaseScene
 {
 private:
 
+	
+
 	int button_num_;
 	std::vector<std::shared_ptr<Button>> buttons_;
 	std::shared_ptr<ButtonSelecter> selecter_;
@@ -19,9 +21,12 @@ private:
 	bool go_input_type_;
 	bool game_end_;
 
+	
+	
+
 public:
 
-	Title();
+	Title(int model);
 
 	~Title() override;
 

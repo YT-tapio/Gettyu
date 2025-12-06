@@ -219,9 +219,6 @@ void Animation::Update(AnimationType type)
                 animation.play_time);
 
         }
-
-        
-
     }
 
     BlendUpdate();
