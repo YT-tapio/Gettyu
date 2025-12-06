@@ -9,6 +9,7 @@ enum class AnimationType
     kWalk,
     kSlowRun,
     kFastRun,
+    kDancing,
     kNoLoop,        //ここより先のアニメーションはループなし
     kJumpUp,
     kJumpDown,

@@ -54,6 +54,16 @@ public:
 	
 	void Draw();
 
+	/// <summary>
+	/// make_screen‚È‚Ç‚ğ‚·‚é‚Æ‚«‚ÌƒJƒƒ‰‚ğ•Ï‚¦‚Ä‚é
+	/// </summary>
+	void UseSubScreenSetting();
+
+	/// <summary>
+	/// ‚à‚Æ‚à‚Æ‚Ìİ’è‚É–ß‚·
+	/// </summary>
+	void OriginalSetting();
+
 	void SetFov(float fov) { fov_ = fov; }
 
 	const VECTOR& GetPos() const { return pos_; }

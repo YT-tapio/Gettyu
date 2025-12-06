@@ -69,7 +69,9 @@ Player::Player(VECTOR pos, int model, int pad_num,int div, float r, float vertic
 
 Player::~Player()
 {
-	//MV1DeleteModel(model_);
+	//アニメーションの適応をなくす
+	animation_->Detach(now_type_);
+
 	delete weapon_;
 	delete super_attack_;
 	delete super_weapon_spin_effect_;

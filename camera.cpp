@@ -4,6 +4,7 @@
 #include"debug.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include"vector_assistant.h"
 
 Camera::Camera()
 {
@@ -62,4 +63,30 @@ void Camera::Draw()
 
 		DrawSphere3D(target_pos_, 1, 20, GetColor(255, 255, 255), GetColor(255, 255, 255), FALSE);
 	}
+}
+
+void Camera::UseSubScreenSetting()
+{
+	const VECTOR kInitPos = VectorAssistant::GetZeroVec();
+	const VECTOR kInitTargetPos	= VGet(0.f, 0.f, 10.f);
+	const VECTOR kInitLightDir		= VGet(0.f, 0.f, 1.f);
+	//SetLightPosition(kInitPos);
+	//SetLightDirection(kInitLightDir);
+	//奥行1.0～1000までをカメラの描画範囲とする
+	SetCameraNearFar(kNear, kFar);
+	//ポジションの指定
+	SetCameraPositionAndTarget_UpVecY(kInitPos, kInitTargetPos);
+	// 視野角設定
+	SetupCamera_Perspective(fov_);
+}
+
+void Camera::OriginalSetting()
+{
+	SetLightPosition(pos_);
+	//奥行1.0～1000までをカメラの描画範囲とする
+	SetCameraNearFar(kNear, kFar);
+	//ポジションの指定
+	SetCameraPositionAndTarget_UpVecY(pos_, target_pos_);
+	// 視野角設定
+	SetupCamera_Perspective(fov_);
 }

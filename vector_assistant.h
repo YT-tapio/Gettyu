@@ -17,6 +17,26 @@ namespace VectorAssistant
 		return VGet(x, y, 0.f);
 	}
 
+	/// <summary>
+	/// xyz‚ª“¯‚¶‚Ìvec‚ð•Ô‚·
+	/// </summary>
+	/// <param name="num"></param>
+	/// <returns></returns>
+	inline VECTOR GetSame3DVec(const float& num)
+	{
+		return VGet(num, num, num);
+	}
+
+	/// <summary>
+	/// xy‚ª“¯‚¶‚Ìvec‚ð•Ô‚·
+	/// </summary>
+	/// <param name="num"></param>
+	/// <returns></returns>
+	inline VECTOR GetSame2DVec(const float& num)
+	{
+		return VGet(num, num, 0.f);
+	}
+
 	/// @brief y‚ð–³Ž‹‚µ‚½vector
 	/// @param  
 	/// @return 

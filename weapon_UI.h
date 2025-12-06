@@ -1,5 +1,6 @@
 #pragma once
 #include"const_rad.h"
+#include"vector_assistant.h"
 
 #include"normal_sub_screen.h"
 #include"UI_data.h"
@@ -9,19 +10,19 @@ class WeaponUI
 private:
 	
 
-	const float kBatVibrationSpeed = 5;
-	const float kWarprodVibrationSpeed = 7;
+	const float kBatVibrationSpeed = 5.f;
+	const float kWarprodVibrationSpeed = 7.f;
 
-	const float kVibrationSize = 20.f;
+	const float kVibrationSize = 0.3f;
 
-	const VECTOR kInitBatPos				= VGet(850.f, 380.f, 0.f);
-	const VECTOR kInitWarprodPos		= VGet(1100.f, 550.f, 0.f);
+	const VECTOR kInitBatPos				= VGet(4.2f, -0.5f, 10.f);
+	const VECTOR kInitWarprodPos		= VGet(7.8f, 2.5f, 10.f);
 
 	const VECTOR kBatRot				= VGet(0.f, kOneRad * 90, kOneRad * 45);
 	const VECTOR kWarprodRot		= VGet(kOneRad * 90, kOneRad * 180, kOneRad * -45);
 
-	const VECTOR kInitBatScale				= VGet(2.f, 2.f, 2.f);
-	const VECTOR kInitWarprodScale			= VGet(0.8f, 0.8f, 0.8f);
+	const VECTOR kInitBatScale				= VectorAssistant::GetSame3DVec(0.035f);
+	const VECTOR kInitWarprodScale			= VectorAssistant::GetSame3DVec(0.015f);
 
 
 	const int kCircleGaussParam		= 1000;
