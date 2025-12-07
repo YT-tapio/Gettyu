@@ -108,9 +108,11 @@ void Button::SelectUpdate()
 	float target_width			= init_width_ + (kOffsetSize * width_ratio_);
 	float target_height			= init_height_ + (kOffsetSize * height_ratio_);
 
+	float speed = kSpeed * FPS::GetInstance().GetDeltaTime();
+
 	//‘å‚«‚­‚·‚éˆ—‚ğ‚Í‚³‚Ş
-	OffsetAssistant::UniformBigf(width_, target_width,kSpeed);
-	OffsetAssistant::UniformBigf(height_, target_height,kSpeed);
+	OffsetAssistant::Bigf(width_, target_width,speed);
+	OffsetAssistant::Bigf(height_, target_height,speed);
 
 	if (IsPushConditionMouse())
 	{
@@ -133,9 +135,11 @@ void Button::PressedUpdate()
 	float target_width = init_width_ + (kOffsetSize * width_ratio_);
 	float target_height = init_height_ + (kOffsetSize * height_ratio_);
 
+	float speed = kSpeed * FPS::GetInstance().GetDeltaTime();
+
 	// ‘å‚«‚­‚·‚éˆ—‚ğ‚Í‚³‚Ş
-	OffsetAssistant::UniformBigf(width_, target_width, kSpeed);
-	OffsetAssistant::UniformBigf(height_, target_height, kSpeed);
+	OffsetAssistant::Bigf(width_, target_width, speed);
+	OffsetAssistant::Bigf(height_, target_height, speed);
 
 	//‚±‚Ì‚È‚©‚Åbutton‚Ì”ÍˆÍ“à‚Å—£‚³‚ê‚½‚È‚ç‚»‚Ì‘I‘ğ‚ÍœŠO‚³‚ê‚é
 

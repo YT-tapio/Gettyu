@@ -7,6 +7,7 @@
 #include"const_rad.h"
 #include"effect.h"
 #include"EffekseerForDXLib.h"
+#include"vector_assistant.h"
 
 class SuperAttackUI
 {
@@ -30,9 +31,9 @@ private:
 	const VECTOR kInitScreenPos		= VGet(200.f, 150.f, 0);
 
 	const VECTOR kInitWeaponScreenPos = VGet(200.f, 100.f, 0.f);
-
-	const VECTOR kInitWeaponPos		= VGet(kInitPos.x, kInitPos.y, 0.f);
-	const VECTOR kInitWeaponScale		= VGet(1.5f, 1.5f, 1.5f);
+	
+	const VECTOR kInitWeaponPos		= VGet(1.5f,0.5f,10.f);
+	const VECTOR kInitWeaponScale		= VectorAssistant::GetSame3DVec(0.03f);
 	const VECTOR kInitWeaponRot		= VGet(kOneRad * 90.f, kOneRad * 0.f, kOneRad * 135.f);
 
 

@@ -6,6 +6,8 @@
 #include"EffekseerForDxLib.h"
 #include"super_attack.h"
 #include"super_attack_cool_time.h"
+#include"input.h"
+#include"keyconfig.h"
 
 SuperAttack::SuperAttack(const VECTOR& pos,const char*  file_path)
 	: now_situation_num_(0)
@@ -16,7 +18,9 @@ SuperAttack::SuperAttack(const VECTOR& pos,const char*  file_path)
 	, is_play_(FALSE)
 	, is_ready_(FALSE)
 	, is_active_(FALSE)
+	, is_offset_(FALSE)
 	, delta_time_(0.f)
+	, skill_num_(0.f)
 {
 	effect_ = new Effect("data/effect/Effekseer01/Laser02.efkefc", effect_pos_, VGet(static_cast<float>((M_PI / 180) * -90),
 		0.0f, 0.0f),7.0f,5.0f, 200.0f, FALSE);
@@ -27,9 +31,14 @@ SuperAttack::SuperAttack(const VECTOR& pos,const char*  file_path)
 	effect_end_ = new Effect("data/effect/Pierre01/Flame.efkefc", effect_pos_, VGet(0.0f,
 		0.0f, 0.0f), 7.5f, 5.0f, 200.0f, FALSE);
 
+	state_ = SuperAttackState::kCoolTime;
+
 	// conditiontimerのsetup
-	cool_time_ = std::make_shared<ConditionTimer>(kCoolTimeMax);
-	active_time_ = std::make_shared<ConditionTimer>(kActiveTimeMax);
+	cool_time_		= std::make_shared<ConditionTimer>(kCoolTimeMax);
+	active_time_	= std::make_shared<ConditionTimer>(kActiveTimeMax);
+	offset_time_	= std::make_shared<ConditionTimer>(kOffsetTimeMax);
+
+
 }
 
 
@@ -38,6 +47,41 @@ SuperAttack::~SuperAttack()
 	delete effect_;
 	delete effect_start_;
 	delete effect_end_;
+}
+
+void SuperAttack::CoolTimeUpdate()
+{
+	cool_time_->Update();
+	skill_num_ = cool_time_->GetTimeRatio();
+	if (cool_time_->GetIsEnd())
+	{
+		cool_time_->Reset();
+		state_ = SuperAttackState::kReady;
+	}
+}
+
+void SuperAttack::OffsetUpdate()
+{
+	offset_time_->Update();
+
+	if (offset_time_->GetIsEnd())
+	{
+		offset_time_->Reset();
+		state_ = SuperAttackState::kActive;
+	}
+
+}
+
+void SuperAttack::ActiveUpdate()
+{
+	active_time_->Update();
+	float reverce_num = 1 - active_time_->GetTimeRatio();
+	skill_num_ = reverce_num;
+	if (active_time_->GetIsEnd()) 
+	{
+		active_time_->Reset();
+		state_ = SuperAttackState::kCoolTime;
+	}
 }
 
 void SuperAttack::Init()
@@ -51,27 +95,22 @@ void SuperAttack::Init()
 void SuperAttack::Update()
 {
 
-	cool_time_->Update();
-	SuperAttackCoolTime::GetInstance().SetRatio(cool_time_->GetTimeRatio());
-	
-	if (cool_time_->GetIsEnd())
+	switch (state_)
 	{
-		is_ready_ = TRUE;
-	}
-	else
-	{
-		is_ready_ = FALSE;
-	}
+	case SuperAttackState::kCoolTime:
+		CoolTimeUpdate();
+		break;
 
-	
+	case SuperAttackState::kOffset:
+		OffsetUpdate();
+		break;
 
-	if (is_active_)
-	{
-		active_time_->Update();
-		SuperAttackCoolTime::GetInstance().SetRatio(cool_time_->GetTimeRatio());
+	case SuperAttackState::kActive:
+		ActiveUpdate();
+		break;
 	}
 
-	// 必殺技発動中は別のタイマーを起動させるplayerから持ってこさせる
+	SuperAttackCoolTime::GetInstance().SetRatio(skill_num_);
 	
 }
 
@@ -118,8 +157,22 @@ void SuperAttack::Draw()
 	}
 }
 
+
 void SuperAttack::Debug()
 {
 	cool_time_->Debug();
 }
 
+bool SuperAttack::IsAction()
+{
+	if (state_ != SuperAttackState::kReady) { return FALSE; }
+
+	if (Input::GetInstance().CheckInputMouse(KeyConfig::kSuperAttackKey) == InputState::kPush ||
+		Input::GetInstance().CheckInputPadButton(PadConfig::kSuperAttackButton) == InputState::kPush)
+	{
+		state_ = SuperAttackState::kOffset;
+		return TRUE;
+	}
+
+	return FALSE;
+}

@@ -5,6 +5,7 @@
 ConditionTimer::ConditionTimer(float max_time)
 	: max_time_(max_time)
 	, timer_(0.f)
+	, is_stop_(FALSE)
 {
 
 }
@@ -19,6 +20,7 @@ ConditionTimer::~ConditionTimer()
 
 void ConditionTimer::Update()
 {
+	if (is_stop_) { return; }
 	timer_ += (FPS::GetInstance().GetDeltaTime() * 0.1f);
 
 	if (GetTimeRatio() >= 1.f)
@@ -33,6 +35,15 @@ void ConditionTimer::Reset()
 	timer_ = 0.f;
 }
 
+void ConditionTimer::Start()
+{
+	is_stop_ = FALSE;
+}
+
+void ConditionTimer::Stop()
+{
+	is_stop_ = TRUE;
+}
 
 float ConditionTimer::GetTimeRatio()
 {

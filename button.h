@@ -9,7 +9,7 @@ private:
 	const int kWhite		= GetColor(255, 255, 255);
 	const int kRightGray			= GetColor(192, 192, 192);
 	const int kGray		= GetColor(128, 128, 128);
-	const float kSpeed		= 5.f;
+	const float kSpeed		= 30.f;
 
 	ButtonState state_;
 

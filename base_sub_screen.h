@@ -37,6 +37,16 @@ public:
 
 	virtual ~BaseSubScreen();
 
+	/// <summary>
+	/// 自分の画面を映し出す際のカメラのセットアップ
+	/// </summary>
+	void SetUpCamera();
+
+	/// <summary>
+	/// もともとカメラの設定に戻す
+	/// </summary>
+	void SetUpOrignalCamera();
+
 	//起動てきなの,このscreenを使うという意思表示
 	void Up();
 

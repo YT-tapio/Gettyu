@@ -1,4 +1,5 @@
 #include"base_sub_screen.h"
+#include"camera.h"
 
 BaseSubScreen::BaseSubScreen(const VECTOR& pos,const int screen_width, const int screen_height, const int width,const int height,bool alpha, AlphaColorType color_type,const int param, bool is_blend)
 {
@@ -17,6 +18,16 @@ BaseSubScreen::BaseSubScreen(const VECTOR& pos,const int screen_width, const int
 BaseSubScreen::~BaseSubScreen()
 {
 	DeleteGraph(handle_);
+}
+
+void BaseSubScreen::SetUpCamera()
+{
+	Camera::GetInstance().UseSubScreenSetting();
+}
+
+void BaseSubScreen::SetUpOrignalCamera()
+{
+	Camera::GetInstance().OriginalSetting();
 }
 
 

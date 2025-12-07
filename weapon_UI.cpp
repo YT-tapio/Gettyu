@@ -5,7 +5,6 @@
 #include"weapon_checker.h"
 #include"gauss.h"
 #include"gauss_data.h"
-#include"camera.h"
 
 WeaponUI::WeaponUI()
 {
@@ -211,7 +210,7 @@ void WeaponUI::Update()
 	DrawUIGraph(bat_button_);
 	DrawUIGraph(warprod_button_);
 
-	Camera::GetInstance().UseSubScreenSetting();
+	sub_screen_->SetUpCamera();
 	auto light_dir = GetLightDirection();
 
 
@@ -220,8 +219,8 @@ void WeaponUI::Update()
 	MV1DrawModel(kBatHandle);
 	MV1DrawModel(kWarprodHandle);
 	
+	sub_screen_->SetUpOrignalCamera();
 	SetLightDirection(light_dir);
-	Camera::GetInstance().OriginalSetting();
 	sub_screen_->Down();		// screen‚ðŽg‚í‚È‚¢
 
 	

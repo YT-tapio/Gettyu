@@ -21,12 +21,12 @@ void Camera::Init(const VECTOR& velocity)
 
 void Camera::Awake(const VECTOR& pos, const VECTOR& target_pos, float fov)
 {
-	pos_			= VGet(0, 0, 0);
-	target_pos_		= VGet(0, 0, 0);
-	fov_			= fov;
+	pos_					= VectorAssistant::GetZeroVec();
+	target_pos_		= VectorAssistant::GetZeroVec();
+	fov_					= fov;
 	target_fov_		= 0.f;
-	velocity_		= VGet(0, 0, 0);
-	direction_		= VGet(0, 0, 0);
+	velocity_			= VectorAssistant::GetZeroVec();
+	direction_			= VectorAssistant::GetZeroVec();
 
 	//奥行1.0～1000までをカメラの描画範囲とする
 	SetCameraNearFar(kNear, kFar);
@@ -48,7 +48,9 @@ void Camera::Update(const VECTOR& velocity, const VECTOR& target_velocity)
 	Effekseer_Sync3DSetting();
 	
 	SetLightPosition(pos_);
-	
+	//ターゲットの方向へのライトを出す
+	VECTOR light_dir = VectorAssistant::GetDir(pos_, target_pos_);
+	SetLightDirection(light_dir);
 	SetCameraPositionAndTarget_UpVecY(pos_, target_pos_);
 	SetCameraNearFar(kNear, kFar);
 	SetupCamera_Perspective(fov_);
@@ -70,8 +72,6 @@ void Camera::UseSubScreenSetting()
 	const VECTOR kInitPos = VectorAssistant::GetZeroVec();
 	const VECTOR kInitTargetPos	= VGet(0.f, 0.f, 10.f);
 	const VECTOR kInitLightDir		= VGet(0.f, 0.f, 1.f);
-	//SetLightPosition(kInitPos);
-	//SetLightDirection(kInitLightDir);
 	//奥行1.0～1000までをカメラの描画範囲とする
 	SetCameraNearFar(kNear, kFar);
 	//ポジションの指定

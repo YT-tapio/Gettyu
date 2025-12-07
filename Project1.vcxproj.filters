@@ -28,9 +28,6 @@
     <Filter Include="ソース ファイル\stage">
       <UniqueIdentifier>{9f3370c4-dc0f-4a3c-a790-8d24b1537a99}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\super_arts">
-      <UniqueIdentifier>{4999ca3b-8115-4d54-a0a9-b43522d00428}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\weapon">
       <UniqueIdentifier>{9e3922bc-ea56-4d45-a6ac-fee487c98310}</UniqueIdentifier>
     </Filter>
@@ -96,9 +93,6 @@
     </Filter>
     <Filter Include="ソース ファイル\input\vibration">
       <UniqueIdentifier>{4c44d59d-76ab-46ca-a183-465268f3358e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\UI">
-      <UniqueIdentifier>{1738b5a4-7d7d-4690-a6b3-75653cbb1cfe}</UniqueIdentifier>
     </Filter>
     <Filter Include="ソース ファイル\post_effect">
       <UniqueIdentifier>{f40736bc-fe5d-4dbd-8760-5db008a6aa49}</UniqueIdentifier>
@@ -178,9 +172,6 @@
     <Filter Include="ソース ファイル\sub_screen\Normal">
       <UniqueIdentifier>{a3a479f7-c356-464a-920e-6f5731001880}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\UI\super_atackk">
-      <UniqueIdentifier>{a11dfc45-c778-49ce-aab4-91c978334db4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Singleton">
       <UniqueIdentifier>{f371f4b4-16f3-4e3b-9773-bb8c53407f83}</UniqueIdentifier>
     </Filter>
@@ -208,12 +199,6 @@
     <Filter Include="ソース ファイル\Singleton\super_attack_cool_time">
       <UniqueIdentifier>{c32bdc0a-c176-40ba-a684-b50ae30f2396}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\UI\data">
-      <UniqueIdentifier>{cdec7ff1-29e3-4841-a0fe-90d6ceb8624e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\UI\weapon_UI">
-      <UniqueIdentifier>{313456fa-1676-420b-8c40-dfcbcfea0694}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\calculation">
       <UniqueIdentifier>{d7d7ecdd-711e-40d6-a712-6cc5dddf5639}</UniqueIdentifier>
     </Filter>
@@ -225,9 +210,6 @@
     </Filter>
     <Filter Include="ソース ファイル\vector_assistant">
       <UniqueIdentifier>{8d50a7c1-2d4f-417a-8bdd-c1cfe610425a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\UI\enemy">
-      <UniqueIdentifier>{5e9f603c-5535-4c61-bee8-702d1c3301cc}</UniqueIdentifier>
     </Filter>
     <Filter Include="ソース ファイル\charecter_base">
       <UniqueIdentifier>{55f31b01-6e94-4bca-8879-5070916cdde3}</UniqueIdentifier>
@@ -259,6 +241,27 @@
     <Filter Include="ソース ファイル\camera\virtual_camera\game_clear">
       <UniqueIdentifier>{d52564d4-00a2-4fd0-a786-652f6872a79d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\UI">
+      <UniqueIdentifier>{1738b5a4-7d7d-4690-a6b3-75653cbb1cfe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\UI\super_atackk">
+      <UniqueIdentifier>{a11dfc45-c778-49ce-aab4-91c978334db4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\UI\data">
+      <UniqueIdentifier>{cdec7ff1-29e3-4841-a0fe-90d6ceb8624e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\UI\weapon_UI">
+      <UniqueIdentifier>{313456fa-1676-420b-8c40-dfcbcfea0694}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\UI\enemy">
+      <UniqueIdentifier>{5e9f603c-5535-4c61-bee8-702d1c3301cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\super_attack">
+      <UniqueIdentifier>{4999ca3b-8115-4d54-a0a9-b43522d00428}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\direct">
+      <UniqueIdentifier>{d14bf3d9-ef52-44db-83e1-500de54e053a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -283,7 +286,7 @@
       <Filter>ソース ファイル\stage</Filter>
     </ClCompile>
     <ClCompile Include="super_attack.cpp">
-      <Filter>ソース ファイル\super_arts</Filter>
+      <Filter>ソース ファイル\super_attack</Filter>
     </ClCompile>
     <ClCompile Include="effect.cpp">
       <Filter>ソース ファイル\effect</Filter>
@@ -531,7 +534,7 @@
       <Filter>ソース ファイル\stage</Filter>
     </ClInclude>
     <ClInclude Include="super_attack.h">
-      <Filter>ソース ファイル\super_arts</Filter>
+      <Filter>ソース ファイル\super_attack</Filter>
     </ClInclude>
     <ClInclude Include="effect.h">
       <Filter>ソース ファイル\effect</Filter>
@@ -760,6 +763,12 @@
     </ClInclude>
     <ClInclude Include="color.h">
       <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="super_attack_state.h">
+      <Filter>ソース ファイル\super_attack</Filter>
+    </ClInclude>
+    <ClInclude Include="direct.h">
+      <Filter>ソース ファイル\direct</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

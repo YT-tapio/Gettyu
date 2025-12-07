@@ -6,8 +6,6 @@
 
 SuperAttackUI::SuperAttackUI()
 {
-
-
 	float all_screen_size = (kGameWidth + kGameHeight);
 
 	float kScreenWidthPercent = kGameWidth / all_screen_size;
@@ -27,13 +25,9 @@ SuperAttackUI::SuperAttackUI()
 	
 	frame_data_.pos = kInitPos;
 
-
-
 	//いったん全部同じように
 	body_data_ = frame_data_;
 	back_data_ = frame_data_;
-
-	
 	
 	//handleを入れる
 	frame_data_.handle				= kGaugeFrameHandle;
@@ -56,10 +50,10 @@ SuperAttackUI::SuperAttackUI()
 
 	// maskのデータをつくる
 	// ここでは端にする
-	gauge_mask_data_.pos = VGet((frame_data_.pos.x + (frame_data_.width * 0.5f)), (frame_data_.pos.y - (frame_data_.height * 0.5f)), 0.f);
-	gauge_mask_data_.width = 0.f;
-	gauge_mask_data_.height = body_data_.height;
-	gauge_mask_data_.color = kMaskColor;
+	gauge_mask_data_.pos		= VGet((frame_data_.pos.x + (frame_data_.width * 0.5f)), (frame_data_.pos.y - (frame_data_.height * 0.5f)), 0.f);
+	gauge_mask_data_.width	= 0.f;
+	gauge_mask_data_.height	= body_data_.height;
+	gauge_mask_data_.color	= kMaskColor;
 
 	//3Dモデルのせってい
 	weapon_data_.handle		= kWeaponHandle;
@@ -94,11 +88,11 @@ SuperAttackUI::SuperAttackUI()
 		printfDx("3D:読み込みエラー");
 	}
 
-	frame_screen_->SetIsDisp(TRUE);
-	body_screen_->SetIsDisp(TRUE);
-	back_screen_->SetIsDisp(TRUE);
+	frame_screen_	->SetIsDisp(TRUE);
+	body_screen_	->SetIsDisp(TRUE);
+	back_screen_		->SetIsDisp(TRUE);
 	weapon_screen_->SetIsDisp(TRUE);
-	effect_screen_->SetIsDisp(TRUE);
+	effect_screen_	->SetIsDisp(TRUE);
 	//どのくらい大きくするかを決定
 	frame_target_width_ = 0.f;
 	frame_target_height_ = 0.f;
@@ -120,7 +114,7 @@ SuperAttackUI::~SuperAttackUI()
 	DeleteGraph(kGaugeFrameHandle);
 	DeleteGraph(kGaugeBodyHandle);
 	DeleteGraph(kGaugeBackHandle);
-	//delete ready_effect_;
+	MV1DeleteModel(kWeaponHandle);
 }
 
 
@@ -257,9 +251,11 @@ void SuperAttackUI::Update()
 
 	//武器の表示
 	weapon_screen_->Up();
+	weapon_screen_->SetUpCamera();
 	auto light_dir = GetLightDirection();
 	SetLightDirection(VGet(0.f, 0.f, 1.f));
 	Draw3DModel(weapon_data_);
+	weapon_screen_->SetUpOrignalCamera();
 	SetLightDirection(light_dir);
 	weapon_screen_->Down();
 

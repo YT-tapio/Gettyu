@@ -1,6 +1,7 @@
 #pragma once
 #include"effect.h"
 #include"condition_timer.h"
+#include"super_attack_state.h"
 
 class SuperAttack
 {
@@ -11,6 +12,10 @@ private:
 
 	const float kCoolTimeMax	= 20.f;
 	const float kActiveTimeMax = 10.f;
+	const float kOffsetTimeMax = 4.f;
+
+	//必殺技のクールタイムや効果時間の示し
+	float skill_num_;
 
 	Effect* effect_;
 	Effect* effect_start_;
@@ -18,6 +23,9 @@ private:
 
 	std::shared_ptr<ConditionTimer> cool_time_;
 	std::shared_ptr<ConditionTimer> active_time_;
+	std::shared_ptr<ConditionTimer> offset_time_;
+
+	SuperAttackState state_;
 
 	int now_situation_num_ = 0;
 
@@ -35,6 +43,13 @@ private:
 	bool is_play_;
 	bool is_ready_;
 	bool is_active_;
+	bool is_offset_;
+
+	void CoolTimeUpdate();
+
+	void OffsetUpdate();
+
+	void ActiveUpdate();
 
 public:
 
@@ -49,6 +64,8 @@ public:
 	void Update();
 
 	void EffectUpdate();
+
+	
 
 	void SetNowSituatuin(int num) { now_situation_num_ = num; }
 
@@ -77,6 +94,12 @@ public:
 	void Debug();
 
 	/// <summary>
+	/// 発動のアクションを起こしたかの判断
+	/// </summary>
+	/// <returns></returns>
+	bool IsAction();
+
+	/// <summary>
 	/// 
 	/// </summary>
 	/// <returns></returns>
@@ -90,7 +113,7 @@ public:
 
 	const float GetEffectPlayCount() const { return effect_end_->GetPlayCount(); }
 
-
+	const SuperAttackState GetState() const { return state_; }
 
 };
 

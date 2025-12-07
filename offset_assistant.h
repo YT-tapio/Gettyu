@@ -4,9 +4,11 @@
 namespace OffsetAssistant
 {
 
-	inline void UniformBig(int& me, const int& max, const float& speed)
+	inline void Big(int& me, const int& max, const float& speed)
 	{
-		me = static_cast<float>(me) + (speed * FPS::GetInstance().GetDeltaTime());
+		if (me == max) { return; }
+
+		me = static_cast<float>(me) + speed;
 		me = (me > max) ? max : me;
 	}
 
@@ -14,7 +16,7 @@ namespace OffsetAssistant
 	/// @param me 
 	/// @param max 
 	/// @param speed 
-	inline void UniformBigf(float& me, const float& max,const float& speed)
+	inline void Bigf(float& me, const float& max,const float& speed)
 	{
 		if (me == max) { return; }
 
@@ -24,6 +26,22 @@ namespace OffsetAssistant
 		{
 			me = max;
 		}
+	}
+
+	inline void Small(int& me, const int& min, const float& speed)
+	{
+		if (me == min) { return; }
+
+		me = static_cast<float>(me) - speed;
+		me = (me < min) ? min : me;
+	}
+
+	inline void Smallf(float& me, const float& min, const float& speed)
+	{
+		if (me == min) { return; }
+
+		me = me - speed;
+		me = (me < min) ? min : me;
 	}
 
 }

@@ -32,7 +32,6 @@ std::shared_ptr<BaseEnemyState> EnemyFleeping::ChangeState(EnemyBase* enemy, std
 {
 	
 	//player‚ªenemy‚Ì”ÍˆÍ“à‚É‚¢‚È‚¢‚Ì‚È‚ç‚â‚ß‚é
-
 	// enemy‚Æplayer‚ªƒAƒ‰[ƒg”ÍˆÍ“à
 	VECTOR dist = VSub(player->GetCenterPos(), enemy->GetPos());		// enemy‚©‚çplayer‚Ü‚Å‚Ì‹——£
 	

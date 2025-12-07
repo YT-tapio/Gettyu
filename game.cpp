@@ -6,6 +6,7 @@
 #include"mask.h"
 #include"normal_sub_screen.h"
 #include"Draw2D.h"
+#include"offset_assistant.h"
 
 Game::Game(int model)
     :BaseScene(SceneName::kGame,model)
@@ -18,6 +19,11 @@ Game::~Game()
     
 }
 
+void Game::GameStart()
+{
+    float speed = kFadeInSpeed * FPS::GetInstance().GetDeltaTime();
+    OffsetAssistant::Smallf(offset_fade_param_, 0, speed);
+}
 
 void Game::DrawShadowMap()
 {
@@ -97,9 +103,9 @@ void Game::FadeOut()
 
     if (clear_timer_->GetNowTimer() >= kFadeOutTime)
     {
-        fade_out_param_ += (kFadeOutSpeed * FPS::GetInstance().GetDeltaTime());
+        offset_fade_param_ += (kFadeOutSpeed * FPS::GetInstance().GetDeltaTime());
 
-        fade_out_param_ = (fade_out_param_ > kParamMax) ? kParamMax : fade_out_param_;
+        offset_fade_param_ = (offset_fade_param_ > kParamMax) ? kParamMax : offset_fade_param_;
     }
 }
 
@@ -155,10 +161,12 @@ void Game::Init()
     screen_->SetIsDisp(TRUE);
     SetMousePoint(mouse_init_pos_x, mouse_init_pos_y);
 
+    game_start_ = std::make_shared<ConditionTimer>(5.f);
+
     clear_timer_        = std::make_shared<ConditionTimer>(10.f);
     clear_offset_timer_ = std::make_shared<ConditionTimer>(1.f);
-    
-    fade_out_param_ = 0.f;
+   
+    offset_fade_param_ = 255.f;
 }
 
 void Game::Update(SceneName& name)
@@ -167,9 +175,8 @@ void Game::Update(SceneName& name)
     //全体のタイムスケール
     static float time_scale = 1.0f;
     
-    //現在の時間を取得
+    GameStart();
 
-    //camera->GetPos();
 
     //デバッグ用
     if (Input::GetInstance().CheckInputKey(KeyConfig::kGameToResultKey) == InputState::kPush ||
@@ -270,8 +277,8 @@ void Game::Draw()
     super_attack_UI_->Draw();
     enemy_count_UI_->Draw();
 
-    Draw2D::WhiteBoxBlend(static_cast<int>(fade_out_param_));
-
+    Draw2D::WhiteBoxBlend(static_cast<int>(offset_fade_param_));
+    
     DrawFormatString((kGameWidth - 300), (kGameHeight - 30), GetColor(0, 0, 0), "TAB / BACK Button : result");
 }
 

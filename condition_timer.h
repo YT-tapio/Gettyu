@@ -7,6 +7,8 @@ private:
 	float max_time_;
 	float timer_;
 
+	bool is_stop_;
+
 public:
 
 
@@ -18,6 +20,10 @@ public:
 	void Update();
 
 	void Reset();
+
+	void Start();
+
+	void Stop();
 
 	float GetTimeRatio();
 

@@ -29,6 +29,7 @@ class Game : public BaseScene
 {
 private:
 
+	const float kFadeInSpeed = 5.f;
 
 	std::shared_ptr<EffectManager>effect_player_;
 	std::shared_ptr<Player>player_;
@@ -47,10 +48,16 @@ private:
 	std::shared_ptr<EnemyCountUI> enemy_count_UI_;
 
 	//タイマー
+	
+	std::shared_ptr<ConditionTimer> game_start_;
+	
 	std::shared_ptr<ConditionTimer>		clear_offset_timer_;
 	std::shared_ptr<ConditionTimer>		clear_timer_;
 
-	float fade_out_param_;
+	float offset_fade_param_;		// ゲーム終了のfadeoutやfadeinの
+
+
+	void GameStart();
 
 	void DrawShadowMap();
 

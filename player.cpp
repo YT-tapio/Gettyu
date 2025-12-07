@@ -110,7 +110,7 @@ void Player::MakeTargetRot(const VECTOR& target_pos, float& target_rot)
 
 bool Player::SuperAttackCondition()
 {
-	if (!(super_attack_->GetIsReady()))
+	if (is_super_attack_)
 	{
 		return FALSE;
 	}
@@ -120,23 +120,17 @@ bool Player::SuperAttackCondition()
 		return FALSE;
 	}
 
-	if (!(now_weapon_name_ == WeaponName::kBugNet))
-	{
-		return FALSE;
-	}
-
 	if (now_type_ >= AnimationType::kAttack)
 	{
 		return FALSE;
 	}
 
-	if (is_super_attack_)
+	if (!(now_weapon_name_ == WeaponName::kBugNet))
 	{
 		return FALSE;
 	}
 
-	if (!(Input::GetInstance().CheckInputPadButton(PadConfig::kSuperAttackButton) == InputState::kPush ||
-		Input::GetInstance().CheckInputMouse(KeyConfig::kSuperAttackKey) == InputState::kPush))
+	if (!(super_attack_->IsAction()))
 	{
 		return FALSE;
 	}
@@ -373,7 +367,6 @@ void Player::SetDeltaTime(const float& delta_time)
 		animation_->SetDeltaTime(delta_time_);
 		super_attack_->SetDeltaTime(delta_time_);
 		weapon_->SetDeltaTime(delta_time_);
-		
 	}
 	super_weapon_spin_effect_->SetDeltaTime(delta_time);
 	game_clear_effect_->SetDeltaTime(delta_time);
@@ -480,8 +473,6 @@ void Player::Update(Stage& stage,float target_rot)
 		// クリア判定になったらアニメーションを違うのに切り替える
 		GameClearUpdate(camera_pos);
 	}
-
-
 	//ここで位置の更新もしておく
 	//ここでのsetをやめる(ゲット時)
 	
@@ -517,7 +508,7 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 
 	//direction_ = VGet(0, 0, 0);
 
-	/*(PadConfig::kLeftButton)*/
+
 
 	CheckDirection(pos, rotation);
 
@@ -666,6 +657,16 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 		}
 	}
 
+	//必殺技が終わったら
+	if (super_attack_->GetState() < SuperAttackState::kOffset)
+	{
+		if(weapon_->GetName() == WeaponName::kWizardStaff)
+		{
+			AttachWeapon(WeaponName::kBugNet);
+		}
+		is_super_attack_ = FALSE;
+	}
+
 	/*----------------武器が吸引機のときはカメラを適応させる---------------*/
 
 	if ((Situation::GetInstance().GetSituationName() != SituationName::kGet))
@@ -681,6 +682,8 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 		}
 	}
 	
+	
+
 	DecideAnimation();
 }
 
