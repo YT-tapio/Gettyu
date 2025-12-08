@@ -4,8 +4,10 @@
 #include"button.h"
 #include"button_selecter.h"
 #include"keyconfig.h"
-#include"vector_assistant.h"
-
+#include"camera.h"
+#include"color.h"
+#include"font.h"
+#include"normal_sub_screen.h"
 
 Title::Title(int model)
 	:BaseScene(SceneName::kTitle,model)
@@ -14,12 +16,37 @@ Title::Title(int model)
 	start_			= FALSE;
 	go_input_type_	= FALSE;
 	game_end_		= FALSE;
+
+	auto pos_mat	= MGetTranslate(kPos);
+	auto rot_mat	= MGetRotY(kRotation.y);
+	auto scale_mat	= MGetScale(kScale);
+
+	Camera::GetInstance().OriginalSetting();
+
+	mat_ = MMult(MMult(rot_mat,scale_mat), pos_mat);
+	MV1SetMatrix(player_model_, mat_);
+
+	tanuei_font_ = std::make_shared<Font>(kTanueiFontPath, kTanueiFontName, kFontSize, kFontThick,DX_FONTTYPE_EDGE);
+	title_ui_screen_ = std::make_shared<NormalSubScreen>(VectorAssistant::Get2DVec(800, 200), kGameWidth, kGameHeight, 300, 300, TRUE, AlphaColorType::kBlack, 10, TRUE);
+	title_ui_screen_->SetIsDisp(TRUE);
 }
 
 
 Title::~Title()
 {
 
+}
+
+void Title::Setting()
+{
+	title_ui_screen_->Up();
+
+	DrawStringToHandle(100
+		, 100, "‚í‚Á‚µ‚å‚¢", Color::kYellow, tanuei_font_->GetHandle(), Color::kRed);
+
+	title_ui_screen_->Down();
+
+	MV1SetMatrix(player_model_, mat_);
 }
 
 void Title::Init()
@@ -36,6 +63,8 @@ void Title::Init()
 void Title::Update(SceneName& name)
 {
 	
+	Setting();
+
 	if (Input::GetInstance().CheckInputKey(KeyConfig::kChangeSceneKey) == InputState::kPush || 
 		Input::GetInstance().CheckInputPadButton(PadConfig::kChangeSceneButton) == InputState::kPush)
 	{
@@ -71,21 +100,11 @@ void Title::Update(SceneName& name)
 	}
 
 
-	if(go_input_type_)
-	{
-		
-	}
-
-
 	if (game_end_)
 	{
 		name = SceneName::kEnd;
 	}
 	
-	
-
-	
-
 	// name = SceneName::kGame;
 }
 
@@ -94,7 +113,11 @@ void Title::Draw()
 	
 	DrawFormatString(20, 20, GetColor(255, 255, 255), "Title");
 	DrawFormatString(20, 35, GetColor(255, 255, 255), "SPACE / A Button : game start");
-	
+	title_ui_screen_->Draw();
+	title_ui_screen_->Debug();
+	DrawSphere3D(kPos, 3.f, 20, GetColor(255, 255, 255), GetColor(255, 255, 255), TRUE);
+	MV1DrawModel(player_model_);
+
 	for (const auto& button : buttons_)
 	{
 		button->Draw();

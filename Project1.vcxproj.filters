@@ -262,6 +262,12 @@
     <Filter Include="ソース ファイル\direct">
       <UniqueIdentifier>{d14bf3d9-ef52-44db-83e1-500de54e053a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\font">
+      <UniqueIdentifier>{0aa21cba-8915-47f8-827f-1e85d9291187}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\color">
+      <UniqueIdentifier>{a13c89c0-32c3-40dd-a670-095824156fc6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -500,6 +506,9 @@
     </ClCompile>
     <ClCompile Include="game_clear.cpp">
       <Filter>ソース ファイル\camera\virtual_camera\game_clear</Filter>
+    </ClCompile>
+    <ClCompile Include="font.cpp">
+      <Filter>ソース ファイル\font</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -761,14 +770,17 @@
     <ClInclude Include="screen_state.h">
       <Filter>ソース ファイル\scene</Filter>
     </ClInclude>
-    <ClInclude Include="color.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="super_attack_state.h">
       <Filter>ソース ファイル\super_attack</Filter>
     </ClInclude>
     <ClInclude Include="direct.h">
       <Filter>ソース ファイル\direct</Filter>
+    </ClInclude>
+    <ClInclude Include="font.h">
+      <Filter>ソース ファイル\font</Filter>
+    </ClInclude>
+    <ClInclude Include="color.h">
+      <Filter>ソース ファイル\color</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

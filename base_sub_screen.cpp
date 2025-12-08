@@ -1,5 +1,7 @@
 #include"base_sub_screen.h"
 #include"camera.h"
+#include"Draw2D.h"
+#include"color.h"
 
 BaseSubScreen::BaseSubScreen(const VECTOR& pos,const int screen_width, const int screen_height, const int width,const int height,bool alpha, AlphaColorType color_type,const int param, bool is_blend)
 {
@@ -22,12 +24,12 @@ BaseSubScreen::~BaseSubScreen()
 
 void BaseSubScreen::SetUpCamera()
 {
-	Camera::GetInstance().UseSubScreenSetting();
+	Camera::GetInstance().OriginalSetting();
 }
 
 void BaseSubScreen::SetUpOrignalCamera()
 {
-	Camera::GetInstance().OriginalSetting();
+	Camera::GetInstance().BeforeSetting();
 }
 
 
@@ -76,6 +78,14 @@ void BaseSubScreen::Draw()
 		static_cast<float>(center_pos_.y + (screen_height_ * 0.5f)),
 		handle_, TRUE);
 }
+
+void BaseSubScreen::Debug()
+{
+
+	Draw2D::Box(center_pos_, screen_width_, screen_height_, Color::kWhite, FALSE);
+
+}
+
 
 void BaseSubScreen::SetIsDisp(const bool& flag)
 {

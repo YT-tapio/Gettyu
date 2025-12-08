@@ -57,6 +57,7 @@ public:
 
 	void Draw();
 
+	void Debug();
 
 	void SetIsDisp(const bool& flag);
 

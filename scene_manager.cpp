@@ -51,6 +51,7 @@ SceneManager::SceneManager()
     
     SetUseSetDrawScreenSettingReset(false);
 
+    player_model_ = MV1LoadModel(kPlayerModelPath);
 	now_scene_ = std::make_shared<Title>(player_model_);
 
 	now_scene_->Init();
@@ -60,7 +61,7 @@ SceneManager::SceneManager()
     Timer::GetInstance();
     Input::GetInstance().Awake(DX_INPUT_PAD1);
 
-    player_model_ = MV1LoadModel(kPlayerModelPath);
+    
 }
 
 SceneManager::~SceneManager()

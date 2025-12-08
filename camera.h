@@ -54,15 +54,17 @@ public:
 	
 	void Draw();
 
+	
+
 	/// <summary>
-	/// make_screen‚È‚Ç‚ğ‚·‚é‚Æ‚«‚ÌƒJƒƒ‰‚ğ•Ï‚¦‚Ä‚é
+	/// ‰Šúó‘Ô‚ÌƒJƒƒ‰‚É•Ï‚¦‚é
 	/// </summary>
-	void UseSubScreenSetting();
+	void OriginalSetting();
 
 	/// <summary>
 	/// ‚à‚Æ‚à‚Æ‚Ìİ’è‚É–ß‚·
 	/// </summary>
-	void OriginalSetting();
+	void BeforeSetting();
 
 	void SetFov(float fov) { fov_ = fov; }
 

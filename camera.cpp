@@ -67,7 +67,7 @@ void Camera::Draw()
 	}
 }
 
-void Camera::UseSubScreenSetting()
+void Camera::OriginalSetting()
 {
 	const VECTOR kInitPos = VectorAssistant::GetZeroVec();
 	const VECTOR kInitTargetPos	= VGet(0.f, 0.f, 10.f);
@@ -80,7 +80,7 @@ void Camera::UseSubScreenSetting()
 	SetupCamera_Perspective(fov_);
 }
 
-void Camera::OriginalSetting()
+void Camera::BeforeSetting()
 {
 	SetLightPosition(pos_);
 	//‰œs1.0`1000‚Ü‚Å‚ğƒJƒƒ‰‚Ì•`‰æ”ÍˆÍ‚Æ‚·‚é

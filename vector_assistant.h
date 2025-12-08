@@ -1,7 +1,7 @@
 #pragma once
 #include<math.h>
 #include"DxLib.h"
-
+#include"screen.h"
 
 namespace VectorAssistant
 {
@@ -15,6 +15,13 @@ namespace VectorAssistant
 	inline VECTOR Get2DVec(const float& x, const float& y)
 	{
 		return VGet(x, y, 0.f);
+	}
+
+	inline VECTOR GetScreenCenterPos()
+	{
+		float x = kGameWidth * 0.5f;
+		float y = kGameHeight * 0.5f;
+		return Get2DVec(x, y);
 	}
 
 	/// <summary>
