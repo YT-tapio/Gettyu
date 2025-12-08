@@ -56,7 +56,10 @@ bool Button::IsPushConditionMouse()
 
 bool Button::IsPushConditionButton()
 {
-	if (Input::GetInstance().CheckInputKey(KeyConfig::kSelectKey) == InputState::kPush) { return TRUE; }
+	for (auto& num : KeyConfig::kSelectKey)
+	{
+		if (Input::GetInstance().CheckInputKey(num) == InputState::kPush) { return TRUE; }
+	}
 	if (Input::GetInstance().CheckInputPadButton(PadConfig::kSelectButton) == InputState::kPush) { return TRUE; }
 	return FALSE;
 }

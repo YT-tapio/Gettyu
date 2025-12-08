@@ -1,6 +1,8 @@
 #pragma once
 #include"DxLib.h"
 
+const int kSelectSize = 3;
+
 const int kSelectUpSize      = 2;
 const int kSelectDownSize    = 2;
 const int kSelectRightSize   = 2;
@@ -33,7 +35,7 @@ struct KeyConfig
     static const int kSwicthWarpRodKey      = KEY_INPUT_1;
 
     // ‘I‘ðƒ{ƒ^ƒ“
-    static const int kSelectKey             = KEY_INPUT_RETURN;
+    static constexpr int kSelectKey[kSelectSize] = { KEY_INPUT_RETURN ,KEY_INPUT_SPACE,KEY_INPUT_F};
     static const int kSelectMouseButton     = MOUSE_INPUT_1;
 
     static constexpr int kSelectUpKey[kSelectUpSize] = { KEY_INPUT_UP,KEY_INPUT_W };

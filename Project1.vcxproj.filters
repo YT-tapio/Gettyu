@@ -115,9 +115,6 @@
     <Filter Include="ソース ファイル\scene\result">
       <UniqueIdentifier>{a62c3e30-994c-4c40-9b7c-8bf9f6cedb5d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\scene\title">
-      <UniqueIdentifier>{ce069253-9e05-4921-bb9a-5c621707dcf5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\scene\game">
       <UniqueIdentifier>{dfba3545-15c5-42de-811a-23343baa818a}</UniqueIdentifier>
     </Filter>
@@ -267,6 +264,9 @@
     </Filter>
     <Filter Include="ソース ファイル\color">
       <UniqueIdentifier>{a13c89c0-32c3-40dd-a670-095824156fc6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\scene\title">
+      <UniqueIdentifier>{ce069253-9e05-4921-bb9a-5c621707dcf5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

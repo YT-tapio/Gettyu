@@ -3,45 +3,79 @@
 #include<vector>
 #include"base_scene.h"
 #include"vector_assistant.h"
+#include"const_rad.h"
 
 class BaseScene;
 class ButtonSelecter;
 class Button;
 class Font;
 class NormalSubScreen;
+class Animation;
+class ConditionTimer;
 
 class Title : public BaseScene
 {
 private:
 
-	const VECTOR kPos			= VGet(-5.f, -10.f, 15.f);
+	const VECTOR kPos			= VGet(-20.f, -10.f, 35.f);
 	const VECTOR kScale			= VectorAssistant::GetSame3DVec(0.01f);
-	const VECTOR kRotation		= VectorAssistant::GetZeroVec();
+	const VECTOR kRotation		= VGet(0.f, -kOneRad * 40.f, 0.f);
+
+	const VECTOR kEnemyPos			= VGet(-5.f, -10.f, 25.f);
+	const VECTOR kEnemyScale		= VectorAssistant::GetSame3DVec(0.07f);
+	const VECTOR kEnemyRotation	= VGet(0.f, -kOneRad * 40.f, 0.f);
+
+	const VECTOR kTitleUiPos		= VectorAssistant::Get2DVec(900.f, 300.f);
+	
+	const VECTOR kGameStartButtonPos		= VectorAssistant::Get2DVec(900.f, 450.f);
+	const VECTOR kInputTypeButtonPos		= VectorAssistant::Get2DVec(900.f, 600.f);
+	const VECTOR kGameEndButtonPos			= VectorAssistant::Get2DVec(900.f, 750.f);
+	const float kButtonWidth				= 300.f;
+	const float kButtonHeight			= 80.f;
 
 	const char* kTanueiFontPath = "data/font/TanueiKakuPop_1_00/TanueiKakuPop.otf";
 	const char* kTanueiFontName = "たぬえいカクポップタイ";
 
-	const int kFontSize			= 800;
+	const int kFontSize			= 300;
 	const int kFontThick		= 40;
 
+	const int kTitleUiWidth		= 500;
+	const int kTitleUiHeight		= 400;
+
+	std::shared_ptr<Animation> animation_;
+	std::shared_ptr<Animation> enemy_animation_;
+
 	MATRIX mat_;
+	MATRIX enemy_mat_;
 
 	int button_num_;
 	std::vector<std::shared_ptr<Button>> buttons_;
 	std::shared_ptr<ButtonSelecter> selecter_;
 
 	std::shared_ptr<Font> tanuei_font_;
-
 	std::shared_ptr<NormalSubScreen> title_ui_screen_;
+
+	//画面遷移のtimer
+	std::shared_ptr<ConditionTimer> transition_timer_;
+
+
+	int enemy_model_;
+
+	float fade_in_param_;
 
 	bool start_;
 	bool go_input_type_;
 	bool game_end_;	
 
+
+	void AnimationSetting();
+
 	/// <summary>
 	/// カメラのセットやmodelのposのセットを行う
 	/// </summary>
 	void Setting();
+
+	void FadeOut();
 
 public:
 

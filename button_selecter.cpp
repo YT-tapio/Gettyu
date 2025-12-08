@@ -127,12 +127,12 @@ int ButtonSelecter::Vertical()
 
 	if (IsInputUp())
 	{
-		num++;
+		num--;
 	}
 
 	if (IsInputDown())
 	{
-		num--;
+		num++;
 	}
 
 
