@@ -143,6 +143,8 @@
     <ClCompile Include="button.cpp" />
     <ClCompile Include="button_manager.cpp" />
     <ClCompile Include="button_selecter.cpp" />
+    <ClCompile Include="character_dance.cpp" />
+    <ClCompile Include="enemy_get_num.cpp" />
     <ClCompile Include="clear_time.cpp" />
     <ClCompile Include="collision2D.cpp" />
     <ClCompile Include="collision_base.cpp" />
@@ -223,6 +225,8 @@
     <ClInclude Include="button_manager.h" />
     <ClInclude Include="button_selecter.h" />
     <ClInclude Include="button_state.h" />
+    <ClInclude Include="character_dance.h" />
+    <ClInclude Include="enemy_get_num.h" />
     <ClInclude Include="clear_time.h" />
     <ClInclude Include="color.h" />
     <ClInclude Include="direct.h" />

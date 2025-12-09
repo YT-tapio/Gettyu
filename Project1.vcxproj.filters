@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="ソース ファイル\player">
-      <UniqueIdentifier>{492ad4d5-c7bd-4acf-a2be-815ff09a083b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\animation">
       <UniqueIdentifier>{a4e65f11-83fd-4a14-afb3-8730eee219b4}</UniqueIdentifier>
     </Filter>
@@ -169,33 +166,6 @@
     <Filter Include="ソース ファイル\sub_screen\Normal">
       <UniqueIdentifier>{a3a479f7-c356-464a-920e-6f5731001880}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Singleton">
-      <UniqueIdentifier>{f371f4b4-16f3-4e3b-9773-bb8c53407f83}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Singleton\situation">
-      <UniqueIdentifier>{c266bbd9-12cc-4e9a-bc4c-9240a897981b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Singleton\debug">
-      <UniqueIdentifier>{5283eb33-c945-4946-929e-fe8c2402b82a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Singleton\time">
-      <UniqueIdentifier>{7fcdefc9-88c9-48d3-8d9f-484334341434}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Singleton\FPS">
-      <UniqueIdentifier>{82cee67e-d633-42a9-ba44-b62a51a378ec}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Singleton\now_weapon">
-      <UniqueIdentifier>{4568467e-2912-4a7c-be16-0bd2447d6dc5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Singleton\mask">
-      <UniqueIdentifier>{3b25d0d1-3dda-4666-a2e9-57748a81ea9d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Singleton\gauss">
-      <UniqueIdentifier>{fd595d70-bacd-47b1-a7c6-001a605b8345}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Singleton\super_attack_cool_time">
-      <UniqueIdentifier>{c32bdc0a-c176-40ba-a684-b50ae30f2396}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\calculation">
       <UniqueIdentifier>{d7d7ecdd-711e-40d6-a712-6cc5dddf5639}</UniqueIdentifier>
     </Filter>
@@ -207,9 +177,6 @@
     </Filter>
     <Filter Include="ソース ファイル\vector_assistant">
       <UniqueIdentifier>{8d50a7c1-2d4f-417a-8bdd-c1cfe610425a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\charecter_base">
-      <UniqueIdentifier>{55f31b01-6e94-4bca-8879-5070916cdde3}</UniqueIdentifier>
     </Filter>
     <Filter Include="ソース ファイル\collision\base">
       <UniqueIdentifier>{c97fcea4-9272-4e29-aa26-359015558be6}</UniqueIdentifier>
@@ -268,8 +235,50 @@
     <Filter Include="ソース ファイル\scene\title">
       <UniqueIdentifier>{ce069253-9e05-4921-bb9a-5c621707dcf5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\character">
+      <UniqueIdentifier>{32f8f549-d52b-420c-9edc-50e5e41f2802}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\character\charecter_base">
+      <UniqueIdentifier>{55f31b01-6e94-4bca-8879-5070916cdde3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\character\character_dance">
+      <UniqueIdentifier>{e1b5204e-65d5-415d-af2a-92483cdb14d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Singleton">
+      <UniqueIdentifier>{f371f4b4-16f3-4e3b-9773-bb8c53407f83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Singleton\situation">
+      <UniqueIdentifier>{c266bbd9-12cc-4e9a-bc4c-9240a897981b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Singleton\debug">
+      <UniqueIdentifier>{5283eb33-c945-4946-929e-fe8c2402b82a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Singleton\time">
+      <UniqueIdentifier>{7fcdefc9-88c9-48d3-8d9f-484334341434}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Singleton\FPS">
+      <UniqueIdentifier>{82cee67e-d633-42a9-ba44-b62a51a378ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Singleton\now_weapon">
+      <UniqueIdentifier>{4568467e-2912-4a7c-be16-0bd2447d6dc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Singleton\mask">
+      <UniqueIdentifier>{3b25d0d1-3dda-4666-a2e9-57748a81ea9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Singleton\gauss">
+      <UniqueIdentifier>{fd595d70-bacd-47b1-a7c6-001a605b8345}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Singleton\super_attack_cool_time">
+      <UniqueIdentifier>{c32bdc0a-c176-40ba-a684-b50ae30f2396}</UniqueIdentifier>
+    </Filter>
     <Filter Include="ソース ファイル\Singleton\clear_time">
       <UniqueIdentifier>{57b6fe5c-77ce-479c-be88-3d206782e60f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\player">
+      <UniqueIdentifier>{492ad4d5-c7bd-4acf-a2be-815ff09a083b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Singleton\enemy_get_num">
+      <UniqueIdentifier>{76e308e5-afd3-4844-a40f-3ce22145b65c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -478,7 +487,7 @@
       <Filter>ソース ファイル\collision</Filter>
     </ClCompile>
     <ClCompile Include="character_base.cpp">
-      <Filter>ソース ファイル\charecter_base</Filter>
+      <Filter>ソース ファイル\character\charecter_base</Filter>
     </ClCompile>
     <ClCompile Include="collision_base.cpp">
       <Filter>ソース ファイル\collision\base</Filter>
@@ -515,6 +524,12 @@
     </ClCompile>
     <ClCompile Include="clear_time.cpp">
       <Filter>ソース ファイル\Singleton\clear_time</Filter>
+    </ClCompile>
+    <ClCompile Include="character_dance.cpp">
+      <Filter>ソース ファイル\character\character_dance</Filter>
+    </ClCompile>
+    <ClCompile Include="enemy_get_num.cpp">
+      <Filter>ソース ファイル\Singleton\enemy_get_num</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -735,7 +750,7 @@
       <Filter>ソース ファイル\UI\enemy</Filter>
     </ClInclude>
     <ClInclude Include="character_base.h">
-      <Filter>ソース ファイル\charecter_base</Filter>
+      <Filter>ソース ファイル\character\charecter_base</Filter>
     </ClInclude>
     <ClInclude Include="collision_base.h">
       <Filter>ソース ファイル\collision\base</Filter>
@@ -790,6 +805,12 @@
     </ClInclude>
     <ClInclude Include="clear_time.h">
       <Filter>ソース ファイル\Singleton\clear_time</Filter>
+    </ClInclude>
+    <ClInclude Include="character_dance.h">
+      <Filter>ソース ファイル\character\character_dance</Filter>
+    </ClInclude>
+    <ClInclude Include="enemy_get_num.h">
+      <Filter>ソース ファイル\Singleton\enemy_get_num</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

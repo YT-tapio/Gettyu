@@ -48,8 +48,6 @@ public:
 
 	virtual ~CharacterBase() override;
 
-
-
 	/*‰¼‘zŠÖ”*/
 
 	virtual void SetDeltaTime() override;

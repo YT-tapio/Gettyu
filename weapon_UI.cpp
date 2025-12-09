@@ -193,8 +193,6 @@ void WeaponUI::Update()
 {
 	SetAll();
 
-	
-
 	//‚±‚Á‚©‚ç‚ÍXV‚È‚µ‚É‚µ‚Ü‚µ‚å‚¤//
 
 	circle_gauss_->Up();

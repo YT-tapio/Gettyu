@@ -1,6 +1,5 @@
 #include<iostream>
 #include<vector>
-#include<memory>
 #include"result.h"
 #include"FPS.h"
 #include"input.h"
@@ -9,26 +8,81 @@
 #include"color.h"
 #include"button.h"
 #include"button_selecter.h"
-//#include"clear_time.h"
+#include"object_base.h"
+#include"character_dance.h"
+#include"normal_sub_screen.h"
+#include"font.h"
+#include"enemy_get_num.h"
 
 Result::Result(int model)
 	:BaseScene(SceneName::kResult,model)
 {
-	const VECTOR kButtonCenterPos = VectorAssistant::Get2DVec(800.f, 700.f);
+	const VECTOR kButtonCenterPos = VectorAssistant::Get2DVec(1150.f, 700.f);
 	const float kButtonWidth = 200;
 	const float kButtonHeight = 100;
 
-	int button_num = 0;
-	button_num_ = 0;
-	time_ = ClearTime::GetInstance().GetClearTime();
+
+	const VECTOR kEnemyPos			= VGet(0.f, -8.f, 13.f);
+	const VECTOR kEnemyRot			= VectorAssistant::GetZeroVec();
+	const VECTOR kEnemyScale		= VectorAssistant::GetSame3DVec(0.1f);
+	const char* kEnemyPath				= "data/model/character/enemy/Ch14_nonPBR.mv1";
+	
+	const char* kEnemyAnimPath		= "data/model/character/enemy/animation/Laughing.mv1";
+	const float kEnemyAnimSpeed		= 3.f;
+
+	const int kEnemyScreenWidth = 180;
+	const int kEnemyScreenHeight = 180;
+
+	//ゲットした敵を横にうつす最大量
+	const int kMaxDispWidthNum = 4;
+
+	const VECTOR kEnemyScreenInitPos = VectorAssistant::Get2DVec(620.f, 120.0f);
+
+	int enemy_get_num = EnemyGetNum::GetInstance().GetNum();		//ゲットしたenemyの数を記憶
+
+	int button_num		= 0;
+	button_num_			= 0;
+	time_					= ClearTime::GetInstance().GetClearTime();
 
 	go_title_ = FALSE;
 
-	animation_ = std::make_shared<Animation>();
-	selecter_ = std::make_shared<ButtonSelecter>();
+	tanuei_font_	= std::make_shared<Font>(kTanueiFontPath, kTanueiFontName, kFontSize, kFontThick, DX_FONTTYPE_EDGE);
+	animation_	= std::make_shared<Animation>();
+	selecter_		= std::make_shared<ButtonSelecter>();
 
 	// ボタンを作る
 	buttons_.push_back(std::make_shared<Button>(kButtonCenterPos, kButtonWidth, kButtonHeight, "", button_num, &go_title_));
+
+	AnimationData enemy_anim_data;
+
+	Load(enemy_anim_data, kEnemyAnimPath, AnimationType::kIdle, -1, 1, kEnemyAnimSpeed);
+
+	for (int i = 0; i < enemy_get_num; i++)
+	{
+		float anim_speed = kEnemyAnimSpeed;
+		if (i % 2) { anim_speed += 1.f; }
+		enemy_anim_data.play_speed = anim_speed;
+		objects_.push_back(std::make_shared<CharacterDance>(kEnemyPos, kEnemyRot, kEnemyScale, kEnemyPath, enemy_anim_data));
+	}
+
+	
+	
+	for (int i = 0; i < enemy_get_num; i++)
+	{
+		int num_x = i % kMaxDispWidthNum;
+		int num_y = num_y = i / kMaxDispWidthNum;
+
+		VECTOR screen_pos = VAdd(kEnemyScreenInitPos, VectorAssistant::Get2DVec(kEnemyScreenWidth * num_x, kEnemyScreenHeight * num_y));
+
+		enemy_screens_.push_back(std::make_shared<NormalSubScreen>(screen_pos, kGameWidth, kGameHeight,
+			kEnemyScreenWidth, kEnemyScreenHeight, TRUE, AlphaColorType::kBlack, 10, TRUE));
+	}
+
+
+	for (auto& screen : enemy_screens_)
+	{
+		screen->SetIsDisp(TRUE);
+	}
 }
 
 
@@ -56,7 +110,6 @@ void Result::FadeIn()
 
 void Result::Setting()
 {
-	
 	animation_->Update(kAnimType);
 
 	//奥行1.0～1000までをカメラの描画範囲とする
@@ -73,16 +126,13 @@ void Result::Setting()
 	SetLightPosition(kCameraPos);
 
 	//modelのset
-	auto rot_mat = MGetRotY(kRotation.y);
-	auto scale_mat = MGetScale(kScale);
-	auto pos_mat = MGetTranslate(kPos);
+	auto rot_mat		= MGetRotY(kRotation.y);
+	auto scale_mat	= MGetScale(kScale);
+	auto pos_mat		= MGetTranslate(kPos);
 
 	mat_ = MMult(MMult(rot_mat, scale_mat), pos_mat);
 
 	MV1SetMatrix(player_model_, mat_);
-
-	
-
 }
 
 void Result::AddAnim()
@@ -96,6 +146,42 @@ void Result::AddAnim()
 
 	animation_->Add(idle);
 
+}
+
+void Result::UpdateDispEnemyScreen()
+{
+	//やり方がわからないのでいったんごり押しで
+	int screen_num = 0;
+
+	for (auto& screen : enemy_screens_)
+	{
+		int enemy_num = 0;
+		screen->Up();
+		screen->SetUpCamera();
+
+		auto light_dir = GetLightDirection();
+		SetLightDirection(VGet(0.f, 0.f, 1.f));
+
+		for (auto& obj : objects_)
+		{
+			if (screen_num == enemy_num) 
+			{
+				obj->Draw();
+				//Draw2D::Box(VectorAssistant::Get2DVec(300.f, 300.f), 100, 100, Color::kRed, TRUE);
+
+				break;
+			}
+			else
+			{
+				enemy_num++;
+			}
+			
+		}
+		SetLightDirection(light_dir);
+		screen->SetUpOrignalCamera();
+		screen->Down();
+		screen_num++;
+	}
 }
 
 void Result::Init()
@@ -115,8 +201,14 @@ void Result::Update(SceneName& name)
 
 	animation_->SetDeltaTime(FPS::GetInstance().GetDeltaTime());
 
-	Setting();
+	for (auto& obj : objects_)
+	{
+		obj->SetDeltaTime();
+		obj->Update();
+	}
 
+	Setting();
+	UpdateDispEnemyScreen();
 	button_num_ += selecter_->Select(SelectType::kSide);
 
 	if (button_num_ < 0 || button_num_ > 0)
@@ -129,7 +221,6 @@ void Result::Update(SceneName& name)
 		button->Update(button_num_);
 	}
 
-	
 	if (is_fade_in_)
 	{
 		FadeIn();
@@ -151,13 +242,20 @@ void Result::Draw()
 {
 	MV1DrawModel(player_model_);
 	
+
+	for (auto& screen : enemy_screens_)
+	{
+		screen->Draw();
+		//screen->Debug();
+	}
+
 	for (auto& button : buttons_)
 	{
 		button->Draw();
 	}
 
-	DrawFormatString(600, 600, GetColor(255, 255, 255), "%.2f",time_);
-	// DrawFormatString(20, 20, GetColor(255, 255, 255), "Result");
-	// DrawFormatString(20, 35, GetColor(255, 255, 255), "SPACE / A Button : Title");
+	DrawFormatStringToHandle(static_cast<int>(kClearTimerPos.x), static_cast<int>(kClearTimerPos.y), 
+		kFontColor, tanuei_font_->GetHandle(), "%.1f", time_,kFontThickColor);
+
 	Draw2D::WhiteBoxBlend(static_cast<int>(fade_in_param_));
 }

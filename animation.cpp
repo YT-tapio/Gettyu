@@ -67,8 +67,6 @@ void Animation::InitBlend(AnimationType now, AnimationType before)
         model_handle_ = animation.model_handle;
     }
 
-
-
     blend_rate_ = 0.0f;
 }
 
@@ -121,8 +119,6 @@ void Animation::Detach(AnimationType type)
         }
 
     }
-
-    //blend_rate_ = 0.0f;
 }
 
 void Animation::BlendUpdate()

@@ -28,6 +28,12 @@ void Camera::Awake(const VECTOR& pos, const VECTOR& target_pos, float fov)
 	velocity_			= VectorAssistant::GetZeroVec();
 	direction_			= VectorAssistant::GetZeroVec();
 
+	before_near_				= kNear;
+	before_far_				= kFar;
+	before_fov_				= fov_;
+	before_pos_				= pos_;
+	before_target_pos_	= target_pos_;
+
 	//奥行1.0～1000までをカメラの描画範囲とする
 	SetCameraNearFar(kNear, kFar);
 
@@ -69,6 +75,13 @@ void Camera::Draw()
 
 void Camera::OriginalSetting()
 {
+	// その前の情報をセッティング
+	before_near_				= GetCameraNear();
+	before_far_				= GetCameraFar();
+	before_fov_				= GetCameraFov();
+	before_pos_				= GetCameraPosition();
+	before_target_pos_	= GetCameraTarget();
+
 	const VECTOR kInitPos = VectorAssistant::GetZeroVec();
 	const VECTOR kInitTargetPos	= VGet(0.f, 0.f, 10.f);
 	const VECTOR kInitLightDir		= VGet(0.f, 0.f, 1.f);
@@ -82,11 +95,11 @@ void Camera::OriginalSetting()
 
 void Camera::BeforeSetting()
 {
-	SetLightPosition(pos_);
+	SetLightPosition(before_pos_);
 	//奥行1.0～1000までをカメラの描画範囲とする
-	SetCameraNearFar(kNear, kFar);
+	SetCameraNearFar(before_near_, before_far_);
 	//ポジションの指定
-	SetCameraPositionAndTarget_UpVecY(pos_, target_pos_);
+	SetCameraPositionAndTarget_UpVecY(before_pos_, before_target_pos_);
 	// 視野角設定
-	SetupCamera_Perspective(fov_);
+	SetupCamera_Perspective(before_fov_);
 }

@@ -25,6 +25,7 @@
 #include"collision_sphere.h"
 #include"vector_assistant.h"
 #include"const_rad.h"
+#include"enemy_get_num.h"
 
 Player::Player(VECTOR pos, int model, int pad_num,int div, float r, float vertical_num)
 	: model_(model)
@@ -1113,8 +1114,6 @@ void Player::IsHitEnemy(EnemyBase* enemy, bool& got)
 			case WeaponName::kBugNet:
 			case WeaponName::kWizardStaff:
 
-				//printfDx("WarpRod");
-				//printfDx("に当たっています\n");
 				//位置の調整を行う。武器の位置に沿わす
 				enemy->SetPosIsGot(weapon_->GetCollisionData().pos);
 				
@@ -1125,7 +1124,7 @@ void Player::IsHitEnemy(EnemyBase* enemy, bool& got)
 				enemy->SetGotEffectPos(enemy->GetPos());
 				enemy->SetIsGet(TRUE);
 				got = TRUE;
-
+				EnemyGetNum::GetInstance().AddNum();
 				//effectをセッティング
 				enemy->SetGetEffectPos(enemy->GetPos());
 

@@ -23,6 +23,14 @@ private:
 	VECTOR velocity_;
 	VECTOR direction_;
 
+	//makescreenなどでカメラが壊れてしますのでその記憶
+	float before_near_;
+	float before_far_;
+	float before_fov_;
+	VECTOR before_pos_;
+	VECTOR before_target_pos_;
+
+
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>

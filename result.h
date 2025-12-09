@@ -7,6 +7,9 @@
 class BaseScene;
 class Button;
 class ButtonSelecter;
+class ObjectBase;
+class NormalSubScreen;
+class Font;
 
 class Result : public BaseScene
 {
@@ -20,15 +23,25 @@ private:
 
 	const float kFov = kOneRad * 75.f;
 
+	const VECTOR kCameraPos		= VGet(0.f, 0.f, -10.f);
+	const VECTOR kTargetPos		= VGet(0.f, 0.f, 10.f);
+
+	const VECTOR kPos				= VGet(-10.f, -15.f, 10.f);
+	const VECTOR kScale				= VectorAssistant::GetSame3DVec(0.01f);
+	const VECTOR kRotation			= VectorAssistant::GetZeroVec();
+
+	const int kFontSize				= 200;
+	const int kFontThick			= 50;
+	const int kFontColor			= GetColor(255, 255, 15);
+	const int kFontThickColor	= GetColor(240, 44, 44);
+	const VECTOR kClearTimerPos = VectorAssistant::Get2DVec(580.f, 550.f);
+	std::shared_ptr<Font> tanuei_font_;			//たぬえいのフォント
 	
+	std::shared_ptr<NormalSubScreen> time_screen_;
 
-	const VECTOR kCameraPos = VGet(0.f, 0.f, -10.f);
-	const VECTOR kTargetPos = VGet(0.f, 0.f, 10.f);
+	std::vector<std::shared_ptr<NormalSubScreen>> enemy_screens_;
 
-	const VECTOR kPos		= VGet(-10.f, -15.f, 10.f);
-	const VECTOR kScale		= VGet(0.01f, 0.01f, 0.01f);
-	const VECTOR kRotation	= VectorAssistant::GetZeroVec();
-
+	std::vector<std::shared_ptr<ObjectBase>> objects_;
 	
 	int button_num_;
 	std::vector<std::shared_ptr<Button>> buttons_;
@@ -52,6 +65,11 @@ private:
 	void Setting();
 
 	void AddAnim();
+
+	/// <summary>
+	/// enemyを表示するscreenのupdate
+	/// </summary>
+	void UpdateDispEnemyScreen();
 
 public:
 

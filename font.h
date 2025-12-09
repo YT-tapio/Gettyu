@@ -12,6 +12,5 @@ public:
 
 	~Font();
 	
-
 	const int GetHandle() const { return handle_; }
 };

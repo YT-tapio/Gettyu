@@ -10,15 +10,16 @@ enum class SceneName
 	kEnd
 };
 
-
 class BaseScene
 {
 private:
 
-	
 	SceneName name_;
 
 protected:
+
+	const char* kTanueiFontPath = "data/font/TanueiKakuPop_1_00/TanueiKakuPop.otf";
+	const char* kTanueiFontName = "たぬえいカクポップタイ";
 
 	int player_model_;
 

@@ -7,6 +7,7 @@
 #include"normal_sub_screen.h"
 #include"Draw2D.h"
 #include"offset_assistant.h"
+#include"font.h"
 
 Game::Game(int model)
     :BaseScene(SceneName::kGame,model)
@@ -165,8 +166,9 @@ void Game::Init()
 
     weapon_UI_                  = std::make_shared<WeaponUI>();
     super_attack_UI_            = std::make_shared<SuperAttackUI>();
-
     enemy_count_UI_             = std::make_shared<EnemyCountUI>(&enemy_manager_->not_get_count_);
+
+    tanuei_font_ = std::make_shared<Font>(kTanueiFontPath, kTanueiFontName, kFontSize, kFontThickSize, DX_FONTTYPE_EDGE);
 
     screen_                     = std::make_shared<NormalSubScreen>(VGet((kGameWidth * 0.5f), (kGameHeight * 0.5f), 0.f), kGameWidth, kGameHeight, kGameWidth, kGameHeight, FALSE, AlphaColorType::kBlack, 0.f, FALSE);
 
@@ -298,7 +300,7 @@ void Game::Draw()
 
     Draw2D::WhiteBoxBlend(static_cast<int>(offset_fade_param_));
     
-    DrawFormatString(600, 600, GetColor(255, 255, 255), "%.2f", timer_);
+    DrawFormatStringToHandle(kTimerPos.x, kTimerPos.y, kFontColor, tanuei_font_->GetHandle(),"%.1f", timer_);
     DrawFormatString((kGameWidth - 300), (kGameHeight - 30), GetColor(0, 0, 0), "TAB / BACK Button : result");
 }
 

@@ -9,8 +9,8 @@
 #include"Stage.h"
 
 EnemyManager::EnemyManager(std::shared_ptr<Stage> stage)
-	:not_get_count_(0)
-	,stage_(stage)
+	: not_get_count_(0)
+	, stage_(stage)
 {
 	
 }

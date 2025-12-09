@@ -24,10 +24,16 @@
 #include"enemy_count_UI.h"
 
 class BaseScene;
+class Font;
 
 class Game : public BaseScene
 {
 private:
+
+	const VECTOR kTimerPos	= VectorAssistant::Get2DVec(500.f, 30.f);
+	const int kFontSize				= 200;
+	const int kFontThickSize		= 50;
+	const int kFontColor = GetColor(255, 255, 15);
 
 	const float kFadeInSpeed = 5.f;
 
@@ -39,13 +45,14 @@ private:
 	std::shared_ptr<SkyDom> sky_dom_;
 	std::shared_ptr<BaseSubScreen> concentration_line_;
 
-
 	std::shared_ptr<NormalSubScreen> screen_;
 
 	//UI群
 	std::shared_ptr<WeaponUI> weapon_UI_;
 	std::shared_ptr<SuperAttackUI> super_attack_UI_;
 	std::shared_ptr<EnemyCountUI> enemy_count_UI_;
+
+	std::shared_ptr<Font> tanuei_font_;
 
 	//タイマー
 	std::shared_ptr<ConditionTimer>		game_start_;

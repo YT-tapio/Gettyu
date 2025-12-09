@@ -27,18 +27,18 @@ private:
 
 	const VECTOR kTitleUiPos		= VectorAssistant::Get2DVec(900.f, 300.f);
 	
-	const VECTOR kGameStartButtonPos		= VectorAssistant::Get2DVec(900.f, 450.f);
-	const VECTOR kInputTypeButtonPos		= VectorAssistant::Get2DVec(900.f, 600.f);
-	const VECTOR kGameEndButtonPos			= VectorAssistant::Get2DVec(900.f, 750.f);
-	const float kButtonWidth				= 300.f;
-	const float kButtonHeight			= 80.f;
+	
 
-	const char* kTanueiFontPath = "data/font/TanueiKakuPop_1_00/TanueiKakuPop.otf";
-	const char* kTanueiFontName = "たぬえいカクポップタイ";
+	const VECTOR kGameStartButtonPos	= VectorAssistant::Get2DVec(900.f, 450.f);
+	const VECTOR kInputTypeButtonPos	= VectorAssistant::Get2DVec(900.f, 600.f);
+	const VECTOR kGameEndButtonPos		= VectorAssistant::Get2DVec(900.f, 750.f);
+	const float kButtonWidth						= 300.f;
+	const float kButtonHeight					= 80.f;
 
-	const int kFontSize			= 300;
-	const int kFontThick		= 40;
 
+	const int kFontSize = 300;
+	const int kFontThick = 40;
+	
 	const int kTitleUiWidth		= 500;
 	const int kTitleUiHeight		= 400;
 
@@ -57,7 +57,6 @@ private:
 
 	//画面遷移のtimer
 	std::shared_ptr<ConditionTimer> transition_timer_;
-
 
 	int enemy_model_;
 
