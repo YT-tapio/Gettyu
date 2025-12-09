@@ -716,6 +716,8 @@ void Brain::UpdateVirtualCamera(std::shared_ptr<Player>player,const VECTOR& came
 			}
 			//Œ©‚éˆÊ’u‚Ìoffset‚ðŠJŽn‚·‚é
 
+			Situation::GetInstance().SetSituationName(SituationName::kPerformance);
+
 			break;
 
 		case VirtualCameraName::kSuperAttackSecond:
@@ -743,6 +745,7 @@ void Brain::UpdateVirtualCamera(std::shared_ptr<Player>player,const VECTOR& came
 					player->Vibration(kQuakeVibration);
 				}
 			}
+			Situation::GetInstance().SetSituationName(SituationName::kPerformance);
 
 			break;
 

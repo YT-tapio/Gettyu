@@ -1,15 +1,34 @@
 #include<iostream>
+#include<vector>
+#include<memory>
 #include"result.h"
 #include"FPS.h"
 #include"input.h"
 #include"keyconfig.h"
 #include"Draw2D.h"
 #include"color.h"
+#include"button.h"
+#include"button_selecter.h"
+//#include"clear_time.h"
 
 Result::Result(int model)
 	:BaseScene(SceneName::kResult,model)
 {
+	const VECTOR kButtonCenterPos = VectorAssistant::Get2DVec(800.f, 700.f);
+	const float kButtonWidth = 200;
+	const float kButtonHeight = 100;
+
+	int button_num = 0;
+	button_num_ = 0;
+	time_ = ClearTime::GetInstance().GetClearTime();
+
+	go_title_ = FALSE;
+
 	animation_ = std::make_shared<Animation>();
+	selecter_ = std::make_shared<ButtonSelecter>();
+
+	// ボタンを作る
+	buttons_.push_back(std::make_shared<Button>(kButtonCenterPos, kButtonWidth, kButtonHeight, "", button_num, &go_title_));
 }
 
 
@@ -62,6 +81,8 @@ void Result::Setting()
 
 	MV1SetMatrix(player_model_, mat_);
 
+	
+
 }
 
 void Result::AddAnim()
@@ -91,21 +112,34 @@ void Result::Init()
 void Result::Update(SceneName& name)
 {
 	//name = SceneName::kTitle;
-	if (Input::GetInstance().CheckInputKey(KeyConfig::kChangeSceneKey) == InputState::kPush ||
-		Input::GetInstance().CheckInputPadButton(PadConfig::kChangeSceneButton) == InputState::kPush)
-	{
-		name = SceneName::kTitle;
-	}
 
 	animation_->SetDeltaTime(FPS::GetInstance().GetDeltaTime());
 
 	Setting();
 
+	button_num_ += selecter_->Select(SelectType::kSide);
+
+	if (button_num_ < 0 || button_num_ > 0)
+	{
+		button_num_ = 0;
+	}
+
+	for (auto& button : buttons_)
+	{
+		button->Update(button_num_);
+	}
+
+	
 	if (is_fade_in_)
 	{
 		FadeIn();
 	}
 	
+
+	if (go_title_)
+	{
+		name = SceneName::kTitle;
+	}
 
 	// playerのモデルにダンスさせる
 	
@@ -116,7 +150,14 @@ void Result::Update(SceneName& name)
 void Result::Draw()
 {
 	MV1DrawModel(player_model_);
-	DrawFormatString(20, 20, GetColor(255, 255, 255), "Result");
-	DrawFormatString(20, 35, GetColor(255, 255, 255), "SPACE / A Button : Title");
+	
+	for (auto& button : buttons_)
+	{
+		button->Draw();
+	}
+
+	DrawFormatString(600, 600, GetColor(255, 255, 255), "%.2f",time_);
+	// DrawFormatString(20, 20, GetColor(255, 255, 255), "Result");
+	// DrawFormatString(20, 35, GetColor(255, 255, 255), "SPACE / A Button : Title");
 	Draw2D::WhiteBoxBlend(static_cast<int>(fade_in_param_));
 }

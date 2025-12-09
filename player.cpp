@@ -22,6 +22,7 @@
 #include"character_base.h"
 #include"collision_base.h"
 #include"collision_capsule.h"
+#include"collision_sphere.h"
 #include"vector_assistant.h"
 #include"const_rad.h"
 
@@ -56,7 +57,11 @@ Player::Player(VECTOR pos, int model, int pad_num,int div, float r, float vertic
 	VECTOR capsule_start_pos	= VAdd(pos, VGet(0.f, r, 0.f));
 	VECTOR capsule_end_pos		= VAdd(capsule_start_pos, VGet(0.f, vertical_num, 0.f));
 
+	float gravity_radius = r - 0.1f;
+	VECTOR sphere_pos = VAdd(pos, VGet(0.f, gravity_radius, 0.f));
+
 	coll_ = std::make_shared<CollisionCapsule>(capsule_start_pos, capsule_end_pos, r);
+	gravity_check_coll_ = std::make_shared<CollisionSphere>(sphere_pos, gravity_radius);
 
 	MATRIX pos_matrix		= MGetTranslate(pos_);
 	MATRIX scale_matrix		= MGetScale(kScale);
@@ -140,7 +145,7 @@ bool Player::SuperAttackCondition()
 
 void Player::CheckIsGround(Stage& stage)
 {
-	is_ground_ = !stage.CheckDownColl(coll_);	
+	is_ground_ = !stage.CheckDownColl(gravity_check_coll_);	
 
 	if (is_ground_)
 	{
@@ -274,7 +279,7 @@ void Player::Debug()
 	if (Debug::GetInstance().GetDisp())
 	{
 		coll_->Debug();
-
+		gravity_check_coll_->Debug();
 
 
 		//
@@ -462,6 +467,7 @@ void Player::Update(Stage& stage,float target_rot)
 			pos_ = VAdd(pos_, velocity_);
 			//“–‚½‚è”»’è‚ÌXV
 			coll_->Update(velocity_);
+			gravity_check_coll_->Update(velocity_);
 			capsule_.start_pos = pos_;
 			capsule_.start_pos.y += capsule_.r;
 			capsule_.end_pos = capsule_.start_pos;

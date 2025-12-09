@@ -1,5 +1,6 @@
 #pragma once
 #include"DxLib.h"
+#include"clear_time.h"
 
 enum class SceneName
 {

@@ -24,6 +24,8 @@ private:
 
 	ConditionTimer* wait_timer_;
 
+	std::shared_ptr<CollisionBase> gravity_check_coll_;
+
 	//”½“]‚·‚é‚Æ‚«‚Ì’l
 	float target_rot_ = 0.f;
 

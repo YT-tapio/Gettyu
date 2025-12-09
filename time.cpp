@@ -1,6 +1,7 @@
 #include"time.h"
 #include"FPS.h"
 #include"debug.h"
+
 Timer::Timer()
 	:time_(0.f)
 {

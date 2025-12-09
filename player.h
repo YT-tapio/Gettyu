@@ -102,7 +102,7 @@ private:
 	CapsuleData capsule_;
 
 	std::shared_ptr<CollisionBase> coll_;
-
+	std::shared_ptr<CollisionBase> gravity_check_coll_;
 	//const VibrationData kVacuumVibration = { 500,700 };
 
 

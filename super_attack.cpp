@@ -8,6 +8,7 @@
 #include"super_attack_cool_time.h"
 #include"input.h"
 #include"keyconfig.h"
+#include"situation.h"
 
 SuperAttack::SuperAttack(const VECTOR& pos,const char*  file_path)
 	: now_situation_num_(0)
@@ -63,9 +64,11 @@ void SuperAttack::CoolTimeUpdate()
 void SuperAttack::OffsetUpdate()
 {
 	offset_time_->Update();
-
+	
+	Situation::GetInstance().SetSituationName(SituationName::kPerformance);
 	if (offset_time_->GetIsEnd())
 	{
+		Situation::GetInstance().SetSituationName(SituationName::kSuperAttack);
 		offset_time_->Reset();
 		state_ = SuperAttackState::kActive;
 	}

@@ -16,7 +16,7 @@ Game::Game(int model)
 
 Game::~Game()
 {
-    
+    ClearTime::GetInstance().SetClearTime(timer_);
 }
 
 void Game::GameStart()
@@ -109,6 +109,18 @@ void Game::FadeOut()
     }
 }
 
+bool Game::IsCount()
+{
+    auto name = Situation::GetInstance().GetSituationName();
+
+    if (name == SituationName::kGet)            { return FALSE; }
+    if (name == SituationName::kPerformance)    { return FALSE; }
+    if (name == SituationName::kClearOffset)    { return FALSE; }
+    if (name == SituationName::kClear)          { return FALSE; }
+
+    return TRUE;
+}
+
 //
 
 
@@ -167,6 +179,7 @@ void Game::Init()
     clear_offset_timer_ = std::make_shared<ConditionTimer>(1.f);
    
     offset_fade_param_ = 255.f;
+    timer_ = 0.f;
 }
 
 void Game::Update(SceneName& name)
@@ -174,6 +187,12 @@ void Game::Update(SceneName& name)
     //name = SceneName::kResult;
     //全体のタイムスケール
     static float time_scale = 1.0f;
+
+    if (IsCount())
+    {
+        timer_ += (FPS::GetInstance().GetDeltaTime() * 0.1f);
+    }
+    
     
     GameStart();
 
@@ -279,6 +298,7 @@ void Game::Draw()
 
     Draw2D::WhiteBoxBlend(static_cast<int>(offset_fade_param_));
     
+    DrawFormatString(600, 600, GetColor(255, 255, 255), "%.2f", timer_);
     DrawFormatString((kGameWidth - 300), (kGameHeight - 30), GetColor(0, 0, 0), "TAB / BACK Button : result");
 }
 

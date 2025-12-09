@@ -48,12 +48,11 @@ private:
 	std::shared_ptr<EnemyCountUI> enemy_count_UI_;
 
 	//タイマー
-	
-	std::shared_ptr<ConditionTimer> game_start_;
-	
+	std::shared_ptr<ConditionTimer>		game_start_;
 	std::shared_ptr<ConditionTimer>		clear_offset_timer_;
 	std::shared_ptr<ConditionTimer>		clear_timer_;
 
+	float timer_;					//ただカウントするだけのタイマー
 	float offset_fade_param_;		// ゲーム終了のfadeoutやfadeinの
 
 
@@ -66,6 +65,8 @@ private:
 	void GameClear(SceneName& name);
 
 	void FadeOut();
+
+	bool IsCount();
 
 public:
 

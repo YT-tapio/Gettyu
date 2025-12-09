@@ -17,6 +17,8 @@ NormalEnemy::NormalEnemy(const TCHAR* model_path, const VECTOR& pos, const VECTO
 	:EnemyBase(MV1LoadModel(model_path),pos,scale,dir,get_effect,got_effect,speed,fleeping_speed,alert,fov,stage, std::make_shared<CollisionSphere>(VGet(pos.x, (pos.y + 3.f), pos.z), 3.f))
 {
 	const float kCollRadius = 3.f;
+	const float kGravityCollRadius = kCollRadius - 0.1f;
+	const VECTOR kGravityCollPos	= VGet(pos.x, (pos.y + kGravityCollRadius), pos.z);
 	collision_data_.name = CollisionName::kSphere;
 	collision_data_.pos = pos;
 	collision_data_.r = 3.f;
@@ -30,6 +32,7 @@ NormalEnemy::NormalEnemy(const TCHAR* model_path, const VECTOR& pos, const VECTO
 
 	fall_speed_ = 0.f;
 
+	gravity_check_coll_ = std::make_shared<CollisionSphere>(kGravityCollPos, kGravityCollRadius);
 	wait_timer_ = new ConditionTimer(kWaitTime);
 }
 
@@ -79,7 +82,7 @@ void NormalEnemy::DecideNextPos()
 
 bool NormalEnemy::CheckIsGound()
 {
-	return !stage_->CheckDownColl(coll_);
+	return !stage_->CheckDownColl(gravity_check_coll_);
 }
 
 void NormalEnemy::Gravity()
@@ -262,6 +265,7 @@ void NormalEnemy::Update(std::shared_ptr<Player> player, bool& got)
 
 	pos_ = VAdd(pos_, velocity_);
 	coll_->Update(velocity_);
+	gravity_check_coll_->Update(velocity_);
 	//ìñÇΩÇËîªíËÇÃà íuÇÕîºåaï™è„Ç∞ÇÈ
 	collision_data_.pos = pos_;
 	collision_data_.pos.y += collision_data_.r;

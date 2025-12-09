@@ -268,6 +268,9 @@
     <Filter Include="ソース ファイル\scene\title">
       <UniqueIdentifier>{ce069253-9e05-4921-bb9a-5c621707dcf5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Singleton\clear_time">
+      <UniqueIdentifier>{57b6fe5c-77ce-479c-be88-3d206782e60f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -509,6 +512,9 @@
     </ClCompile>
     <ClCompile Include="font.cpp">
       <Filter>ソース ファイル\font</Filter>
+    </ClCompile>
+    <ClCompile Include="clear_time.cpp">
+      <Filter>ソース ファイル\Singleton\clear_time</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -781,6 +787,9 @@
     </ClInclude>
     <ClInclude Include="color.h">
       <Filter>ソース ファイル\color</Filter>
+    </ClInclude>
+    <ClInclude Include="clear_time.h">
+      <Filter>ソース ファイル\Singleton\clear_time</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

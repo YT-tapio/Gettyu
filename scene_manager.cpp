@@ -52,7 +52,7 @@ SceneManager::SceneManager()
     SetUseSetDrawScreenSettingReset(false);
 
     player_model_ = MV1LoadModel(kPlayerModelPath);
-	now_scene_ = std::make_shared<Title>(player_model_);
+	now_scene_ = std::make_shared<Result>(player_model_);
 
 	now_scene_->Init();
 	now_scene_name_ = now_scene_->GetName();
@@ -75,7 +75,7 @@ void SceneManager::Update()
     while (ScreenFlip() == 0 && ProcessMessage() == 0 && ClearDrawScreen() == 0 && !CheckHitKey(KEY_INPUT_ESCAPE))
     {
         bool init = FALSE;
-        
+
         Debug::GetInstance().Recet();
         Input::GetInstance().Update();
         Debug::GetInstance().Change();

@@ -137,9 +137,12 @@ bool Stage::CheckDownColl(const std::shared_ptr<CollisionBase> coll)
 			flag = TRUE;
 		}
 
+
+
 	}
 	else
 	{
+		// ‰½‚©‚µ‚ç‚É‚ ‚½‚Á‚Ä‚¢‚é‚Æ‚«‚É’n–Ê‚¶‚á‚È‚¢‚È‚ç
 		flag = FALSE;
 	}
 
