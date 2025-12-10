@@ -26,6 +26,7 @@
 #include"vector_assistant.h"
 #include"const_rad.h"
 #include"enemy_get_num.h"
+#include"hit_stop_timer.h"
 
 Player::Player(VECTOR pos, int model, int pad_num,int div, float r, float vertical_num)
 	: model_(model)
@@ -50,6 +51,7 @@ Player::Player(VECTOR pos, int model, int pad_num,int div, float r, float vertic
 	is_attack_				= FALSE;
 	is_super_attack_		= FALSE;
 	is_switch_weapon_		= FALSE;
+	is_hit_					= TRUE;
 	animation_				= std::make_shared<Animation>();
 	super_attack_			= new SuperAttack(VGet(0, 0, 0), "");
 	game_clear_effect_		= std::make_shared<Effect>(kGameClearEffectPath, VectorAssistant::GetZeroVec(), VectorAssistant::GetZeroVec(), kGameClearEffectSpeed, kGameClearEffectSize, kGameClearEffectCountMax, FALSE);
@@ -430,10 +432,10 @@ void Player::AttachWeapon(WeaponName name)
 
 void Player::Update(Stage& stage,float target_rot)
 {
+	if (HitStopTimer::GetInstance().CheckHitStop()) { return; }
 	VECTOR camera_pos = Camera::GetInstance().GetPos();
 	if (Situation::GetInstance().GetSituationName() < SituationName::kClearOffset)
 	{
-		
 		//サウンドのリセット
 		sound_vibration_->Reset();
 
@@ -1059,7 +1061,6 @@ void Player::MakeLine(float& constant, const VECTOR& pos)
 void Player::IsHitEnemy(EnemyBase* enemy, bool& got)
 {
 	//ここでweaponのアップデートをする
-
 	if (weapon_->GetName() == WeaponName::kWizardStaff)
 	{
 		//回しているradの値を受け取る
@@ -1103,11 +1104,21 @@ void Player::IsHitEnemy(EnemyBase* enemy, bool& got)
 				//batの時
 			case WeaponName::kBat:
 
-				printfDx("bat");
-				printfDx("に当たっています\n");
-
-				//ここでsituationを切り替える
-
+				//printfDx("bat");
+				//printfDx("に当たっています\n");
+				
+				if (!is_hit_)
+				{
+					//ここでsituationを切り替える
+					Situation::GetInstance().SetSituationName(SituationName::kAttack);
+					Situation::GetInstance().SetGetSituationPos(enemy->GetCollisionData().pos);
+					HitStopTimer::GetInstance().SetTime(0.15f);
+					//パッド振動
+					Vibration(kHitEnemyVibration);
+					//printfDx("wawawa\n");
+				}
+				
+				is_hit_ = TRUE;
 				break;
 
 				//ワープポイの時
@@ -1141,6 +1152,10 @@ void Player::IsHitEnemy(EnemyBase* enemy, bool& got)
 			// posを取得しといて、次のアップデートの処理の時にはじめるのか、それともRateUpdateというものを作り、ゲットしていたら、その時の処理を行う専用のものを用意するのか
 
 
+		}
+		else
+		{
+			is_hit_ = FALSE;
 		}
 	}
 	

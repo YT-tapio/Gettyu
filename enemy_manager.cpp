@@ -7,6 +7,7 @@
 #include"enemy_manager.h"
 #include"situation.h"
 #include"Stage.h"
+#include"hit_stop_timer.h"
 
 EnemyManager::EnemyManager(std::shared_ptr<Stage> stage)
 	: not_get_count_(0)
@@ -31,11 +32,14 @@ void EnemyManager::Init()
 	enemies_.push_back(std::make_shared<NormalEnemy>(normal_model_path,
 		VGet(10.f, 0.f, 50.f), scale, VGet(0.f, static_cast<float>((M_PI / 180) * 70), 0.0f), get_effect_, got_effect_, 0.5f, 2.5f, AlertState::kNormal, static_cast<float>((M_PI / 180) * 100),stage_));
 	
+	/*
 	enemies_.push_back(std::make_shared<NormalEnemy>(normal_model_path,
 		VGet(50.f, 1.5f, 10.f), scale, VGet(0.f, static_cast<float>((M_PI / 180) * 80), 0.0f), get_effect_, got_effect_, 1.f, 2.5f, AlertState::kLow, static_cast<float>((M_PI / 180) * 100),stage_));
 
 	enemies_.push_back(std::make_shared<NormalEnemy>(normal_model_path,
 		VGet(20.f, 3.f, 5.f), scale, VGet(0.f, static_cast<float>((M_PI / 180) * 90), 0.0f), get_effect_, got_effect_, 0.5f, 2.5f, AlertState::kHigh, static_cast<float>((M_PI / 180) * 100),stage_));
+	*/
+	
 
 
 	
@@ -52,7 +56,7 @@ void EnemyManager::Init()
 
 void EnemyManager::Update(std::shared_ptr<Player> player)
 {
-
+	if (HitStopTimer::GetInstance().CheckHitStop()) { return; }
 	not_get_count_ = 0;
 	//
 	bool got = FALSE;

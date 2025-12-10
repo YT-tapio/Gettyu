@@ -1,5 +1,6 @@
 #include"fleeping.h"
 #include"alert.h"
+#include"stan.h"
 
 EnemyFleeping::EnemyFleeping()
 	: BaseEnemyState(StateName::kFleeping)
@@ -30,7 +31,7 @@ void EnemyFleeping::Exit(EnemyBase* enemy)
 
 std::shared_ptr<BaseEnemyState> EnemyFleeping::ChangeState(EnemyBase* enemy, std::shared_ptr<Player> player)
 {
-	
+	if (Situation::GetInstance().GetSituationName() == SituationName::kAttack) { return std::make_shared<EnemyStan>(); }
 	//player‚ªenemy‚Ì”ÍˆÍ“à‚É‚¢‚È‚¢‚Ì‚È‚ç‚â‚ß‚é
 	// enemy‚Æplayer‚ªƒAƒ‰[ƒg”ÍˆÍ“à
 	VECTOR dist = VSub(player->GetCenterPos(), enemy->GetPos());		// enemy‚©‚çplayer‚Ü‚Å‚Ì‹——£

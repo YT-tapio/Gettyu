@@ -1,5 +1,6 @@
 #include"patrolling.h"
 #include"surprise.h"
+#include"stan.h"
 
 EnemyPatrolling::EnemyPatrolling()
 	:BaseEnemyState(StateName::kPatrolling)
@@ -33,6 +34,7 @@ void EnemyPatrolling::Exit(EnemyBase* enemy)
 
 std::shared_ptr<BaseEnemyState> EnemyPatrolling::ChangeState(EnemyBase* enemy, std::shared_ptr<Player> player)
 {
+	if (Situation::GetInstance().GetSituationName() == SituationName::kAttack) { return std::make_shared<EnemyStan>(); }
 	//‹ŠE‚Éplayer‚ª‚¢‚éA‚à‚µ‚­‚ÍAâ‘Î“¦‚°‚é‹——£‚Éplayer‚ª‚¢‚éê‡
 
 	//player‚©‚çenemy‚ÌvectorŒ^‚Ìdist‚ğæ‚é

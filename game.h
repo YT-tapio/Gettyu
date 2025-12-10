@@ -25,17 +25,23 @@
 
 class BaseScene;
 class Font;
+class HitEffect;
 
 class Game : public BaseScene
 {
 private:
 
-	const VECTOR kTimerPos	= VectorAssistant::Get2DVec(500.f, 30.f);
+	const VECTOR kTimerPos			= VectorAssistant::Get2DVec(500.f, 30.f);
 	const int kFontSize				= 200;
 	const int kFontThickSize		= 50;
-	const int kFontColor = GetColor(255, 255, 15);
+	const int kFontColor			= GetColor(255, 255, 15);
 
 	const float kFadeInSpeed = 5.f;
+
+	const float kFontColorGraphWidth	= 100.f;
+	const float kFontColorGraphHeight	= 100.f;
+
+	const char* kFontColorPath			= "data/font/color/UI_color.png";
 
 	std::shared_ptr<EffectManager>effect_player_;
 	std::shared_ptr<Player>player_;
@@ -45,7 +51,11 @@ private:
 	std::shared_ptr<SkyDom> sky_dom_;
 	std::shared_ptr<BaseSubScreen> concentration_line_;
 
+	std::shared_ptr<HitEffect> hit_effect_;
+
 	std::shared_ptr<NormalSubScreen> screen_;
+	std::shared_ptr<NormalSubScreen> font_color_screen_;
+	//std::shared_ptr<NormalSubScreen> timer_screen_;
 
 	//UI群
 	std::shared_ptr<WeaponUI> weapon_UI_;
@@ -59,6 +69,8 @@ private:
 	std::shared_ptr<ConditionTimer>		clear_offset_timer_;
 	std::shared_ptr<ConditionTimer>		clear_timer_;
 
+	int color_handle_;
+
 	float timer_;					//ただカウントするだけのタイマー
 	float offset_fade_param_;		// ゲーム終了のfadeoutやfadeinの
 
@@ -69,9 +81,13 @@ private:
 
 	void ScreenDraw();
 
+	void TimeScreenDraw();
+
 	void GameClear(SceneName& name);
 
 	void FadeOut();
+
+	void UpdateHitStop();
 
 	bool IsCount();
 

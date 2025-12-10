@@ -18,8 +18,6 @@ void MaskCreator::DeleteMask()
 
 void MaskCreator::Up(const int handle,const bool is_in)
 {
-	
-
 	if (is_in_ != is_in)
 	{
 		is_init_ = TRUE;

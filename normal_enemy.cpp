@@ -14,7 +14,7 @@
 #include"stage.h"
 
 NormalEnemy::NormalEnemy(const TCHAR* model_path, const VECTOR& pos, const VECTOR& scale, const VECTOR& dir, Effect* get_effect, Effect* got_effect, float speed, float fleeping_speed, AlertState alert, float fov, std::shared_ptr<Stage> stage)
-	:EnemyBase(MV1LoadModel(model_path),pos,scale,dir,get_effect,got_effect,speed,fleeping_speed,alert,fov,stage, std::make_shared<CollisionSphere>(VGet(pos.x, (pos.y + 3.f), pos.z), 3.f))
+	:EnemyBase(MV1LoadModel(model_path),pos,scale,dir,get_effect,got_effect,speed,fleeping_speed,alert,fov,stage, std::make_shared<CollisionSphere>(VGet(pos.x, (pos.y + 3.f), pos.z), 3.f),1.5f)
 {
 	const float kCollRadius = 3.f;
 	const float kGravityCollRadius = kCollRadius - 0.1f;
@@ -154,6 +154,14 @@ void NormalEnemy::SurpriseInit(std::shared_ptr<Player> player)
 	now_anim_type_ = AnimationType::kSurprise;
 }
 
+void NormalEnemy::StanInit(std::shared_ptr<Player> player)
+{
+	// 攻撃を受けた時のInit
+	// スタンの時間をリセットする
+	stan_timer_->Reset();
+	// アニメーションの適応をする
+	now_anim_type_ = AnimationType::kStan;
+}
 
 void NormalEnemy::AlertInit(std::shared_ptr<Player> player)
 {
@@ -213,11 +221,21 @@ void NormalEnemy::Update(std::shared_ptr<Player> player, bool& got)
 
 	velocity_ = VGet(0, 0, 0);
 	
-	//着地判定
+	// 着地判定
 	is_ground_ = CheckIsGound();
 	
+	// すでにゲットもしくは、hitしているならこの関数は回さない
+	if (!is_get_)
+	{
+		// ここでまだ捕まっていないときは
+		player->IsHitEnemy(this, got);
+	}
+	else
+	{
+		return;
+	}
 
-	//状態変化
+	// 状態変化
 	const auto next_state = fsm_->UpdateState(state_, player, this);
 
 
@@ -240,17 +258,6 @@ void NormalEnemy::Update(std::shared_ptr<Player> player, bool& got)
 	// メモ代わり
 	// 捕まるかどうかの処理をするplayer側にthisを送ればよさそうやね
 	
-	//すでにゲットもしくは、hitしているならこの関数は回さない
-
-	if (!is_get_)
-	{
-		//ここでまだ捕まっていないときは
-		player->IsHitEnemy(this, got);
-	}
-	else
-	{
-		return;
-	}
 
 	//stateによるupdate
 	state_->Update(this, player);
@@ -319,6 +326,11 @@ void NormalEnemy::Surprise()
 
 }
 
+void NormalEnemy::Stan()
+{
+	// タイマーをupdateさせます
+	stan_timer_->Update();
+}
 
 void NormalEnemy::Alert(std::shared_ptr<Player> player)
 {

@@ -1,6 +1,7 @@
 #include"alert.h"
 #include"patrolling.h"
 #include"surprise.h"
+#include"stan.h"
 
 EnemyAlert::EnemyAlert()
 	: BaseEnemyState(StateName::kAlert)
@@ -32,6 +33,9 @@ void EnemyAlert::Exit(EnemyBase* enemy)
 
 std::shared_ptr<BaseEnemyState> EnemyAlert::ChangeState(EnemyBase* enemy, std::shared_ptr<Player> player)
 {
+
+	if (Situation::GetInstance().GetSituationName() == SituationName::kAttack) { return std::make_shared<EnemyStan>(); }
+
 	//ステートの切り替え
 	//警戒し終わったら
 

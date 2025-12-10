@@ -19,3 +19,5 @@ const VibrationData kBombVibration		= { 1000,100 };
 
 // ƒQƒbƒg‚µ‚½‚ÌU“®
 const VibrationData kGetVibration		= { 500,1200 };
+
+const VibrationData kHitEnemyVibration	= { 450,300 };

@@ -280,6 +280,15 @@
     <Filter Include="ソース ファイル\Singleton\enemy_get_num">
       <UniqueIdentifier>{76e308e5-afd3-4844-a40f-3ce22145b65c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\enemy\state\enemy_state\stan">
+      <UniqueIdentifier>{e9089c33-8298-4348-b650-e1b55010ea18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Singleton\hit_stop_timer">
+      <UniqueIdentifier>{7733959e-c02b-4e96-8675-20f784ad47c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\hit_effect">
+      <UniqueIdentifier>{917ca145-3920-4ae3-972a-7b9d1fff4ade}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -530,6 +539,15 @@
     </ClCompile>
     <ClCompile Include="enemy_get_num.cpp">
       <Filter>ソース ファイル\Singleton\enemy_get_num</Filter>
+    </ClCompile>
+    <ClCompile Include="stan.cpp">
+      <Filter>ソース ファイル\enemy\state\enemy_state\stan</Filter>
+    </ClCompile>
+    <ClCompile Include="hit_stop_timer.cpp">
+      <Filter>ソース ファイル\Singleton\hit_stop_timer</Filter>
+    </ClCompile>
+    <ClCompile Include="hit_effect.cpp">
+      <Filter>ソース ファイル\hit_effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -811,6 +829,15 @@
     </ClInclude>
     <ClInclude Include="enemy_get_num.h">
       <Filter>ソース ファイル\Singleton\enemy_get_num</Filter>
+    </ClInclude>
+    <ClInclude Include="stan.h">
+      <Filter>ソース ファイル\enemy\state\enemy_state\stan</Filter>
+    </ClInclude>
+    <ClInclude Include="hit_stop_timer.h">
+      <Filter>ソース ファイル\Singleton\hit_stop_timer</Filter>
+    </ClInclude>
+    <ClInclude Include="hit_effect.h">
+      <Filter>ソース ファイル\hit_effect</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

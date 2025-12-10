@@ -62,6 +62,8 @@ protected:
 	AnimationType before_anim_type_;			//1つ前のアニメーション
 	AnimationType before_before_anim_type_;	//2つ前のアニメーション
 
+	
+
 	//playerのインスタンスの保持
 	Player* player_;
 
@@ -70,8 +72,8 @@ protected:
 	std::shared_ptr<WayPoint> my_way_point_;
 	std::shared_ptr<WayPoint> before_way_point_;
 
-	//警戒のタイマー
-	ConditionTimer* alert_timer_;
+	ConditionTimer* alert_timer_; //警戒のタイマー
+	std::shared_ptr<ConditionTimer> stan_timer_;		//stanの時間
 
 	//
 	MATRIX mat_;		//vectorの集合体
@@ -107,7 +109,6 @@ protected:
 
 	VECTOR GetNearWayPointPos();
 
-
 	std::vector<VECTOR> GetWayPointNeighborsPos();
 
 	std::vector<std::shared_ptr<WayPoint>> GetNeighbors();
@@ -123,7 +124,7 @@ public:
 
 	EnemyBase(const int model, const VECTOR& pos,
 		const VECTOR& scale, const VECTOR& rot, Effect* effect, Effect* got_effect,
-		float speed, float fleeping_speed, AlertState alert, float fov, std::shared_ptr<Stage> stage,std::shared_ptr<CollisionBase> coll);
+		float speed, float fleeping_speed, AlertState alert, float fov, std::shared_ptr<Stage> stage,std::shared_ptr<CollisionBase> coll, const float& stan_time);
 
 
 	virtual ~EnemyBase() = 0;
@@ -135,6 +136,8 @@ public:
 
 	virtual void SurpriseInit(std::shared_ptr<Player> player) = 0;
 
+	virtual void StanInit(std::shared_ptr<Player> player) = 0;
+
 	virtual void AlertInit(std::shared_ptr<Player> player) = 0;
 
 	virtual void FleepingInit(std::shared_ptr<Player> player) = 0;
@@ -145,6 +148,8 @@ public:
 	virtual void Patrolling() = 0;
 
 	virtual void Surprise() = 0;
+
+	virtual void Stan() = 0;
 
 	virtual void Alert(std::shared_ptr<Player> player) = 0;
 
@@ -200,6 +205,8 @@ public:
 	const bool GetIsFleeping() const { return is_fleeping_; }
 
 	const bool GetIsAlert() const { return is_alert_; }
+
+	const bool GetStanIsEnd() const { return stan_timer_->GetIsEnd(); }
 
 	const VECTOR GetPos() const { return pos_; }
 

@@ -5,7 +5,7 @@ EnemyGetNum::EnemyGetNum()
 
 }
 
-void EnemyGetNum::Awake()
+void EnemyGetNum::Reset()
 {
 	num_ = 0;
 }

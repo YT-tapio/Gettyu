@@ -56,10 +56,11 @@ public:
 
 	void Init(const VECTOR& pos,const VECTOR scale) override;
 
-
 	void PatrollingInit(std::shared_ptr<Player> player) override;
 
 	void SurpriseInit(std::shared_ptr<Player> player) override;
+
+	void StanInit(std::shared_ptr<Player> player) override;
 
 	void AlertInit(std::shared_ptr<Player> player)override;
 
@@ -72,6 +73,8 @@ public:
 	void Patrolling() override;
 
 	void Surprise() override;
+
+	void Stan() override;
 
 	void Alert(std::shared_ptr<Player> player) override;
 

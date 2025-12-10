@@ -20,7 +20,7 @@ public:
 	EnemyGetNum(const EnemyGetNum&) = delete;
 	EnemyGetNum& operator=(const EnemyGetNum&) = delete;
 
-	void Awake();
+	void Reset();
 
 
 	void AddNum();

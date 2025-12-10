@@ -4,6 +4,7 @@
 #include"enemy_base.h"
 #include"situation.h"
 #include"patrolling.h"
+#include"stan.h"
 #include"debug.h"
 #include"animation.h"
 #include"const_rad.h"
@@ -14,12 +15,13 @@
 
 EnemyBase::EnemyBase(const int model, const VECTOR& pos,
 	const VECTOR& scale, const VECTOR& rot, Effect* get_effect, Effect* got_effect, float speed,
-	float fleeping_speed, AlertState alert, float fov,std::shared_ptr<Stage> stage,std::shared_ptr<CollisionBase> coll)
+	float fleeping_speed, AlertState alert, float fov,std::shared_ptr<Stage> stage,std::shared_ptr<CollisionBase> coll,const float& stan_time)
 {
 	fsm_		= std::make_shared<EnemyFSM>();
 	navigation_ = std::make_shared<Navigation>();
 	animation_	= std::make_shared<Animation>();
 
+	stan_timer_ = std::make_shared<ConditionTimer>(stan_time);
 
 	now_anim_type_				= AnimationType::kNothing;
 	before_anim_type_			= AnimationType::kNothing;
@@ -546,7 +548,6 @@ void EnemyBase::SetDeltaTime(float delta_time)
 	animation_->SetDeltaTime(delta_time_);
 	get_effect_->SetDeltaTime(delta_time);
 	got_effect_->SetDeltaTime(delta_time);
-
 }
 
 void EnemyBase::SetIsGet(bool flag)

@@ -8,6 +8,9 @@
 #include"Draw2D.h"
 #include"offset_assistant.h"
 #include"font.h"
+#include"hit_stop_timer.h"
+#include"hit_effect.h"
+#include"enemy_get_num.h"
 
 Game::Game(int model)
     :BaseScene(SceneName::kGame,model)
@@ -18,6 +21,7 @@ Game::Game(int model)
 Game::~Game()
 {
     ClearTime::GetInstance().SetClearTime(timer_);
+    DeleteGraph(color_handle_);
 }
 
 void Game::GameStart()
@@ -68,6 +72,12 @@ void Game::ScreenDraw()
 
 }
 
+void Game::TimeScreenDraw()
+{
+    font_color_screen_->Up();
+    Draw2D::ExtendGraph(VectorAssistant::Get2DVec((kFontColorGraphWidth * 0.5f), (kFontColorGraphHeight * 0.5f)), kFontColorGraphWidth,kFontColorGraphHeight,color_handle_, TRUE);
+    font_color_screen_->Down();
+}
 
 void Game::GameClear(SceneName& name)
 {
@@ -122,6 +132,11 @@ bool Game::IsCount()
     return TRUE;
 }
 
+void Game::UpdateHitStop()
+{
+    HitStopTimer::GetInstance().TimerUpdate();  //
+}
+
 //
 
 
@@ -142,10 +157,19 @@ void Game::Init()
     
     effect_player_ = std::make_shared<EffectManager>("", 1.0f, 120);
 
+    color_handle_ = LoadGraph(kFontColorPath);
+
+    if (color_handle_ == -1)
+    {
+        printfDx("ばぁが");
+    }
+
     //playerを生成
     player_ = std::make_shared<Player>(VGet(0, 10, 100), player_model_,DX_INPUT_PAD1, 20, 2.0f, 10.0f);
 
     brain_ = std::make_shared<Brain>(player_->GetCenterPos());
+
+    EnemyGetNum::GetInstance().Reset();
 
     Camera::GetInstance().Awake(brain_->GetPositionFromTarget(player_->GetCenterPos()),
         player_->GetCenterPos(), (DX_PI_F / 180.0f) * 75.0f);
@@ -161,18 +185,23 @@ void Game::Init()
 
     enemy_manager_->Init();
 
-    sky_dom_                    = std::make_shared<SkyDom>("data/skydome/Dome_SS601.mv1", Camera::GetInstance().GetPos());
-    concentration_line_         = std::make_shared<ConcentrationLine>(kGameWidth, kGameHeight, TRUE);
+    sky_dom_                    = std::make_shared<SkyDom>("data/skydome/Dome_SS601.mv1", Camera::GetInstance().GetPos());  // スカイドーム
+    concentration_line_         = std::make_shared<ConcentrationLine>(kGameWidth, kGameHeight, TRUE);       // 集中線
+
+    hit_effect_                 = std::make_shared<HitEffect>();            // 敵に当たった時のeffect
 
     weapon_UI_                  = std::make_shared<WeaponUI>();
     super_attack_UI_            = std::make_shared<SuperAttackUI>();
     enemy_count_UI_             = std::make_shared<EnemyCountUI>(&enemy_manager_->not_get_count_);
 
-    tanuei_font_ = std::make_shared<Font>(kTanueiFontPath, kTanueiFontName, kFontSize, kFontThickSize, DX_FONTTYPE_EDGE);
+    tanuei_font_                = std::make_shared<Font>(kTanueiFontPath, kTanueiFontName, kFontSize, kFontThickSize, DX_FONTTYPE_EDGE);
 
     screen_                     = std::make_shared<NormalSubScreen>(VGet((kGameWidth * 0.5f), (kGameHeight * 0.5f), 0.f), kGameWidth, kGameHeight, kGameWidth, kGameHeight, FALSE, AlphaColorType::kBlack, 0.f, FALSE);
+    font_color_screen_          = std::make_shared<NormalSubScreen>(VectorAssistant::Get2DVec(200.f, 200.f), kFontColorGraphWidth, kFontColorGraphHeight, kFontColorGraphWidth, kFontColorGraphHeight, TRUE, AlphaColorType::kBlack, 10, TRUE);
+
 
     screen_->SetIsDisp(TRUE);
+    font_color_screen_->SetIsDisp(TRUE);
     SetMousePoint(mouse_init_pos_x, mouse_init_pos_y);
 
     game_start_ = std::make_shared<ConditionTimer>(5.f);
@@ -186,6 +215,9 @@ void Game::Init()
 
 void Game::Update(SceneName& name)
 {
+
+    if (HitStopTimer::GetInstance().CheckHitStop()){ UpdateHitStop(); }
+
     //name = SceneName::kResult;
     //全体のタイムスケール
     static float time_scale = 1.0f;
@@ -194,10 +226,8 @@ void Game::Update(SceneName& name)
     {
         timer_ += (FPS::GetInstance().GetDeltaTime() * 0.1f);
     }
-    
-    
+        
     GameStart();
-
 
     //デバッグ用
     if (Input::GetInstance().CheckInputKey(KeyConfig::kGameToResultKey) == InputState::kPush ||
@@ -213,6 +243,7 @@ void Game::Update(SceneName& name)
     player_->SetDeltaTime(FPS::GetInstance().GetDeltaTime());
     brain_->SetDeltaTime(FPS::GetInstance().GetDeltaTime());
     enemy_manager_->SetDeltaTime(FPS::GetInstance().GetDeltaTime());
+    hit_effect_->SetDeltaTime();
     //test_effect1->SetDeltaTime(fps->GetDeltaTime());
 
     concentration_line_->Update();
@@ -224,7 +255,7 @@ void Game::Update(SceneName& name)
     enemy_manager_->Update(player_);
     player_->Update(*stage_,brain_->GetSideRad());
 
-
+    
     //マウスでの操作
     brain_->Update(Camera::GetInstance().GetTargetPos(), Camera::GetInstance().GetPos(), player_);
 
@@ -233,11 +264,12 @@ void Game::Update(SceneName& name)
     super_attack_UI_->Update();
     enemy_count_UI_->Update();
    
+    hit_effect_->Update();
 
     Camera::GetInstance().Update(brain_->GetVelocity(), brain_->GetTargetVelocity());
     effect_player_->Update();
     sky_dom_->SetPos(player_->GetVelocity());
-
+    TimeScreenDraw();
     //makscreenの中で描画する
     ScreenDraw();
 
@@ -250,11 +282,7 @@ void Game::Update(SceneName& name)
         Gauss::GetInstance().Update(screen_->GetHandle(), pixel, param);
     }
     
-
- 
     SetUseLighting(TRUE);
-    
-
     
     if (CheckHitKey(KEY_INPUT_RIGHT))
     {
@@ -275,13 +303,7 @@ void Game::Update(SceneName& name)
         time_scale = 1.0f;
     }
 
-
-    
-
     GameClear(name);
-
-    
-    
 
     FPS::GetInstance().SetTimeScale(time_scale);
 
@@ -290,17 +312,16 @@ void Game::Update(SceneName& name)
 
 void Game::Draw()
 {
-    
-
     screen_->Draw();
     
     weapon_UI_->Draw();
     super_attack_UI_->Draw();
     enemy_count_UI_->Draw();
-
+    font_color_screen_->Draw();
+    font_color_screen_->Debug();
+    DrawFormatStringToHandle(kTimerPos.x, kTimerPos.y, kFontColor, tanuei_font_->GetHandle(), "%.1f", timer_);
     Draw2D::WhiteBoxBlend(static_cast<int>(offset_fade_param_));
     
-    DrawFormatStringToHandle(kTimerPos.x, kTimerPos.y, kFontColor, tanuei_font_->GetHandle(),"%.1f", timer_);
     DrawFormatString((kGameWidth - 300), (kGameHeight - 30), GetColor(0, 0, 0), "TAB / BACK Button : result");
 }
 

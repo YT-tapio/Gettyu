@@ -50,9 +50,9 @@ namespace Draw2D
 	{
 
 		DrawExtendGraph(static_cast<int>(pos.x - (float(width) * 0.5f)),
-			static_cast<int>(pos.y - (float(width) * 0.5f)),
-			static_cast<int>(pos.x - (float(width) * 0.5f)),
-			static_cast<int>(pos.y + (float(width) * 0.5f)),
+			static_cast<int>(pos.y - (float(height) * 0.5f)),
+			static_cast<int>(pos.x + (float(width) * 0.5f)),
+			static_cast<int>(pos.y + (float(height) * 0.5f)),
 			data, alpha);
 
 	}

@@ -109,6 +109,7 @@ private:
 	float before_rot_;
 	float target_rot_;
 
+	bool is_hit_;					//敵に当たっているとかの判別
 
 	bool is_ground_;					//地面の上にいるとき
 	bool is_target_;					///ターゲットしているかどうか
