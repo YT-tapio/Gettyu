@@ -25,6 +25,18 @@ namespace Draw2D
 	}
 
 	/// <summary>
+	/// 2Dの丸を描画
+	/// </summary>
+	/// <param name="pos">中心座標</param>
+	/// <param name="radius">半径</param>
+	/// <param name="color">色</param>
+	/// <param name="alpha">枠を出すのかどうか , TRUE 全部描画 : FALSE 枠だけ</param>
+	inline void Circle(const VECTOR& pos, const float& radius, int color, bool alpha)
+	{
+		DrawCircle(static_cast<int>(pos.x), static_cast<int>(pos.y), radius, color, alpha);
+	}
+
+	/// <summary>
 	/// boxの透過を行う
 	/// </summary>
 	/// <param name="pos">中心座標</param>
@@ -37,6 +49,21 @@ namespace Draw2D
 	{
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha_num);
 		Box(pos, width, height, color, alpha);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	}
+
+	/// <summary>
+	/// 丸をブレンドして描画
+	/// </summary>
+	/// <param name="pos">中心座標</param>
+	/// <param name="radius">半径</param>
+	/// <param name="color">色</param>
+	/// <param name="alpha">枠を出すのかどうか , TRUE 全部描画 : FALSE 枠だけ</param>
+	/// <param name="alpha_num">透過 ; 大きくすると描画されない max 255</param>
+	inline void BlendCircle(const VECTOR& pos, const float& radius, int color, bool alpha, const int& alpha_num)
+	{
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha_num);
+		Circle(pos, radius, color, alpha);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}
 

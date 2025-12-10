@@ -98,6 +98,10 @@ void NormalEnemy::Gravity()
 	}
 }
 
+AnimationType NormalEnemy::ChageAnimType(AnimationType now, AnimationType next)
+{
+	return (now == next) ? now : next;
+}
 
 //public
 
@@ -169,7 +173,7 @@ void NormalEnemy::AlertInit(std::shared_ptr<Player> player)
 	alert_timer_->Reset();
 	is_alert_ = TRUE;
 	//独自のアニメーションも再生させたい(探しているような)
-	now_anim_type_ = AnimationType::kNothing;
+	now_anim_type_ = AnimationType::kAlert;
 }
 
 
@@ -196,23 +200,42 @@ void NormalEnemy::FleepingInit(std::shared_ptr<Player> player)
 void NormalEnemy::AddAnim()
 {
 	//アニメーションスピード
-	const float kAnimationWalkSpeed = 3.f;
-	const float kAnimationSurpriseSpeed = 10.f;
-	const float kAnimationFastRunSpeed = 5.f;
-	//各アニメーションを生成する
+	const float kAnimationWalkSpeed			= 3.f;
+	const float kAnimationSurpriseSpeed	= 10.f;
+	const float kAnimationFastRunSpeed	= 5.f;
+	const float kAnimationIdleSpeed			= 4.f;
+	const float kAnimationAlertSpeed			= 1.f;
+	const float kAnimationStanSpeed			= 2.f;
 
+	const char* kAnimationIdlePath			= "data/model/character/enemy/animation/Standing_W_Briefcase_Idle.mv1";
+	const char* kAnimationWalkPath			= "data/model/character/enemy/animation/Walking.mv1";
+	const char* kAnimationSurprisePath		= "data/model/character/enemy/animation/Joyful_Jump.mv1";
+	const char* kAnimationFastRunPath		= "data/model/character/enemy/animation/Standard_Run.mv1";
+	const char* kAnimationAlertPath			= "data/model/character/enemy/animation/Standing_Cover_Turn.mv1";
+	const char* kAnimationStanPath			= "data/model/character/enemy/animation/Female_Dynamic_Pose.mv1";
+
+	//各アニメーションを生成する
+	AnimationData idle;
 	AnimationData walk;
 	AnimationData surprise;
 	AnimationData fast_run;
+	AnimationData alert;
+	AnimationData stan;
 	
 	//アニメーションをロード
-	Load(walk, "data/model/character/enemy/animation/Walking.mv1", AnimationType::kWalk, model_, 1, kAnimationWalkSpeed);
-	Load(surprise, "data/model/character/enemy/animation/Joyful_Jump.mv1", AnimationType::kSurprise, model_, 1, kAnimationSurpriseSpeed);
-	Load(fast_run, "data/model/character/enemy/animation/Standard_Run.mv1", AnimationType::kFastRun, model_, 1, kAnimationFastRunSpeed);
-
+	Load(idle,			kAnimationIdlePath,			AnimationType::kIdle,			model_, 1, kAnimationIdleSpeed			);
+	Load(walk,			kAnimationWalkPath,			AnimationType::kWalk,		model_, 1, kAnimationWalkSpeed		);
+	Load(surprise,	kAnimationSurprisePath,		AnimationType::kSurprise,	model_, 1, kAnimationSurpriseSpeed	);
+	Load(fast_run,	kAnimationFastRunPath,		AnimationType::kFastRun,	model_, 1, kAnimationFastRunSpeed	);
+	Load(alert,			kAnimationAlertPath,			AnimationType::kAlert,		model_, 1, kAnimationAlertSpeed		);
+	Load(stan,			kAnimationStanPath,			AnimationType::kStan,		model_, 1, kAnimationStanSpeed		);
+	
+	animation_->Add(idle);
 	animation_->Add(walk);
 	animation_->Add(surprise);
 	animation_->Add(fast_run);
+	animation_->Add(alert);
+	animation_->Add(stan);
 }
 
 
@@ -288,6 +311,7 @@ void NormalEnemy::Patrolling()
 	//velにlerpのやつを代入
 	if (lerp_flag_)
 	{
+		now_anim_type_ = ChageAnimType(now_anim_type_, AnimationType::kWalk);
 		vel = NormalLerp(pos_, target_pos_,(speed_ * delta_time_),lerp_flag_);
 	}
 	else
@@ -301,10 +325,9 @@ void NormalEnemy::Patrolling()
 		else
 		{
 			//lerpし終わったらwait_timerをきどうしてそれが終わったら
+			now_anim_type_ = ChageAnimType(now_anim_type_, AnimationType::kIdle);
 			wait_timer_->Update();
 		}
-
-
 	}
 
 	velocity_ = VAdd(velocity_, vel);
@@ -396,3 +419,11 @@ void NormalEnemy::Fleeping(std::shared_ptr<Player> player)
 		}
 	}
 }
+
+
+
+
+
+
+
+//洗濯ものです

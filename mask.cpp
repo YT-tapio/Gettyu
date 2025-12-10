@@ -18,24 +18,24 @@ void MaskCreator::DeleteMask()
 
 void MaskCreator::Up(const int handle,const bool is_in)
 {
-	if (is_in_ != is_in)
+	if (!is_init_)
 	{
 		is_init_ = TRUE;
 		is_in_ = is_in;
-		SetMaskReverseEffectFlag(is_in_);
+		SetMaskReverseEffectFlag(is_in);
 	}
 	else
 	{
-		if (!is_init_)
+		if (is_in != is_in_)
 		{
-			is_init_ = TRUE;
-			SetMaskReverseEffectFlag(is_in_);
+			is_in_ = is_in;
+			SetMaskReverseEffectFlag(is_in);
 		}
 	}
 
-
-	SetMaskScreenGraph(handle);
 	SetUseMaskScreenFlag(TRUE);
+	SetMaskScreenGraph(handle);
+	
 }
 
 

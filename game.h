@@ -55,7 +55,7 @@ private:
 
 	std::shared_ptr<NormalSubScreen> screen_;
 	std::shared_ptr<NormalSubScreen> font_color_screen_;
-	//std::shared_ptr<NormalSubScreen> timer_screen_;
+	std::shared_ptr<NormalSubScreen> timer_screen_;
 
 	//UIŒQ
 	std::shared_ptr<WeaponUI> weapon_UI_;

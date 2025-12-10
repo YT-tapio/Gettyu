@@ -11,6 +11,7 @@ enum class AnimationType
     kSlowRun,
     kFastRun,
     kDancing,
+    kAlert,
     kNoLoop,        //ここより先のアニメーションはループなし
     kJumpUp,
     kJumpDown,

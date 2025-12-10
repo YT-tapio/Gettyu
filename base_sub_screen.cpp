@@ -14,7 +14,7 @@ BaseSubScreen::BaseSubScreen(const VECTOR& pos,const int screen_width, const int
 	center_pos_ = pos;
 	color_type_ = color_type;
 	param_ = param;
-	is_blend_ = is_blend_;
+	is_blend_ = is_blend;
 }
 
 BaseSubScreen::~BaseSubScreen()

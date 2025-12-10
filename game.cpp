@@ -11,6 +11,7 @@
 #include"hit_stop_timer.h"
 #include"hit_effect.h"
 #include"enemy_get_num.h"
+#include"mask.h"
 
 Game::Game(int model)
     :BaseScene(SceneName::kGame,model)
@@ -77,6 +78,11 @@ void Game::TimeScreenDraw()
     font_color_screen_->Up();
     Draw2D::ExtendGraph(VectorAssistant::Get2DVec((kFontColorGraphWidth * 0.5f), (kFontColorGraphHeight * 0.5f)), kFontColorGraphWidth,kFontColorGraphHeight,color_handle_, TRUE);
     font_color_screen_->Down();
+
+    timer_screen_->Up();
+    Draw2D::Circle(VectorAssistant::Get2DVec((kFontColorGraphWidth * 0.5f), (kFontColorGraphHeight * 0.5f)), kFontColorGraphWidth * 0.4f, Color::kWhite, TRUE);
+    timer_screen_->Down();
+
 }
 
 void Game::GameClear(SceneName& name)
@@ -100,6 +106,7 @@ void Game::GameClear(SceneName& name)
             //Ç±Ç±Ç≈èIóπ
             name = SceneName::kResult;
         }
+
     }
 
     FadeOut();
@@ -124,10 +131,10 @@ bool Game::IsCount()
 {
     auto name = Situation::GetInstance().GetSituationName();
 
-    if (name == SituationName::kGet)            { return FALSE; }
-    if (name == SituationName::kPerformance)    { return FALSE; }
-    if (name == SituationName::kClearOffset)    { return FALSE; }
-    if (name == SituationName::kClear)          { return FALSE; }
+    if (name == SituationName::kGet)                    { return FALSE; }
+    if (name == SituationName::kPerformance)       { return FALSE; }
+    if (name == SituationName::kClearOffset)         { return FALSE; }
+    if (name == SituationName::kClear)                  { return FALSE; }
 
     return TRUE;
 }
@@ -196,12 +203,13 @@ void Game::Init()
 
     tanuei_font_                = std::make_shared<Font>(kTanueiFontPath, kTanueiFontName, kFontSize, kFontThickSize, DX_FONTTYPE_EDGE);
 
-    screen_                     = std::make_shared<NormalSubScreen>(VGet((kGameWidth * 0.5f), (kGameHeight * 0.5f), 0.f), kGameWidth, kGameHeight, kGameWidth, kGameHeight, FALSE, AlphaColorType::kBlack, 0.f, FALSE);
-    font_color_screen_          = std::make_shared<NormalSubScreen>(VectorAssistant::Get2DVec(200.f, 200.f), kFontColorGraphWidth, kFontColorGraphHeight, kFontColorGraphWidth, kFontColorGraphHeight, TRUE, AlphaColorType::kBlack, 10, TRUE);
-
+    screen_                        = std::make_shared<NormalSubScreen>(VGet((kGameWidth * 0.5f), (kGameHeight * 0.5f), 0.f), kGameWidth, kGameHeight, kGameWidth, kGameHeight, FALSE, AlphaColorType::kBlack, 0.f, FALSE);
+    font_color_screen_        = std::make_shared<NormalSubScreen>(VectorAssistant::Get2DVec(200.f, 200.f), kFontColorGraphWidth, kFontColorGraphHeight, kFontColorGraphWidth, kFontColorGraphHeight, TRUE, AlphaColorType::kBlack, 10, TRUE);
+    timer_screen_               = std::make_shared<NormalSubScreen>(VectorAssistant::Get2DVec(200.f, 200.f), kFontColorGraphWidth, kFontColorGraphHeight, kFontColorGraphWidth - 10, kFontColorGraphHeight - 10, TRUE, AlphaColorType::kBlack, 10, TRUE);
 
     screen_->SetIsDisp(TRUE);
     font_color_screen_->SetIsDisp(TRUE);
+    timer_screen_->SetIsDisp(TRUE);
     SetMousePoint(mouse_init_pos_x, mouse_init_pos_y);
 
     game_start_ = std::make_shared<ConditionTimer>(5.f);
@@ -317,8 +325,10 @@ void Game::Draw()
     weapon_UI_->Draw();
     super_attack_UI_->Draw();
     enemy_count_UI_->Draw();
-    font_color_screen_->Draw();
-    font_color_screen_->Debug();
+    
+    //font_color_screen_->Draw();
+    // timer_screen_->Debug();
+    // font_color_screen_->Debug();
     DrawFormatStringToHandle(kTimerPos.x, kTimerPos.y, kFontColor, tanuei_font_->GetHandle(), "%.1f", timer_);
     Draw2D::WhiteBoxBlend(static_cast<int>(offset_fade_param_));
     

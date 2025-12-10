@@ -42,6 +42,8 @@ private:
 
 	void Gravity();
 
+	AnimationType ChageAnimType(AnimationType now,AnimationType next);
+
 public:
 
 
