@@ -1,6 +1,6 @@
 #include"screen.h"
 #include"enemy_count_UI.h"
-
+#include"Draw2D.h"
 
 EnemyCountUI::EnemyCountUI(int *p)
 	:enemys_count_(p)
@@ -14,13 +14,13 @@ EnemyCountUI::EnemyCountUI(int *p)
 	float sub_screen_width		= kWidth * width_ratio;
 	float sub_screen_height		= kHeight * height_ratio;
 
-	count_screen_ = std::make_shared<NormalSubScreen>(kInitPos,static_cast<int>(kGameWidth),
-		static_cast<int>(kGameHeight),static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height),TRUE,AlphaColorType::kBlack,0,TRUE);
+	count_screen_ = std::make_shared<NormalSubScreen>(kInitPos, static_cast<int>(kWidth),
+		static_cast<int>(kHeight), static_cast<int>(kWidth), static_cast<int>(kHeight), TRUE, AlphaColorType::kBlack, 0, TRUE);
 
 	//screen‚Ì‹N“®‚ðs‚¤	
 	count_screen_->SetIsDisp(TRUE);
 
-
+	param_ = 255;
 }
 
 EnemyCountUI::~EnemyCountUI()
@@ -35,12 +35,12 @@ EnemyCountUI::~EnemyCountUI()
 void EnemyCountUI::CountDraw()
 {
 	//Žc‚è‚Ì“G‚ðŽó‚¯Žæ‚é
-
 	int size = GetFontSize();
+	SetFontSize(60);
+	DrawString(static_cast<int>(kInitCountPos.x), static_cast<int>(kInitCountPos.y), "‚Ì‚±‚è", GetColor(0, 255, 255));
 	SetFontSize(100);
-	DrawFormatString(static_cast<int>(kInitCountPos.x), static_cast<int>(kInitCountPos.y), GetColor(0, 255, 255), "%d", *enemys_count_);
+	DrawFormatString(static_cast<int>(kInitCountPos.x + 190), static_cast<int>(kInitCountPos.y - 20), GetColor(0, 255, 255), "%d", *enemys_count_);
 	SetFontSize(size);
-
 }
 
 
@@ -58,5 +58,8 @@ void EnemyCountUI::Update()
 
 void EnemyCountUI::Draw()
 {
-	count_screen_->Draw();
+	if (*enemys_count_ != 0)
+	{
+		Draw2D::BlendGraph(kInitPos, kWidth, kHeight, count_screen_->GetHandle(), TRUE, param_);
+	}
 }

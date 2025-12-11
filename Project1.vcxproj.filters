@@ -289,6 +289,9 @@
     <Filter Include="ソース ファイル\hit_effect">
       <UniqueIdentifier>{917ca145-3920-4ae3-972a-7b9d1fff4ade}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\out_side_check">
+      <UniqueIdentifier>{011b5fad-a78f-43dd-a97e-d84919bce103}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -548,6 +551,9 @@
     </ClCompile>
     <ClCompile Include="hit_effect.cpp">
       <Filter>ソース ファイル\hit_effect</Filter>
+    </ClCompile>
+    <ClCompile Include="out_side_checkcpp.cpp">
+      <Filter>ソース ファイル\out_side_check</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -838,6 +844,12 @@
     </ClInclude>
     <ClInclude Include="hit_effect.h">
       <Filter>ソース ファイル\hit_effect</Filter>
+    </ClInclude>
+    <ClInclude Include="out_side_check.h">
+      <Filter>ソース ファイル\out_side_check</Filter>
+    </ClInclude>
+    <ClInclude Include="font_data.h">
+      <Filter>ソース ファイル\font</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

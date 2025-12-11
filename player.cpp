@@ -27,6 +27,7 @@
 #include"const_rad.h"
 #include"enemy_get_num.h"
 #include"hit_stop_timer.h"
+#include"out_side_check.h"
 
 Player::Player(VECTOR pos, int model, int pad_num,int div, float r, float vertical_num)
 	: model_(model)
@@ -342,7 +343,7 @@ void Player::AddAnim()
 	Load(slow_run, slow_run_path				,AnimationType::kSlowRun			, model_, 0, 3.0f);
 	Load(fast_run, fast_run_path				,AnimationType::kFastRun			, model_, 0, 3.0f);
 	Load(jumping_up, jumping_up_path			,AnimationType::kJumpUp				, model_, 0, 2.0f);
-	Load(jumping_down, jumping_down_path		,AnimationType::kJumpDown			, model_, 0, 2.0f);
+	Load(jumping_down, jumping_down_path		,AnimationType::kJumpDown			, model_, 0, 1.3f);
 	Load(sword_slash_attack, sword_slash_path	,AnimationType::kSwordSlash			, model_, 0, 4.0f);
 	Load(super_attack_first, super_attack_path	,AnimationType::kSuperAttackFirst	, model_, 0, 3.0f);
 	Load(clear_dance, clear_dance_path			,AnimationType::kClearDance			, model_, 0, 3.0f);
@@ -461,6 +462,8 @@ void Player::Update(Stage& stage,float target_rot)
 			super_attack_->EffectUpdate();
 		}
 
+		
+
 		if (AnimationType::kAttack > now_type_ && !is_super_attack_)
 		{
 			velocity_ = stage.CheckCollision(coll_, velocity_);
@@ -475,6 +478,25 @@ void Player::Update(Stage& stage,float target_rot)
 			capsule_.start_pos.y += capsule_.r;
 			capsule_.end_pos = capsule_.start_pos;
 			capsule_.end_pos.y = capsule_.vertical_num;
+		}
+
+		if (OutSide::Check(pos_))
+		{
+			// 場外判定をおこないposを移動させます
+			VECTOR before_pos = pos_;
+
+			auto next_pos = OutSide::MostNearRespawn(pos_);
+
+			velocity_ = VSub(next_pos, before_pos);
+
+			pos_ = VAdd(pos_, velocity_);
+			//当たり判定の更新
+			coll_->Update(velocity_);
+			gravity_check_coll_->Update(velocity_);
+
+			//gravityのリセット
+			fall_speed_ = 0.f;
+
 		}
 	}
 	else
@@ -505,6 +527,9 @@ void Player::Update(Stage& stage,float target_rot)
 			weapon_->SetPos(MV1GetFramePosition(model_, frame_num_));
 		}
 	}
+
+	
+
 }
 
 void Player::InputMovement(const VECTOR& pos,float& rotation)

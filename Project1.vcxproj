@@ -189,6 +189,7 @@
     <ClCompile Include="normal_enemy.cpp" />
     <ClCompile Include="normal_sub_screen.cpp" />
     <ClCompile Include="offset_assistant.cpp" />
+    <ClCompile Include="out_side_checkcpp.cpp" />
     <ClCompile Include="stan.cpp" />
     <ClCompile Include="super_attack_cool_time.cpp" />
     <ClCompile Include="super_attac_UI.cpp" />
@@ -244,6 +245,7 @@
     <ClInclude Include="collision_sphere.h" />
     <ClInclude Include="enemy_base.h" />
     <ClInclude Include="font.h" />
+    <ClInclude Include="font_data.h" />
     <ClInclude Include="game_clear.h" />
     <ClInclude Include="hit_effect.h" />
     <ClInclude Include="hit_stop_timer.h" />
@@ -283,6 +285,7 @@
     <ClInclude Include="normal_sub_screen.h" />
     <ClInclude Include="const_rad.h" />
     <ClInclude Include="offset_assistant.h" />
+    <ClInclude Include="out_side_check.h" />
     <ClInclude Include="select_type.h" />
     <ClInclude Include="stan.h" />
     <ClInclude Include="super_attack_cool_time.h" />
