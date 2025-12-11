@@ -10,9 +10,11 @@ private:
 	//subscreen‚ð—pˆÓ
 	std::shared_ptr<NormalSubScreen> count_screen_;
 
-	const VECTOR kInitPos		= VGet(1000.f, 750.f, 0.f);
+	const VECTOR kScreenInitPos		= VGet(1000.f, 750.f, 0.f);
 	const VECTOR kInitCountPos	= VGet(10.f, 10.f, 0.f);
 	
+	VECTOR screen_pos_;
+
 	const float kWidth		= 300.f;
 	const float kHeight		= 100.f;
 
@@ -20,8 +22,13 @@ private:
 	int* enemys_count_;
 	float param_;
 
-	void CountDraw();
+	bool is_disp_;
 
+	void UpdateDispParam();
+
+	void UpdateUiPos();
+
+	void CountDraw();
 
 public:
 
