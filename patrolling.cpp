@@ -62,8 +62,10 @@ std::shared_ptr<BaseEnemyState> EnemyPatrolling::ChangeState(EnemyBase* enemy, s
 		return std::make_shared<EnemySurprise>();
 	}
 
-	//‹ŠE‚Ì”ÍˆÍŠO
-	auto engage_dist = (enemy->GetEngagementDist());
+	auto sound_vibration = player->GetSoundVibrationNum();
+
+	/*‹ŠE‚Ì”ÍˆÍŠO*/
+	auto engage_dist = (enemy->GetEngagementDist() * sound_vibration);
 
 	//‹——£‚ªÚ“G‹——£‚È‚ç
 	if (VSize(dist) <= engage_dist)

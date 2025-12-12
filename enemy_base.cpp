@@ -56,6 +56,7 @@ EnemyBase::EnemyBase(const int model, const VECTOR& pos,
 
 	is_get_			= FALSE;
 	is_fleeping_	= FALSE;
+	is_vacuum_	= FALSE;
 
 	is_ground_		= FALSE;
 
@@ -562,6 +563,11 @@ void EnemyBase::SetPosIsGot(const VECTOR& pos)
 	pos_ = pos;
 	collision_data_.pos = pos;
 	pos_.y -= collision_data_.r;
+}
+
+void EnemyBase::SetVecuum(const bool& flag)
+{
+	is_vacuum_ = flag;
 }
 
 VECTOR EnemyBase::DecideNextPlace()

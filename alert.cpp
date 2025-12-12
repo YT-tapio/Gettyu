@@ -47,8 +47,15 @@ std::shared_ptr<BaseEnemyState> EnemyAlert::ChangeState(EnemyBase* enemy, std::s
 		// player‚Æenemy‚Ì‹——£‚ğ‚Æ‚é
 		VECTOR dist = VSub(player->GetCenterPos(), enemy->GetPos());		// enemy‚©‚çplayer‚Ü‚Å‚Ì‹——£
 
+		if (VSize(dist) <= (enemy->GetEngagementDist()))
+		{
+			return std::make_shared<EnemySurprise>();
+		}
+
+		auto sound_vibration = player->GetSoundVibrationNum();
+
 		//‚»‚Ìdist‚ªenemy‚Ìalert‚Æplayer‚ÌƒTƒEƒ“ƒh‚ğ‚©‚¯‡‚í‚¹‚½”ÍˆÍ“à‚Ì
-		if (VSize(dist) <= (enemy->GetAlertDist()))
+		if (VSize(dist) <= (enemy->GetAlertDist() * sound_vibration))
 		{
 			return std::make_shared<EnemySurprise>();
 		}

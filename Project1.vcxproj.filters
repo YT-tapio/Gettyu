@@ -292,6 +292,9 @@
     <Filter Include="ソース ファイル\out_side_check">
       <UniqueIdentifier>{011b5fad-a78f-43dd-a97e-d84919bce103}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\sound">
+      <UniqueIdentifier>{ea27a179-7b70-4594-9a96-5e4223b70321}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -850,6 +853,9 @@
     </ClInclude>
     <ClInclude Include="font_data.h">
       <Filter>ソース ファイル\font</Filter>
+    </ClInclude>
+    <ClInclude Include="sound.h">
+      <Filter>ソース ファイル\sound</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -378,6 +378,8 @@ void NormalEnemy::Fleeping(std::shared_ptr<Player> player)
 {
 	VECTOR vel = VGet(0.f, 0.f, 0.f);
 
+	// todo::‹z‚¢‚Ü‚ê‚Ä‚¢‚é‚Æ‚«‚Íwaypoint‚ğ•ÏX‚µ‚Ü‚·
+
 	if (lerp_flag_)
 	{
 		vel = NormalLerp(pos_, target_pos_, fleeping_speed_, lerp_flag_);

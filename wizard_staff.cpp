@@ -30,7 +30,12 @@ void WizardStaff::Update(EnemyBase* enemy, const float spin_rad)
 	{
 		rem_vel = VGet(0.f, 0.f, 0.f);
 		enemy->SetVelocity(rem_vel);
+		enemy->SetVecuum(TRUE);
 		return;
+	}
+	else
+	{
+		enemy->SetVecuum(FALSE);
 	}
 
 	// ‚Ç‚Ì‚­‚ç‚¢‚Ì‹——£ŠÔ‚É‚¢‚é‚©‚ðŒŸ’m‚·‚é

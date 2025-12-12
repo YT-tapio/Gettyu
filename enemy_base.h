@@ -26,21 +26,17 @@ private:
 	Effect* get_effect_;
 	Effect* got_effect_;
 
-	const float kAlertHigh			= 50.f;	// 警戒度(高)
-	const float kAlertNormal		= 40.f;  // 警戒度(中)
-	const float kAlertLow			= 30.f;  // 警戒度(低)
+	const float kAlertHigh			= 58.f;	// 警戒度(高)
+	const float kAlertNormal		= 48.f;  // 警戒度(中)
+	const float kAlertLow			= 38.f;  // 警戒度(低)
 
-	const float kEngagementNormal	= 20.f;
+	const float kEngagementNormal	= 28.f;
 
 	const float kNormalAlertTime	= 2.f;
 
 	VECTOR near_way_point_pos_ = VGet(0, 0, 0);
 
-	
-
 	std::shared_ptr<WayPoint> DecideNextWayPoint(const VECTOR& player_pos, std::vector<std::shared_ptr<WayPoint>>way_points);
-
-	
 
 	float MakeWayPointScore(const VECTOR& player_pos, std::shared_ptr<WayPoint> way_point);
 
@@ -91,7 +87,8 @@ protected:
 	bool is_get_;
 	bool is_fleeping_;
 	bool is_alert_;
-	
+	bool is_vacuum_;
+
 	bool lerp_flag_;			//移動の際のラープ
 
 	bool is_ground_;
@@ -189,6 +186,8 @@ public:
 
 	//ゲットされた時の位置調整
 	void SetPosIsGot(const VECTOR& pos);
+
+	void SetVecuum(const bool& flag);
 
 	VECTOR DecideNextPlace();
 

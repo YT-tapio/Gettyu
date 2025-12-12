@@ -287,6 +287,7 @@
     <ClInclude Include="offset_assistant.h" />
     <ClInclude Include="out_side_check.h" />
     <ClInclude Include="select_type.h" />
+    <ClInclude Include="sound.h" />
     <ClInclude Include="stan.h" />
     <ClInclude Include="super_attack_cool_time.h" />
     <ClInclude Include="super_attack_state.h" />
