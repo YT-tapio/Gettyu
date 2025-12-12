@@ -12,6 +12,7 @@
 #include"collision_base.h"
 #include"collision_sphere.h"
 #include"stage.h"
+#include"const_rad.h"
 
 NormalEnemy::NormalEnemy(const TCHAR* model_path, const VECTOR& pos, const VECTOR& scale, const VECTOR& dir, Effect* get_effect, Effect* got_effect, float speed, float fleeping_speed, AlertState alert, float fov, std::shared_ptr<Stage> stage)
 	:EnemyBase(MV1LoadModel(model_path),pos,scale,dir,get_effect,got_effect,speed,fleeping_speed,alert,fov,stage, std::make_shared<CollisionSphere>(VGet(pos.x, (pos.y + 3.f), pos.z), 3.f),1.5f)
@@ -305,14 +306,14 @@ void NormalEnemy::Update(std::shared_ptr<Player> player, bool& got)
 
 void NormalEnemy::Patrolling()
 {
-	VECTOR vel = VGet(0,0,0);
+	VECTOR vel = VGet(0, 0, 0);
 
 	//線形保管でよくね
 	//velにlerpのやつを代入
 	if (lerp_flag_)
 	{
 		now_anim_type_ = ChageAnimType(now_anim_type_, AnimationType::kWalk);
-		vel = NormalLerp(pos_, target_pos_,(speed_ * delta_time_),lerp_flag_);
+		vel = NormalLerp(pos_, target_pos_, (speed_ * delta_time_), lerp_flag_);
 	}
 	else
 	{
@@ -331,17 +332,20 @@ void NormalEnemy::Patrolling()
 	}
 
 	velocity_ = VAdd(velocity_, vel);
-	total_vel_ = VAdd(total_vel_,vel);
+	total_vel_ = VAdd(total_vel_, vel);
 
-	rot_.y = atan2f(-dir_.x , -dir_.z);
-	
-	// ここでway_pointのcheckを行う
-	// my_way_pointから知っているneighborsに向かわせる
-	// my_way_point付近にいるのを感知する関数を用意
+	dir_ = VNorm(velocity_);
 
-	
+	rot_.y = VectorAssistant::GetPlaneRad(dir_);
+
+	rot_.y += kReverceRad;
+	if (rot_.y > kReverceRad)
+	{
+		rot_.y -= (kReverceRad + kReverceRad);
+	}
 
 }
+	
 
 
 void NormalEnemy::Surprise()
@@ -374,50 +378,28 @@ void NormalEnemy::Fleeping(std::shared_ptr<Player> player)
 {
 	VECTOR vel = VGet(0.f, 0.f, 0.f);
 
-	if (TRUE)
+	if (lerp_flag_)
 	{
-
-		if (lerp_flag_)
-		{
-			vel = NormalLerp(pos_, target_pos_, fleeping_speed_, lerp_flag_);
-		}
-		else
-		{
-			DecideFleepingPlace(player, my_way_point_);
-		}
-		
-		// ラープし終わったら新しい目標地点を選ぶ
-		
-
-
-
-		velocity_ = VAdd(velocity_, VScale(vel, delta_time_));
+		vel = NormalLerp(pos_, target_pos_, fleeping_speed_, lerp_flag_);
 	}
 	else
 	{
-		//定数
-		const float kFleepingMax = 30.f;
-
-		//ここで逃げる
-
-		// どう逃げさせようかな
-		// 一定距離うごいたら初期化させexitさせていいと思う
-
-		
-
-		vel = VScale(dir_, fleeping_speed_);
-
-		velocity_ = VAdd(velocity_, VScale(vel, delta_time_));
-
-		total_vel_ = VAdd(total_vel_, velocity_);
-
-		//ここでtotal_vel_がまだ逃げ切ってないときは
-		if (VSize(total_vel_) > kFleepingMax)
-		{
-			total_vel_ = VGet(0, 0, 0);
-			is_fleeping_ = FALSE;
-		}
+		DecideFleepingPlace(player, my_way_point_);
 	}
+
+	// ラープし終わったら新しい目標地点を選ぶ
+	velocity_	= VAdd(velocity_, VScale(vel, delta_time_));
+	dir_		= VNorm(velocity_);
+
+	rot_.y		= VectorAssistant::GetPlaneRad(dir_);
+
+	rot_.y += kReverceRad;
+
+	if (rot_.y > kReverceRad)
+	{
+		rot_.y -= (kReverceRad + kReverceRad);
+	}
+
 }
 
 

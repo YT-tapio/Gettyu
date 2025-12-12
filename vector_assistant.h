@@ -24,6 +24,13 @@ namespace VectorAssistant
 		return Get2DVec(x, y);
 	}
 
+
+	inline VECTOR GetReverce(const VECTOR& vec)
+	{
+		const float kReverceNum = -1.f;
+		return VScale(vec, kReverceNum);
+	}
+
 	/// <summary>
 	/// xyz‚ª“¯‚¶‚Ìvec‚ð•Ô‚·
 	/// </summary>

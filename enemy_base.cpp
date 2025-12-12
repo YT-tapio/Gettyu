@@ -272,11 +272,6 @@ void EnemyBase::DecideFleepingPlace(std::shared_ptr<Player> player,std::shared_p
 	my_way_point_ = DecideNextWayPoint(player_pos, neighbors);		//ˆê”Ô‰“‚¢êŠ‚É‚·‚é
 
 	target_pos_ = my_way_point_->GetPos();
-
-	//dir‚ğì‚é
-	dir_ = VectorAssistant::GetDir(target_pos_, pos_);
-	rot_.y = VectorAssistant::GetPlaneRot(dir_);
-
 }
 
 std::shared_ptr<WayPoint> EnemyBase::GetFarWayPoint(const VECTOR& pos, std::vector<std::shared_ptr<WayPoint>> way_points)
@@ -433,8 +428,8 @@ void EnemyBase::DrawFov()
 	VECTOR fov_pos2 = VAdd(pos_,VScale(dir2, angle_scale));
 
 	//pos‚ªo‚½‚Ì‚Åü‚ğˆø‚­
-	DrawLine3D(pos_, fov_pos1, GetColor(255, 255, 255));
-	DrawLine3D(pos_, fov_pos2, GetColor(255, 255, 255));
+	DrawLine3D(pos_, fov_pos1, GetColor(0, 0, 0));
+	DrawLine3D(pos_, fov_pos2, GetColor(0, 0, 0));
 }
 
 void EnemyBase::Debug(int i)
@@ -444,25 +439,6 @@ void EnemyBase::Debug(int i)
 	{
 		int red = GetColor(255, 0, 0);
 		//“–‚½‚è”»’è‚ğ•\¦
-		switch (collision_data_.name)
-		{
-
-		case CollisionName::kSphere:
-
-			/*
-			DrawSphere3D(collision_data_.pos, 3.f, 15, GetColor(100 * (i), 255 - (70 * i), 100 - (0 * i)),
-				GetColor(50 * (i), 255 - (50 * i), 255), FALSE);
-			*/
-			
-
-			break;
-
-		case CollisionName::kCapsule:
-
-			DrawCapsule3D(collision_data_.pos, VGet(collision_data_.pos.x, (collision_data_.pos.y - collision_data_.ver),
-				collision_data_.pos.z), collision_data_.r, 15, GetColor(255, 255, 255), GetColor(255, 255, 255), FALSE);
-			break;
-		}
 
 		coll_->Debug();
 		
@@ -470,7 +446,7 @@ void EnemyBase::Debug(int i)
 		DrawSphere3D(pos_, engagement_dist_, 20, red, red, FALSE);					// Ú“G‹——£
 
 		//³–Ê‚ğo‚·
-		DrawLine3D(pos_, VAdd(pos_, VScale(dir_, 5.f)), GetColor(255, 255, 255));
+		DrawLine3D(pos_, VAdd(pos_, VScale(dir_, 5.f)), GetColor(0, 0, 0));
 		DrawFov();
 		
 		//way_point‚ÆŒ‹‚Ñ‚Â‚¯‚é

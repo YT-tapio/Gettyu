@@ -319,8 +319,6 @@ void Input::Update()
 			wheel_offset_timer_->Stop();
 		}
 	}
-	
-	printfDx("%.2f\n", now_type_state_.wheel);
 
 	GetHitKeyStateAll(now_type_state_.key);
 

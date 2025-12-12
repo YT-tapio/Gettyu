@@ -1,6 +1,7 @@
 #include"patrolling.h"
 #include"surprise.h"
 #include"stan.h"
+#include"vector_assistant.h"
 
 EnemyPatrolling::EnemyPatrolling()
 	:BaseEnemyState(StateName::kPatrolling)
@@ -43,6 +44,9 @@ std::shared_ptr<BaseEnemyState> EnemyPatrolling::ChangeState(EnemyBase* enemy, s
 	VECTOR dist_dir = VNorm(dist);										// enemy‚©‚çplayer‚Ü‚Å‚Ìdist‚Ì³‹K‰»
 	VECTOR enemy_norm_dir = VNorm(enemy->GetDirection());				// enemy‚Ì³‹K‰»
 
+	dist_dir = VectorAssistant::GetPlane(dist_dir);
+	enemy_norm_dir = VectorAssistant::GetPlane(enemy_norm_dir);
+
 	//dot‚Ì‚¯‚Á‚©‚ğó‚¯æ‚é
 	float dot = VDot(enemy_norm_dir, dist_dir);
 
@@ -53,15 +57,13 @@ std::shared_ptr<BaseEnemyState> EnemyPatrolling::ChangeState(EnemyBase* enemy, s
 	//rad‚ªfov‚Ì”¼•ªˆÈ‰º‚©‚ÂA‹ŠE‚Ì‹——£‚È‚¢‚È‚ç
 	if (rad <= herf_fov && (enemy->GetAlertDist() >= VSize(dist)))
 	{
-		//printfDx("in fov\n");
 		enemy->SetColor(GetColor(255, 0, 0));
 		//æ‚É‹Á‚«‚©‚ç
 		return std::make_shared<EnemySurprise>();
 	}
 
 	//‹ŠE‚Ì”ÍˆÍŠO
-
-	auto engage_dist = (enemy->GetEngagementDist() * player->GetSoundVibrationNum());
+	auto engage_dist = (enemy->GetEngagementDist());
 
 	//‹——£‚ªÚ“G‹——£‚È‚ç
 	if (VSize(dist) <= engage_dist)
@@ -70,8 +72,6 @@ std::shared_ptr<BaseEnemyState> EnemyPatrolling::ChangeState(EnemyBase* enemy, s
 		//“¦‚°‚é
 		return std::make_shared<EnemySurprise>();
 	}
-
-
 
 	return nullptr;
 }
