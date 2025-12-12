@@ -58,7 +58,7 @@ const float ConditionTimer::GetNowTimer() const
 
 bool ConditionTimer::GetIsEnd()
 {
-	if (timer_ == max_time_)
+	if (timer_ >= max_time_)
 	{
 		return TRUE;
 	}
@@ -66,6 +66,11 @@ bool ConditionTimer::GetIsEnd()
 	{
 		return FALSE;
 	}
+}
+
+const bool ConditionTimer::GetIsStop() const
+{
+	return is_stop_;
 }
 
 

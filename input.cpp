@@ -1,7 +1,8 @@
-#include"DxLib.h"
 #include<math.h>
+#include"DxLib.h"
 #include"screen.h"
 #include"Calculation.h"
+#include"condition_timer.h"
 #include"input.h"
 #include"debug.h"
 
@@ -149,9 +150,11 @@ void Input::DecideDeviceType()
 		break;
 
 	}
+}
 
-
-
+bool Input::CheckChangeWheel(const float& next_wheel,const float& before_wheel)
+{
+	return (next_wheel != before_wheel);
 }
 
 
@@ -273,7 +276,10 @@ bool Input::CheckControlPadNum(int type,int control, int num, bool plus)
 
 void Input::Awake(const int num)
 {
+	const float kMaxTime = 0.17f;
 	num_ = num;
+	wheel_offset_timer_ = std::make_shared<ConditionTimer>(kMaxTime);
+	wheel_offset_timer_->Stop();
 }
 
 void Input::Update()
@@ -290,6 +296,32 @@ void Input::Update()
 	before_type_state_.mouse_x = now_type_state_.mouse_x;
 	before_type_state_.mouse_y = now_type_state_.mouse_y;
 
+	//printfDx("%.2f\n", GetMouseWheelRotVolF());
+
+	float next_wheel_num = GetMouseWheelRotVolF();
+
+	// 動いているとき
+	if (next_wheel_num != 0.f)
+	{
+		wheel_offset_timer_->Reset();
+		wheel_offset_timer_->Start();
+
+		now_type_state_.wheel = next_wheel_num;
+	}
+	else
+	{
+		// 動いていないときはタイマーをカウントし一定以内であればひとつ前のものを入れる
+		wheel_offset_timer_->Update();
+
+		if (wheel_offset_timer_->GetIsEnd())
+		{
+			now_type_state_.wheel = 0.f;
+			wheel_offset_timer_->Stop();
+		}
+	}
+	
+	printfDx("%.2f\n", now_type_state_.wheel);
+
 	GetHitKeyStateAll(now_type_state_.key);
 
 	now_type_state_.atai = GetMouseInputLog2(&now_type_state_.mouse, &now_type_state_.mouse_x,
@@ -297,6 +329,7 @@ void Input::Update()
 
 	GetMousePoint(&now_type_state_.mouse_x, &now_type_state_.mouse_y);
 	GetJoypadXInputState(num_,&(now_type_state_.pad));
+	
 
 	DecideDeviceType();
 	
@@ -646,6 +679,12 @@ bool Input::GetMouseMove()
 	}
 
 	return FALSE;
+}
+
+float Input::GetWheelDifference()
+{
+	//float diff =  - before_type_state_.wheel;
+	return now_type_state_.wheel;
 }
 
 float Input::GetStickSpin(int type)

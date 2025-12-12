@@ -59,7 +59,7 @@ void EnemyCountUI::UpdateDispParam()
 void EnemyCountUI::UpdateUiPos()
 {
 	// uiがアップダウンするやつを作ります
-	const float kSpeed = 5.f;
+	const float kSpeed = 50.f;
 	const float kSwing = 10.f;
 
 	static float rad = 0.f;

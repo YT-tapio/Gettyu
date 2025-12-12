@@ -1,8 +1,13 @@
 #pragma once
+#include<iostream>
 //いろんな入力を図る
 
 
+
+
 const float kPadSpinMin = 50.f;
+
+
 
 enum InputDeviceType
 {
@@ -27,11 +32,12 @@ struct InputType
 
 	int atai = 0;
 
-	char key[256] = {};
-	int mouse = 0;
-	int mouse_x = 0;
-	int mouse_y = 0;
-	int log = 0;
+	char key[256]	= {};
+	int mouse		= 0;
+	int mouse_x		= 0;
+	int mouse_y		= 0;
+	int log			= 0;
+	float wheel		= 0;
 
 	float left_stick_rad = 0;
 	float right_stick_rad = 0;
@@ -41,8 +47,8 @@ struct InputType
 
 struct StickType
 {
-	static const int kRight = 0;
-	static const int kLeft = 1;
+	static const int kRight		= 0;
+	static const int kLeft		= 1;
 };
 
 struct Control
@@ -51,7 +57,7 @@ struct Control
 	static const int kY = 1;
 };
 
-
+class ConditionTimer;
 
 class Input
 {
@@ -61,14 +67,15 @@ private:
 
 	/*------定数------*/
 
-	const float kMaxPadStickNum = 32767;
-	const float kPadStickDeadZone = 10000;
-	const float kMouseDeadZone = 10;
+	const float kMaxPadStickNum		= 32767;
+	const float kPadStickDeadZone	= 10000;
+	const float kMouseDeadZone		= 10;
 
 	/*-----変数-----*/
 
 	InputDeviceType device_type_;
 
+	std::shared_ptr<ConditionTimer> wheel_offset_timer_;
 
 	// 現在の
 	InputType now_type_state_;
@@ -86,6 +93,10 @@ private:
 
 	void DecideDeviceType();
 
+	/// <summary>
+	/// ホイールが動かされているかのチェック
+	/// </summary>
+	bool CheckChangeWheel(const float& next_wheel, const float& before_wheel);
 
 	/// <summary>
 	/// 2点間の距離ベクトル?を出す
@@ -180,6 +191,12 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	bool GetMouseMove();
+
+	/// <summary>
+	/// 前回との差を返す
+	/// </summary>
+	/// <returns></returns>
+	float GetWheelDifference();
 
 	const int GetMousePosX() const { return now_type_state_.mouse_x; }
 	const int GetMousePosY() const { return now_type_state_.mouse_y; }

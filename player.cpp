@@ -1085,15 +1085,29 @@ void Player::MakeLine(float& constant, const VECTOR& pos)
 
 void Player::IsHitEnemy(EnemyBase* enemy, bool& got)
 {
+	
 	//ここでweaponのアップデートをする
 	if (weapon_->GetName() == WeaponName::kWizardStaff)
 	{
 		//回しているradの値を受け取る
-		float stick_spin_rad = Input::GetInstance().GetStickSpin(StickType::kRight);
+		float stick_spin_rad	= Input::GetInstance().GetStickSpin(StickType::kRight);
+		float wheel_spin		= Input::GetInstance().GetWheelDifference();
 
-		if (stick_spin_rad != 0.f && (Input::GetInstance().GetPadStickVertical(StickType::kRight) > kPadSpinMin))
+		float spin_num = 0.f;
+
+		if (stick_spin_rad != 0.f && (Input::GetInstance().GetPadStickVertical(StickType::kRight) > kPadSpinMin) && Input::GetInstance().GetDeviceType() == InputDeviceType::kPad)
 		{
-			weapon_->Update(enemy,fabs(stick_spin_rad));
+			spin_num = stick_spin_rad;
+		}
+
+		if (wheel_spin != 0.f && Input::GetInstance().GetDeviceType() == InputDeviceType::kKey)
+		{
+			spin_num = wheel_spin;
+		}
+
+		if (fabs(spin_num) > 0.f)
+		{
+			weapon_->Update(enemy,fabs(spin_num));
 			now_state_ = PlayerState::kAttack;
 			super_weapon_spin_effect_->SetPos(weapon_->GetPos());
 			super_weapon_spin_effect_->Play();

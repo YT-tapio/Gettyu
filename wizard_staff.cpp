@@ -37,8 +37,6 @@ void WizardStaff::Update(EnemyBase* enemy, const float spin_rad)
 
 	float vel_per = (kVacuumRange - VSize(vel)) / kVacuumRange;
 
-	//printfDx("%.2f\n", vel_per);
-
 
 	//‚±‚±‚©‚ç‚Í‚»‚Ì”ÍˆÍ“à‚É‚¢‚é‚Æ‚«
 	//enemy‚Ìvelocity‚É‹zŽû•ª‚Ìvelocity‚ðadd‚·‚é
@@ -55,8 +53,6 @@ void WizardStaff::Update(EnemyBase* enemy, const float spin_rad)
 
 	//vacuum_vel‚ðenemy‚Ìvelocity‚É‚½‚·
 	enemy->AddVelocity(rem_vel);
-
-
 	// ‹z‚¢ž‚Ý‚ð‚¯‚¢‚¼‚­‚³‚¹‚é‚½‚ß‚Ì‰½‚©‚ª—~‚µ‚¢‚µA¡‹z‚¢ž‚Ý‚³‚ê‚Ä‚¢‚éó‹µ‚Æ‚©‚Ì
 	// Še“G‚É‹zˆø‚³‚ê‚Ä‚¢‚é‚Æ‚«‚Ìvelocity‚ð—pˆÓ‚µ‚Æ‚­
 

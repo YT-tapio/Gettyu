@@ -31,5 +31,7 @@ public:
 
 	bool GetIsEnd();
 
+	const bool GetIsStop() const;
+
 	void Debug();
 };
