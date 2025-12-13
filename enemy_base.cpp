@@ -127,7 +127,7 @@ std::shared_ptr<WayPoint> EnemyBase::DecideNextWayPoint(const VECTOR& player_pos
 		// 遠いときのscoreも高く、fov外でもscoreを高くする
 		float score = MakeWayPointScore(player_pos, way_point);
 
-		//スコアが高いならそのway_pointを代入
+		// スコアが高いならそのway_pointを代入
 
 		if (score > max_score)
 		{
@@ -149,21 +149,36 @@ std::shared_ptr<WayPoint> EnemyBase::DecideIsVacuumNextWayPoint(const VECTOR& pl
 
 	for (auto& way_point : way_points)
 	{
-		
-
 		float score = 0.f;
 
 		// playerいなくて
 		score = MakeWayPointScore(player_pos, way_point);
 
 		//真上に伸びているdirと次のway_pointまでのdirのdotをとる
-
 		float dot = 0.f;
 		VECTOR point_pos = way_point->GetPos();//今参照されているwaypointのpos
 
-		const VECTOR adove = VGet(0.f, 1.f, 0.f);	//真上に伸びる
+		// enemyが近ければ近いほどscore_up
+		const VECTOR point_dist = VSub(point_pos, pos_);
+		const VECTOR above		= VNorm(VGet(0.f, 1.f, 0.f));	//真上に伸びる
+		
+		//つぎのwaypointまでの距離をnormする
+		VECTOR norm_dist = VNorm(VSub(point_pos, pos_));
 
+		float point_dist_size = VSize(point_dist);
 
+		dot = VDot(above, norm_dist);
+
+		const float kPointDistMax= 100.f;	//仮のmaxを決める
+
+		score += (kPointDistMax - point_dist_size);
+		
+
+		// dotの結果が小さいのなら、そのスコアを低く
+		// dotの調整を行う
+		float offset_dot = (fabs(dot - 1) * 100.f);
+
+		score += offset_dot;
 
 		if (score > max_score)
 		{
@@ -311,10 +326,15 @@ void EnemyBase::DecideFleepingPlace(std::shared_ptr<Player> player,std::shared_p
 	target_pos_ = my_way_point_->GetPos();
 }
 
-void EnemyBase::DecideIsVacuumFleepingPlace(std::shared_ptr<Player> player, std::shared_ptr<WayPoint> way_point)
+void EnemyBase::DecideIsVacuumFleepingPlace(std::shared_ptr<Player> player)
 {
+	lerp_flag_ = TRUE;
 	// 高さがあるのなら次に行かないでください
+	before_way_point_ = my_way_point_;
+	my_way_point_ = DecideIsVacuumNextWayPoint(player->GetPos(), navigation_->GetWayPoint());
 
+
+	target_pos_ = my_way_point_->GetPos();
 }
 
 std::shared_ptr<WayPoint> EnemyBase::GetFarWayPoint(const VECTOR& pos, std::vector<std::shared_ptr<WayPoint>> way_points)

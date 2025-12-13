@@ -383,7 +383,7 @@ void NormalEnemy::Fleeping(std::shared_ptr<Player> player)
 
 	if (is_vacuum_)
 	{
-		
+		DecideIsVacuumFleepingPlace(player);
 	}
 	else
 	{
