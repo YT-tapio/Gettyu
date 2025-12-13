@@ -331,7 +331,6 @@ void Game::Draw()
     // font_color_screen_->Debug();
     DrawFormatStringToHandle(kTimerPos.x, kTimerPos.y, kFontColor, tanuei_font_->GetHandle(), "%.1f", timer_);
     Draw2D::WhiteBoxBlend(static_cast<int>(offset_fade_param_));
-    
     DrawFormatString((kGameWidth - 300), (kGameHeight - 30), GetColor(0, 0, 0), "TAB / BACK Button : result");
 }
 

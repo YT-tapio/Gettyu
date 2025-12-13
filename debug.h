@@ -14,7 +14,7 @@ private:
 	bool disp_ = FALSE;
 
 	//コンストラクタを非公開
-	Debug(){}
+	Debug() {}
 
 	
 	void CheckChangeDisp();
@@ -25,7 +25,7 @@ public:
 
 	static Debug& GetInstance()
 	{
-		static Debug instance;	//性的変数としてインスタンスを定義
+		static Debug instance;	// 静的変数としてインスタンスを定義
 		return instance;
 	}
 

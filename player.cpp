@@ -159,7 +159,7 @@ void Player::CheckIsGround(Stage& stage)
 
 void Player::GameClearUpdate(const VECTOR& camera_pos)
 {
-
+	velocity_ = VectorAssistant::GetZeroVec();
 	//ƒJƒƒ‰‚Ì•ûŒü‚ÉŒü‚­
 	direction_ = VectorAssistant::GetDir(pos_, camera_pos);
 

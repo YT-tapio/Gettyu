@@ -558,6 +558,9 @@
     <ClCompile Include="out_side_checkcpp.cpp">
       <Filter>ソース ファイル\out_side_check</Filter>
     </ClCompile>
+    <ClCompile Include="sound.cpp">
+      <Filter>ソース ファイル\sound</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="keyconfig.h">

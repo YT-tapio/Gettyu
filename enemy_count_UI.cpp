@@ -2,31 +2,44 @@
 #define _USE_MATH_DEFINES
 
 #include"screen.h"
+#include"font.h"
 #include"enemy_count_UI.h"
 #include"Draw2D.h"
 #include"FPS.h"
 #include"const_rad.h"
 #include"UI_data.h"
 
+
 EnemyCountUI::EnemyCountUI(int *p)
 	:enemys_count_(p)
 {
+	const char* kFontFile	= "data/fontTanueiKakuPop_1_00/TanueiKakuPop.otf";
+	const char* kFontName	= "たぬえいカクポップタイ";
 
-	float all_size = (kGameWidth + kGameHeight);
+	const int kFontSize		= 50;
+	const int kFontThick		= 20;
+	const int kFontType		= DX_FONTTYPE_EDGE;
 
-	float width_ratio	= kGameWidth / all_size;
-	float height_ratio = kGameHeight / all_size;
+	float all_size			= (kGameWidth + kGameHeight);
+
+	float width_ratio		= kGameWidth / all_size;
+	float height_ratio		= kGameHeight / all_size;
 
 	float sub_screen_width		= kWidth * width_ratio;
 	float sub_screen_height		= kHeight * height_ratio;
 
-	count_screen_ = std::make_shared<NormalSubScreen>(kScreenInitPos, static_cast<int>(kWidth),
+	all_screen_ = std::make_shared<NormalSubScreen>(kScreenInitPos, static_cast<int>(kWidth),
 		static_cast<int>(kHeight), static_cast<int>(kWidth), static_cast<int>(kHeight), TRUE, AlphaColorType::kBlack, 0, TRUE);
+
+	enemy_count_screen_ = std::make_shared<NormalSubScreen>(kScreenInitPos, static_cast<int>(kEnemyCountScreenWidth),
+		static_cast<int>(kEnemyCountScreenHeight), static_cast<int>(kEnemyCountScreenWidth), static_cast<int>(kEnemyCountScreenHeight), TRUE, AlphaColorType::kBlack, 0, TRUE);
+
+	count_font_ = std::make_shared<Font>(kFontFile, kFontName, kFontSize, kFontThick, kFontType);
 
 	screen_pos_ = kScreenInitPos;
 
 	//screenの起動を行う	
-	count_screen_->SetIsDisp(TRUE);
+	all_screen_->SetIsDisp(TRUE);
 
 	is_disp_ = FALSE;
 	param_ = 255;
@@ -70,15 +83,10 @@ void EnemyCountUI::UpdateUiPos()
 void EnemyCountUI::CountDraw()
 {
 	//残りの敵を受け取る
-	int size = GetFontSize();
-	SetFontSize(60);
-	DrawString(static_cast<int>(kInitCountPos.x), static_cast<int>(kInitCountPos.y), "のこり", GetColor(0, 255, 255));
-	SetFontSize(100);
-	DrawFormatString(static_cast<int>(kInitCountPos.x + 190), static_cast<int>(kInitCountPos.y - 20), GetColor(0, 255, 255), "%d", *enemys_count_);
-	SetFontSize(size);
+	
+	DrawStringToHandle(static_cast<int>(kInitCountPos.x), static_cast<int>(kInitCountPos.y), "のこり", kFontColor, count_font_->GetHandle());
+	DrawFormatStringToHandle(static_cast<int>(kInitCountPos.x + 150), static_cast<int>(kInitCountPos.y), kFontColor, count_font_->GetHandle(), "%d", *enemys_count_);
 }
-
-
 
 /*-----public----*/
 
@@ -87,16 +95,16 @@ void EnemyCountUI::Update()
 	UpdateUiPos();
 	// UpdateDispParam();
 
-	count_screen_->Up();
+	all_screen_->Up();
 	// 残りのカウントを描画
 	CountDraw();
-	count_screen_->Down();
+	all_screen_->Down();
 }
 
 void EnemyCountUI::Draw()
 {
 	if (*enemys_count_ != 0)
 	{
-		Draw2D::BlendGraph(screen_pos_, kWidth, kHeight, count_screen_->GetHandle(), TRUE, param_);
+		Draw2D::BlendGraph(screen_pos_, kWidth, kHeight, all_screen_->GetHandle(), TRUE, param_);
 	}
 }
