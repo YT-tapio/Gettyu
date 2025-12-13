@@ -1,5 +1,9 @@
+#include <fstream>
+#include <sstream>
+#include <string>
 #include <algorithm>
 #include"navigation.h"
+
 
 Navigation::Navigation()
 {
@@ -20,11 +24,13 @@ void Navigation::MakeWayPoint()
 	std::vector<int> neighbors;
 
 	int num = 0;
+	Load();
 
+	/*
 	//0
 	neighbors.push_back(1);
 	neighbors.push_back(2);
-	way_points_.push_back(std::make_shared<WayPoint>(VGet(73, -9.53, -74), num, neighbors));
+	way_points_.push_back(std::make_shared<WayPoint>(VGet(73.f, -9.53, -74.f), num, neighbors));
 	num++;
 	neighbors.clear();
 
@@ -71,8 +77,60 @@ void Navigation::MakeWayPoint()
 	num++;
 	neighbors.clear();
 
+	*/
 }
 
+void Navigation::Load()
+{
+	const char* file_path = "data/csv/way_point.csv";
+
+	std::ifstream file(file_path);
+	std::string line;
+
+	if (!file)
+	{
+		printfDx("csvファイル読み込み失敗\n");
+	}
+
+	// 最初の行を飛ばす
+	std::getline(file, line);
+
+
+	while (std::getline(file, line))
+	{
+		std::stringstream ss(line);
+		std::string data;	//csvからの文字列をもらう
+		VECTOR pos = VGet(0.f, 0.f, 0.f);
+		int id;								//自分の識別番号
+		std::vector<int> neighbors;			//waypointの知り合いどもをここに入れる
+
+		// ID
+		std::getline(ss, data, ',');
+		id = std::stoi(data);
+
+		// x
+		std::getline(ss, data, ',');
+		pos.x = std::stof(data);
+
+		// y
+		std::getline(ss, data, ',');
+		pos.y = std::stof(data);
+
+		// z
+		std::getline(ss, data, ',');
+		pos.z = std::stof(data);
+		
+		// 可変部分（way_pointに入れる）
+		while (std::getline(ss, data, ',')) 
+		{
+			int neighbors_id = std::stoi(data);
+			neighbors.push_back(neighbors_id);
+		}
+		way_points_.push_back(std::make_shared<WayPoint>(pos, id, neighbors));
+	}
+
+
+}
 
 //public
 

@@ -115,7 +115,7 @@ EnemyBase::~EnemyBase()
 std::shared_ptr<WayPoint> EnemyBase::DecideNextWayPoint(const VECTOR& player_pos, std::vector<std::shared_ptr<WayPoint>> way_points)
 {
 
-	float max_score = 0;
+	float max_score = 0.f;
 
 	//次のway_point
 	std::shared_ptr<WayPoint> next_point = nullptr;
@@ -123,12 +123,8 @@ std::shared_ptr<WayPoint> EnemyBase::DecideNextWayPoint(const VECTOR& player_pos
 
 	for (auto& way_point : way_points)
 	{
-		// ここでscoreを付けよう
-		// 遠いときのscoreも高く、fov外でもscoreを高くする
 		float score = MakeWayPointScore(player_pos, way_point);
-
 		// スコアが高いならそのway_pointを代入
-
 		if (score > max_score)
 		{
 			next_point = way_point;
@@ -143,51 +139,46 @@ std::shared_ptr<WayPoint> EnemyBase::DecideNextWayPoint(const VECTOR& player_pos
 
 std::shared_ptr<WayPoint> EnemyBase::DecideIsVacuumNextWayPoint(const VECTOR& player_pos, std::vector<std::shared_ptr<WayPoint>>way_points)
 {
-	float max_score = 0;
+	float max_score = 0.f;
 	//次のway_point
 	std::shared_ptr<WayPoint> next_point = nullptr;
 
 	for (auto& way_point : way_points)
 	{
-		float score = 0.f;
 
-		// playerいなくて
-		score = MakeWayPointScore(player_pos, way_point);
+		const float kDistMax = 70.f;	//範囲
+		// 範囲で検索
+		VECTOR dist = VSub(way_point->GetPos(), pos_);
+		float dist_size = VSize(dist);
 
-		//真上に伸びているdirと次のway_pointまでのdirのdotをとる
-		float dot = 0.f;
-		VECTOR point_pos = way_point->GetPos();//今参照されているwaypointのpos
+		if (dist_size > kDistMax) { continue; }
 
-		// enemyが近ければ近いほどscore_up
-		const VECTOR point_dist = VSub(point_pos, pos_);
-		const VECTOR above		= VNorm(VGet(0.f, 1.f, 0.f));	//真上に伸びる
+		// 遠いときのscoreも高く、fov外でもscoreを高くする
+		float score = MakeWayPointScore(player_pos, way_point);
+
+		//真上に伸びる線
+		const VECTOR kVerticalDir = VNorm(VGet(0.f, 1.f, 0.f));
+
+		//内積をとる
+		float dot = VDot(kVerticalDir, VNorm(dist));
+
+		const float kMaxDotScore = 100.f;
+
+		float dot_score = (1.f - dot) * kMaxDotScore;
 		
-		//つぎのwaypointまでの距離をnormする
-		VECTOR norm_dist = VNorm(VSub(point_pos, pos_));
+		dot_score = (dot_score > kMaxDotScore) ? kMaxDotScore : dot_score;
 
-		float point_dist_size = VSize(point_dist);
-
-		dot = VDot(above, norm_dist);
-
-		const float kPointDistMax= 100.f;	//仮のmaxを決める
-
-		score += (kPointDistMax - point_dist_size);
+		score += dot_score;
 		
-
-		// dotの結果が小さいのなら、そのスコアを低く
-		// dotの調整を行う
-		float offset_dot = (fabs(dot - 1) * 100.f);
-
-		score += offset_dot;
-
 		if (score > max_score)
 		{
-			next_point	= way_point;
-			max_score	= score;
+			next_point = way_point;
+			max_score = score;
 		}
 
 	}
 
+	//printfDx("max_score : %.2f\n", max_score);
 
 	return next_point;
 }

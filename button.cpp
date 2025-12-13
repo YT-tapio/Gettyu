@@ -33,7 +33,7 @@ Button::Button(const VECTOR pos,const float width,const float height,const char*
 
 	if (model_ == -1)
 	{
-		printfDx("‰æ‘œ‚Ì“Ç‚İ‚İ¸”s");
+		//printfDx("‰æ‘œ‚Ì“Ç‚İ‚İ¸”s");
 	}
 }
 

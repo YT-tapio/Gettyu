@@ -13,6 +13,8 @@ private:
 	std::vector<std::shared_ptr<WayPoint>> way_points_;
 
 	void MakeWayPoint();
+	
+	void Load();
 
 public:
 
@@ -22,8 +24,6 @@ public:
 
 
 	void Debug();
-
-	
 
 	/// <summary>
 	/// ˆø”‚Ì”Ô†‚Ìwaypoint‚ğ•Ô‚·
