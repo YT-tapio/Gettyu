@@ -38,6 +38,12 @@ private:
 
 	std::shared_ptr<WayPoint> DecideNextWayPoint(const VECTOR& player_pos, std::vector<std::shared_ptr<WayPoint>>way_points);
 
+	/// @brief ‹zˆø‚³‚ê‚Ä‚¢‚é‚Æ‚«
+	/// @param player_pos 
+	/// @param way_points 
+	/// @return 
+	std::shared_ptr<WayPoint> DecideIsVacuumNextWayPoint(const VECTOR& player_pos, std::vector<std::shared_ptr<WayPoint>>way_points);
+
 	float MakeWayPointScore(const VECTOR& player_pos, std::shared_ptr<WayPoint> way_point);
 
 
@@ -115,7 +121,10 @@ protected:
 	
 	void DecideFleepingPlace(std::shared_ptr<Player> player, std::shared_ptr<WayPoint> way_point);
 
+	void DecideIsVacuumFleepingPlace(std::shared_ptr<Player> player, std::shared_ptr<WayPoint> way_point);
+
 	std::shared_ptr<WayPoint> GetFarWayPoint(const VECTOR& pos, std::vector<std::shared_ptr<WayPoint>> way_points);
+
 
 public:
 

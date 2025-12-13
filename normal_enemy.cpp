@@ -24,14 +24,15 @@ NormalEnemy::NormalEnemy(const TCHAR* model_path, const VECTOR& pos, const VECTO
 	collision_data_.pos = pos;
 	collision_data_.r = 3.f;
 	collision_data_.ver = 0.0;
-	total_vel_ = VGet(0, 0, 0);
+	total_vel_			= VGet(0, 0, 0);
 	//”½“]‚·‚é‚Æ‚«‚Ì’l
-	lerp_timer_ = 0.f;
-	target_rot_ = 0.f;
-	is_return_ = FALSE;
-	lerp_flag_ = FALSE;
+	lerp_timer_			= 0.f;
+	target_rot_			= 0.f;
+	is_vacuum_init_		= FALSE;
+	is_return_			= FALSE;
+	lerp_flag_			= FALSE;
 
-	fall_speed_ = 0.f;
+	fall_speed_			= 0.f;
 
 	gravity_check_coll_ = std::make_shared<CollisionSphere>(kGravityCollPos, kGravityCollRadius);
 	wait_timer_ = new ConditionTimer(kWaitTime);
@@ -378,7 +379,16 @@ void NormalEnemy::Fleeping(std::shared_ptr<Player> player)
 {
 	VECTOR vel = VGet(0.f, 0.f, 0.f);
 
-	// todo::‹z‚¢‚Ü‚ê‚Ä‚¢‚é‚Æ‚«‚Íwaypoint‚ğ•ÏX‚µ‚Ü‚·
+	//‹z‚¢‚Ü‚ê‚Ä‚¢‚é‚Æ‚«‚Íwaypoint‚ğ•ÏX‚µ‚Ü‚·
+
+	if (is_vacuum_)
+	{
+		
+	}
+	else
+	{
+		is_vacuum_init_ = FALSE;
+	}
 
 	if (lerp_flag_)
 	{

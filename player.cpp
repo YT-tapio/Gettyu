@@ -1125,6 +1125,10 @@ void Player::IsHitEnemy(EnemyBase* enemy, bool& got)
 			is_vacuum_ = FALSE;
 		}
 	}
+	else
+	{
+		enemy->SetVecuum(FALSE);
+	}
 
 	//‘¼‚Ì‚à‚Ì‚ªUŒ‚‚É‚ ‚½‚Á‚Ä‚¢‚éŽž‚Íˆ—‚ð‰ñ‚³‚È‚¢
 

@@ -141,6 +141,42 @@ std::shared_ptr<WayPoint> EnemyBase::DecideNextWayPoint(const VECTOR& player_pos
 	return next_point;
 }
 
+std::shared_ptr<WayPoint> EnemyBase::DecideIsVacuumNextWayPoint(const VECTOR& player_pos, std::vector<std::shared_ptr<WayPoint>>way_points)
+{
+	float max_score = 0;
+	//次のway_point
+	std::shared_ptr<WayPoint> next_point = nullptr;
+
+	for (auto& way_point : way_points)
+	{
+		
+
+		float score = 0.f;
+
+		// playerいなくて
+		score = MakeWayPointScore(player_pos, way_point);
+
+		//真上に伸びているdirと次のway_pointまでのdirのdotをとる
+
+		float dot = 0.f;
+		VECTOR point_pos = way_point->GetPos();//今参照されているwaypointのpos
+
+		const VECTOR adove = VGet(0.f, 1.f, 0.f);	//真上に伸びる
+
+
+
+		if (score > max_score)
+		{
+			next_point	= way_point;
+			max_score	= score;
+		}
+
+	}
+
+
+	return next_point;
+}
+
 
 float EnemyBase::MakeWayPointScore(const VECTOR& player_pos, std::shared_ptr<WayPoint> way_point)
 {
@@ -188,7 +224,7 @@ VECTOR EnemyBase::GetNearWayPointPos()
 	for (auto& way_point : way_points)
 	{
 		VECTOR pos = way_point->GetPos();
-
+		
 		//1番目は代入させる
 		if (VSize(most_near_pos) == 0)
 		{
@@ -204,8 +240,8 @@ VECTOR EnemyBase::GetNearWayPointPos()
 		if (dist < most_near_dist)
 		{
 			most_near_pos = pos;
-			before_way_point_ = my_way_point_;
-			my_way_point_ = way_point;
+			before_way_point_	= my_way_point_;
+			my_way_point_		= way_point;
 		}
 		
 
@@ -273,6 +309,12 @@ void EnemyBase::DecideFleepingPlace(std::shared_ptr<Player> player,std::shared_p
 	my_way_point_ = DecideNextWayPoint(player_pos, neighbors);		//一番遠い場所にする
 
 	target_pos_ = my_way_point_->GetPos();
+}
+
+void EnemyBase::DecideIsVacuumFleepingPlace(std::shared_ptr<Player> player, std::shared_ptr<WayPoint> way_point)
+{
+	// 高さがあるのなら次に行かないでください
+
 }
 
 std::shared_ptr<WayPoint> EnemyBase::GetFarWayPoint(const VECTOR& pos, std::vector<std::shared_ptr<WayPoint>> way_points)

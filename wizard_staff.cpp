@@ -30,13 +30,10 @@ void WizardStaff::Update(EnemyBase* enemy, const float spin_rad)
 	{
 		rem_vel = VGet(0.f, 0.f, 0.f);
 		enemy->SetVelocity(rem_vel);
-		enemy->SetVecuum(TRUE);
+		enemy->SetVecuum(FALSE);
 		return;
 	}
-	else
-	{
-		enemy->SetVecuum(FALSE);
-	}
+	
 
 	// どのくらいの距離間にいるかを検知する
 
@@ -58,6 +55,7 @@ void WizardStaff::Update(EnemyBase* enemy, const float spin_rad)
 
 	//vacuum_velをenemyのvelocityにたす
 	enemy->AddVelocity(rem_vel);
+	enemy->SetVecuum(TRUE);
 	// 吸い込みをけいぞくさせるための何かが欲しいし、今吸い込みされている状況とかの
 	// 各敵に吸引されているときのvelocityを用意しとく
 

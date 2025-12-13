@@ -32,6 +32,7 @@ private:
 	float lerp_timer_;
 	//”½“]‚·‚é‚©‚Ç‚¤‚©
 	bool is_return_ = FALSE;
+	bool is_vacuum_init_;
 
 	float fall_speed_;
 
@@ -81,5 +82,4 @@ public:
 	void Alert(std::shared_ptr<Player> player) override;
 
 	void Fleeping(std::shared_ptr<Player> player) override;
-	//void Draw() override;
 };
