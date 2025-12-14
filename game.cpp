@@ -12,6 +12,9 @@
 #include"hit_effect.h"
 #include"enemy_get_num.h"
 #include"mask.h"
+#include"sound.h"
+#include"sound.h"
+#include"2D_sound.h"
 
 Game::Game(int model)
     :BaseScene(SceneName::kGame,model)
@@ -101,6 +104,21 @@ void Game::GameClear(SceneName& name)
         Situation::GetInstance().SetSituationName(SituationName::kClear);
         clear_timer_->Update();
 
+        float timer_count = clear_timer_->GetNowTimer();
+
+        printfDx("%.2f\n", timer_count);
+
+        if (timer_count >= 2.f)
+        {
+            clear_sound_->Stop();
+        }
+
+        if (timer_count >= 2.4f)
+        {
+            clear_bomb_sound_->Update();
+        }
+        
+
         if (clear_timer_->GetIsEnd())
         {
             //Ç±Ç±Ç≈èIóπ
@@ -125,6 +143,9 @@ void Game::FadeOut()
 
         offset_fade_param_ = (offset_fade_param_ > kParamMax) ? kParamMax : offset_fade_param_;
     }
+
+
+
 }
 
 bool Game::IsCount()
@@ -142,6 +163,17 @@ bool Game::IsCount()
 void Game::UpdateHitStop()
 {
     HitStopTimer::GetInstance().TimerUpdate();  //
+}
+
+void Game::UpdateSound()
+{
+    if (Situation::GetInstance().GetSituationName() >= SituationName::kClearOffset)
+    {
+        clear_sound_->Update();
+        bgm_sound_->Stop();
+    }
+
+    bgm_sound_->Update();
 }
 
 //
@@ -196,6 +228,16 @@ void Game::Init()
     concentration_line_         = std::make_shared<ConcentrationLine>(kGameWidth, kGameHeight, TRUE);       // èWíÜê¸
 
     hit_effect_                 = std::make_shared<HitEffect>();            // ìGÇ…ìñÇΩÇ¡ÇΩéûÇÃeffect
+
+    /*--Sound--*/
+    const char* kBgmSoundPath                 = "data/sound/game/bgm/Ska_01.mp3";
+    const char* kClearBgmSoundPath          = "data/sound/game/bgm/game_clear.mp3";
+    const char* kClearBombSoundPath         = "data/sound/game/se/clear_bomb.mp3";
+
+    bgm_sound_              = std::make_shared<Sound2D>(kBgmSoundPath, DX_PLAYTYPE_LOOP,100,TRUE);
+    clear_sound_             = std::make_shared<Sound2D>(kClearBgmSoundPath, DX_PLAYTYPE_BACK, 100,FALSE);
+    clear_bomb_sound_   = std::make_shared<Sound2D>(kClearBombSoundPath, DX_PLAYTYPE_BACK, 200, FALSE);
+    /*--UI--*/
 
     weapon_UI_                  = std::make_shared<WeaponUI>();
     super_attack_UI_            = std::make_shared<SuperAttackUI>();
@@ -252,7 +294,8 @@ void Game::Update(SceneName& name)
     brain_->SetDeltaTime(FPS::GetInstance().GetDeltaTime());
     enemy_manager_->SetDeltaTime(FPS::GetInstance().GetDeltaTime());
     hit_effect_->SetDeltaTime();
-    //test_effect1->SetDeltaTime(fps->GetDeltaTime());
+
+    UpdateSound();
 
     concentration_line_->Update();
     concentration_line_->SetIsDisp(player_->GetIsVacuum());

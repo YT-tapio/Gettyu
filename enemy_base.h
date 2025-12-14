@@ -18,6 +18,7 @@ class BaseEnemyState;
 class EnemyFSM;
 class Stage;
 class CollisionBase;
+class SoundBase;
 
 class EnemyBase
 {
@@ -73,6 +74,10 @@ protected:
 	//way_pointを保存しておく
 	std::shared_ptr<WayPoint> my_way_point_;
 	std::shared_ptr<WayPoint> before_way_point_;
+
+	// サウンド関連
+	std::shared_ptr<SoundBase> alert_sound_;
+	std::shared_ptr<SoundBase> surprise_sound_;
 
 	ConditionTimer* alert_timer_; //警戒のタイマー
 	std::shared_ptr<ConditionTimer> stan_timer_;		//stanの時間

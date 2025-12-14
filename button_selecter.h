@@ -1,6 +1,8 @@
 #pragma once
 #include"select_type.h"
 
+class SoundBase;
+
 class ButtonSelecter
 {
 private:
@@ -9,6 +11,10 @@ private:
 	bool is_slide_down_;
 	bool is_slide_right_;
 	bool is_slide_left_;
+
+	bool is_change_;
+
+
 	/// <summary>
 	/// ã“ü—Í‚³‚ê‚Ä‚¢‚é‚©
 	/// </summary>

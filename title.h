@@ -1,6 +1,7 @@
 #pragma once
 #include<iostream>
 #include<vector>
+#include<memory>
 #include"base_scene.h"
 #include"vector_assistant.h"
 #include"const_rad.h"
@@ -12,6 +13,7 @@ class Font;
 class NormalSubScreen;
 class Animation;
 class ConditionTimer;
+class SoundBase;
 
 class Title : public BaseScene
 {
@@ -55,8 +57,12 @@ private:
 	std::shared_ptr<Font> tanuei_font_;
 	std::shared_ptr<NormalSubScreen> title_ui_screen_;
 
+	std::shared_ptr<SoundBase> select_sound_;
+
 	//‰æ–Ê‘JˆÚ‚Ìtimer
 	std::shared_ptr<ConditionTimer> transition_timer_;
+
+	std::shared_ptr<SoundBase> bgm_;
 
 	int enemy_model_;
 
@@ -75,6 +81,8 @@ private:
 	void Setting();
 
 	void FadeOut();
+
+	
 
 public:
 

@@ -26,6 +26,7 @@
 class BaseScene;
 class Font;
 class HitEffect;
+class SoundBase;
 
 class Game : public BaseScene
 {
@@ -57,14 +58,19 @@ private:
 	std::shared_ptr<NormalSubScreen> font_color_screen_;
 	std::shared_ptr<NormalSubScreen> timer_screen_;
 
-	//UI群
+	// サウンド
+	std::shared_ptr<SoundBase> bgm_sound_;
+	std::shared_ptr<SoundBase> clear_sound_;
+	std::shared_ptr<SoundBase> clear_bomb_sound_;
+	
+	// UI群
 	std::shared_ptr<WeaponUI> weapon_UI_;
 	std::shared_ptr<SuperAttackUI> super_attack_UI_;
 	std::shared_ptr<EnemyCountUI> enemy_count_UI_;
 
 	std::shared_ptr<Font> tanuei_font_;
 
-	//タイマー
+	// タイマー
 	std::shared_ptr<ConditionTimer>		game_start_;
 	std::shared_ptr<ConditionTimer>		clear_offset_timer_;
 	std::shared_ptr<ConditionTimer>		clear_timer_;
@@ -88,6 +94,8 @@ private:
 	void FadeOut();
 
 	void UpdateHitStop();
+
+	void UpdateSound();
 
 	bool IsCount();
 

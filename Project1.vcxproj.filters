@@ -295,6 +295,12 @@
     <Filter Include="ソース ファイル\sound">
       <UniqueIdentifier>{ea27a179-7b70-4594-9a96-5e4223b70321}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\sound\2D_sound">
+      <UniqueIdentifier>{5c1de7bf-63bd-467a-9fd4-6d4d03652540}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\sound\3D_soound">
+      <UniqueIdentifier>{2d29e356-bbaa-4944-930b-8deb48ec6578}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -560,6 +566,12 @@
     </ClCompile>
     <ClCompile Include="sound.cpp">
       <Filter>ソース ファイル\sound</Filter>
+    </ClCompile>
+    <ClCompile Include="2D_sound.cpp">
+      <Filter>ソース ファイル\sound\2D_sound</Filter>
+    </ClCompile>
+    <ClCompile Include="3D_sound.cpp">
+      <Filter>ソース ファイル\sound\3D_soound</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -859,6 +871,12 @@
     </ClInclude>
     <ClInclude Include="sound.h">
       <Filter>ソース ファイル\sound</Filter>
+    </ClInclude>
+    <ClInclude Include="2D_sound.h">
+      <Filter>ソース ファイル\sound\2D_sound</Filter>
+    </ClInclude>
+    <ClInclude Include="3D_sound.h">
+      <Filter>ソース ファイル\sound\3D_soound</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

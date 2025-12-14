@@ -18,6 +18,7 @@ class WizardStaff;
 class EnemyBase;
 class SoundVibration;
 class CollisionBase;
+class SoundBase;
 enum class WeaponName;
 
 struct CapsuleData
@@ -103,8 +104,12 @@ private:
 
 	std::shared_ptr<CollisionBase> coll_;
 	std::shared_ptr<CollisionBase> gravity_check_coll_;
-	//const VibrationData kVacuumVibration = { 500,700 };
+	
+	std::shared_ptr<SoundBase> enemy_hit_spring_sound_;		//ÇŒÇÀÇÃÇÊÇ§Ç»âπÇó¨Ç∑
+	std::shared_ptr<SoundBase> enemy_hit_sound_;				//Ç≤Å[Å[ÇÒÇ∆Ç¢Ç¡ÇΩâπÇó¨Ç∑
 
+	std::shared_ptr<SoundBase> get_sound_;
+	std::shared_ptr<SoundBase> vacuum_sound_;
 
 	float before_rot_;
 	float target_rot_;

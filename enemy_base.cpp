@@ -12,6 +12,9 @@
 #include"vector_assistant.h"
 #include"stage.h"
 #include"collision_base.h"
+#include"sound.h"
+#include"2D_sound.h"
+#include"3D_sound.h"
 
 EnemyBase::EnemyBase(const int model, const VECTOR& pos,
 	const VECTOR& scale, const VECTOR& rot, Effect* get_effect, Effect* got_effect, float speed,
@@ -64,6 +67,28 @@ EnemyBase::EnemyBase(const int model, const VECTOR& pos,
 
 	get_effect_ = get_effect;
 	got_effect_ = got_effect;
+
+	const char* kAlertSoundPath			= "data/sound/game/se/enemy/alert.mp3";
+	const char* kSurpriseSoundPath		= "data/sound/game/se/enemy/surprise.mp3";
+	
+	const float kListenRadius = 500.f;
+
+	if (TRUE)
+	{
+		alert_sound_			= std::make_shared<Sound2D>(kAlertSoundPath, DX_PLAYTYPE_BACK, 100, FALSE);
+		surprise_sound_		= std::make_shared<Sound2D>(kSurpriseSoundPath, DX_PLAYTYPE_BACK, 100, FALSE);
+	}
+	else
+	{
+		alert_sound_			= std::make_shared<Sound3D>(kAlertSoundPath, DX_PLAYTYPE_BACK, 100, FALSE, &pos_, kListenRadius);
+		surprise_sound_		= std::make_shared<Sound3D>(kSurpriseSoundPath, DX_PLAYTYPE_BACK, 100, FALSE, &pos_, kListenRadius);
+	}
+
+	
+
+	
+	
+	
 
 	speed_ = speed;
 	fleeping_speed_ = fleeping_speed;

@@ -9,6 +9,8 @@
 #include"input.h"
 #include"keyconfig.h"
 #include"situation.h"
+#include"sound.h"
+#include"2D_sound.h"
 
 SuperAttack::SuperAttack(const VECTOR& pos,const char*  file_path)
 	: now_situation_num_(0)
@@ -39,6 +41,14 @@ SuperAttack::SuperAttack(const VECTOR& pos,const char*  file_path)
 	active_time_	= std::make_shared<ConditionTimer>(kActiveTimeMax);
 	offset_time_	= std::make_shared<ConditionTimer>(kOffsetTimeMax);
 
+	const char* kReadySoundPath = "data/sound/game/se/super_attack/ready_sound.mp3";
+	const char* kThunderSoundPath = "data/sound/game/se/super_attack/thunder.MP3";
+	const char* kBombSoundPath = "data/sound/game/se/super_attack/bomb.mp3";
+
+	effect_sound_ = std::make_shared<Sound2D>(kReadySoundPath, DX_PLAYTYPE_BACK, 100, FALSE);
+	thunder_sound_ = std::make_shared<Sound2D>(kThunderSoundPath, DX_PLAYTYPE_BACK, 100, FALSE);
+	bomb_sound_ = std::make_shared<Sound2D>(kBombSoundPath, DX_PLAYTYPE_BACK, 200, FALSE);
+	
 
 }
 
@@ -56,6 +66,11 @@ void SuperAttack::CoolTimeUpdate()
 	skill_num_ = cool_time_->GetTimeRatio();
 	if (cool_time_->GetIsEnd())
 	{
+		//サウンド関連をreset
+		effect_sound_->Reset();
+		thunder_sound_->Reset();
+		bomb_sound_->Reset();
+
 		cool_time_->Reset();
 		state_ = SuperAttackState::kReady;
 	}
@@ -119,10 +134,14 @@ void SuperAttack::Update()
 
 void SuperAttack::EffectUpdate()
 {
+
+	const float kBombSoundPlayTiming = 100.f;
+
 	if (now_situation_num_ == 1)
 	{
 		effect_->SetPos(effect_pos_);
 		effect_->Play();
+		thunder_sound_->Update();
 	}
 	else
 	{
@@ -134,6 +153,7 @@ void SuperAttack::EffectUpdate()
 	{
 		effect_start_->SetPos(effect_end_pos_);
 		effect_start_->Play();
+		effect_sound_->Update();
 	}
 	else
 	{
@@ -144,6 +164,11 @@ void SuperAttack::EffectUpdate()
 	{
 		effect_end_->SetPos(effect_end_pos_);
 		effect_end_->Play();
+
+		if (effect_end_->GetPlayCount() >= kBombSoundPlayTiming)
+		{
+			bomb_sound_->Update();
+		}
 	}
 	else
 	{

@@ -7,6 +7,8 @@
 #include"keyconfig.h"
 #include"collision2D.h"
 #include"Draw2D.h"
+#include"sound.h"
+#include"2D_sound.h"
 
 Button::Button(const VECTOR pos,const float width,const float height,const char* path,const int& num,bool* flag)
 	: pos_(pos)
@@ -30,6 +32,10 @@ Button::Button(const VECTOR pos,const float width,const float height,const char*
 	//‘I‘ð‚³‚ê‚½‚Æ‚«‚Ìspeed
 	width_ratio_ = width / sum;
 	height_ratio_ = height / sum;
+
+	const char* kIsPushSoundPath = "data/sound/title/notification-stereo-trill-447602.mp3";
+
+	is_push_sound_ = std::make_shared<Sound2D>(kIsPushSoundPath, DX_PLAYTYPE_BACK, 100,FALSE);
 
 	if (model_ == -1)
 	{
@@ -126,6 +132,7 @@ void Button::SelectUpdate()
 	{
 		//ƒ{ƒ^ƒ“‚ð‰Ÿ‚µ‚½‚Æ‚¢‚¤”»’è‚É‚È‚é
 		*flag_ = TRUE;
+		is_push_sound_->Update();
 	}
 
 
@@ -157,6 +164,7 @@ void Button::PressedUpdate()
 		{
 			//‰Ÿ‚µ‚½‚Æ‚¢‚¤‚æ‚¤‚È”»’è‚É‚È‚é
 			*flag_ = TRUE;
+			is_push_sound_->Update();
 		}
 	}
 	else

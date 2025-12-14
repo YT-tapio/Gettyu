@@ -10,6 +10,9 @@ SceneManager::SceneManager()
 
     SetGraphMode(kGameWidth, kGameHeight, 32);			//ウィンドウのサイズとカラーモードを決める
     ChangeWindowMode(TRUE);				//ウィンドウモードにする
+
+    Set3DSoundOneMetre(1.0f);
+
     if (DxLib_Init() == -1)        // ＤＸライブラリ初期化処理
     {
         return;        // エラーが起きたら直ちに終了

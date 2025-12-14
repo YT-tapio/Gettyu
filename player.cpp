@@ -28,6 +28,8 @@
 #include"enemy_get_num.h"
 #include"hit_stop_timer.h"
 #include"out_side_check.h"
+#include"sound.h"
+#include"2D_sound.h"
 
 Player::Player(VECTOR pos, int model, int pad_num,int div, float r, float vertical_num)
 	: model_(model)
@@ -66,6 +68,17 @@ Player::Player(VECTOR pos, int model, int pad_num,int div, float r, float vertic
 
 	coll_ = std::make_shared<CollisionCapsule>(capsule_start_pos, capsule_end_pos, r);
 	gravity_check_coll_ = std::make_shared<CollisionSphere>(sphere_pos, gravity_radius);
+
+	const char* kEnemyHitSoundPath			= "data/sound/game/se/hit.mp3";
+	const char* kEnemyHitSpringSoundPath	= "data/sound/game/se/hit_spring.mp3";
+	const char* kVacuumSoundPath				= "data/sound/game/se/vacuum.mp3";
+	const char* kGetSoundPath						= "data/sound/game/se/get.mp3";
+
+	enemy_hit_sound_					= std::make_shared<Sound2D>(kEnemyHitSoundPath, DX_PLAYTYPE_BACK, 150, FALSE);
+	enemy_hit_spring_sound_		= std::make_shared<Sound2D>(kEnemyHitSpringSoundPath, DX_PLAYTYPE_BACK, 130, FALSE);
+	get_sound_							= std::make_shared<Sound2D>(kGetSoundPath, DX_PLAYTYPE_BACK, 100, FALSE);
+	vacuum_sound_						= std::make_shared<Sound2D>(kVacuumSoundPath, DX_PLAYTYPE_LOOP, 200, TRUE);
+
 
 	MATRIX pos_matrix		= MGetTranslate(pos_);
 	MATRIX scale_matrix		= MGetScale(kScale);
@@ -1114,9 +1127,12 @@ void Player::IsHitEnemy(EnemyBase* enemy, bool& got)
 			Vibration(kVacuumVibration);
 			sound_vibration_->Add(kVacuumSound);
 			is_vacuum_ = TRUE;
+			vacuum_sound_->Update();
+
 		}
 		else
 		{
+			vacuum_sound_->Reset();
 			super_weapon_spin_effect_->End();
 			if (Situation::GetInstance().GetSituationName() == SituationName::kVacuum)
 			{
@@ -1127,6 +1143,8 @@ void Player::IsHitEnemy(EnemyBase* enemy, bool& got)
 	}
 	else
 	{
+		vacuum_sound_->Reset();
+		
 		enemy->SetVecuum(FALSE);
 	}
 
@@ -1146,9 +1164,6 @@ void Player::IsHitEnemy(EnemyBase* enemy, bool& got)
 			{
 				//batの時
 			case WeaponName::kBat:
-
-				//printfDx("bat");
-				//printfDx("に当たっています\n");
 				
 				if (!is_hit_)
 				{
@@ -1159,6 +1174,12 @@ void Player::IsHitEnemy(EnemyBase* enemy, bool& got)
 					//パッド振動
 					Vibration(kHitEnemyVibration);
 					//printfDx("wawawa\n");
+					
+					enemy_hit_sound_->Reset();
+					enemy_hit_spring_sound_->Reset();
+
+					enemy_hit_sound_->Update();
+					enemy_hit_spring_sound_->Update();
 				}
 				
 				is_hit_ = TRUE;
@@ -1181,6 +1202,13 @@ void Player::IsHitEnemy(EnemyBase* enemy, bool& got)
 				EnemyGetNum::GetInstance().AddNum();
 				//effectをセッティング
 				enemy->SetGetEffectPos(enemy->GetPos());
+
+				if (get_sound_->GetIsPlay())
+				{
+					get_sound_->Reset();
+				}
+
+				get_sound_->Update();
 
 				SetDeltaTime(0.f);
 				enemy->SetDeltaTime(0.f);

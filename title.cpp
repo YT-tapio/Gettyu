@@ -12,6 +12,8 @@
 #include"animation.h"
 #include"condition_timer.h"
 #include"Draw2D.h"
+#include"sound.h"
+#include"2D_sound.h"
 
 Title::Title(int model)
 	:BaseScene(SceneName::kTitle,model)
@@ -36,6 +38,12 @@ Title::Title(int model)
 
 	animation_				= std::make_shared<Animation>();
 	enemy_animation_		= std::make_shared<Animation>();
+
+	const char* kBgmPath = "data/sound/title/bgm/hiphop2.mp3";
+	const char* kSelectSoundPath = "data/sound/button/select.mp3";
+
+	bgm_ = std::make_shared<Sound2D>(kBgmPath, DX_PLAYTYPE_LOOP, 100,TRUE);
+	select_sound_ = std::make_shared<Sound2D>(kSelectSoundPath, DX_PLAYTYPE_BACK, 80, FALSE);
 
 	mat_				= MMult(MMult(rot_mat,scale_mat), pos_mat);
 	enemy_mat_ = MMult(MMult(enemy_rot_mat, enemy_scale_mat), enemy_pos_mat);
@@ -116,12 +124,15 @@ void Title::Init()
 
 void Title::Update(SceneName& name)
 {
+	static int before_button_num = 0;
 	animation_->SetDeltaTime(FPS::GetInstance().GetDeltaTime());
 	enemy_animation_->SetDeltaTime(FPS::GetInstance().GetDeltaTime());
 	Setting();
 	animation_->Update(AnimationType::kFastRun);
 	enemy_animation_->Update(AnimationType::kFastRun);
 	button_num_ = button_num_ + selecter_->Select(SelectType::kVertical);
+
+	
 
 	if (button_num_ < 0)
 	{
@@ -133,7 +144,14 @@ void Title::Update(SceneName& name)
 		button_num_ = 2;
 	}
 
+	if (before_button_num != button_num_)
+	{
+		select_sound_->Reset();
+		select_sound_->Update();
+		before_button_num = button_num_;
+	}
 
+	
 	
 
 	if (start_)
@@ -146,7 +164,7 @@ void Title::Update(SceneName& name)
 		{
 			name = SceneName::kGame;
 		}
-
+		bgm_->Stop();
 	}
 	else
 	{
@@ -162,7 +180,7 @@ void Title::Update(SceneName& name)
 		}
 	}
 
-	
+	bgm_->Update();
 
 
 	if (game_end_)

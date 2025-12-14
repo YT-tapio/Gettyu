@@ -1,15 +1,22 @@
+#include<iostream>
+#include<memory>
 #include"DxLib.h"
 #include"button_selecter.h"
 #include"keyconfig.h"
 #include"input.h"
+#include"sound.h"
+#include"2D_sound.h"
 
 ButtonSelecter::ButtonSelecter()
 	: is_slide_up_		(FALSE)
 	, is_slide_down_	(FALSE)
 	, is_slide_right_	(FALSE)
 	, is_slide_left_	(FALSE)
+	, is_change_(FALSE)
 {
-
+	
+	
+	
 }
 
 ButtonSelecter::~ButtonSelecter()
@@ -135,6 +142,7 @@ int ButtonSelecter::Vertical()
 		num++;
 	}
 
+	
 
 	return num;
 }

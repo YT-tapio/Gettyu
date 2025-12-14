@@ -10,6 +10,7 @@ class ButtonSelecter;
 class ObjectBase;
 class NormalSubScreen;
 class Font;
+class SoundBase;
 
 class Result : public BaseScene
 {
@@ -37,12 +38,14 @@ private:
 	const VECTOR kClearTimerPos = VectorAssistant::Get2DVec(580.f, 550.f);
 	std::shared_ptr<Font> tanuei_font_;			//‚½‚Ê‚¦‚¢‚ÌƒtƒHƒ“ƒg
 	
+	std::shared_ptr<SoundBase> bgm_;
+
 	std::shared_ptr<NormalSubScreen> time_screen_;
 
 	std::vector<std::shared_ptr<NormalSubScreen>> enemy_screens_;
 
 	std::vector<std::shared_ptr<ObjectBase>> objects_;
-	
+
 	int button_num_;
 	std::vector<std::shared_ptr<Button>> buttons_;
 	std::shared_ptr<ButtonSelecter> selecter_;

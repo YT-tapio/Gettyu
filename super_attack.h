@@ -3,6 +3,8 @@
 #include"condition_timer.h"
 #include"super_attack_state.h"
 
+class SoundBase;
+
 class SuperAttack
 {
 private:
@@ -24,6 +26,10 @@ private:
 	std::shared_ptr<ConditionTimer> cool_time_;
 	std::shared_ptr<ConditionTimer> active_time_;
 	std::shared_ptr<ConditionTimer> offset_time_;
+
+	std::shared_ptr<SoundBase> effect_sound_;
+	std::shared_ptr<SoundBase> bomb_sound_;
+	std::shared_ptr<SoundBase> thunder_sound_;
 
 	SuperAttackState state_;
 

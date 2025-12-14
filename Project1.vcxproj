@@ -137,6 +137,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="2D_sound.cpp" />
+    <ClCompile Include="3D_sound.cpp" />
     <ClCompile Include="alert.cpp" />
     <ClCompile Include="alert_state.cpp" />
     <ClCompile Include="animation.cpp" />
@@ -227,6 +229,8 @@
     <ClCompile Include="fov_function.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="2D_sound.h" />
+    <ClInclude Include="3D_sound.h" />
     <ClInclude Include="button_manager.h" />
     <ClInclude Include="button_selecter.h" />
     <ClInclude Include="button_state.h" />

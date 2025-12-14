@@ -2,6 +2,8 @@
 #include"DxLib.h"
 #include"button_state.h"
 
+class SoundBase;
+
 class Button
 {
 private:
@@ -10,6 +12,9 @@ private:
 	const int kRightGray			= GetColor(192, 192, 192);
 	const int kGray		= GetColor(128, 128, 128);
 	const float kSpeed		= 30.f;
+
+	std::shared_ptr<SoundBase> is_push_sound_;
+
 
 	ButtonState state_;
 

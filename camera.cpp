@@ -61,6 +61,13 @@ void Camera::Update(const VECTOR& velocity, const VECTOR& target_velocity)
 	SetCameraNearFar(kNear, kFar);
 	SetupCamera_Perspective(fov_);
 
+	//ƒŠƒXƒi[‚Ì‚¹‚Á‚Ä‚¢
+	
+	VECTOR dir = VectorAssistant::GetDir(pos_, target_pos_);
+	
+	Set3DSoundListenerPosAndFrontPos_UpVecY(pos_, dir);
+
+
 }
 
 void Camera::Draw()

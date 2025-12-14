@@ -13,6 +13,7 @@
 #include"collision_sphere.h"
 #include"stage.h"
 #include"const_rad.h"
+#include"sound.h"
 
 NormalEnemy::NormalEnemy(const TCHAR* model_path, const VECTOR& pos, const VECTOR& scale, const VECTOR& dir, Effect* get_effect, Effect* got_effect, float speed, float fleeping_speed, AlertState alert, float fov, std::shared_ptr<Stage> stage)
 	:EnemyBase(MV1LoadModel(model_path),pos,scale,dir,get_effect,got_effect,speed,fleeping_speed,alert,fov,stage, std::make_shared<CollisionSphere>(VGet(pos.x, (pos.y + 3.f), pos.z), 3.f),1.5f)
@@ -142,6 +143,9 @@ void NormalEnemy::PatrollingInit(std::shared_ptr<Player> player)
 
 void NormalEnemy::SurpriseInit(std::shared_ptr<Player> player)
 {
+	surprise_sound_->Reset();
+	surprise_sound_->Update();
+
 	//プレイヤーの方向を向く
 	//playerと敵の距離を見る
 
@@ -171,6 +175,8 @@ void NormalEnemy::StanInit(std::shared_ptr<Player> player)
 
 void NormalEnemy::AlertInit(std::shared_ptr<Player> player)
 {
+	alert_sound_->Reset();
+	alert_sound_->Update();
 	//タイマーのリセット
 	alert_timer_->Reset();
 	is_alert_ = TRUE;

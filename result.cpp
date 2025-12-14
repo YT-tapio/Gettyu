@@ -13,6 +13,8 @@
 #include"normal_sub_screen.h"
 #include"font.h"
 #include"enemy_get_num.h"
+#include"sound.h"
+#include"2D_sound.h"
 
 Result::Result(int model)
 	:BaseScene(SceneName::kResult,model)
@@ -49,6 +51,10 @@ Result::Result(int model)
 	tanuei_font_	= std::make_shared<Font>(kTanueiFontPath, kTanueiFontName, kFontSize, kFontThick, DX_FONTTYPE_EDGE);
 	animation_	= std::make_shared<Animation>();
 	selecter_		= std::make_shared<ButtonSelecter>();
+
+	const char* kBgmPath = "data/sound/result/bgm/bgm.mp3";
+
+	bgm_ = std::make_shared<Sound2D>(kBgmPath, DX_PLAYTYPE_BACK, 100, TRUE);
 
 	// É{É^ÉìÇçÏÇÈ
 	buttons_.push_back(std::make_shared<Button>(kButtonCenterPos, kButtonWidth, kButtonHeight, "", button_num, &go_title_));
@@ -220,6 +226,8 @@ void Result::Update(SceneName& name)
 	{
 		button->Update(button_num_);
 	}
+
+	bgm_->Update();
 
 	if (is_fade_in_)
 	{
