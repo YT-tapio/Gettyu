@@ -153,6 +153,10 @@ private:
 
 	void DecideAnimation();
 
+	bool CheckChangeWeapon();
+
+	bool CheckAttack();
+
 public:
 
 

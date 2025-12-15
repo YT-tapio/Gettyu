@@ -63,11 +63,16 @@ void Camera::Update(const VECTOR& velocity, const VECTOR& target_velocity)
 
 	//リスナーのせってい
 	
+	SetListener();
+
+
+}
+
+void Camera::SetListener()
+{
 	VECTOR dir = VectorAssistant::GetDir(pos_, target_pos_);
-	
+
 	Set3DSoundListenerPosAndFrontPos_UpVecY(pos_, dir);
-
-
 }
 
 void Camera::Draw()
@@ -98,6 +103,9 @@ void Camera::OriginalSetting()
 	SetCameraPositionAndTarget_UpVecY(kInitPos, kInitTargetPos);
 	// 視野角設定
 	SetupCamera_Perspective(fov_);
+	//ターゲットの方向へのライトを出す
+	VECTOR light_dir = VectorAssistant::GetDir(kInitPos, kInitTargetPos);
+	SetLightDirection(light_dir);
 }
 
 void Camera::BeforeSetting()

@@ -71,13 +71,13 @@ private:
 	std::shared_ptr<Font> tanuei_font_;
 
 	// タイマー
+	std::shared_ptr<ConditionTimer>		stand_by_timer_;
 	std::shared_ptr<ConditionTimer>		game_start_;
 	std::shared_ptr<ConditionTimer>		clear_offset_timer_;
 	std::shared_ptr<ConditionTimer>		clear_timer_;
 
 	int color_handle_;
 
-	float timer_;					//ただカウントするだけのタイマー
 	float offset_fade_param_;		// ゲーム終了のfadeoutやfadeinの
 
 
@@ -96,6 +96,8 @@ private:
 	void UpdateHitStop();
 
 	void UpdateSound();
+
+	void UpdateStandBy();
 
 	bool IsCount();
 

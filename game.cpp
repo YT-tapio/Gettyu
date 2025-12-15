@@ -11,8 +11,6 @@
 #include"hit_stop_timer.h"
 #include"hit_effect.h"
 #include"enemy_get_num.h"
-#include"mask.h"
-#include"sound.h"
 #include"sound.h"
 #include"2D_sound.h"
 
@@ -24,7 +22,6 @@ Game::Game(int model)
 
 Game::~Game()
 {
-    ClearTime::GetInstance().SetClearTime(timer_);
     DeleteGraph(color_handle_);
 }
 
@@ -167,6 +164,9 @@ void Game::UpdateHitStop()
 
 void Game::UpdateSound()
 {
+    // リスナーの設置
+    Camera::GetInstance().SetListener();
+
     if (Situation::GetInstance().GetSituationName() >= SituationName::kClearOffset)
     {
         clear_sound_->Update();
@@ -174,6 +174,24 @@ void Game::UpdateSound()
     }
 
     bgm_sound_->Update();
+}
+
+void Game::UpdateStandBy()
+{
+
+    // ここでplayerに何かを伝えたりカウントダウンしてあげたりします
+    // playerを動かせないようにします
+    Situation::GetInstance().SetSituationName(SituationName::kStandBy);
+    stand_by_timer_->Update();
+    ClearTime::GetInstance().Stop();
+    
+    if (stand_by_timer_->GetIsEnd())
+    {
+        ClearTime::GetInstance().Start();
+        Situation::GetInstance().SetSituationName(SituationName::kNothing);
+        return;
+    }
+
 }
 
 //
@@ -245,8 +263,8 @@ void Game::Init()
 
     tanuei_font_                = std::make_shared<Font>(kTanueiFontPath, kTanueiFontName, kFontSize, kFontThickSize, DX_FONTTYPE_EDGE);
 
-    screen_                        = std::make_shared<NormalSubScreen>(VGet((kGameWidth * 0.5f), (kGameHeight * 0.5f), 0.f), kGameWidth, kGameHeight, kGameWidth, kGameHeight, FALSE, AlphaColorType::kBlack, 0.f, FALSE);
-    font_color_screen_        = std::make_shared<NormalSubScreen>(VectorAssistant::Get2DVec(200.f, 200.f), kFontColorGraphWidth, kFontColorGraphHeight, kFontColorGraphWidth, kFontColorGraphHeight, TRUE, AlphaColorType::kBlack, 10, TRUE);
+    screen_                     = std::make_shared<NormalSubScreen>(VGet((kGameWidth * 0.5f), (kGameHeight * 0.5f), 0.f), kGameWidth, kGameHeight, kGameWidth, kGameHeight, FALSE, AlphaColorType::kBlack, 0.f, FALSE);
+    font_color_screen_          = std::make_shared<NormalSubScreen>(VectorAssistant::Get2DVec(200.f, 200.f), kFontColorGraphWidth, kFontColorGraphHeight, kFontColorGraphWidth, kFontColorGraphHeight, TRUE, AlphaColorType::kBlack, 10, TRUE);
     timer_screen_               = std::make_shared<NormalSubScreen>(VectorAssistant::Get2DVec(200.f, 200.f), kFontColorGraphWidth, kFontColorGraphHeight, kFontColorGraphWidth - 10, kFontColorGraphHeight - 10, TRUE, AlphaColorType::kBlack, 10, TRUE);
 
     screen_->SetIsDisp(TRUE);
@@ -254,13 +272,17 @@ void Game::Init()
     timer_screen_->SetIsDisp(TRUE);
     SetMousePoint(mouse_init_pos_x, mouse_init_pos_y);
 
-    game_start_ = std::make_shared<ConditionTimer>(5.f);
+    const float kStandByTime        = 10.f;
+    const float kGameStartTime      = 5.f;
+    const float kClearTime          = 10.f;
+    const float kClearOffsetTime    = 1.f;
 
-    clear_timer_        = std::make_shared<ConditionTimer>(10.f);
-    clear_offset_timer_ = std::make_shared<ConditionTimer>(1.f);
+    stand_by_timer_     = std::make_shared<ConditionTimer>(kStandByTime);
+    game_start_         = std::make_shared<ConditionTimer>(kGameStartTime);
+    clear_timer_        = std::make_shared<ConditionTimer>(kClearTime);
+    clear_offset_timer_ = std::make_shared<ConditionTimer>(kClearOffsetTime);
    
-    offset_fade_param_ = 255.f;
-    timer_ = 0.f;
+    offset_fade_param_  = 255.f;
 }
 
 void Game::Update(SceneName& name)
@@ -272,12 +294,16 @@ void Game::Update(SceneName& name)
     //全体のタイムスケール
     static float time_scale = 1.0f;
 
-    if (IsCount())
+    
+
+    if (!stand_by_timer_->GetIsEnd())
     {
-        timer_ += (FPS::GetInstance().GetDeltaTime() * 0.1f);
+        UpdateStandBy();
     }
-        
+
     GameStart();
+
+    ClearTime::GetInstance().Update();
 
     //デバッグ用
     if (Input::GetInstance().CheckInputKey(KeyConfig::kGameToResultKey) == InputState::kPush ||
@@ -295,12 +321,11 @@ void Game::Update(SceneName& name)
     enemy_manager_->SetDeltaTime(FPS::GetInstance().GetDeltaTime());
     hit_effect_->SetDeltaTime();
 
+    
     UpdateSound();
 
     concentration_line_->Update();
     concentration_line_->SetIsDisp(player_->GetIsVacuum());
-    
-
     
 
     enemy_manager_->Update(player_);
@@ -372,7 +397,7 @@ void Game::Draw()
     //font_color_screen_->Draw();
     // timer_screen_->Debug();
     // font_color_screen_->Debug();
-    DrawFormatStringToHandle(kTimerPos.x, kTimerPos.y, kFontColor, tanuei_font_->GetHandle(), "%.1f", timer_);
+    DrawFormatStringToHandle(kTimerPos.x, kTimerPos.y, kFontColor, tanuei_font_->GetHandle(), "%.1f", ClearTime::GetInstance().GetClearTime());
     Draw2D::WhiteBoxBlend(static_cast<int>(offset_fade_param_));
     DrawFormatString((kGameWidth - 300), (kGameHeight - 30), GetColor(0, 0, 0), "TAB / BACK Button : result");
 }

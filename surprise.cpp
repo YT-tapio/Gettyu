@@ -30,7 +30,7 @@ void EnemySurprise::Exit(EnemyBase* enemy)
 
 std::shared_ptr<BaseEnemyState> EnemySurprise::ChangeState(EnemyBase* enemy, std::shared_ptr<Player> player)
 {
-	if (Situation::GetInstance().GetSituationName() == SituationName::kAttack) { return std::make_shared<EnemyStan>(); }
+	if (enemy->GetOnDamage()) { return std::make_shared<EnemyStan>(); }
 	//surpriseのアニメーションが終わったら
 	if (enemy->GetIsAnimPlay())
 	{

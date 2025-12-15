@@ -59,9 +59,10 @@ EnemyBase::EnemyBase(const int model, const VECTOR& pos,
 
 	is_get_			= FALSE;
 	is_fleeping_	= FALSE;
-	is_vacuum_	= FALSE;
+	is_vacuum_		= FALSE;
 
 	is_ground_		= FALSE;
+	on_stan_		= FALSE;
 
 	delta_time_ = 0.0f;
 
@@ -641,6 +642,16 @@ void EnemyBase::SetPosIsGot(const VECTOR& pos)
 	pos_ = pos;
 	collision_data_.pos = pos;
 	pos_.y -= collision_data_.r;
+}
+
+void EnemyBase::OnStan()
+{
+	on_stan_ = TRUE;
+}
+
+void EnemyBase::ResetStan()
+{
+	on_stan_ = FALSE;
 }
 
 void EnemyBase::SetVecuum(const bool& flag)

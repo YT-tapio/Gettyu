@@ -59,6 +59,7 @@ public:
 	/// </summary>
 	void Update(const VECTOR& velocity, const VECTOR& target_velocity);
 
+	void SetListener();
 	
 	void Draw();
 

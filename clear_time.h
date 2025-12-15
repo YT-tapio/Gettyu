@@ -6,6 +6,8 @@ private:
 
 	float clear_time_ = 0;
 
+	bool is_stop_ = TRUE;
+
 	ClearTime();
 
 public:
@@ -20,6 +22,14 @@ public:
 	// コピーコンストラクタと代入演算子を削除
 	ClearTime(const ClearTime&) = delete;
 	ClearTime& operator=(const ClearTime&) = delete;
+
+	void Update();
+
+	void Stop();
+
+	void Start();
+
+	void Reset();
 
 	void SetClearTime(const float& time) { clear_time_ = time; }
 

@@ -30,6 +30,7 @@ void EnemyStan::Exit(EnemyBase* enemy)
 std::shared_ptr<BaseEnemyState> EnemyStan::ChangeState(EnemyBase* enemy, std::shared_ptr<Player> player)
 {
 	if (!enemy->GetStanIsEnd()) { return nullptr; }
+	enemy->ResetStan();
 
 	return std::make_shared<EnemyAlert>();
 }

@@ -57,6 +57,10 @@ private:
 
 	void ActiveUpdate();
 
+	void TimerStop();
+
+	void TimerStart();
+
 public:
 
 

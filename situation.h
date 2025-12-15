@@ -5,12 +5,13 @@
 //enumを作る
 enum class SituationName
 {
-    kNothing,                //何もない
-    kGet,                    //ゲット時
-    kAttack,                 //攻撃を受ける
-    kPerformance,            //演出
-    kSuperAttack,            //必殺中
-    kVacuum,                 // 吸引中
+    kNothing,               // 何もない
+    kStandBy,               // ゲーム開始前
+    kGet,                   // ゲット時
+    kAttack,                // 攻撃を受ける
+    kPerformance,           // 演出
+    kSuperAttack,           // 必殺中
+    kVacuum,                // 吸引中
     kClearOffset,
     kClear
 };

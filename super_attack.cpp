@@ -11,6 +11,7 @@
 #include"situation.h"
 #include"sound.h"
 #include"2D_sound.h"
+#include"clear_time.h"
 
 SuperAttack::SuperAttack(const VECTOR& pos,const char*  file_path)
 	: now_situation_num_(0)
@@ -78,11 +79,13 @@ void SuperAttack::CoolTimeUpdate()
 
 void SuperAttack::OffsetUpdate()
 {
+	ClearTime::GetInstance().Stop();
 	offset_time_->Update();
 	
 	Situation::GetInstance().SetSituationName(SituationName::kPerformance);
 	if (offset_time_->GetIsEnd())
 	{
+		ClearTime::GetInstance().Start();
 		Situation::GetInstance().SetSituationName(SituationName::kSuperAttack);
 		offset_time_->Reset();
 		state_ = SuperAttackState::kActive;
@@ -102,6 +105,20 @@ void SuperAttack::ActiveUpdate()
 	}
 }
 
+void SuperAttack::TimerStop()
+{
+	cool_time_->Stop();
+	active_time_->Stop();
+	offset_time_->Stop();
+}
+
+void SuperAttack::TimerStart()
+{
+	cool_time_->Start();
+	active_time_->Start();
+	offset_time_->Start();
+}
+
 void SuperAttack::Init()
 {
 	now_situation_num_ = 0;
@@ -112,6 +129,15 @@ void SuperAttack::Init()
 
 void SuperAttack::Update()
 {
+
+	if (Situation::GetInstance().GetSituationName() == SituationName::kStandBy)
+	{
+		TimerStop();
+	}
+	else
+	{
+		TimerStart();
+	}
 
 	switch (state_)
 	{

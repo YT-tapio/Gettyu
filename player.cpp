@@ -246,6 +246,26 @@ void Player::DecideAnimation()
 
 }
 
+bool Player::CheckChangeWeapon()
+{
+	if (Situation::GetInstance().GetSituationName() == SituationName::kStandBy) { return FALSE; }
+	if (now_type_ > AnimationType::kAttack)										{ return FALSE; }
+	if (is_super_attack_)														{ return FALSE; }
+
+
+	return TRUE;
+}
+
+bool Player::CheckAttack()
+{
+	if (Situation::GetInstance().GetSituationName() == SituationName::kStandBy)				{ return FALSE; }
+	if (Input::GetInstance().CheckInputMouse(KeyConfig::kAttackKey) != InputState::kPush)	{ return FALSE; }
+	if (is_super_attack_)																	{ return FALSE; }
+
+
+	return TRUE;
+}
+
 /*------------------------public---------------------------*/
 
 void Player::Init(VECTOR pos)
@@ -629,16 +649,16 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 		}
 	}
 
-	//•KE‹Z(ƒJƒƒ‰‚ª“®‚¢‚Ä‚È‚¢)
-	//UŒ‚
+	// •KE‹Z(ƒJƒƒ‰‚ª“®‚¢‚Ä‚È‚¢)
+	// UŒ‚
 
 	
-
+	
 	
 
 	
 	//–_‚ğU‚éŒn‚Ì‚â‚Â
-	if ((Input::GetInstance().CheckInputMouse(KeyConfig::kAttackKey) == InputState::kPush) && !(is_super_attack_))
+	if (CheckAttack())
 	{
 		if (is_ground_ && weapon_->GetName() != WeaponName::kWizardStaff)
 		{
@@ -681,8 +701,10 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 		}
 	}
 
+	
+
 	//•ŠíØ‚è‘Ö‚¦‚Ì‚â[‚Â
-	if (!(now_type_ > AnimationType::kAttack) && !is_super_attack_)
+	if (CheckChangeWeapon())
 	{
 		WeaponName next_name = WeaponName::kNothing;
 
@@ -769,6 +791,7 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 		direction = VGet(-1, 0, 0);
 	}
 
+	if (Situation::GetInstance().GetSituationName() == SituationName::kStandBy) { return; }
 
 	/*--------ƒvƒŒƒCƒ„[‚Ì‘€ì--------*/
 
@@ -909,8 +932,6 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 
 		before_rot_ = rot / input_count;
 	}
-
-	SetLightDirection(VGet(direction.x, 0.f, direction.x* constant));
 
 	camera_offset_dir = VGet(direction.x * constant, 0, -direction.x);
 
@@ -1165,7 +1186,7 @@ void Player::IsHitEnemy(EnemyBase* enemy, bool& got)
 				//bat‚Ì
 			case WeaponName::kBat:
 				
-				if (!is_hit_)
+				if (!enemy->GetOnDamage())
 				{
 					//‚±‚±‚Åsituation‚ğØ‚è‘Ö‚¦‚é
 					Situation::GetInstance().SetSituationName(SituationName::kAttack);
@@ -1175,6 +1196,8 @@ void Player::IsHitEnemy(EnemyBase* enemy, bool& got)
 					Vibration(kHitEnemyVibration);
 					//printfDx("wawawa\n");
 					
+					enemy->OnStan();
+
 					enemy_hit_sound_->Reset();
 					enemy_hit_spring_sound_->Reset();
 

@@ -104,6 +104,8 @@ protected:
 
 	bool is_ground_;
 
+	bool on_stan_;
+
 	int model_;
 	int debug_color_;
 
@@ -203,6 +205,10 @@ public:
 
 	void SetVecuum(const bool& flag);
 
+	void OnStan();
+
+	void ResetStan();
+
 	VECTOR DecideNextPlace();
 
 	bool GetIsAnimPlay() { return animation_->GetIsPlay(now_anim_type_); }
@@ -220,6 +226,8 @@ public:
 	const bool GetIsAlert() const { return is_alert_; }
 
 	const bool GetStanIsEnd() const { return stan_timer_->GetIsEnd(); }
+
+	const bool GetOnDamage() const { return on_stan_; }
 
 	const VECTOR GetPos() const { return pos_; }
 

@@ -34,7 +34,7 @@ void EnemyAlert::Exit(EnemyBase* enemy)
 std::shared_ptr<BaseEnemyState> EnemyAlert::ChangeState(EnemyBase* enemy, std::shared_ptr<Player> player)
 {
 
-	if (Situation::GetInstance().GetSituationName() == SituationName::kAttack) { return std::make_shared<EnemyStan>(); }
+	if (enemy->GetOnDamage()) { return std::make_shared<EnemyStan>(); }
 
 	//ステートの切り替え
 	//警戒し終わったら
