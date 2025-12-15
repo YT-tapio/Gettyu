@@ -13,6 +13,7 @@
 #include"enemy_get_num.h"
 #include"sound.h"
 #include"2D_sound.h"
+#include"game_goal_ui.h"
 
 Game::Game(int model)
     :BaseScene(SceneName::kGame,model)
@@ -260,6 +261,7 @@ void Game::Init()
     weapon_UI_                  = std::make_shared<WeaponUI>();
     super_attack_UI_            = std::make_shared<SuperAttackUI>();
     enemy_count_UI_             = std::make_shared<EnemyCountUI>(&enemy_manager_->not_get_count_);
+    game_goal_UI_               = std::make_shared<GameGoalUI>(&enemy_manager_->not_get_count_);
 
     tanuei_font_                = std::make_shared<Font>(kTanueiFontPath, kTanueiFontName, kFontSize, kFontThickSize, DX_FONTTYPE_EDGE);
 
@@ -339,7 +341,8 @@ void Game::Update(SceneName& name)
     weapon_UI_->Update();
     super_attack_UI_->Update();
     enemy_count_UI_->Update();
-   
+    game_goal_UI_->Update();
+
     hit_effect_->Update();
 
     Camera::GetInstance().Update(brain_->GetVelocity(), brain_->GetTargetVelocity());
@@ -393,10 +396,12 @@ void Game::Draw()
     weapon_UI_->Draw();
     super_attack_UI_->Draw();
     enemy_count_UI_->Draw();
-    
+    game_goal_UI_->Draw();
+
     //font_color_screen_->Draw();
     // timer_screen_->Debug();
     // font_color_screen_->Debug();
+
     DrawFormatStringToHandle(kTimerPos.x, kTimerPos.y, kFontColor, tanuei_font_->GetHandle(), "%.1f", ClearTime::GetInstance().GetClearTime());
     Draw2D::WhiteBoxBlend(static_cast<int>(offset_fade_param_));
     DrawFormatString((kGameWidth - 300), (kGameHeight - 30), GetColor(0, 0, 0), "TAB / BACK Button : result");

@@ -94,8 +94,8 @@ void Camera::OriginalSetting()
 	before_pos_				= GetCameraPosition();
 	before_target_pos_	= GetCameraTarget();
 
-	const VECTOR kInitPos = VectorAssistant::GetZeroVec();
-	const VECTOR kInitTargetPos	= VGet(0.f, 0.f, 10.f);
+	const VECTOR kInitPos			= VectorAssistant::GetZeroVec();
+	const VECTOR kInitTargetPos		= VGet(0.f, 0.f, 10.f);
 	const VECTOR kInitLightDir		= VGet(0.f, 0.f, 1.f);
 	//‰œs1.0`1000‚Ü‚Å‚ğƒJƒƒ‰‚Ì•`‰æ”ÍˆÍ‚Æ‚·‚é
 	SetCameraNearFar(kNear, kFar);

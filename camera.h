@@ -40,7 +40,7 @@ public:
 
 	static Camera& GetInstance()
 	{
-		static Camera instance;	//性的変数としてインスタンスを定義
+		static Camera instance;	//静的変数としてインスタンスを定義
 		return instance;
 	}
 

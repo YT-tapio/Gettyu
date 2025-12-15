@@ -19,6 +19,8 @@ Title::Title(int model)
 	:BaseScene(SceneName::kTitle,model)
 	,button_num_(0)
 {
+	
+
 	const char* kEnemyModelPath		= "data/model/character/enemy/Ch14_nonPBR.mv1";
 	enemy_model_							= MV1LoadModel(kEnemyModelPath);
 
@@ -71,9 +73,9 @@ void Title::AnimationSetting()
 	AnimationData dash;
 	AnimationData enemy_dash;
 	const char kFastRunAnimPath[256]				= "data/animation/Fast_Run.mv1";
-	const char kEnemyFastRunAnimPath[256]	= "data/model/character/enemy/animation/Standard_Run.mv1";
+	const char kEnemyFastRunAnimPath[256]			= "data/model/character/enemy/animation/Standard_Run.mv1";
 	const float kFastRunAnimSpeed					= 3.f;
-	const float kEnemyFastRunAnimSpeed			= 5.f;
+	const float kEnemyFastRunAnimSpeed				= 5.f;
 	
 	Load(dash				, kFastRunAnimPath			, AnimationType::kFastRun, player_model_	, 0	, kFastRunAnimSpeed);
 	Load(enemy_dash	, kEnemyFastRunAnimPath	, AnimationType::kFastRun, enemy_model_	, 1	, kEnemyFastRunAnimSpeed);

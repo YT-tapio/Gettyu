@@ -156,6 +156,7 @@
     <ClCompile Include="enemy_base.cpp" />
     <ClCompile Include="font.cpp" />
     <ClCompile Include="game_clear.cpp" />
+    <ClCompile Include="game_goal_ui.cpp" />
     <ClCompile Include="hit_effect.cpp" />
     <ClCompile Include="hit_stop_timer.cpp" />
     <ClCompile Include="object_base.cpp" />
@@ -252,6 +253,7 @@
     <ClInclude Include="font.h" />
     <ClInclude Include="font_data.h" />
     <ClInclude Include="game_clear.h" />
+    <ClInclude Include="game_goal_ui.h" />
     <ClInclude Include="hit_effect.h" />
     <ClInclude Include="hit_stop_timer.h" />
     <ClInclude Include="object_base.h" />

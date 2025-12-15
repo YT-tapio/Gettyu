@@ -27,6 +27,7 @@ class BaseScene;
 class Font;
 class HitEffect;
 class SoundBase;
+class GameGoalUI;
 
 class Game : public BaseScene
 {
@@ -67,6 +68,7 @@ private:
 	std::shared_ptr<WeaponUI> weapon_UI_;
 	std::shared_ptr<SuperAttackUI> super_attack_UI_;
 	std::shared_ptr<EnemyCountUI> enemy_count_UI_;
+	std::shared_ptr<GameGoalUI> game_goal_UI_;
 
 	std::shared_ptr<Font> tanuei_font_;
 

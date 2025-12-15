@@ -61,9 +61,9 @@ protected:
 	std::shared_ptr<Navigation> navigation_;
 
 	std::shared_ptr<Animation> animation_;
-	AnimationType now_anim_type_;            //現在のプレイヤーのアニメ～しょん
+	AnimationType now_anim_type_;				//現在のプレイヤーのアニメ～しょん
 	AnimationType before_anim_type_;			//1つ前のアニメーション
-	AnimationType before_before_anim_type_;	//2つ前のアニメーション
+	AnimationType before_before_anim_type_;		//2つ前のアニメーション
 
 	
 
@@ -235,4 +235,3 @@ public:
 
 	const CollisionData GetCollisionData() const { return collision_data_; }
 };
-

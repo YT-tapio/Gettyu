@@ -59,7 +59,7 @@ SceneManager::SceneManager()
 
 	now_scene_->Init();
 	now_scene_name_ = now_scene_->GetName();
-
+    Camera::GetInstance();
     FPS::GetInstance();
     Timer::GetInstance();
     Input::GetInstance().Awake(DX_INPUT_PAD1);

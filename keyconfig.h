@@ -35,13 +35,13 @@ struct KeyConfig
     static const int kSwicthWarpRodKey      = KEY_INPUT_1;
 
     // ‘I‘ðƒ{ƒ^ƒ“
-    static constexpr int kSelectKey[kSelectSize] = { KEY_INPUT_RETURN ,KEY_INPUT_SPACE,KEY_INPUT_F};
-    static const int kSelectMouseButton     = MOUSE_INPUT_1;
+    static constexpr int kSelectKey[kSelectSize]    = { KEY_INPUT_RETURN ,KEY_INPUT_SPACE,KEY_INPUT_F};
+    static const int kSelectMouseButton             = MOUSE_INPUT_1;
 
-    static constexpr int kSelectUpKey[kSelectUpSize] = { KEY_INPUT_UP,KEY_INPUT_W };
-    static constexpr int kSelectDownKey[kSelectDownSize] = { KEY_INPUT_DOWN,KEY_INPUT_S };
-    static constexpr int kSelectRightKey[kSelectRightSize] = { KEY_INPUT_RIGHT,KEY_INPUT_D };
-    static constexpr int kSelectLeftKey[kSelectLeftSize] = { KEY_INPUT_LEFT,KEY_INPUT_A };
+    static constexpr int kSelectUpKey[kSelectUpSize]        = { KEY_INPUT_UP,KEY_INPUT_W };
+    static constexpr int kSelectDownKey[kSelectDownSize]    = { KEY_INPUT_DOWN,KEY_INPUT_S };
+    static constexpr int kSelectRightKey[kSelectRightSize]  = { KEY_INPUT_RIGHT,KEY_INPUT_D };
+    static constexpr int kSelectLeftKey[kSelectLeftSize]    = { KEY_INPUT_LEFT,KEY_INPUT_A };
 };
 
 struct PadConfig
