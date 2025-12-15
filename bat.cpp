@@ -6,7 +6,7 @@ Bat::Bat()
 {
 	model_ = MV1LoadModel("data/model/weapon/use_path/Bat.mv1");
 	scale_ = VGet(kScale, kScale, kScale);
-	r_ = 3.0f;
+	r_ = 4.0f;
 	bone_path_ = 0;
 
 	collision_data_.name = CollisionName::kSphere;

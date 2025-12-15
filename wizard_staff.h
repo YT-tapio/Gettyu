@@ -15,7 +15,7 @@ private:
 	const float kVaccuumSpeed = 10.f;
 	//モデルのデータやボーンのパスがあって
 
-	const float kScale = 5.0f;
+	const float kScale = 30.0f;
 
 
 public:

@@ -318,7 +318,6 @@ void Player::Debug()
 		coll_->Debug();
 		gravity_check_coll_->Debug();
 
-
 		//
 		DrawFormatString(0, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), GetColor(0, 0, 0), "---------player--------");
 		Debug::GetInstance().Add();

@@ -34,18 +34,18 @@ GameGoalUI::GameGoalUI(int* enemy_num)
 	enemy_num_ = enemy_num;
 	change_offset_ = FALSE;
 
-	screen_			= std::make_shared<NormalSubScreen>(VectorAssistant::GetZeroVec(), kScreenWidth, kScreenHeight, kScreenWidth, kScreenHeight, FALSE, AlphaColorType::kWhite, 10, TRUE);
+	screen_			= std::make_shared<NormalSubScreen>(VectorAssistant::GetZeroVec(), kScreenWidth, kScreenHeight, kScreenWidth, kScreenHeight, TRUE, AlphaColorType::kWhite, 10, TRUE);
 	screen_->SetIsDisp(TRUE);
 
 	const float kDispTime = 1.5f;
 
 	disp_timer_ = std::make_shared<ConditionTimer>(kDispTime);
 
-	const char* kFontPath = "data/font/TanueiKakuPop_1_00/TanueiKakuPop.otf";
-	const char* kFontName = "たぬえいカクポップタイ";
+	const char* kFontPath		= "data/font/TanueiKakuPop_1_00/TanueiKakuPop.otf";
+	const char* kFontName	= "たぬえいカクポップタイ";
 
-	const int kFontSize = 50;
-	const int kThick = 30;
+	const int kFontSize		= 100;
+	const int kThick			= 30;
 	const int kFontType = DX_FONTTYPE_EDGE;
 
 	font_ = std::make_shared<Font>(kFontPath, kFontName, kFontSize, kThick, kFontType);

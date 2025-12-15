@@ -19,7 +19,7 @@ private:
 	const int kGaugeBodyHandle		= LoadGraph("data/UI/super_attack/BodyGaugeB_Green.png");
 	const int kGaugeBackHandle		= LoadGraph("data/UI/super_attack/BodyBackB_Black.png");
 
-	const int kWeaponHandle = MV1LoadModel("data/model/weapon/use_path/Wizard_Staff.mv1");
+	const int kWeaponHandle = MV1LoadModel("data/model/weapon/vacuum/vacuum.mv1");
 
 	//Œ³‚Ì‰æ‘œ‚Ì‘å‚«‚³
 	const int kOriginalImagWidth		= 793;
@@ -32,9 +32,9 @@ private:
 
 	const VECTOR kInitWeaponScreenPos = VGet(200.f, 100.f, 0.f);
 	
-	const VECTOR kInitWeaponPos		= VGet(1.5f,0.5f,10.f);
-	const VECTOR kInitWeaponScale		= VectorAssistant::GetSame3DVec(0.03f);
-	const VECTOR kInitWeaponRot		= VGet(kOneRad * 90.f, kOneRad * 0.f, kOneRad * 135.f);
+	const VECTOR kInitWeaponPos		= VGet(1.2f,0.4f,10.f);
+	const VECTOR kInitWeaponScale		= VectorAssistant::GetSame3DVec(0.25f);
+	const VECTOR kInitWeaponRot		= VGet(-kOneRad * 30.f, kOneRad * 0.f, kOneRad * 45.f);
 
 
 	const int disp_width_					= 700;

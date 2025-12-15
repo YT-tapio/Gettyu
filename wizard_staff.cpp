@@ -3,13 +3,15 @@
 WizardStaff::WizardStaff()
 	:WeaponBase()
 {
+	const float kCollRadius = 4.f;
+
 	scale_ = VGet(kScale, kScale, kScale);
-	model_ = MV1LoadModel("data/model/weapon/use_path/Wizard_Staff.mv1");
+	model_ = MV1LoadModel("data/model/weapon/vacuum/vacuum.mv1");
 	r_ = 0;
-	bone_path_ = 0;
+	bone_path_ = 2;
 
 	collision_data_.name = CollisionName::kSphere;
-	collision_data_.r = 2.5f;
+	collision_data_.r = kCollRadius;
 	collision_data_.ver = 0.0f;
 	name_ = WeaponName::kWizardStaff;
 }

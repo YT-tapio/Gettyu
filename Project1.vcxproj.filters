@@ -579,6 +579,9 @@
     <ClCompile Include="game_goal_ui.cpp">
       <Filter>ソース ファイル\UI\game_goal</Filter>
     </ClCompile>
+    <ClCompile Include="count_down_UI.cpp">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="keyconfig.h">
@@ -886,6 +889,9 @@
     </ClInclude>
     <ClInclude Include="game_goal_ui.h">
       <Filter>ソース ファイル\UI\game_goal</Filter>
+    </ClInclude>
+    <ClInclude Include="count_down_UI.h">
+      <Filter>ソース ファイル\UI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

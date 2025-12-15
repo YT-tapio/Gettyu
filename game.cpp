@@ -14,6 +14,7 @@
 #include"sound.h"
 #include"2D_sound.h"
 #include"game_goal_ui.h"
+#include"count_down_UI.h"
 
 Game::Game(int model)
     :BaseScene(SceneName::kGame,model)
@@ -258,10 +259,11 @@ void Game::Init()
     clear_bomb_sound_   = std::make_shared<Sound2D>(kClearBombSoundPath, DX_PLAYTYPE_BACK, 200, FALSE);
     /*--UI--*/
 
-    weapon_UI_                  = std::make_shared<WeaponUI>();
+    weapon_UI_                      = std::make_shared<WeaponUI>();
     super_attack_UI_            = std::make_shared<SuperAttackUI>();
-    enemy_count_UI_             = std::make_shared<EnemyCountUI>(&enemy_manager_->not_get_count_);
-    game_goal_UI_               = std::make_shared<GameGoalUI>(&enemy_manager_->not_get_count_);
+    enemy_count_UI_            = std::make_shared<EnemyCountUI>(&enemy_manager_->not_get_count_);
+    game_goal_UI_                = std::make_shared<GameGoalUI>(&enemy_manager_->not_get_count_);
+    count_down_UI_              = std::make_shared<CountDownUI>();
 
     tanuei_font_                = std::make_shared<Font>(kTanueiFontPath, kTanueiFontName, kFontSize, kFontThickSize, DX_FONTTYPE_EDGE);
 
@@ -342,6 +344,7 @@ void Game::Update(SceneName& name)
     super_attack_UI_->Update();
     enemy_count_UI_->Update();
     game_goal_UI_->Update();
+    count_down_UI_->Update(stand_by_timer_->GetNowTimer());
 
     hit_effect_->Update();
 
@@ -397,6 +400,7 @@ void Game::Draw()
     super_attack_UI_->Draw();
     enemy_count_UI_->Draw();
     game_goal_UI_->Draw();
+    count_down_UI_->Draw();
 
     //font_color_screen_->Draw();
     // timer_screen_->Debug();
