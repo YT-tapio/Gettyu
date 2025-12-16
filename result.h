@@ -11,6 +11,8 @@ class ObjectBase;
 class NormalSubScreen;
 class Font;
 class SoundBase;
+class ResultScoreUI;
+
 
 class Result : public BaseScene
 {
@@ -48,6 +50,8 @@ private:
 
 	// 背景オブジェクト
 	std::vector<std::shared_ptr<ObjectBase>> back_objects_;
+
+	std::shared_ptr<ResultScoreUI> result_sentence_;
 
 	int button_num_;
 	std::vector<std::shared_ptr<Button>> buttons_;

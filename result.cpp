@@ -15,6 +15,7 @@
 #include"enemy_get_num.h"
 #include"sound.h"
 #include"2D_sound.h"
+#include"result_score.h"
 
 Result::Result(int model)
 	:BaseScene(SceneName::kResult,model)
@@ -95,6 +96,7 @@ Result::Result(int model)
 	{
 		screen->SetIsDisp(TRUE);
 	}
+	result_sentence_ = std::make_shared<ResultScoreUI>(time_);
 }
 
 
@@ -239,6 +241,7 @@ void Result::Update(SceneName& name)
 		button->Update(button_num_);
 	}
 
+	result_sentence_->Update();
 	bgm_->Update();
 
 	if (is_fade_in_)
@@ -273,13 +276,14 @@ void Result::Draw()
 	for (auto& screen : enemy_screens_)
 	{
 		screen->Draw();
-		//screen->Debug();
 	}
 
 	for (auto& button : buttons_)
 	{
 		button->Draw();
 	}
+
+	result_sentence_->Draw();
 
 	DrawFormatStringToHandle(static_cast<int>(kClearTimerPos.x), static_cast<int>(kClearTimerPos.y), 
 		kFontColor, tanuei_font_->GetHandle(), "%.1f", time_,kFontThickColor);

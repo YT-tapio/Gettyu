@@ -310,6 +310,9 @@
     <Filter Include="ソース ファイル\rotated_object">
       <UniqueIdentifier>{811f115a-e3ec-4364-8da5-d9dc9f0fa3ee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\UI\result_score">
+      <UniqueIdentifier>{b1f5a859-7149-4c8d-95f5-b548c5c9c17c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -592,7 +595,7 @@
       <Filter>ソース ファイル\rotated_object</Filter>
     </ClCompile>
     <ClCompile Include="result_score.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\UI\result_score</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -909,7 +912,7 @@
       <Filter>ソース ファイル\rotated_object</Filter>
     </ClInclude>
     <ClInclude Include="result_score.h">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\UI\result_score</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -104,8 +104,6 @@ void Game::GameClear(SceneName& name)
 
         float timer_count = clear_timer_->GetNowTimer();
 
-        printfDx("%.2f\n", timer_count);
-
         if (timer_count >= 2.f)
         {
             clear_sound_->Stop();
@@ -289,13 +287,13 @@ void Game::Init()
 void Game::Update(SceneName& name)
 {
 
-    if (HitStopTimer::GetInstance().CheckHitStop()){ UpdateHitStop(); }
+    if (HitStopTimer::GetInstance().CheckHitStop()) { UpdateHitStop(); }
 
     //name = SceneName::kResult;
     //全体のタイムスケール
     static float time_scale = 1.0f;
 
-    
+
 
     if (!stand_by_timer_->GetIsEnd())
     {
@@ -309,7 +307,10 @@ void Game::Update(SceneName& name)
 
     GameStart();
 
+    if (Situation::GetInstance().GetSituationName() == SituationName::kClearOffset) { ClearTime::GetInstance().Stop(); }
     ClearTime::GetInstance().Update();
+
+    
 
     //デバッグ用
     if (Input::GetInstance().CheckInputKey(KeyConfig::kGameToResultKey) == InputState::kPush ||
