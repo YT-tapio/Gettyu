@@ -194,6 +194,7 @@
     <ClCompile Include="normal_sub_screen.cpp" />
     <ClCompile Include="offset_assistant.cpp" />
     <ClCompile Include="out_side_checkcpp.cpp" />
+    <ClCompile Include="result_score.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="stan.cpp" />
     <ClCompile Include="super_attack_cool_time.cpp" />
@@ -296,6 +297,7 @@
     <ClInclude Include="const_rad.h" />
     <ClInclude Include="offset_assistant.h" />
     <ClInclude Include="out_side_check.h" />
+    <ClInclude Include="result_score.h" />
     <ClInclude Include="rotated_object.h" />
     <ClInclude Include="select_type.h" />
     <ClInclude Include="sound.h" />

@@ -20,7 +20,7 @@ private:
 	const int kInitFadeInParamMax = 255;
 
 	const float kNear	= 1.f;
-	const float kFar	= 100.f;
+	const float kFar	= 1000.f;
 
 	const float kFov = kOneRad * 75.f;
 
@@ -45,6 +45,9 @@ private:
 	std::vector<std::shared_ptr<NormalSubScreen>> enemy_screens_;
 
 	std::vector<std::shared_ptr<ObjectBase>> objects_;
+
+	// 背景オブジェクト
+	std::vector<std::shared_ptr<ObjectBase>> back_objects_;
 
 	int button_num_;
 	std::vector<std::shared_ptr<Button>> buttons_;

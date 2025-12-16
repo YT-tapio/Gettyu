@@ -591,6 +591,9 @@
     <ClCompile Include="rotated_object.cpp">
       <Filter>ソース ファイル\rotated_object</Filter>
     </ClCompile>
+    <ClCompile Include="result_score.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="keyconfig.h">
@@ -904,6 +907,9 @@
     </ClInclude>
     <ClInclude Include="rotated_object.h">
       <Filter>ソース ファイル\rotated_object</Filter>
+    </ClInclude>
+    <ClInclude Include="result_score.h">
+      <Filter>ソース ファイル</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

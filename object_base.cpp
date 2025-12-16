@@ -8,6 +8,12 @@ ObjectBase::ObjectBase(const VECTOR& pos, const VECTOR& rot, const VECTOR& scale
 	, model_(MV1LoadModel(path))
 {
 	mat_ = MGetTranslate(pos_);
+
+	if (model_ == -1)
+	{
+		printfDx("ÉÇÉfÉãÇÃì«Ç›çûÇ›ÉGÉâÅ[\n");
+	}
+
 };
 
 
@@ -37,7 +43,8 @@ void ObjectBase::Init()
 
 void ObjectBase::Update()
 {
-
+	SetMat();
+	MV1SetMatrix(model_, mat_);
 }
 
 

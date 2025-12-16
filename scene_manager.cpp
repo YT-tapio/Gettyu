@@ -55,7 +55,7 @@ SceneManager::SceneManager()
     SetUseSetDrawScreenSettingReset(FALSE);
 
     player_model_ = MV1LoadModel(kPlayerModelPath);
-	now_scene_ = std::make_shared<Title>(player_model_);
+	now_scene_ = std::make_shared<Result>(player_model_);
 
 	now_scene_->Init();
 	now_scene_name_ = now_scene_->GetName();

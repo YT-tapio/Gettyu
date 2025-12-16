@@ -71,7 +71,13 @@ Result::Result(int model)
 		objects_.push_back(std::make_shared<CharacterDance>(kEnemyPos, kEnemyRot, kEnemyScale, kEnemyPath, enemy_anim_data));
 	}
 
-	
+	const char* kSkyDomePath	= "data/skydome/Dome_SS601.mv1";
+	const float kSkyDomeScale	= 0.8f;
+
+	const char* kStagePath		= "data/model/map/arena/map.mv1";
+	const float kStageScale		= 1.f;
+	back_objects_.push_back(std::make_shared<ObjectBase>(VectorAssistant::GetZeroVec(), VectorAssistant::GetZeroVec(), VectorAssistant::GetSame3DVec(kSkyDomeScale), kSkyDomePath));
+	back_objects_.push_back(std::make_shared<ObjectBase>(VGet(0.f,-10.f,0.f), VectorAssistant::GetZeroVec(), VectorAssistant::GetSame3DVec(kStageScale), kStagePath));
 	
 	for (int i = 0; i < enemy_get_num; i++)
 	{
@@ -213,6 +219,12 @@ void Result::Update(SceneName& name)
 		obj->Update();
 	}
 
+	for (auto& obj : back_objects_)
+	{
+		obj->SetDeltaTime();
+		obj->Update();
+	}
+
 	Setting();
 	UpdateDispEnemyScreen();
 	button_num_ += selecter_->Select(SelectType::kSide);
@@ -248,6 +260,13 @@ void Result::Update(SceneName& name)
 
 void Result::Draw()
 {
+	SetUseLighting(FALSE);
+	for (auto& obj : back_objects_)
+	{
+		obj->Draw();
+	}
+	SetUseLighting(TRUE);
+
 	MV1DrawModel(player_model_);
 	
 
