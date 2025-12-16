@@ -12,7 +12,7 @@ class NormalSubScreen;
 class Font;
 class SoundBase;
 class ResultScoreUI;
-
+class ConditionTimer;
 
 class Result : public BaseScene
 {
@@ -37,10 +37,11 @@ private:
 	const int kFontThick					= 50;
 	const int kFontColor					= GetColor(255, 255, 15);
 	const int kFontThickColor			= GetColor(240, 44, 44);
-	const VECTOR kClearTimerPos		= VectorAssistant::Get2DVec(530.f, 550.f);
+	const VECTOR kClearTimerPos		= VectorAssistant::Get2DVec(510.f, 550.f);
 	std::shared_ptr<Font> tanuei_font_;			//たぬえいのフォント
 	
-	std::shared_ptr<SoundBase> bgm_;
+	std::shared_ptr<SoundBase> bgm_;				// 
+	std::shared_ptr<SoundBase> select_sound_;	// 
 
 	std::shared_ptr<NormalSubScreen> time_screen_;
 
@@ -53,7 +54,10 @@ private:
 
 	std::shared_ptr<ResultScoreUI> result_sentence_;
 
+	std::shared_ptr<ConditionTimer> next_scene_offset_timer_;
+
 	int button_num_;
+	int before_button_num_;
 	std::vector<std::shared_ptr<Button>> buttons_;
 	std::shared_ptr<ButtonSelecter> selecter_;
 
@@ -63,13 +67,17 @@ private:
 
 	bool is_fade_in_;
 	bool go_title_;
-	
+	bool restart_;
+
 	float fade_in_param_;
+	float fade_out_param_;
 	float time_;
 
 	int enemy_model_;
 
 	void FadeIn();
+
+	void FadeOut();
 
 	//posやアニメーションの設定をする
 	void Setting();

@@ -123,6 +123,8 @@ void Navigation::Load()
 		// ‰Â•Ï•”•ªiway_point‚É“ü‚ê‚éj
 		while (std::getline(ss, data, ',')) 
 		{
+			if (data.empty()) { break; }
+
 			int neighbors_id = std::stoi(data);
 			neighbors.push_back(neighbors_id);
 		}

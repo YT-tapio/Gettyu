@@ -23,7 +23,7 @@ Title::Title(int model)
 	,button_num_(0)
 {
 	
-
+	before_button_num_ = 0;
 	const char* kEnemyModelPath		= "data/model/character/enemy/Ch14_nonPBR.mv1";
 	enemy_model_							= MV1LoadModel(kEnemyModelPath);
 
@@ -44,7 +44,7 @@ Title::Title(int model)
 	animation_				= std::make_shared<Animation>();
 	enemy_animation_		= std::make_shared<Animation>();
 
-	const char* kBgmPath = "data/sound/title/bgm/hiphop2.mp3";
+	const char* kBgmPath			= "data/sound/title/bgm/hiphop2.mp3";
 	const char* kSelectSoundPath = "data/sound/button/select.mp3";
 
 	bgm_				= std::make_shared<Sound2D>(kBgmPath, DX_PLAYTYPE_LOOP, 100,TRUE);
@@ -144,7 +144,6 @@ void Title::Init()
 
 void Title::Update(SceneName& name)
 {
-	static int before_button_num = 0;
 	animation_->SetDeltaTime(FPS::GetInstance().GetDeltaTime());
 	enemy_animation_->SetDeltaTime(FPS::GetInstance().GetDeltaTime());
 	
@@ -173,11 +172,11 @@ void Title::Update(SceneName& name)
 		button_num_ = 2;
 	}
 
-	if (before_button_num != button_num_)
+	if (before_button_num_ != button_num_)
 	{
 		select_sound_->Reset();
 		select_sound_->Update();
-		before_button_num = button_num_;
+		before_button_num_ = button_num_;
 	}
 
 	

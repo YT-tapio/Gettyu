@@ -17,11 +17,12 @@
 #include"2D_sound.h"
 #include"result_score.h"
 #include"button_graph_create.h"
+#include"condition_timer.h"
 
 Result::Result(int model)
 	:BaseScene(SceneName::kResult,model)
 {
-	const VECTOR kButtonCenterPos = VectorAssistant::Get2DVec(1150.f, 700.f);
+	const VECTOR kButtonCenterPos = VectorAssistant::Get2DVec(1150.f, 600.f);
 	const float kButtonWidth = 200.f;
 	const float kButtonHeight = 100.f;
 
@@ -48,19 +49,25 @@ Result::Result(int model)
 	button_num_			= 0;
 	time_					= ClearTime::GetInstance().GetClearTime();
 
-	go_title_ = FALSE;
-
+	go_title_	= FALSE;
+	restart_		= FALSE;
 	tanuei_font_	= std::make_shared<Font>(kTanueiFontPath, kTanueiFontName, kFontSize, kFontThick, DX_FONTTYPE_EDGE);
 	animation_	= std::make_shared<Animation>();
 	selecter_		= std::make_shared<ButtonSelecter>();
 
-	const char* kBgmPath = "data/sound/result/bgm/bgm.mp3";
-
+	const char* kBgmPath			= "data/sound/result/bgm/bgm.mp3";
+	const char* kSelectSoundPath = "data/sound/button/select.mp3";
+	
 	bgm_ = std::make_shared<Sound2D>(kBgmPath, DX_PLAYTYPE_BACK, 100, TRUE);
+	select_sound_ = std::make_shared<Sound2D>(kSelectSoundPath, DX_PLAYTYPE_BACK, 80, FALSE);
+
+	next_scene_offset_timer_ = std::make_shared<ConditionTimer>(2.f);
 
 	// ボタンを作る
-	buttons_.push_back(std::make_shared<Button>(kButtonCenterPos, kButtonWidth, kButtonHeight, "", button_num, &go_title_,ButtonGraph::GetInstance().GetGoTitleHandle()));
-
+	buttons_.push_back(std::make_shared<Button>(kButtonCenterPos, kButtonWidth, kButtonHeight, "", button_num, &restart_, ButtonGraph::GetInstance().GetGoTitleHandle()));
+	button_num++;
+	buttons_.push_back(std::make_shared<Button>(VAdd(kButtonCenterPos ,VGet(0.f,(kButtonHeight) +10,0.f)), kButtonWidth, kButtonHeight, "", button_num, &go_title_, ButtonGraph::GetInstance().GetGoTitleHandle()));
+	button_num++;
 	AnimationData enemy_anim_data;
 
 	Load(enemy_anim_data, kEnemyAnimPath, AnimationType::kIdle, -1, 1, kEnemyAnimSpeed);
@@ -122,6 +129,20 @@ void Result::FadeIn()
 		is_fade_in_ = FALSE;
 	}
 }
+
+void Result::FadeOut()
+{
+	const float kFadeOutSpeed = 20.f;
+	const float kFadeOutMax = 255.f;
+
+	fade_out_param_ += kFadeOutSpeed * FPS::GetInstance().GetDeltaTime();
+
+	if (fade_out_param_ > kFadeOutMax)
+	{
+		fade_out_param_ = kFadeOutMax;
+	}
+}
+
 
 void Result::Setting()
 {
@@ -202,7 +223,8 @@ void Result::UpdateDispEnemyScreen()
 void Result::Init()
 {
 	SetMouseDispFlag(TRUE);
-	fade_in_param_ = kInitFadeInParamMax;
+	fade_in_param_			= kInitFadeInParamMax;
+	fade_out_param_		= 0;
 	is_fade_in_ = TRUE;
 	
 	//アニメーションの適応を行う
@@ -230,16 +252,58 @@ void Result::Update(SceneName& name)
 
 	Setting();
 	UpdateDispEnemyScreen();
-	button_num_ += selecter_->Select(SelectType::kSide);
+	if (next_scene_offset_timer_->GetIsEnd()) 
+	{
+		if (restart_)
+		{
+			name = SceneName::kGame;
+		}
 
-	if (button_num_ < 0 || button_num_ > 0)
+		if (go_title_)
+		{
+			name = SceneName::kTitle;
+		}
+
+		return;
+	}
+
+	if (go_title_ || restart_)
+	{
+		next_scene_offset_timer_->Update();
+		FadeOut();
+		return;
+	}
+
+	button_num_ += selecter_->Select(SelectType::kVertical);
+
+	if (button_num_ < 0)
 	{
 		button_num_ = 0;
+	}
+
+	if (button_num_ > 1)
+	{
+		button_num_ = 1;
+	}
+
+	if (before_button_num_ != button_num_)
+	{
+		select_sound_->Reset();
+		select_sound_->Update();
+		before_button_num_ = button_num_;
 	}
 
 	for (auto& button : buttons_)
 	{
 		button->Update(button_num_);
+
+		button->Update(button_num_);
+
+		if (button->GetState() >= ButtonState::kSelect)
+		{
+			button_num_ = button->GetNum();
+		}
+
 	}
 
 	result_sentence_->Update();
@@ -249,12 +313,9 @@ void Result::Update(SceneName& name)
 	{
 		FadeIn();
 	}
-	
 
-	if (go_title_)
-	{
-		name = SceneName::kTitle;
-	}
+
+	
 
 	// playerのモデルにダンスさせる
 	
@@ -290,4 +351,5 @@ void Result::Draw()
 		kFontColor, tanuei_font_->GetHandle(), "%.1f", time_,kFontThickColor);
 
 	Draw2D::WhiteBoxBlend(static_cast<int>(fade_in_param_));
+	Draw2D::WhiteBoxBlend(static_cast<int>(fade_out_param_));
 }

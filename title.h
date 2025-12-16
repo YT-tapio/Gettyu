@@ -55,6 +55,7 @@ private:
 	MATRIX enemy_mat_;
 
 	int button_num_;
+	int before_button_num_;
 	std::vector<std::shared_ptr<Button>> buttons_;
 	std::shared_ptr<ButtonSelecter> selecter_;
 
@@ -65,6 +66,7 @@ private:
 
 	//‰æ–Ê‘JˆÚ‚Ìtimer
 	std::shared_ptr<ConditionTimer> transition_timer_;
+	
 
 	std::shared_ptr<SoundBase> bgm_;
 

@@ -28,23 +28,41 @@ void EnemyManager::Init()
 
 	VECTOR scale = VGet(0.07f, 0.07f,0.07f);
 	
-	
-	enemies_.push_back(std::make_shared<NormalEnemy>(normal_model_path,
-		VGet(10.f, 0.f, 50.f), scale, VGet(0.f, static_cast<float>((M_PI / 180) * 70), 0.0f), get_effect_, got_effect_, 0.5f, 2.5f, AlertState::kNormal, static_cast<float>((M_PI / 180) * 100),stage_));
-	
-	
-	enemies_.push_back(std::make_shared<NormalEnemy>(normal_model_path,
-		VGet(50.f, 1.5f, 10.f), scale, VGet(0.f, static_cast<float>((M_PI / 180) * 80), 0.0f), get_effect_, got_effect_, 1.f, 2.5f, AlertState::kLow, static_cast<float>((M_PI / 180) * 100),stage_));
+	const VECTOR kInitPos1 = VGet(10.f,		0.f,	 50.f);
+	const VECTOR kInitPos2 = VGet(-80.f,		 0.f,	-13.f);
+	const VECTOR kInitPos3 = VGet(-1.51f,	 2.f,	-309.f);
+	const VECTOR kInitPos4 = VGet(-2.54f,	 2.f,	-720.f);
+	const VECTOR kInitPos5 = VGet(141.f,		0.f,	-893.f);
+	const VECTOR kInitPos6 = VGet(-117.f,	0.f,	-1043.f);
 
 	enemies_.push_back(std::make_shared<NormalEnemy>(normal_model_path,
-		VGet(20.f, 3.f, 5.f), scale, VGet(0.f, static_cast<float>((M_PI / 180) * 90), 0.0f), get_effect_, got_effect_, 0.5f, 2.5f, AlertState::kHigh, static_cast<float>((M_PI / 180) * 100),stage_));
+		kInitPos1, scale, VGet(0.f, static_cast<float>((M_PI / 180) * 70), 0.0f), get_effect_, got_effect_, 0.5f, 2.5f, AlertState::kNormal, static_cast<float>((M_PI / 180) * 100),stage_));
 	
+	
+	enemies_.push_back(std::make_shared<NormalEnemy>(normal_model_path,
+		kInitPos2, scale, VGet(0.f, static_cast<float>((M_PI / 180) * 80), 0.0f), get_effect_, got_effect_, 1.f, 2.5f, AlertState::kLow, static_cast<float>((M_PI / 180) * 100),stage_));
+
+	enemies_.push_back(std::make_shared<NormalEnemy>(normal_model_path,
+		kInitPos3, scale, VGet(0.f, static_cast<float>((M_PI / 180) * 90), 0.0f), get_effect_, got_effect_, 0.5f, 2.5f, AlertState::kHigh, static_cast<float>((M_PI / 180) * 100),stage_));
+	
+	enemies_.push_back(std::make_shared<NormalEnemy>(normal_model_path,
+		kInitPos4, scale, VGet(0.f, static_cast<float>((M_PI / 180) * 80), 0.0f), get_effect_, got_effect_, 1.f, 2.5f, AlertState::kLow, static_cast<float>((M_PI / 180) * 100), stage_));
+
+	enemies_.push_back(std::make_shared<NormalEnemy>(normal_model_path,
+		kInitPos5, scale, VGet(0.f, static_cast<float>((M_PI / 180) * 90), 0.0f), get_effect_, got_effect_, 0.5f, 2.5f, AlertState::kHigh, static_cast<float>((M_PI / 180) * 100), stage_));
+
+	
+	enemies_.push_back(std::make_shared<NormalEnemy>(normal_model_path,
+		kInitPos6, scale, VGet(0.f, static_cast<float>((M_PI / 180) * 90), 0.0f), get_effect_, got_effect_, 0.5f, 2.5f, AlertState::kHigh, static_cast<float>((M_PI / 180) * 100), stage_));
+	/*
 	enemies_.push_back(std::make_shared<NormalEnemy>(normal_model_path,
 		VGet(30.f, 1.5f, 10.f), scale, VGet(0.f, static_cast<float>((M_PI / 180) * 80), 0.0f), get_effect_, got_effect_, 1.f, 2.5f, AlertState::kLow, static_cast<float>((M_PI / 180) * 100), stage_));
 
 	enemies_.push_back(std::make_shared<NormalEnemy>(normal_model_path,
-		VGet(70.f, 3.f, 15.f), scale, VGet(0.f, static_cast<float>((M_PI / 180) * 90), 0.0f), get_effect_, got_effect_, 0.5f, 2.5f, AlertState::kHigh, static_cast<float>((M_PI / 180) * 100), stage_));
+		VGet(70.f, 3.f, 15.f), scale, VGet(0.f, static_cast<float>((M_PI / 180) * 90), 0.0f), get_effect_, got_effect_, 0.5f, 2.5f, AlertState::kNormal, static_cast<float>((M_PI / 180) * 100), stage_));
+	*/
 
+	
 
 
 
