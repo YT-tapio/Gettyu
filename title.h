@@ -31,7 +31,7 @@ private:
 
 	const VECTOR kTitleUiPos		= VectorAssistant::Get2DVec(900.f, 300.f);
 	
-	
+	const VECTOR kInitTitlePos = VectorAssistant::Get2DVec(80.f, 20.f);
 
 	const VECTOR kGameStartButtonPos	= VectorAssistant::Get2DVec(900.f, 450.f);
 	const VECTOR kInputTypeButtonPos	= VectorAssistant::Get2DVec(900.f, 600.f);
@@ -43,8 +43,8 @@ private:
 	const int kFontSize = 300;
 	const int kFontThick = 40;
 	
-	const int kTitleUiWidth		= 500;
-	const int kTitleUiHeight		= 400;
+	const int kTitleUiWidth		= 600;
+	const int kTitleUiHeight		= 500;
 
 	std::shared_ptr<Animation> animation_;
 	std::shared_ptr<Animation> enemy_animation_;
@@ -70,6 +70,7 @@ private:
 
 	int enemy_model_;
 
+	float title_ui_rad_;
 	float fade_in_param_;
 
 	bool start_;

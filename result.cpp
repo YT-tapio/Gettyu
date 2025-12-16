@@ -16,13 +16,14 @@
 #include"sound.h"
 #include"2D_sound.h"
 #include"result_score.h"
+#include"button_graph_create.h"
 
 Result::Result(int model)
 	:BaseScene(SceneName::kResult,model)
 {
 	const VECTOR kButtonCenterPos = VectorAssistant::Get2DVec(1150.f, 700.f);
-	const float kButtonWidth = 200;
-	const float kButtonHeight = 100;
+	const float kButtonWidth = 200.f;
+	const float kButtonHeight = 100.f;
 
 
 	const VECTOR kEnemyPos			= VGet(0.f, -8.f, 13.f);
@@ -58,7 +59,7 @@ Result::Result(int model)
 	bgm_ = std::make_shared<Sound2D>(kBgmPath, DX_PLAYTYPE_BACK, 100, TRUE);
 
 	// É{É^ÉìÇçÏÇÈ
-	buttons_.push_back(std::make_shared<Button>(kButtonCenterPos, kButtonWidth, kButtonHeight, "", button_num, &go_title_));
+	buttons_.push_back(std::make_shared<Button>(kButtonCenterPos, kButtonWidth, kButtonHeight, "", button_num, &go_title_,ButtonGraph::GetInstance().GetGoTitleHandle()));
 
 	AnimationData enemy_anim_data;
 

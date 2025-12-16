@@ -597,6 +597,9 @@
     <ClCompile Include="result_score.cpp">
       <Filter>ソース ファイル\UI\result_score</Filter>
     </ClCompile>
+    <ClCompile Include="button_graph_create.cpp">
+      <Filter>ソース ファイル\button</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="keyconfig.h">
@@ -913,6 +916,9 @@
     </ClInclude>
     <ClInclude Include="result_score.h">
       <Filter>ソース ファイル\UI\result_score</Filter>
+    </ClInclude>
+    <ClInclude Include="button_graph_create.h">
+      <Filter>ソース ファイル\button</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

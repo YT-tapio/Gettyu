@@ -29,7 +29,6 @@ protected:
 
 	bool is_disp_;
 
-
 public:
 
 

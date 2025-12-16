@@ -4,12 +4,13 @@
 #include"result.h"
 #include"debug.h"
 #include"input.h"
+#include"button_graph_create.h"
 
 SceneManager::SceneManager()
 {
 
     SetGraphMode(kGameWidth, kGameHeight, 32);			//ウィンドウのサイズとカラーモードを決める
-    ChangeWindowMode(FALSE);				//ウィンドウモードにする
+    ChangeWindowMode(TRUE);				//ウィンドウモードにする
 
     Set3DSoundOneMetre(1.0f);
 
@@ -55,20 +56,23 @@ SceneManager::SceneManager()
     SetUseSetDrawScreenSettingReset(FALSE);
 
     player_model_   = MV1LoadModel(kPlayerModelPath);
-	now_scene_      = std::make_shared<Title>(player_model_);
+	
+    ButtonGraph::GetInstance().MakeGraph();
 
-	now_scene_->Init();
-	now_scene_name_ = now_scene_->GetName();
+    now_scene_ = std::make_shared<Title>(player_model_);
+
+    now_scene_->Init();
+    now_scene_name_ = now_scene_->GetName();
+
     Camera::GetInstance();
     FPS::GetInstance();
     Timer::GetInstance();
     Input::GetInstance().Awake(DX_INPUT_PAD1);
-
-    
 }
 
 SceneManager::~SceneManager()
 {
+    ButtonGraph::GetInstance().DeleteGraph();
     MV1DeleteModel(player_model_);
 }
 

@@ -4,9 +4,10 @@
 #include"normal_sub_screen.h"
 #include"font.h"
 #include"result_score.h"
-#include"vector_assistant.h"
 #include"color.h"
 #include"Draw2D.h"
+#include"weapon_UI.h"
+#include"UI_data.h"
 
 ResultScoreUI::ResultScoreUI(const float& time)
 {
@@ -17,12 +18,15 @@ ResultScoreUI::ResultScoreUI(const float& time)
 	screen_width_ = kSentenceScreenWidth;
 	screen_height_ = kSentenceScreenHeight;
 
-	screen_ = std::make_shared<NormalSubScreen>(VectorAssistant::GetZeroVec(), kSentenceScreenWidth, kSentenceScreenHeight, kSentenceScreenWidth, kSentenceScreenHeight, FALSE, AlphaColorType::kBlack, 10, FALSE);
+	screen_ = std::make_shared<NormalSubScreen>(VectorAssistant::GetZeroVec(), kSentenceScreenWidth, kSentenceScreenHeight, kSentenceScreenWidth, kSentenceScreenHeight, TRUE, AlphaColorType::kBlack, 10, FALSE);
 	
 	const char* kFontPath = "data/font/TanueiKakuPop_1_00/TanueiKakuPosp.otf";
 	const char* kFontName = "たぬえいカクポップタイ";
 	int kThick = 20;
 	int kFontType = DX_FONTTYPE_EDGE;
+
+	pos_ = kInitPos;
+	rad_ = 0.f;
 
 	font_ = std::make_shared<Font>(kFontPath, kFontName, kFontSize, kThick, kFontType);
 	sentence_ = "なにもにゅうりょく";
@@ -37,20 +41,54 @@ ResultScoreUI::~ResultScoreUI()
 
 void ResultScoreUI::DecideScore(const float& time)
 {
-	const float kFastTime = 40.f;
-	const char* kFastSentence		= "さいきょうの";
-	const char* kFastSentenceDown	= "げっちゅめん";
+	const char* kSentenceDown		= "げっちゅめん";
+
+	const float kFastTime = 80.f;
+	const char* kFastSentence			= "さいきょうの";
+
+	const float kSecoundTime			= 130.f;
+	const char* kSecoundSentence	= "カリスマ";
+
+	const float kThirdTime				= 180.f;
+	const char* kThirdSentence			= "いっぱん";
+
+	const char* kBeginnerSentence	= "はじめたて";
+	
+	down_sentence_ = kSentenceDown;
 
 	if (time < kFastTime)
 	{
-		sentence_		= kFastSentence;
-		down_sentence_	= kFastSentenceDown;
+		sentence_		= kFastSentence;;
+		return;
 	}
+
+	if (time < kSecoundTime)
+	{
+		sentence_ = kSecoundSentence;
+		return;
+	}
+
+	if (time < kThirdTime)
+	{
+		sentence_ = kThirdSentence;
+		return;
+	}
+
+
+	// 最後に何も入力されていないのなら
+	sentence_ = kBeginnerSentence;
 
 }
 
 void ResultScoreUI::Update()
 {
+	//uiをぷかぷかさせる
+
+	const float kSpeed = 15.f;
+	const float kSwing = 5.f;
+
+	pos_ = UpDown(kInitPos, rad_, kSpeed, kSwing);
+
 	screen_->Up();
 
 	const char* kDispSentence = sentence_.c_str();
@@ -68,7 +106,6 @@ void ResultScoreUI::Update()
 
 void ResultScoreUI::Draw()
 {
-	const VECTOR kPos = VectorAssistant::Get2DVec(800, 400);
-	Draw2D::ExtendGraph(kPos,screen_width_, screen_height_, screen_->GetHandle(), TRUE);
+	Draw2D::ExtendGraph(pos_,screen_width_, screen_height_, screen_->GetHandle(), TRUE);
 }
 

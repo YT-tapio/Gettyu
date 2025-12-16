@@ -143,6 +143,7 @@
     <ClCompile Include="alert_state.cpp" />
     <ClCompile Include="animation.cpp" />
     <ClCompile Include="button.cpp" />
+    <ClCompile Include="button_graph_create.cpp" />
     <ClCompile Include="button_manager.cpp" />
     <ClCompile Include="button_selecter.cpp" />
     <ClCompile Include="character_dance.cpp" />
@@ -235,6 +236,7 @@
   <ItemGroup>
     <ClInclude Include="2D_sound.h" />
     <ClInclude Include="3D_sound.h" />
+    <ClInclude Include="button_graph_create.h" />
     <ClInclude Include="button_manager.h" />
     <ClInclude Include="button_selecter.h" />
     <ClInclude Include="button_state.h" />

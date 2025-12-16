@@ -33,11 +33,11 @@ private:
 	const VECTOR kScale				= VectorAssistant::GetSame3DVec(0.01f);
 	const VECTOR kRotation			= VectorAssistant::GetZeroVec();
 
-	const int kFontSize				= 200;
-	const int kFontThick			= 50;
-	const int kFontColor			= GetColor(255, 255, 15);
-	const int kFontThickColor	= GetColor(240, 44, 44);
-	const VECTOR kClearTimerPos = VectorAssistant::Get2DVec(580.f, 550.f);
+	const int kFontSize						= 200;
+	const int kFontThick					= 50;
+	const int kFontColor					= GetColor(255, 255, 15);
+	const int kFontThickColor			= GetColor(240, 44, 44);
+	const VECTOR kClearTimerPos		= VectorAssistant::Get2DVec(530.f, 550.f);
 	std::shared_ptr<Font> tanuei_font_;			//‚½‚Ê‚¦‚¢‚ÌƒtƒHƒ“ƒg
 	
 	std::shared_ptr<SoundBase> bgm_;

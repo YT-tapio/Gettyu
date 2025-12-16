@@ -39,6 +39,8 @@ private:
 	bool is_select_;
 	bool is_pussed_;
 
+	bool direct_data_;		//外部からのデータを取り入れているかのフラグ
+
 	bool* flag_;
 
 	bool IsPushConditionMouse();
@@ -63,7 +65,7 @@ public:
 	/// @param height たて
 	/// @param path モデルのパス
 	/// @param num_ 自分の識別番号
-	Button(const VECTOR pos, const float width, const float height, const char* path, const int& num_,bool* flag);
+	Button(const VECTOR pos, const float width, const float height, const char* path, const int& num_,bool* flag,const int& model);
 
 	~Button();
 

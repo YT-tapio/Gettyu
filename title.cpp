@@ -1,4 +1,3 @@
-
 #include"title.h"
 #include"FPS.h"
 #include"input.h"
@@ -16,6 +15,8 @@
 #include"Draw2D.h"
 #include"sound.h"
 #include"2D_sound.h"
+#include"button_graph_create.h"
+#include"UI_data.h"
 
 Title::Title(int model)
 	:BaseScene(SceneName::kTitle,model)
@@ -46,8 +47,8 @@ Title::Title(int model)
 	const char* kBgmPath = "data/sound/title/bgm/hiphop2.mp3";
 	const char* kSelectSoundPath = "data/sound/button/select.mp3";
 
-	bgm_ = std::make_shared<Sound2D>(kBgmPath, DX_PLAYTYPE_LOOP, 100,TRUE);
-	select_sound_ = std::make_shared<Sound2D>(kSelectSoundPath, DX_PLAYTYPE_BACK, 80, FALSE);
+	bgm_				= std::make_shared<Sound2D>(kBgmPath, DX_PLAYTYPE_LOOP, 100,TRUE);
+	select_sound_	= std::make_shared<Sound2D>(kSelectSoundPath, DX_PLAYTYPE_BACK, 80, FALSE);
 
 	mat_				= MMult(MMult(rot_mat,scale_mat), pos_mat);
 	enemy_mat_ = MMult(MMult(enemy_rot_mat, enemy_scale_mat), enemy_pos_mat);
@@ -59,6 +60,7 @@ Title::Title(int model)
 	title_ui_screen_->SetIsDisp(TRUE);
 
 	transition_timer_ = std::make_shared<ConditionTimer>(5.f);
+	title_ui_rad_ = 0.f;
 	fade_in_param_ = 0.f;
 
 	const char* kSkyDomePath = "data/skydome/Dome_SS601.mv1";
@@ -103,8 +105,8 @@ void Title::Setting()
 {
 	title_ui_screen_->Up();
 
-	DrawStringToHandle(80
-		, 200, "‚°‚Á‚¿‚ã`", Color::kYellow, tanuei_font_->GetHandle(), Color::kRed);
+	DrawStringToHandle(static_cast<int>(kInitTitlePos.x)
+		, static_cast<int>(kInitTitlePos.y), "‚°‚Á‚¿‚ã`", Color::kGold, tanuei_font_->GetHandle());
 
 	title_ui_screen_->Down();
 
@@ -128,11 +130,15 @@ void Title::Init()
 	int button_num = 0;
 	SetMouseDispFlag(TRUE);
 	selecter_ = std::make_shared<ButtonSelecter>();
-	buttons_.push_back(std::make_shared<Button>(kGameStartButtonPos, kButtonWidth, kButtonHeight, "", button_num,&start_));
+	auto start_handle			= ButtonGraph::GetInstance().GetStartHandle();
+	auto input_type_handle	= ButtonGraph::GetInstance().GetInputTypeHandle();
+	auto exit_handle				= ButtonGraph::GetInstance().GetExitHandle();
+
+	buttons_.push_back(std::make_shared<Button>(kGameStartButtonPos, kButtonWidth, kButtonHeight, "", button_num,&start_, start_handle));
 	button_num++;
-	buttons_.push_back(std::make_shared<Button>(kInputTypeButtonPos, kButtonWidth, kButtonHeight, "", button_num, &go_input_type_));
+	buttons_.push_back(std::make_shared<Button>(kInputTypeButtonPos, kButtonWidth, kButtonHeight, "", button_num, &go_input_type_,input_type_handle));
 	button_num++;
-	buttons_.push_back(std::make_shared<Button>(kGameEndButtonPos, kButtonWidth, kButtonHeight, "", button_num, &game_end_));
+	buttons_.push_back(std::make_shared<Button>(kGameEndButtonPos, kButtonWidth, kButtonHeight, "", button_num, &game_end_,exit_handle));
 	AnimationSetting();
 }
 

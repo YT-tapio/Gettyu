@@ -10,7 +10,7 @@
 #include"sound.h"
 #include"2D_sound.h"
 
-Button::Button(const VECTOR pos,const float width,const float height,const char* path,const int& num,bool* flag)
+Button::Button(const VECTOR pos,const float width,const float height,const char* path,const int& num,bool* flag,const int& model)
 	: pos_(pos)
 	, init_width_(width)
 	, init_height_(height)
@@ -25,7 +25,19 @@ Button::Button(const VECTOR pos,const float width,const float height,const char*
 	,flag_(flag)
 {
 	debug_color_ = kWhite;
-	model_ = LoadGraph(path);
+
+	if (model_ != -1)
+	{
+		direct_data_ = TRUE;
+		model_ = model;
+	}
+	else
+	{
+		direct_data_ = FALSE;
+		model_ = LoadGraph(path);
+	}
+
+	
 
 	float sum = width + height;
 
@@ -45,10 +57,14 @@ Button::Button(const VECTOR pos,const float width,const float height,const char*
 
 Button::~Button()
 {
-	if (model_ != -1)
+	//外部からデータを持ってきていたらdeleteしない
+	if (!direct_data_)
 	{
-		DeleteGraph(model_);
-		model_ = -1;
+		if (model_ != -1)
+		{
+			DeleteGraph(model_);
+			model_ = -1;
+		}
 	}
 }
 
@@ -219,7 +235,6 @@ void Button::Draw()
 	}
 	else
 	{
-		
 		Draw2D::ExtendGraph(pos_, static_cast<int>(width_), static_cast<int>(height_), model_, TRUE);
 	}
 
