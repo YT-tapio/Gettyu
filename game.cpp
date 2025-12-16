@@ -72,7 +72,6 @@ void Game::ScreenDraw()
 
     screen_->Down();
     
-
 }
 
 void Game::TimeScreenDraw()
@@ -218,10 +217,6 @@ void Game::Init()
 
     color_handle_ = LoadGraph(kFontColorPath);
 
-    if (color_handle_ == -1)
-    {
-        printfDx("ÇŒÇüÇ™");
-    }
 
     //playerÇê∂ê¨
     player_ = std::make_shared<Player>(VGet(0, 10, 100), player_model_,DX_INPUT_PAD1, 20, 2.0f, 10.0f);
@@ -278,7 +273,7 @@ void Game::Init()
 
     const float kStandByTime        = 10.f;
     const float kGameStartTime      = 5.f;
-    const float kClearTime          = 10.f;
+    const float kClearTime          = 8.f;
     const float kClearOffsetTime    = 1.f;
 
     stand_by_timer_     = std::make_shared<ConditionTimer>(kStandByTime);

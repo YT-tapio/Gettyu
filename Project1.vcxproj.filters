@@ -307,6 +307,9 @@
     <Filter Include="ソース ファイル\UI\count_down">
       <UniqueIdentifier>{786c1760-48c7-4d33-a875-03ed4820eb61}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\rotated_object">
+      <UniqueIdentifier>{811f115a-e3ec-4364-8da5-d9dc9f0fa3ee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -584,6 +587,9 @@
     </ClCompile>
     <ClCompile Include="count_down_UI.cpp">
       <Filter>ソース ファイル\UI\count_down</Filter>
+    </ClCompile>
+    <ClCompile Include="rotated_object.cpp">
+      <Filter>ソース ファイル\rotated_object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -895,6 +901,9 @@
     </ClInclude>
     <ClInclude Include="count_down_UI.h">
       <Filter>ソース ファイル\UI\count_down</Filter>
+    </ClInclude>
+    <ClInclude Include="rotated_object.h">
+      <Filter>ソース ファイル\rotated_object</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

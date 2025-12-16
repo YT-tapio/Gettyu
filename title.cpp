@@ -6,6 +6,8 @@
 #include"button_selecter.h"
 #include"keyconfig.h"
 #include"camera.h"
+#include"object_base.h"
+#include"rotated_object.h"
 #include"color.h"
 #include"font.h"
 #include"normal_sub_screen.h"
@@ -58,6 +60,16 @@ Title::Title(int model)
 
 	transition_timer_ = std::make_shared<ConditionTimer>(5.f);
 	fade_in_param_ = 0.f;
+
+	const char* kSkyDomePath = "data/skydome/Dome_SS601.mv1";
+	const float kSkyDomeScale = 1.0f;
+
+	const char* kStagePath = "data/model/map/arena/map.mv1";
+	const float kStageScale = 1.f;
+	const float kRotateSpeed = -3.0f;
+	
+	objects_.push_back(std::make_shared<RotatedObject>(VectorAssistant::GetZeroVec(), VectorAssistant::GetZeroVec(), VectorAssistant::GetSame3DVec(kSkyDomeScale), kSkyDomePath, kRotateSpeed));
+	objects_.push_back(std::make_shared<RotatedObject>(VectorAssistant::GetZeroVec(), VectorAssistant::GetZeroVec(), VectorAssistant::GetSame3DVec(kStageScale), kStagePath, kRotateSpeed));
 }
 
 
@@ -129,12 +141,21 @@ void Title::Update(SceneName& name)
 	static int before_button_num = 0;
 	animation_->SetDeltaTime(FPS::GetInstance().GetDeltaTime());
 	enemy_animation_->SetDeltaTime(FPS::GetInstance().GetDeltaTime());
+	
+	for (auto& obj : objects_)
+	{
+		obj->SetDeltaTime();
+	}
+
 	Setting();
 	animation_->Update(AnimationType::kFastRun);
 	enemy_animation_->Update(AnimationType::kFastRun);
 	button_num_ = button_num_ + selecter_->Select(SelectType::kVertical);
 
-	
+	for (auto& obj : objects_)
+	{
+		obj->Update();
+	}
 
 	if (button_num_ < 0)
 	{
@@ -196,6 +217,14 @@ void Title::Update(SceneName& name)
 void Title::Draw()
 {
 	
+	SetUseLighting(FALSE);
+	
+	for (auto& obj : objects_)
+	{
+		obj->Draw();
+	}
+
+	SetUseLighting(TRUE);
 	DrawFormatString(20, 20, GetColor(255, 255, 255), "Title");
 	DrawFormatString(20, 35, GetColor(255, 255, 255), "SPACE / A Button : game start");
 	

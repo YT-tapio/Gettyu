@@ -16,6 +16,15 @@ ObjectBase::~ObjectBase()
 	MV1DeleteModel(model_);
 }
 
+void ObjectBase::SetMat()
+{
+	auto pos_mat	= MGetTranslate(pos_);
+	auto rot_mat	= MGetRotY(rot_.y);
+	auto scale_mat	= MGetScale(scale_);
+
+	mat_ = MMult(MMult(scale_mat, rot_mat), pos_mat);
+}
+
 void ObjectBase::SetDeltaTime()
 {
 	delta_time_ = FPS::GetInstance().GetDeltaTime();

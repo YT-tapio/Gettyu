@@ -14,6 +14,7 @@ class NormalSubScreen;
 class Animation;
 class ConditionTimer;
 class SoundBase;
+class ObjectBase;
 
 class Title : public BaseScene
 {
@@ -46,6 +47,8 @@ private:
 
 	std::shared_ptr<Animation> animation_;
 	std::shared_ptr<Animation> enemy_animation_;
+
+	std::vector<std::shared_ptr<ObjectBase>> objects_;
 
 	MATRIX mat_;
 	MATRIX enemy_mat_;

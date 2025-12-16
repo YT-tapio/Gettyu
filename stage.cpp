@@ -11,7 +11,7 @@
 #include"collision_capsule.h"
 
 Stage::Stage(const char* path, VECTOR pos, float scale)
-	: ObjectBase(pos, VectorAssistant::GetZeroVec(), VGet(scale, scale, scale), path)
+	: ObjectBase(pos, VectorAssistant::GetZeroVec(), VectorAssistant::GetSame3DVec(scale), path)
 	, wall_num_(0)
 	, floor_num_(0)
 	, wall_{ nullptr }

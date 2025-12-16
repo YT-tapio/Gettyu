@@ -229,6 +229,7 @@
     <ClCompile Include="weapon_base.cpp" />
     <ClCompile Include="wizard_staff.cpp" />
     <ClCompile Include="fov_function.cpp" />
+    <ClCompile Include="rotated_object.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="2D_sound.h" />
@@ -295,6 +296,7 @@
     <ClInclude Include="const_rad.h" />
     <ClInclude Include="offset_assistant.h" />
     <ClInclude Include="out_side_check.h" />
+    <ClInclude Include="rotated_object.h" />
     <ClInclude Include="select_type.h" />
     <ClInclude Include="sound.h" />
     <ClInclude Include="stan.h" />

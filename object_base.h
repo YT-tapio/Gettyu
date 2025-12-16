@@ -24,6 +24,8 @@ protected:
 
 	float delta_time_;
 
+	void SetMat();
+
 public:
 
 	
@@ -37,9 +39,7 @@ public:
 
 	virtual void Init();
 
-
 	virtual void Update();
-
 
 	virtual void Draw();
 
