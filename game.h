@@ -34,7 +34,7 @@ class Game : public BaseScene
 {
 private:
 
-	const VECTOR kTimerPos			= VectorAssistant::Get2DVec(500.f, 30.f);
+	const VECTOR kTimerPos			= VectorAssistant::Get2DVec(640.f, 30.f);
 	const int kFontSize				= 200;
 	const int kFontThickSize		= 50;
 	const int kFontColor			= GetColor(255, 255, 15);

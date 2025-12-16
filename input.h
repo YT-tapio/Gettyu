@@ -86,6 +86,8 @@ private:
 	// ¯•Ê”Ô†
 	int num_;
 
+	bool is_active_;
+
 	bool GetInputKey();
 
 	bool GetInputPad();
@@ -207,6 +209,10 @@ public:
 	const InputDeviceType GetDeviceType() const { return device_type_; }
 
 	const int GetPadNom() const { return num_; }
+
+	void NoActive();
+
+	void Active();
 
 	void Debug();
 

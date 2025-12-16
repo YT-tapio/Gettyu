@@ -280,6 +280,7 @@ void Input::Awake(const int num)
 	num_ = num;
 	wheel_offset_timer_ = std::make_shared<ConditionTimer>(kMaxTime);
 	wheel_offset_timer_->Stop();
+	is_active_ = TRUE;
 }
 
 void Input::Update()
@@ -352,7 +353,7 @@ InputState Input::CheckInputKey(int key_code)
 {
 
 	InputState state = InputState::kOff;
-		
+
 	//âüÇµÇƒÇ¢Ç»Ç¢
 	if (before_type_state_.key[key_code] == 0 && now_type_state_.key[key_code] == 0) { state = InputState::kOff; }
 	//âüÇµÇΩèuä‘
@@ -363,6 +364,8 @@ InputState Input::CheckInputKey(int key_code)
 	if (before_type_state_.key[key_code] == 1 && now_type_state_.key[key_code] == 0) { state = InputState::kRelease; }
 
 	before_type_state_.key[key_code] = now_type_state_.key[key_code];
+
+	if (!is_active_) { return InputState::kOff; }
 
 	return state;
 
@@ -405,7 +408,7 @@ InputState Input::CheckInputMouse(int mouse)
 		}
 	}
 
-	//printfDx("%d\n", now_type_state_.atai);
+	if (!is_active_) { return InputState::kOff; }
 
 	return state;
 }
@@ -434,6 +437,8 @@ InputState Input::CheckInputPadButton(int pad_button)
 	before_type_state_.pad.Buttons[pad_button] =
 		now_type_state_.pad.Buttons[pad_button];
 
+	if (!is_active_) { return InputState::kOff; }
+
 	return state;
 }
 
@@ -452,6 +457,8 @@ float Input::GetMouseVertical()
 	vertical_num = sqrt(TheNumPower(vertical_vec.x, 2) + 
 		TheNumPower(vertical_vec.y, 2));
 
+	if (!is_active_) { return 0.f; }
+
 	return vertical_num;
 }
 
@@ -465,6 +472,8 @@ float Input::GetMouseRad()
 		VGet((kGameWidth * 0.5f), (kGameHeight * 0.5f), 0.0f));
 
 	rad = atan2f(rad_vec.x, rad_vec.y);
+
+	if (!is_active_) { return 0.f; }
 
 	return rad;
 }
@@ -489,8 +498,8 @@ float Input::GetPadStickVertical(int type)
 			(TheNumPower((now_type_state_.pad.ThumbRY * 0.01f), 2)));
 	}
 
+	if (!is_active_) { return 0.f; }
 	
-	//printfDx("%d\n", vertical_num);
 	return static_cast<float>(vertical_num);
 }
 
@@ -525,6 +534,7 @@ float Input::GetPadStickRad(int type)
 		return rad;
 	}
 
+	if (!is_active_) { return 0.f; }
 
 	return rad;
 }
@@ -596,6 +606,8 @@ float Input::GetPadStickPercent(int type, int control)
 		printfDx("error");
 	}
 
+	if (!is_active_) { return 0.f; }
+
 	return percent_num;
 }
 
@@ -642,6 +654,8 @@ float Input::GetMousePercent(int control)
 		printfDx("error");
 	}
 
+	if (!is_active_) { return 0.f; }
+
 	return percent_num;
 }
 
@@ -653,7 +667,8 @@ bool Input::GetPadMove(int type, int control, int num)
 		plus = FALSE;
 	}
 
-	
+	if (!is_active_) { return 0.f; }
+
 	return CheckControlPadNum(type, control, num, plus);
 
 }
@@ -676,12 +691,14 @@ bool Input::GetMouseMove()
 		return TRUE;
 	}
 
+	if (!is_active_) { return FALSE; }
+
 	return FALSE;
 }
 
 float Input::GetWheelDifference()
 {
-	//float diff =  - before_type_state_.wheel;
+	if (!is_active_) { return 0.f; }
 	return now_type_state_.wheel;
 }
 
@@ -703,10 +720,20 @@ float Input::GetStickSpin(int type)
 	}
 
 	
-
+	if (!is_active_) { return 0.f; }
 	
 
 	return (GetPadStickRad(StickType::kRight) - before_type_state_.right_stick_rad);
+}
+
+void Input::NoActive()
+{
+	is_active_ = FALSE;
+}
+
+void Input::Active()
+{
+	is_active_ = TRUE;
 }
 
 

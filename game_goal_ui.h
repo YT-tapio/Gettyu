@@ -27,6 +27,8 @@ private:
 	std::shared_ptr<ConditionTimer> disp_timer_;
 	std::shared_ptr<Font> font_;
 
+	
+
 	void UpdateScreenSize();
 
 	/// <summary>

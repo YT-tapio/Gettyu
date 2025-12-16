@@ -13,11 +13,17 @@ private:
 	
 	VECTOR screen_pos_;
 
+
 	const float kWidth		= 300.f;
 	const float kHeight		= 100.f;
 
-	const float kEnemyCountScreenWidth		= 100.f;
-	const float kEnemyCountScreenHeight		= 100.f;
+	const float kEnemyUIScreenWidth			= 100.f;
+	const float kEnemyUIScreenHeight		= 100.f;
+
+	const float kEnemyCountScreenWidth		= 200.f;
+	const float kEnemyCountScreenHeight		= 200.f;
+
+	const char* kRestUI = "のこり　";
 
 	const int kFontColor = GetColor(255, 255, 15);
 
@@ -25,7 +31,6 @@ private:
 	std::shared_ptr<NormalSubScreen> all_screen_;
 	std::shared_ptr<NormalSubScreen> enemy_count_screen_;
 	std::shared_ptr<Font> count_font_;
-
 	//残りの敵の数を知っておく必要がある
 	int* enemys_count_;
 	float param_;

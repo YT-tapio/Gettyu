@@ -16,7 +16,7 @@ EnemyCountUI::EnemyCountUI(int *p)
 	const char* kFontFile	= "data/fontTanueiKakuPop_1_00/TanueiKakuPop.otf";
 	const char* kFontName	= "たぬえいカクポップタイ";
 
-	const int kFontSize		= 50;
+	const int kFontSize			= 50;
 	const int kFontThick		= 20;
 	const int kFontType		= DX_FONTTYPE_EDGE;
 
@@ -31,8 +31,8 @@ EnemyCountUI::EnemyCountUI(int *p)
 	all_screen_ = std::make_shared<NormalSubScreen>(kScreenInitPos, static_cast<int>(kWidth),
 		static_cast<int>(kHeight), static_cast<int>(kWidth), static_cast<int>(kHeight), TRUE, AlphaColorType::kBlack, 0, TRUE);
 
-	enemy_count_screen_ = std::make_shared<NormalSubScreen>(kScreenInitPos, static_cast<int>(kEnemyCountScreenWidth),
-		static_cast<int>(kEnemyCountScreenHeight), static_cast<int>(kEnemyCountScreenWidth), static_cast<int>(kEnemyCountScreenHeight), TRUE, AlphaColorType::kBlack, 0, TRUE);
+	enemy_count_screen_ = std::make_shared<NormalSubScreen>(kScreenInitPos, static_cast<int>(kFontSize),
+		static_cast<int>(kFontSize), static_cast<int>(kFontSize), static_cast<int>(kFontSize), TRUE, AlphaColorType::kBlack, 0, TRUE);
 
 	count_font_ = std::make_shared<Font>(kFontFile, kFontName, kFontSize, kFontThick, kFontType);
 
@@ -40,7 +40,7 @@ EnemyCountUI::EnemyCountUI(int *p)
 
 	//screenの起動を行う	
 	all_screen_->SetIsDisp(TRUE);
-
+	enemy_count_screen_->SetIsDisp(TRUE);
 	is_disp_ = FALSE;
 	param_ = 255;
 }
@@ -83,9 +83,7 @@ void EnemyCountUI::UpdateUiPos()
 void EnemyCountUI::CountDraw()
 {
 	//残りの敵を受け取る
-	
-	DrawStringToHandle(static_cast<int>(kInitCountPos.x), static_cast<int>(kInitCountPos.y), "のこり", kFontColor, count_font_->GetHandle());
-	DrawFormatStringToHandle(static_cast<int>(kInitCountPos.x + 150), static_cast<int>(kInitCountPos.y), kFontColor, count_font_->GetHandle(), "%d", *enemys_count_);
+	DrawStringToHandle(static_cast<int>(kInitCountPos.x), static_cast<int>(kInitCountPos.y), kRestUI, kFontColor, count_font_->GetHandle());
 }
 
 /*-----public----*/
@@ -99,6 +97,11 @@ void EnemyCountUI::Update()
 	// 残りのカウントを描画
 	CountDraw();
 	all_screen_->Down();
+
+	enemy_count_screen_->Up();
+	DrawFormatStringToHandle(0, 0, kFontColor, count_font_->GetHandle(), "%d", *enemys_count_);
+	enemy_count_screen_->Down();
+
 }
 
 void EnemyCountUI::Draw()
@@ -106,5 +109,7 @@ void EnemyCountUI::Draw()
 	if (*enemys_count_ != 0)
 	{
 		Draw2D::BlendGraph(screen_pos_, kWidth, kHeight, all_screen_->GetHandle(), TRUE, param_);
+		int width = GetDrawStringWidth(kRestUI, strlen(kRestUI), count_font_->GetHandle());
+		Draw2D::BlendGraph(VAdd(screen_pos_, VGet(float(width) + float(kEnemyCountScreenWidth) * 0.4f, float(kEnemyCountScreenHeight) * -0.5f, 0.f)), kEnemyCountScreenWidth, kEnemyCountScreenHeight, enemy_count_screen_->GetHandle(), TRUE, param_);
 	}
 }

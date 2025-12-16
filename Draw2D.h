@@ -94,6 +94,8 @@ namespace Draw2D
 	/// @param alpha_num “§‰ß—¦
 	inline void BlendGraph(const VECTOR& pos, int width, int height, const int& data, const bool alpha, const int& alpha_num)
 	{
+		if (alpha_num == 0) { return; }
+
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha_num);
 		ExtendGraph(pos, width, height, data, alpha);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);

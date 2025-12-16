@@ -287,6 +287,8 @@ void Game::Init()
     clear_offset_timer_ = std::make_shared<ConditionTimer>(kClearOffsetTime);
    
     offset_fade_param_  = 255.f;
+
+    ClearTime::GetInstance().Reset();
 }
 
 void Game::Update(SceneName& name)
@@ -302,7 +304,12 @@ void Game::Update(SceneName& name)
 
     if (!stand_by_timer_->GetIsEnd())
     {
+        Input::GetInstance().NoActive();
         UpdateStandBy();
+    }
+    else
+    {
+        Input::GetInstance().Active();
     }
 
     GameStart();
@@ -365,25 +372,6 @@ void Game::Update(SceneName& name)
     }
     
     SetUseLighting(TRUE);
-    
-    if (CheckHitKey(KEY_INPUT_RIGHT))
-    {
-        time_scale += 0.01;
-    }
-
-    if (CheckHitKey(KEY_INPUT_LEFT))
-    {
-        time_scale -= 0.01f;
-        if (time_scale < 0.0f)
-        {
-            time_scale = 0.0f;
-        }
-    }
-
-    if (CheckHitKey(KEY_INPUT_R))
-    {
-        time_scale = 1.0f;
-    }
 
     GameClear(name);
 
@@ -406,7 +394,9 @@ void Game::Draw()
     // timer_screen_->Debug();
     // font_color_screen_->Debug();
 
-    DrawFormatStringToHandle(kTimerPos.x, kTimerPos.y, kFontColor, tanuei_font_->GetHandle(), "%.1f", ClearTime::GetInstance().GetClearTime());
+    float clear_time = ClearTime::GetInstance().GetClearTime();
+    int timer_width = GetDrawFormatStringWidthToHandle(tanuei_font_->GetHandle(), "%.1f", clear_time);
+    DrawFormatStringToHandle(static_cast<int>(kTimerPos.x - float(timer_width) * 0.5f), static_cast<int>(kTimerPos.y), kFontColor, tanuei_font_->GetHandle(), "%.1f", clear_time);
     Draw2D::WhiteBoxBlend(static_cast<int>(offset_fade_param_));
     DrawFormatString((kGameWidth - 300), (kGameHeight - 30), GetColor(0, 0, 0), "TAB / BACK Button : result");
 }

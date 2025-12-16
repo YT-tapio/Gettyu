@@ -62,4 +62,6 @@ public:
 	void SetIsDisp(const bool& flag);
 
 	const int GetHandle() const { return handle_; }
+
+	const bool GetIsDisp() const { return is_disp_; }
 };
