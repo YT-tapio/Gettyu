@@ -64,9 +64,12 @@ Result::Result(int model)
 	next_scene_offset_timer_ = std::make_shared<ConditionTimer>(2.f);
 
 	// É{É^ÉìÇçÏÇÈ
-	buttons_.push_back(std::make_shared<Button>(kButtonCenterPos, kButtonWidth, kButtonHeight, "", button_num, &restart_, ButtonGraph::GetInstance().GetGoTitleHandle()));
+	auto retry_handle = ButtonGraph::GetInstance().GetRetryHandle();
+	auto go_title_handle = ButtonGraph::GetInstance().GetGoTitleHandle();
+
+	buttons_.push_back(std::make_shared<Button>(kButtonCenterPos, kButtonWidth, kButtonHeight, "", button_num, &restart_, retry_handle));
 	button_num++;
-	buttons_.push_back(std::make_shared<Button>(VAdd(kButtonCenterPos ,VGet(0.f,(kButtonHeight) +10,0.f)), kButtonWidth, kButtonHeight, "", button_num, &go_title_, ButtonGraph::GetInstance().GetGoTitleHandle()));
+	buttons_.push_back(std::make_shared<Button>(VAdd(kButtonCenterPos ,VGet(0.f,(kButtonHeight) +10,0.f)), kButtonWidth, kButtonHeight, "", button_num, &go_title_, go_title_handle));
 	button_num++;
 	AnimationData enemy_anim_data;
 

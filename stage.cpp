@@ -114,7 +114,7 @@ bool Stage::IsFlat(const VECTOR& norm)
 	return norm.y > 0.f;
 }
 
-bool Stage::CheckDownColl(const std::shared_ptr<CollisionBase> coll)
+bool Stage::CheckDownColl(const std::shared_ptr<ColliderBase> coll)
 {
 	bool flag = FALSE;				//‚±‚¢‚Â‚ª•Ô‚·
 	const VECTOR kDownVel = VGet(0.f, -0.3f, 0.f);
@@ -368,7 +368,7 @@ void Stage::Debug()
 }
 
 
-VECTOR Stage::CheckCollision(std::shared_ptr<CollisionBase> object_coll, const VECTOR& velocity)
+VECTOR Stage::CheckCollision(std::shared_ptr<ColliderBase> object_coll, const VECTOR& velocity)
 {
 	VECTOR offset_vel = velocity;
 	

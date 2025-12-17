@@ -3,7 +3,7 @@
 
 
 class ObjectBase;
-class CollisionBase;
+class ColliderBase;
 class Animation;
 class Stage;
 
@@ -18,7 +18,7 @@ protected:
 	Stage* stage_;
 
 	//“–‚½‚è”»’è
-	std::shared_ptr<CollisionBase> coll_;
+	std::shared_ptr<ColliderBase> coll_;
 
 	//character‚Íanimation‚ğ‚Á‚Ä‚¢‚é
 	std::shared_ptr<Animation> animation_;
@@ -43,7 +43,7 @@ protected:
 
 public:
 
-	CharacterBase(Stage* stage,std::shared_ptr<CollisionBase> coll,const VECTOR& pos,const VECTOR& rot,const VECTOR& scale,const char* path);
+	CharacterBase(Stage* stage,std::shared_ptr<ColliderBase> coll,const VECTOR& pos,const VECTOR& rot,const VECTOR& scale,const char* path);
 
 
 	virtual ~CharacterBase() override;

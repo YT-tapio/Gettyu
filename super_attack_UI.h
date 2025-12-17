@@ -28,11 +28,11 @@ private:
 	const int kBackGaussParam			= 1300;
 
 	const VECTOR kInitPos				= VGet(kGameWidth * 0.5f, kGameHeight * 0.5f, 0.f);
-	const VECTOR kInitScreenPos		= VGet(200.f, 150.f, 0);
+	const VECTOR kInitScreenPos		= VGet(200.f, 200.f, 0);
 
-	const VECTOR kInitWeaponScreenPos = VGet(200.f, 100.f, 0.f);
+	const VECTOR kInitWeaponScreenPos = VGet(200.f, 150.f, 0.f);
 	
-	const VECTOR kInitWeaponPos		= VGet(1.2f,0.4f,10.f);
+	const VECTOR kInitWeaponPos		= VGet(0.7f,0.4f,10.f);
 	const VECTOR kInitWeaponScale		= VectorAssistant::GetSame3DVec(0.25f);
 	const VECTOR kInitWeaponRot		= VGet(-kOneRad * 30.f, kOneRad * 0.f, kOneRad * 45.f);
 

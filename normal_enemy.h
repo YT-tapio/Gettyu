@@ -5,7 +5,7 @@
 
 class Player;
 class EnemyBase;
-class CollisionBase;
+class ColliderBase;
 class CollisionSphere;
 
 class NormalEnemy : public EnemyBase
@@ -24,7 +24,7 @@ private:
 
 	ConditionTimer* wait_timer_;
 
-	std::shared_ptr<CollisionBase> gravity_check_coll_;
+	std::shared_ptr<ColliderBase> gravity_check_coll_;
 
 	//”½“]‚·‚é‚Æ‚«‚Ì’l
 	float target_rot_ = 0.f;

@@ -106,6 +106,37 @@ void ButtonGraph::MakeExit()
 	exit_screen_->Down();
 }
 
+void ButtonGraph::MakeRetryScreen()
+{
+	const float kScreenWidth = 200.f;
+	const float kScreenHeight = 100.f;
+
+	retry_screen_ = new NormalSubScreen(VectorAssistant::GetZeroVec(), kScreenWidth, kScreenHeight, kScreenWidth, kScreenHeight, FALSE, AlphaColorType::kBlack, 10, FALSE);
+	retry_screen_->SetIsDisp(TRUE);
+
+
+	VECTOR center_pos = VectorAssistant::GetHerf(VectorAssistant::Get2DVec(kScreenWidth, kScreenHeight));
+
+	int font_color = GetColor(255, 210, 0);
+	int font_edge_color = GetColor(255, 69, 0);
+	int back_color = GetColor(210, 180, 140);
+	int edge_color = GetColor(255, 215, 0);
+
+	const char* kFontSentence = "‚à‚¤‚¢‚¿‚Ç";
+
+	retry_screen_->Up();
+
+	Draw2D::Box(center_pos, kScreenWidth, kScreenHeight, back_color, TRUE);
+	Draw2D::Box(center_pos, kScreenWidth, kScreenHeight, edge_color, FALSE);
+
+	int width = GetDrawStringWidthToHandle(kFontSentence, strlen(kFontSentence), font_->GetHandle());
+	const char* kSizeOneSentence = "‚ ";
+	int height = GetDrawStringWidthToHandle(kSizeOneSentence, strlen(kSizeOneSentence), font_->GetHandle());
+	DrawStringToHandle(static_cast<int>(center_pos.x - float(width) * 0.5f), static_cast<int>(center_pos.y - float(height) * 0.5f), kFontSentence, font_color, font_->GetHandle(), font_edge_color);
+
+	retry_screen_->Down();
+}
+
 void ButtonGraph::MakeGoTitle()
 {
 	const float kScreenWidth = 200.f;
@@ -152,6 +183,7 @@ void ButtonGraph::MakeGraph()
 	MakeStart();
 	MakeInputType();
 	MakeExit();
+	MakeRetryScreen();
 	MakeGoTitle();
 }
 
@@ -177,6 +209,11 @@ const int ButtonGraph::GetInputTypeHandle() const
 const int ButtonGraph::GetExitHandle() const
 {
 	return exit_screen_->GetHandle();
+}
+
+const int ButtonGraph::GetRetryHandle() const
+{
+	return retry_screen_->GetHandle();
 }
 
 const int ButtonGraph::GetGoTitleHandle() const

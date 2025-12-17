@@ -1,8 +1,8 @@
 #pragma once
 
-class CollisionBase;
+class ColliderBase;
 
-class CollisionSphere : public CollisionBase
+class CollisionSphere : public ColliderBase
 {
 private:
 
@@ -15,6 +15,6 @@ public:
 
 	~CollisionSphere()override;
 
-	std::shared_ptr<CollisionBase> Clone() const override { return std::make_shared<CollisionSphere>(pos_, radius_); }
+	std::shared_ptr<ColliderBase> Clone() const override { return std::make_shared<CollisionSphere>(pos_, radius_); }
 
 };

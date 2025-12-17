@@ -14,6 +14,7 @@ private:
 	NormalSubScreen* start_screen_;
 	NormalSubScreen* exit_screen_;
 	NormalSubScreen* input_type_screen_;
+	NormalSubScreen* retry_screen_;
 	NormalSubScreen* go_title_screen_;
 
 	ButtonGraph();
@@ -23,6 +24,8 @@ private:
 	void MakeInputType();
 
 	void MakeExit();
+
+	void MakeRetryScreen();
 
 	void MakeGoTitle();
 
@@ -51,6 +54,8 @@ public:
 
 	// ゲーム終了
 	const int GetExitHandle() const;
+
+	const int GetRetryHandle() const;
 
 	// タイトルに戻る
 	const int GetGoTitleHandle() const;

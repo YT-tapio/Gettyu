@@ -100,7 +100,6 @@ void ResultScoreUI::Update()
 
 	DrawStringToHandle(width, height, kDispSentenceDown, kFontColor, font_->GetHandle(), GetColor(0, 0, 255));
 
-
 	screen_->Down();
 }
 

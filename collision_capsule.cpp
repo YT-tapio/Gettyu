@@ -4,7 +4,7 @@
 #include"debug.h"
 
 CollisionCapsule::CollisionCapsule(const VECTOR& pos,const VECTOR& end_pos,const float& r)
-	:CollisionBase(pos,CollisionName::kSphere,r)
+	:ColliderBase(pos,CollisionName::kSphere,r)
 	,end_pos_(end_pos)
 {
 

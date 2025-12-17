@@ -4,7 +4,7 @@
 
 
 CollisionSphere::CollisionSphere(const VECTOR& pos,const float r)
-	: CollisionBase(pos,CollisionName::kSphere,r)
+	: ColliderBase(pos,CollisionName::kSphere,r)
 {
 
 }

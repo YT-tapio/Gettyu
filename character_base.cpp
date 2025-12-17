@@ -7,7 +7,7 @@
 
 #include"FPS.h"
 
-CharacterBase::CharacterBase(Stage* stage, std::shared_ptr<CollisionBase> coll, const VECTOR& pos, const VECTOR& rot, const VECTOR& scale, const char* path)
+CharacterBase::CharacterBase(Stage* stage, std::shared_ptr<ColliderBase> coll, const VECTOR& pos, const VECTOR& rot, const VECTOR& scale, const char* path)
 	: ObjectBase(pos, rot,scale,path)
 	, stage_(stage)
 	, coll_(coll)

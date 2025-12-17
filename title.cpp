@@ -136,8 +136,10 @@ void Title::Init()
 
 	buttons_.push_back(std::make_shared<Button>(kGameStartButtonPos, kButtonWidth, kButtonHeight, "", button_num,&start_, start_handle));
 	button_num++;
+	/*
 	buttons_.push_back(std::make_shared<Button>(kInputTypeButtonPos, kButtonWidth, kButtonHeight, "", button_num, &go_input_type_,input_type_handle));
 	button_num++;
+	*/
 	buttons_.push_back(std::make_shared<Button>(kGameEndButtonPos, kButtonWidth, kButtonHeight, "", button_num, &game_end_,exit_handle));
 	AnimationSetting();
 }
@@ -167,9 +169,9 @@ void Title::Update(SceneName& name)
 		button_num_ = 0;
 	}
 
-	if (button_num_ > 2)
+	if (button_num_ > 1)
 	{
-		button_num_ = 2;
+		button_num_ = 1;
 	}
 
 	if (before_button_num_ != button_num_)
@@ -230,8 +232,6 @@ void Title::Draw()
 	}
 
 	SetUseLighting(TRUE);
-	DrawFormatString(20, 20, GetColor(255, 255, 255), "Title");
-	DrawFormatString(20, 35, GetColor(255, 255, 255), "SPACE / A Button : game start");
 	
 
 	MV1DrawModel(player_model_);

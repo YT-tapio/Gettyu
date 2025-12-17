@@ -2,7 +2,7 @@
 #include<memory>
 #include"collision_data.h"
 
-class CollisionBase
+class ColliderBase
 {
 private:
 	
@@ -18,9 +18,9 @@ protected:
 
 public:
 
-	CollisionBase(const VECTOR& pos,const CollisionName& name, const float& r);
+	ColliderBase(const VECTOR& pos,const CollisionName& name, const float& r);
 
-	virtual ~CollisionBase();
+	virtual ~ColliderBase();
 
 	virtual void Update(const VECTOR& vel);
 
@@ -42,7 +42,7 @@ public:
 	/// @return TRUE : “–‚½‚Á‚Ä‚¢‚é
 	virtual bool IsHitTriangle(const VECTOR& tri_1, const VECTOR& tri_2, const VECTOR& tri_3);
 
-	virtual std::shared_ptr<CollisionBase> Clone() const = 0;
+	virtual std::shared_ptr<ColliderBase> Clone() const = 0;
 
 	const float GetRadius() const { return radius_; }
 

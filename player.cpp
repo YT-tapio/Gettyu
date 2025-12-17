@@ -76,8 +76,8 @@ Player::Player(VECTOR pos, int model, int pad_num,int div, float r, float vertic
 
 	enemy_hit_sound_					= std::make_shared<Sound2D>(kEnemyHitSoundPath, DX_PLAYTYPE_BACK, 150, FALSE);
 	enemy_hit_spring_sound_		= std::make_shared<Sound2D>(kEnemyHitSpringSoundPath, DX_PLAYTYPE_BACK, 130, FALSE);
-	get_sound_							= std::make_shared<Sound2D>(kGetSoundPath, DX_PLAYTYPE_BACK, 100, FALSE);
-	vacuum_sound_						= std::make_shared<Sound2D>(kVacuumSoundPath, DX_PLAYTYPE_LOOP, 200, TRUE);
+	get_sound_							= std::make_shared<Sound2D>(kGetSoundPath, DX_PLAYTYPE_BACK, 180, FALSE);
+	vacuum_sound_						= std::make_shared<Sound2D>(kVacuumSoundPath, DX_PLAYTYPE_LOOP, 150, TRUE);
 
 
 	MATRIX pos_matrix		= MGetTranslate(pos_);

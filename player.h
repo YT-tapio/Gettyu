@@ -17,7 +17,7 @@ class WarpRod;
 class WizardStaff;
 class EnemyBase;
 class SoundVibration;
-class CollisionBase;
+class ColliderBase;
 class SoundBase;
 enum class WeaponName;
 
@@ -102,8 +102,8 @@ private:
 
 	CapsuleData capsule_;
 
-	std::shared_ptr<CollisionBase> coll_;
-	std::shared_ptr<CollisionBase> gravity_check_coll_;
+	std::shared_ptr<ColliderBase> coll_;
+	std::shared_ptr<ColliderBase> gravity_check_coll_;
 	
 	std::shared_ptr<SoundBase> enemy_hit_spring_sound_;		//ÇŒÇÀÇÃÇÊÇ§Ç»âπÇó¨Ç∑
 	std::shared_ptr<SoundBase> enemy_hit_sound_;				//Ç≤Å[Å[ÇÒÇ∆Ç¢Ç¡ÇΩâπÇó¨Ç∑

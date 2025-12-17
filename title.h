@@ -33,11 +33,11 @@ private:
 	
 	const VECTOR kInitTitlePos = VectorAssistant::Get2DVec(80.f, 20.f);
 
-	const VECTOR kGameStartButtonPos	= VectorAssistant::Get2DVec(900.f, 450.f);
+	const VECTOR kGameStartButtonPos	= VectorAssistant::Get2DVec(900.f, 500.f);
 	const VECTOR kInputTypeButtonPos	= VectorAssistant::Get2DVec(900.f, 600.f);
-	const VECTOR kGameEndButtonPos		= VectorAssistant::Get2DVec(900.f, 750.f);
+	const VECTOR kGameEndButtonPos		= VectorAssistant::Get2DVec(900.f, 720.f);
 	const float kButtonWidth						= 300.f;
-	const float kButtonHeight					= 80.f;
+	const float kButtonHeight					= 100.f;
 
 
 	const int kFontSize = 300;

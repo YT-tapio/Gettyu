@@ -18,7 +18,7 @@
 
 EnemyBase::EnemyBase(const int model, const VECTOR& pos,
 	const VECTOR& scale, const VECTOR& rot, Effect* get_effect, Effect* got_effect, float speed,
-	float fleeping_speed, AlertState alert, float fov,std::shared_ptr<Stage> stage,std::shared_ptr<CollisionBase> coll,const float& stan_time)
+	float fleeping_speed, AlertState alert, float fov,std::shared_ptr<Stage> stage,std::shared_ptr<ColliderBase> coll,const float& stan_time)
 {
 	fsm_		= std::make_shared<EnemyFSM>();
 	navigation_ = std::make_shared<Navigation>();
@@ -85,14 +85,8 @@ EnemyBase::EnemyBase(const int model, const VECTOR& pos,
 		surprise_sound_		= std::make_shared<Sound3D>(kSurpriseSoundPath, DX_PLAYTYPE_BACK, 100, FALSE, &pos_, kListenRadius);
 	}
 
-	
-
-	
-	
-	
-
 	speed_ = speed;
-	fleeping_speed_ = fleeping_speed;
+	
 	
 	alert_state_ = alert;
 
@@ -122,6 +116,8 @@ EnemyBase::EnemyBase(const int model, const VECTOR& pos,
 	//engagement‚à”ä‚ğì‚Á‚Ä‚»‚ê‚Å‚â‚é
 	engagement_dist_ = kEngagementNormal * alert_dist_ / kAlertNormal;
 
+	fleeping_speed_ = fleeping_speed + (fleeping_speed * (alert_dist_ / kAlertHigh));
+	
 	//‚à‚Æ‚à‚Æ‚Ì‚â‚Â‚Æ‚Ì”ä‚ğì‚éA‚»‚Ì”ä‚ğtimer‚ÉŠ|‚¯‚é
 	alert_timer_ = new ConditionTimer(kNormalAlertTime * (alert_dist_ / kAlertNormal));
 

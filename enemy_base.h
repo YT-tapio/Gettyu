@@ -17,7 +17,7 @@ class Animation;
 class BaseEnemyState;
 class EnemyFSM;
 class Stage;
-class CollisionBase;
+class ColliderBase;
 class SoundBase;
 
 class EnemyBase
@@ -54,7 +54,7 @@ protected:
 	CollisionData collision_data_;
 	std::shared_ptr<BaseEnemyState> state_;		//àÍä—ÇµÇƒç≈èâÇÕpatrolling
 	
-	std::shared_ptr<CollisionBase> coll_;
+	std::shared_ptr<ColliderBase> coll_;
 
 	//AI
 	std::shared_ptr<EnemyFSM> fsm_;
@@ -137,7 +137,7 @@ public:
 
 	EnemyBase(const int model, const VECTOR& pos,
 		const VECTOR& scale, const VECTOR& rot, Effect* effect, Effect* got_effect,
-		float speed, float fleeping_speed, AlertState alert, float fov, std::shared_ptr<Stage> stage,std::shared_ptr<CollisionBase> coll, const float& stan_time);
+		float speed, float fleeping_speed, AlertState alert, float fov, std::shared_ptr<Stage> stage,std::shared_ptr<ColliderBase> coll, const float& stan_time);
 
 
 	virtual ~EnemyBase() = 0;
