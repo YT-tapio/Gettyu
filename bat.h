@@ -12,7 +12,7 @@ private:
 	
 
 	//モデルのデータやボーンのパスがあって
-	const float kScale = 8.0f;
+	const float kScale = 13.0f;
 
 
 public:
