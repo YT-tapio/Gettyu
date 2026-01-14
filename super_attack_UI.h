@@ -27,6 +27,8 @@ private:
 	 
 	const int kBackGaussParam			= 1300;
 
+	const int kSuperAttackParamInitNum = 255;
+
 	const VECTOR kInitPos				= VGet(kGameWidth * 0.5f, kGameHeight * 0.5f, 0.f);
 	const VECTOR kInitScreenPos		= VGet(200.f, 200.f, 0);
 
@@ -56,6 +58,15 @@ private:
 	const float kReadyEffectSize		= 100.f;
 	const float kReadyEffectMaxCount	= 10.f;
 
+	float init_ready_screen_width_;		// 初期画像の大きさ：横
+	float init_ready_screen_height_;		// 初期画像の大きさ：縦
+
+	float ready_screen_width_;				// 変更する際の大きさ：横
+	float ready_screen_height_;			// 変更する際の大きさ：縦
+
+	float ready_screen_width_ratio_;		// 画像サイズの比率：横
+	float ready_screen_height_ratio_;	// 画像サイズの比率：縦
+
 	int frame_target_width_;
 	int frame_target_height_;
 
@@ -64,6 +75,9 @@ private:
 
 	int back_target_width_;
 	int back_target_height_;
+
+	int super_attack_ready_param_;
+	int change_color_num_;
 
 	UI3DModelData weapon_data_;
 
@@ -79,7 +93,7 @@ private:
 	std::shared_ptr<NormalSubScreen> weapon_screen_;		// 必殺技の武器を表示
 	std::shared_ptr<NormalSubScreen> effect_screen_;		// effectの描画を行う
 	std::shared_ptr<NormalSubScreen> button_screen_;		// 対応している操作のボタンを表示
-
+	std::shared_ptr<NormalSubScreen> ready_screen_;		// 準備完了の時の際の画像を表示
 	//Effect* ready_effect_;
 	
 	//UIに沿わす

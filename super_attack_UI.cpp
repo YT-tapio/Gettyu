@@ -19,6 +19,15 @@ SuperAttackUI::SuperAttackUI()
 	sub_screen_width = sub_screen_width * kScreenWidthPercent;
 	sub_screen_height = sub_screen_height * kScreenHeightPercent;
 
+	init_ready_screen_width_ = sub_screen_width;
+	init_ready_screen_height_ = sub_screen_height;
+
+	ready_screen_width_ = init_ready_screen_width_;
+	ready_screen_height_ = init_ready_screen_height_;
+
+	ready_screen_width_ratio_ = kScreenWidthPercent;
+	ready_screen_height_ratio_ = kScreenHeightPercent;
+
 	frame_data_.handle = -1;
 	frame_data_.original_width = kOriginalImagWidth;
 	frame_data_.original_height = kOriginalImageHeight;
@@ -69,7 +78,7 @@ SuperAttackUI::SuperAttackUI()
 	back_screen_				= std::make_shared<NormalSubScreen>(kInitScreenPos, static_cast<int>(kGameWidth), static_cast<int>(kGameHeight), static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0,FALSE);
 	weapon_screen_		= std::make_shared<NormalSubScreen>(kInitWeaponScreenPos, static_cast<int>(kGameWidth), static_cast<int>(kGameHeight), static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0, FALSE);
 	effect_screen_			= std::make_shared<NormalSubScreen>(kInitScreenPos, static_cast<int>(kGameWidth), static_cast<int>(kGameHeight), static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0, FALSE);
-
+	ready_screen_			= std::make_shared<NormalSubScreen>(kInitScreenPos, static_cast<int>(kGameWidth), static_cast<int>(kGameHeight), static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0, FALSE);
 	if (kGaugeBackHandle == -1)
 	{
 		printfDx("2D:ì«Ç›çûÇ›ÉGÉâÅ[");
@@ -95,6 +104,7 @@ SuperAttackUI::SuperAttackUI()
 	back_screen_		->SetIsDisp(TRUE);
 	weapon_screen_->SetIsDisp(TRUE);
 	effect_screen_	->SetIsDisp(TRUE);
+	ready_screen_	->SetIsDisp(TRUE);
 	//Ç«ÇÃÇ≠ÇÁÇ¢ëÂÇ´Ç≠Ç∑ÇÈÇ©ÇåàíË
 	frame_target_width_ = 0.f;
 	frame_target_height_ = 0.f;
@@ -109,6 +119,9 @@ SuperAttackUI::SuperAttackUI()
 	is_size_down_ = FALSE;
 	is_ready_size_up = FALSE;
 	is_ready_ = FALSE;
+
+	super_attack_ready_param_ = kSuperAttackParamInitNum;
+	change_color_num_ = 0;
 }
 
 
@@ -225,13 +238,32 @@ void SuperAttackUI::SizeDownInit()
 void SuperAttackUI::Update()
 {
 
+	auto now_state = SuperAttackStateGetter::GetInstance().GetState();
+
 	//çXêVèàóù
 	SetMaskSize();
 
 	SetGaugeSizeUp();
 	
 	SetGaugeSizeDown();
-	
+
+	if (now_state == SuperAttackState::kReady) 
+	{ 
+		float param_speed = (8 * FPS::GetInstance().GetDeltaTime());
+		float size_speed = (30 * FPS::GetInstance().GetDeltaTime());
+
+		super_attack_ready_param_ -= param_speed;
+		ready_screen_width_ += ready_screen_width_ratio_ * size_speed;
+		ready_screen_height_ += ready_screen_height_ratio_ * size_speed;
+		if (super_attack_ready_param_ <= 10)
+		{
+			super_attack_ready_param_ = kSuperAttackParamInitNum;
+			ready_screen_width_ = init_ready_screen_width_;
+			ready_screen_height_ = init_ready_screen_height_;
+		}
+
+	}
+
 	//Ç±Ç±Ç≈Ç™ÇºÇ§ÇÃdraw(screenÇãNìÆÇµÇƒÇ©ÇÁ)
 
 	//back_screen
@@ -248,18 +280,17 @@ void SuperAttackUI::Update()
 	body_screen_->Up();
 
 	//ç°ÇÃïKéEãZÇÃèÛë‘Ç™ÇΩÇﬂÇƒÇ¢ÇÈèÛë‘Ç∂Ç·Ç»Ç¢Ç∆Ç´ÇÕïÅí Ç…ï`âÊ
-	if (SuperAttackStateGetter::GetInstance().GetState() != SuperAttackState::kCoolTime)
+	if (now_state != SuperAttackState::kCoolTime)
 	{
-		static int num = 0;
-		num += 2;
+		change_color_num_ += (5*FPS::GetInstance().GetDeltaTime());
 
-		if (num > 180)
+		if (change_color_num_ > 180)
 		{
-			int a = num - 180;
-			num = -180 + a;
+			int a = change_color_num_ - 180;
+			change_color_num_ = -180 + a;
 		}
 
-		Draw2D::ColorChangeGraph(body_data_.pos, body_data_.width, body_data_.height, body_data_.handle, TRUE, num);
+		Draw2D::ColorChangeGraph(body_data_.pos, body_data_.width, body_data_.height, body_data_.handle, TRUE, change_color_num_);
 	}
 	else
 	{
@@ -279,6 +310,13 @@ void SuperAttackUI::Update()
 	SetLightDirection(light_dir);
 	weapon_screen_->Down();
 
+	//bodyÇ∆frameÇæÇØÇï`âÊÇ∑ÇÈ
+
+	ready_screen_->Up();
+	Draw2D::ColorChangeGraph(body_data_.pos, body_data_.width, body_data_.height, body_data_.handle, TRUE, change_color_num_);
+	DrawUIGraph(frame_data_);
+	ready_screen_->Down();
+
 	Gauss::GetInstance().Update(back_screen_->GetHandle(), kPixelWidthMiddle, kBackGaussParam);
 }
 
@@ -290,4 +328,8 @@ void SuperAttackUI::Draw()
 	weapon_screen_->Draw();
 	effect_screen_->Draw();
 
+	if (SuperAttackStateGetter::GetInstance().GetState() == SuperAttackState::kReady)
+	{
+		Draw2D::BlendGraph(kInitScreenPos, ready_screen_width_, ready_screen_height_, ready_screen_->GetHandle(), TRUE, super_attack_ready_param_);
+	}
 }
