@@ -56,7 +56,7 @@ Result::Result(int model)
 	selecter_		= std::make_shared<ButtonSelecter>();
 
 	const char* kBgmPath			= "data/sound/result/bgm/bgm.mp3";
-	const char* kSelectSoundPath = "data/sound/button/select.mp3";
+	const char* kSelectSoundPath	= "data/sound/button/select.mp3";
 	
 	bgm_ = std::make_shared<Sound2D>(kBgmPath, DX_PLAYTYPE_BACK, 100, TRUE);
 	select_sound_ = std::make_shared<Sound2D>(kSelectSoundPath, DX_PLAYTYPE_BACK, 80, FALSE);
@@ -135,8 +135,8 @@ void Result::FadeIn()
 
 void Result::FadeOut()
 {
-	const float kFadeOutSpeed = 20.f;
-	const float kFadeOutMax = 255.f;
+	const float kFadeOutSpeed	= 20.f;
+	const float kFadeOutMax		= 255.f;
 
 	fade_out_param_ += kFadeOutSpeed * FPS::GetInstance().GetDeltaTime();
 
@@ -281,12 +281,12 @@ void Result::Update(SceneName& name)
 
 	if (button_num_ < 0)
 	{
-		button_num_ = 0;
+		button_num_ = 1;
 	}
 
 	if (button_num_ > 1)
 	{
-		button_num_ = 1;
+		button_num_ = 0;
 	}
 
 	if (before_button_num_ != button_num_)

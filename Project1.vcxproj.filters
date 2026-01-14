@@ -208,9 +208,6 @@
     <Filter Include="ソース ファイル\UI">
       <UniqueIdentifier>{1738b5a4-7d7d-4690-a6b3-75653cbb1cfe}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\UI\super_atackk">
-      <UniqueIdentifier>{a11dfc45-c778-49ce-aab4-91c978334db4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\UI\data">
       <UniqueIdentifier>{cdec7ff1-29e3-4841-a0fe-90d6ceb8624e}</UniqueIdentifier>
     </Filter>
@@ -312,6 +309,15 @@
     </Filter>
     <Filter Include="ソース ファイル\UI\result_score">
       <UniqueIdentifier>{b1f5a859-7149-4c8d-95f5-b548c5c9c17c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\animation\2d">
+      <UniqueIdentifier>{42e2e33a-6711-4609-bd57-4907afa315f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\UI\super_attack">
+      <UniqueIdentifier>{a11dfc45-c778-49ce-aab4-91c978334db4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Singleton\super_attack_state">
+      <UniqueIdentifier>{2e5db825-4ed8-4f92-b7dc-07076bd4fd2f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -486,8 +492,8 @@
     <ClCompile Include="weapon_checker.cpp">
       <Filter>ソース ファイル\Singleton\now_weapon</Filter>
     </ClCompile>
-    <ClCompile Include="super_attac_UI.cpp">
-      <Filter>ソース ファイル\UI\super_atackk</Filter>
+    <ClCompile Include="super_attack_UI.cpp">
+      <Filter>ソース ファイル\UI\super_attack</Filter>
     </ClCompile>
     <ClCompile Include="mask.cpp">
       <Filter>ソース ファイル\Singleton\mask</Filter>
@@ -599,6 +605,12 @@
     </ClCompile>
     <ClCompile Include="button_graph_create.cpp">
       <Filter>ソース ファイル\button</Filter>
+    </ClCompile>
+    <ClCompile Include="animation_2D.cpp">
+      <Filter>ソース ファイル\animation\2d</Filter>
+    </ClCompile>
+    <ClCompile Include="super_attack_state_getter.cpp">
+      <Filter>ソース ファイル\Singleton\super_attack_state</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -786,7 +798,7 @@
       <Filter>ソース ファイル\Singleton\now_weapon</Filter>
     </ClInclude>
     <ClInclude Include="super_attack_UI.h">
-      <Filter>ソース ファイル\UI\super_atackk</Filter>
+      <Filter>ソース ファイル\UI\super_attack</Filter>
     </ClInclude>
     <ClInclude Include="mask.h">
       <Filter>ソース ファイル\Singleton\mask</Filter>
@@ -919,6 +931,12 @@
     </ClInclude>
     <ClInclude Include="button_graph_create.h">
       <Filter>ソース ファイル\button</Filter>
+    </ClInclude>
+    <ClInclude Include="animation_2D.h">
+      <Filter>ソース ファイル\animation\2d</Filter>
+    </ClInclude>
+    <ClInclude Include="super_attack_state_getter.h">
+      <Filter>ソース ファイル\Singleton\super_attack_state</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

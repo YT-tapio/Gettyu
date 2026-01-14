@@ -75,13 +75,11 @@ namespace Draw2D
 	/// @param alpha ìßâﬂÇ∑ÇÈÇ© TRUE ìßâﬂ
 	inline void ExtendGraph(const VECTOR& pos, int width, int height,const int& data, const bool alpha)
 	{
-
 		DrawExtendGraph(static_cast<int>(pos.x - (float(width) * 0.5f)),
 			static_cast<int>(pos.y - (float(height) * 0.5f)),
 			static_cast<int>(pos.x + (float(width) * 0.5f)),
 			static_cast<int>(pos.y + (float(height) * 0.5f)),
 			data, alpha);
-
 	}
 
 
@@ -114,4 +112,21 @@ namespace Draw2D
 	{
 		BlendBox(kCenterPos, kGameWidth, kGameHeight, Color::kWhite, TRUE, alpha_num);
 	}
+
+	/// <summary>
+	/// êFëäÇïœÇ¶Çƒï`âÊÇ∑ÇÈ
+	/// </summary>
+	/// <param name="pos"></param>
+	/// <param name="width"></param>
+	/// <param name="height"></param>
+	/// <param name="handle"></param>
+	/// <param name="alpha"></param>
+	/// <param name="hue">êFëäÇÃ</param>
+	inline void ColorChangeGraph(const VECTOR& pos,int width,int height,const int& handle,bool alpha,int hue)
+	{
+		GraphFilter(handle, DX_GRAPH_FILTER_HSB, 0, hue, 0, 0);
+		ExtendGraph(pos, width, height, handle, alpha);
+		GraphFilter(handle, DX_GRAPH_FILTER_HSB, 0, -hue, 0, 0);
+	}
+
 }

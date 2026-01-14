@@ -206,19 +206,16 @@ void Button::Update(const int& num)
 	{
 	case ButtonState::kDefault:
 		IsOnMouse(num);
-		//printfDx("Defaults\n");
 		debug_color_ = kWhite;
 		break;
 
 	case ButtonState::kSelect:
 		SelectUpdate();
-		//printfDx("Select\n");
 		debug_color_ = kRightGray;
 		break;
 
 	case ButtonState::kPressed:
 		PressedUpdate();
-		//printfDx("Pressed\n");
 		debug_color_ = kGray;
 		break;
 
@@ -228,17 +225,23 @@ void Button::Update(const int& num)
 
 void Button::Draw()
 {
-	
+	//
+	const int kButtonParam = 68;
+	int param = 255;
+
+	//‘I‘ğ‚³‚ê‚Ä‚¢‚È‚¢
+	if (state_ == ButtonState::kDefault) { param = 192; }
+
 	if (model_ == -1)
-	{	
+	{
 		Draw2D::Box(pos_, static_cast<int>(width_), static_cast<int>(height_), kWhite, TRUE);
 	}
 	else
 	{
-		Draw2D::ExtendGraph(pos_, static_cast<int>(width_), static_cast<int>(height_), model_, TRUE);
+		Draw2D::BlendGraph(pos_, static_cast<int>(width_), static_cast<int>(height_), model_, TRUE, param);
 	}
 
-	//‘I‘ğ‚µ‚Ä‚¢‚é‚à‚Ì‚Íã‚©‚ç“|‰ó‚µ‚½•¨‚ğ‚©‚Ô‚¹‚é
-	if (state_ != ButtonState::kDefault) { Draw2D::BlendBox(pos_, static_cast<int>(width_), static_cast<int>(height_), debug_color_, TRUE, 128); }
+	//‘I‘ğ‚³‚ê‚Ä‚¢‚È‚¢
+	if (state_ == ButtonState::kDefault) { Draw2D::BlendBox(pos_, static_cast<int>(width_), static_cast<int>(height_), debug_color_, TRUE, kButtonParam); }
 
 }

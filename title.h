@@ -29,7 +29,7 @@ private:
 	const VECTOR kEnemyScale		= VectorAssistant::GetSame3DVec(0.07f);
 	const VECTOR kEnemyRotation	= VGet(0.f, -kOneRad * 40.f, 0.f);
 
-	const VECTOR kTitleUiPos		= VectorAssistant::Get2DVec(900.f, 300.f);
+	const VECTOR kTitleUiPos		= VectorAssistant::Get2DVec(900.f, 350.f);
 	
 	const VECTOR kInitTitlePos = VectorAssistant::Get2DVec(80.f, 20.f);
 

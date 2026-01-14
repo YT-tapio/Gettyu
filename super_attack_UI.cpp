@@ -3,6 +3,8 @@
 #include"gauss_data.h"
 #include"super_attack_cool_time.h"
 #include"FPS.h"
+#include"Draw2D.h"
+#include"super_attack_state_getter.h"
 
 SuperAttackUI::SuperAttackUI()
 {
@@ -105,6 +107,7 @@ SuperAttackUI::SuperAttackUI()
 	size_down_count_ = 0;
 	is_size_up_ = FALSE;
 	is_size_down_ = FALSE;
+	is_ready_size_up = FALSE;
 	is_ready_ = FALSE;
 }
 
@@ -130,19 +133,18 @@ void SuperAttackUI::SetMaskSize()
 
 	if (ratio >= 1.f)
 	{
-		if (!is_ready_)
+		if (!is_ready_size_up)
 		{
 			is_size_up_ = TRUE;
 			SizeUpInit();
 		}
-		is_ready_ = TRUE;
-
-		
+		is_ready_size_up = TRUE;
 	}
 	else
 	{
-		is_ready_ = FALSE;
+		is_ready_size_up = FALSE;
 	}
+
 }
 
 
@@ -169,6 +171,8 @@ void SuperAttackUI::SetGaugeSizeUp()
 	{
 		size_up_count_ = 0;
 	}
+
+
 }
 
 
@@ -220,9 +224,8 @@ void SuperAttackUI::SizeDownInit()
 
 void SuperAttackUI::Update()
 {
-	//更新処理
-	
 
+	//更新処理
 	SetMaskSize();
 
 	SetGaugeSizeUp();
@@ -231,23 +234,40 @@ void SuperAttackUI::Update()
 	
 	//ここでがぞうのdraw(screenを起動してから)
 
-	//backscreen
+	//back_screen
 	back_screen_->Up();
 	DrawUIGraph(back_data_);
 	back_screen_->Down();
 
-	//framescreen
+	//frame_screen
 	frame_screen_->Up();
 	DrawUIGraph(frame_data_);
 	frame_screen_->Down();
 
-	//bodyscreen
+	//body_screen
 	body_screen_->Up();
-	DrawUIGraph(body_data_);
+
+	//今の必殺技の状態がためている状態じゃないときは普通に描画
+	if (SuperAttackStateGetter::GetInstance().GetState() != SuperAttackState::kCoolTime)
+	{
+		static int num = 0;
+		num += 2;
+
+		if (num > 180)
+		{
+			int a = num - 180;
+			num = -180 + a;
+		}
+
+		Draw2D::ColorChangeGraph(body_data_.pos, body_data_.width, body_data_.height, body_data_.handle, TRUE, num);
+	}
+	else
+	{
+		Draw2D::ExtendGraph(body_data_.pos, body_data_.width, body_data_.height, body_data_.handle, TRUE);
+	}
+
 	DrawMaskBox(gauge_mask_data_);
 	body_screen_->Down();
-
-
 
 	//武器の表示
 	weapon_screen_->Up();

@@ -29,7 +29,7 @@ private:
 	const VECTOR kCameraPos		= VGet(0.f, 0.f, -10.f);
 	const VECTOR kTargetPos		= VGet(0.f, 0.f, 10.f);
 
-	const VECTOR kPos				= VGet(-10.f, -15.f, 10.f);
+	const VECTOR kPos				= VGet(-12.f, -15.f, 10.f);
 	const VECTOR kScale				= VectorAssistant::GetSame3DVec(0.01f);
 	const VECTOR kRotation			= VectorAssistant::GetZeroVec();
 

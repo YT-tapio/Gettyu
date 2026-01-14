@@ -45,30 +45,30 @@ Title::Title(int model)
 	enemy_animation_		= std::make_shared<Animation>();
 
 	const char* kBgmPath			= "data/sound/title/bgm/hiphop2.mp3";
-	const char* kSelectSoundPath = "data/sound/button/select.mp3";
+	const char* kSelectSoundPath	= "data/sound/button/select.mp3";
 
 	bgm_				= std::make_shared<Sound2D>(kBgmPath, DX_PLAYTYPE_LOOP, 100,TRUE);
-	select_sound_	= std::make_shared<Sound2D>(kSelectSoundPath, DX_PLAYTYPE_BACK, 80, FALSE);
+	select_sound_		= std::make_shared<Sound2D>(kSelectSoundPath, DX_PLAYTYPE_BACK, 80, FALSE);
 
 	mat_				= MMult(MMult(rot_mat,scale_mat), pos_mat);
 	enemy_mat_ = MMult(MMult(enemy_rot_mat, enemy_scale_mat), enemy_pos_mat);
 	MV1SetMatrix(player_model_, mat_);
 	MV1SetMatrix(enemy_model_, enemy_mat_);
 
-	tanuei_font_ = std::make_shared<Font>(kTanueiFontPath, kTanueiFontName, kFontSize, kFontThick,DX_FONTTYPE_EDGE);
-	title_ui_screen_ = std::make_shared<NormalSubScreen>(kTitleUiPos, kGameWidth, kGameHeight, kTitleUiWidth, kTitleUiHeight, TRUE, AlphaColorType::kBlack, 10, TRUE);
+	tanuei_font_		= std::make_shared<Font>(kTanueiFontPath, kTanueiFontName, kFontSize, kFontThick,DX_FONTTYPE_EDGE);
+	title_ui_screen_	= std::make_shared<NormalSubScreen>(kTitleUiPos, kGameWidth, kGameHeight, kTitleUiWidth, kTitleUiHeight, TRUE, AlphaColorType::kBlack, 10, TRUE);
 	title_ui_screen_->SetIsDisp(TRUE);
 
-	transition_timer_ = std::make_shared<ConditionTimer>(5.f);
-	title_ui_rad_ = 0.f;
-	fade_in_param_ = 0.f;
+	transition_timer_	= std::make_shared<ConditionTimer>(5.f);
+	title_ui_rad_		= 0.f;
+	fade_in_param_		= 0.f;
 
-	const char* kSkyDomePath = "data/skydome/Dome_SS601.mv1";
-	const float kSkyDomeScale = 1.0f;
+	const char* kSkyDomePath	= "data/skydome/Dome_SS601.mv1";
+	const float kSkyDomeScale	= 1.0f;
 
-	const char* kStagePath = "data/model/map/arena/map.mv1";
-	const float kStageScale = 1.f;
-	const float kRotateSpeed = -3.0f;
+	const char* kStagePath		= "data/model/map/arena/map.mv1";
+	const float kStageScale		= 1.f;
+	const float kRotateSpeed	= -3.0f;
 	
 	objects_.push_back(std::make_shared<RotatedObject>(VectorAssistant::GetZeroVec(), VectorAssistant::GetZeroVec(), VectorAssistant::GetSame3DVec(kSkyDomeScale), kSkyDomePath, kRotateSpeed));
 	objects_.push_back(std::make_shared<RotatedObject>(VectorAssistant::GetZeroVec(), VectorAssistant::GetZeroVec(), VectorAssistant::GetSame3DVec(kStageScale), kStagePath, kRotateSpeed));
@@ -131,15 +131,11 @@ void Title::Init()
 	SetMouseDispFlag(TRUE);
 	selecter_ = std::make_shared<ButtonSelecter>();
 	auto start_handle			= ButtonGraph::GetInstance().GetStartHandle();
-	auto input_type_handle	= ButtonGraph::GetInstance().GetInputTypeHandle();
-	auto exit_handle				= ButtonGraph::GetInstance().GetExitHandle();
+	auto input_type_handle		= ButtonGraph::GetInstance().GetInputTypeHandle();
+	auto exit_handle			= ButtonGraph::GetInstance().GetExitHandle();
 
 	buttons_.push_back(std::make_shared<Button>(kGameStartButtonPos, kButtonWidth, kButtonHeight, "", button_num,&start_, start_handle));
 	button_num++;
-	/*
-	buttons_.push_back(std::make_shared<Button>(kInputTypeButtonPos, kButtonWidth, kButtonHeight, "", button_num, &go_input_type_,input_type_handle));
-	button_num++;
-	*/
 	buttons_.push_back(std::make_shared<Button>(kGameEndButtonPos, kButtonWidth, kButtonHeight, "", button_num, &game_end_,exit_handle));
 	AnimationSetting();
 }
@@ -166,12 +162,12 @@ void Title::Update(SceneName& name)
 
 	if (button_num_ < 0)
 	{
-		button_num_ = 0;
+		button_num_ = 1;
 	}
 
 	if (button_num_ > 1)
 	{
-		button_num_ = 1;
+		button_num_ = 0;
 	}
 
 	if (before_button_num_ != button_num_)

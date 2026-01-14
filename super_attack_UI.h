@@ -41,19 +41,19 @@ private:
 	const int disp_height_					= 600;
 
 	const int kDispBodyWidth			= 710;
-	const int kDispBodyHeight			= 605;
+	const int kDispBodyHeight			= 630;
 
 	const int kDispBackWidth			= 730;
-	const int kDispBackHeight			= 620;
+	const int kDispBackHeight			= 645;
 
 	const int kAddSize					= 200;
 
-	const float kSizeUpSpeed		= 65.f;
-	const float kSizeDownSpeed	= 40.f;
+	const float kSizeUpSpeed			= 65.f;
+	const float kSizeDownSpeed			= 40.f;
 
 
-	const float kReadyEffectSpeed			= 1.f;
-	const float kReadyEffectSize			= 100.f;
+	const float kReadyEffectSpeed		= 1.f;
+	const float kReadyEffectSize		= 100.f;
 	const float kReadyEffectMaxCount	= 10.f;
 
 	int frame_target_width_;
@@ -89,6 +89,7 @@ private:
 
 	bool is_size_up_;
 	bool is_size_down_;
+	bool is_ready_size_up;
 	bool is_ready_;
 
 	int size_up_count_;

@@ -12,6 +12,7 @@
 #include"sound.h"
 #include"2D_sound.h"
 #include"clear_time.h"
+#include"super_attack_state_getter.h"
 
 SuperAttack::SuperAttack(const VECTOR& pos,const char*  file_path)
 	: now_situation_num_(0)
@@ -50,7 +51,7 @@ SuperAttack::SuperAttack(const VECTOR& pos,const char*  file_path)
 	thunder_sound_ = std::make_shared<Sound2D>(kThunderSoundPath, DX_PLAYTYPE_BACK, 100, FALSE);
 	bomb_sound_ = std::make_shared<Sound2D>(kBombSoundPath, DX_PLAYTYPE_BACK, 200, FALSE);
 	
-
+	SuperAttackStateGetter::GetInstance().Set(&state_);
 }
 
 
