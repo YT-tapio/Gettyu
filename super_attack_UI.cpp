@@ -237,7 +237,8 @@ void SuperAttackUI::SizeDownInit()
 
 void SuperAttackUI::Update()
 {
-
+	const float kMaxHue = 180.f;
+	const float kChangeHueSpeed = 15.f;
 	auto now_state = SuperAttackStateGetter::GetInstance().GetState();
 
 	//çXêVèàóù
@@ -255,6 +256,7 @@ void SuperAttackUI::Update()
 		super_attack_ready_param_ -= param_speed;
 		ready_screen_width_ += ready_screen_width_ratio_ * size_speed;
 		ready_screen_height_ += ready_screen_height_ratio_ * size_speed;
+		
 		if (super_attack_ready_param_ <= 10)
 		{
 			super_attack_ready_param_ = kSuperAttackParamInitNum;
@@ -282,12 +284,12 @@ void SuperAttackUI::Update()
 	//ç°ÇÃïKéEãZÇÃèÛë‘Ç™ÇΩÇﬂÇƒÇ¢ÇÈèÛë‘Ç∂Ç·Ç»Ç¢Ç∆Ç´ÇÕïÅí Ç…ï`âÊ
 	if (now_state != SuperAttackState::kCoolTime)
 	{
-		change_color_num_ += (5*FPS::GetInstance().GetDeltaTime());
+		change_color_num_ += (kChangeHueSpeed * FPS::GetInstance().GetDeltaTime());
 
-		if (change_color_num_ > 180)
+		if (change_color_num_ > kMaxHue)
 		{
-			int a = change_color_num_ - 180;
-			change_color_num_ = -180 + a;
+			int a = change_color_num_ - kMaxHue;
+			change_color_num_ = -kMaxHue + a;
 		}
 
 		Draw2D::ColorChangeGraph(body_data_.pos, body_data_.width, body_data_.height, body_data_.handle, TRUE, change_color_num_);

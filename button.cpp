@@ -128,7 +128,7 @@ void Button::IsOnMouse(const int& num)
 
 void Button::SelectUpdate()
 {
-	const float kOffsetSize		= 20.f;
+	const float kOffsetSize		= 50.f;
 
 	float target_width			= init_width_ + (kOffsetSize * width_ratio_);
 	float target_height			= init_height_ + (kOffsetSize * height_ratio_);

@@ -15,12 +15,12 @@ namespace OffsetAssistant
 	/// @brief 等速で大きくする
 	/// @param me 
 	/// @param max 
-	/// @param speed 
+	/// @param speed デルタタイムをかけた
 	inline void Bigf(float& me, const float& max,const float& speed)
 	{
 		if (me == max) { return; }
 
-		me = me + (speed * FPS::GetInstance().GetDeltaTime());
+		me = me + speed;
 		//自分よりも大きい時
 		if (me > max)
 		{

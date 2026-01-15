@@ -85,7 +85,7 @@ void GameGoalUI::UpdateScreenSize()
 	else
 	{
 
-		offset_param_speed = 12.f * FPS::GetInstance().GetDeltaTime();
+		offset_param_speed = 10.f * FPS::GetInstance().GetDeltaTime();
 		float kOffsetSpeed = 30.f * FPS::GetInstance().GetDeltaTime();
 
 		float width_offset_speed_ = kOffsetSpeed * screen_width_ratio_;
