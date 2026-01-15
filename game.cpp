@@ -361,7 +361,6 @@ void Game::Update(SceneName& name)
     static int param = 100;
     static int pixel = 8;
     
-    
     if (Input::GetInstance().CheckInputKey(KEY_INPUT_UP) == InputState::kOn)
     {
         Gauss::GetInstance().Update(screen_->GetHandle(), pixel, param);
@@ -385,10 +384,6 @@ void Game::Draw()
     enemy_count_UI_->Draw();
     game_goal_UI_->Draw();
     count_down_UI_->Draw();
-
-    //font_color_screen_->Draw();
-    // timer_screen_->Debug();
-    // font_color_screen_->Debug();
 
     float clear_time = ClearTime::GetInstance().GetClearTime();
     int timer_width = GetDrawFormatStringWidthToHandle(tanuei_font_->GetHandle(), "%.1f", clear_time);

@@ -66,7 +66,7 @@ void GameGoalUI::UpdateScreenSize()
 	const int kScreenWidthMin = kOffsetSize * screen_width_ratio_;
 	const int kScreenHeightMin = kOffsetSize * screen_height_ratio_;
 
-	const int kParamMax = 255;
+	const float kParamMax = 255;
 	float offset_param_speed;
 
 	if (screen_param_ == kParamMax) { change_offset_ = TRUE; }
@@ -77,9 +77,9 @@ void GameGoalUI::UpdateScreenSize()
 
 		if (disp_timer_->GetIsEnd())
 		{
-			offset_param_speed = 1.f * FPS::GetInstance().GetDeltaTime();
-			const int kParamMin = 0;
-			OffsetAssistant::Small(screen_param_, kParamMin, offset_param_speed);
+			offset_param_speed = (10.f * FPS::GetInstance().GetDeltaTime());
+			const float kParamMin = 0;
+			OffsetAssistant::Smallf(screen_param_, kParamMin, offset_param_speed);
 		}
 	}
 	else
@@ -94,7 +94,7 @@ void GameGoalUI::UpdateScreenSize()
 
 		OffsetAssistant::Small(screen_width_, kScreenWidthMin, width_offset_speed_);
 		OffsetAssistant::Small(screen_height_, kScreenHeightMin, height_offset_speed);
-		OffsetAssistant::Big(screen_param_, kParamMax, offset_param_speed);
+		OffsetAssistant::Bigf(screen_param_, kParamMax, offset_param_speed);
 	}
 }
 
@@ -120,5 +120,5 @@ void GameGoalUI::Update()
 
 void GameGoalUI::Draw()
 {
-	Draw2D::BlendGraph(pos_, screen_width_, screen_height_, screen_->GetHandle(), TRUE, screen_param_);
+	Draw2D::BlendGraph(pos_, screen_width_, screen_height_, screen_->GetHandle(), TRUE, static_cast<int>(screen_param_));
 }

@@ -18,7 +18,7 @@ private:
 	int screen_width_;
 	int screen_height_;
 
-	int screen_param_;
+	float screen_param_;
 
 	int* enemy_num_;
 

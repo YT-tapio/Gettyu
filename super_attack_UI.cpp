@@ -323,13 +323,16 @@ void SuperAttackUI::Update()
 void SuperAttackUI::Draw()
 {
 	back_screen_->Draw();
+	
+	if (SuperAttackStateGetter::GetInstance().GetState() == SuperAttackState::kReady)
+	{
+		Draw2D::BlendGraph(kInitScreenPos, ready_screen_width_, ready_screen_height_, ready_screen_->GetHandle(), TRUE, super_attack_ready_param_);
+	}
+
 	body_screen_->Draw();			//í‚ê‚é–{‘Ì
 	frame_screen_->Draw();		//ŠO˜g
 	weapon_screen_->Draw();
 	effect_screen_->Draw();
 
-	if (SuperAttackStateGetter::GetInstance().GetState() == SuperAttackState::kReady)
-	{
-		Draw2D::BlendGraph(kInitScreenPos, ready_screen_width_, ready_screen_height_, ready_screen_->GetHandle(), TRUE, super_attack_ready_param_);
-	}
+	
 }
