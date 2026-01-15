@@ -18,10 +18,10 @@
 
 EnemyBase::EnemyBase(const int model, const VECTOR& pos,
 	const VECTOR& scale, const VECTOR& rot, Effect* get_effect, Effect* got_effect, float speed,
-	float fleeping_speed, AlertState alert, float fov,std::shared_ptr<Stage> stage,std::shared_ptr<ColliderBase> coll,const float& stan_time)
+	float fleeping_speed, AlertState alert, float fov,std::shared_ptr<Stage> stage,std::shared_ptr<ColliderBase> coll,const float& stan_time,Navigation* navigation)
 {
 	fsm_		= std::make_shared<EnemyFSM>();
-	navigation_ = std::make_shared<Navigation>();
+	navigation_ = navigation;
 	animation_	= std::make_shared<Animation>();
 
 	stan_timer_ = std::make_shared<ConditionTimer>(stan_time);

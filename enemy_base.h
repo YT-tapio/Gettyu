@@ -58,7 +58,7 @@ protected:
 
 	//AI
 	std::shared_ptr<EnemyFSM> fsm_;
-	std::shared_ptr<Navigation> navigation_;
+	Navigation* navigation_;
 
 	std::shared_ptr<Animation> animation_;
 	AnimationType now_anim_type_;				//現在のプレイヤーのアニメ～しょん
@@ -137,7 +137,7 @@ public:
 
 	EnemyBase(const int model, const VECTOR& pos,
 		const VECTOR& scale, const VECTOR& rot, Effect* effect, Effect* got_effect,
-		float speed, float fleeping_speed, AlertState alert, float fov, std::shared_ptr<Stage> stage,std::shared_ptr<ColliderBase> coll, const float& stan_time);
+		float speed, float fleeping_speed, AlertState alert, float fov, std::shared_ptr<Stage> stage,std::shared_ptr<ColliderBase> coll, const float& stan_time, Navigation* navigation);
 
 
 	virtual ~EnemyBase() = 0;

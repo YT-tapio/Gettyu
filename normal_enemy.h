@@ -50,7 +50,7 @@ public:
 
 	NormalEnemy(const TCHAR* model_path, const VECTOR& pos,
 		const VECTOR& scale, const VECTOR& dir, Effect* get_effect, Effect* got_effect,
-		float speed, float fleeping_speed, AlertState alert, float fov, std::shared_ptr<Stage> stage);
+		float speed, float fleeping_speed, AlertState alert, float fov, std::shared_ptr<Stage> stage,Navigation* navigation);
 
 
 	~NormalEnemy() override;

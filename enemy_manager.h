@@ -11,6 +11,7 @@ class Player;
 class EnemyBase;
 class NormalEnemy;
 class Stage;
+class Navigation;
 
 class EnemyManager
 {
@@ -25,6 +26,8 @@ private:
 	Effect* got_effect_ = new Effect("data/effect/NitoriBox/Explosion.efkefc", VGet(0.f, 0.f, 0.f), VGet(0.f, 0.f, 0.f), 6.0f, 10.f, 200.f, FALSE);
 
 	std::shared_ptr<Stage> stage_;
+
+	Navigation* navigation_;
 
 public:
 

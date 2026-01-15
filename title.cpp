@@ -40,7 +40,8 @@ Title::Title(int model)
 	auto enemy_rot_mat = MGetRotY(kEnemyRotation.y);
 
 	Camera::GetInstance().OriginalSetting();
-
+	// ‹–ìŠpİ’è
+	SetupCamera_Perspective((DX_PI_F / 180.0f) * 60.0f);
 	animation_				= std::make_shared<Animation>();
 	enemy_animation_		= std::make_shared<Animation>();
 
