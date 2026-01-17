@@ -46,7 +46,7 @@ Player::Player(VECTOR pos, int model, int pad_num,int div, float r, float vertic
 	const float kGameClearEffectSize			= 10.f;
 	const float kGameClearEffectCountMax		= 120.f;
 	const float kSuperAttackIsReadyEffectSpeed		= 3.f;
-	const float kSuperAttackIsReadyEffectSize			= 10.f;
+	const float kSuperAttackIsReadyEffectSize			= 3.f;
 	const float kSuperAttackIsReadyEffectCountMax		= 120.f;
 
 	capsule_.r				= r;
@@ -75,8 +75,8 @@ Player::Player(VECTOR pos, int model, int pad_num,int div, float r, float vertic
 
 	const char* kEnemyHitSoundPath					= "data/sound/game/se/hit.mp3";
 	const char* kEnemyHitSpringSoundPath			= "data/sound/game/se/hit_spring.mp3";
-	const char* kVacuumSoundPath					= "data/sound/game/se/vacuum.mp3";
-	const char* kGetSoundPath						= "data/sound/game/se/get.mp3";
+	const char* kVacuumSoundPath						= "data/sound/game/se/vacuum.mp3";
+	const char* kGetSoundPath								= "data/sound/game/se/get.mp3";
 
 	enemy_hit_sound_					= std::make_shared<Sound2D>(kEnemyHitSoundPath, DX_PLAYTYPE_BACK, 150, FALSE);
 	enemy_hit_spring_sound_				= std::make_shared<Sound2D>(kEnemyHitSpringSoundPath, DX_PLAYTYPE_BACK, 130, FALSE);
@@ -227,7 +227,6 @@ void Player::DecideAnimation()
 			before_type_ = now_type_;
 
 			animation_->SetBlend(TRUE);
-
 		}
 		else
 		{
@@ -253,8 +252,8 @@ void Player::DecideAnimation()
 bool Player::CheckChangeWeapon()
 {
 	if (Situation::GetInstance().GetSituationName() == SituationName::kStandBy) { return FALSE; }
-	if (now_type_ > AnimationType::kAttack)										{ return FALSE; }
-	if (is_super_attack_)														{ return FALSE; }
+	if (now_type_ > AnimationType::kAttack)														{ return FALSE; }
+	if (is_super_attack_)																						{ return FALSE; }
 
 
 	return TRUE;

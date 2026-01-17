@@ -46,7 +46,7 @@ class Player
 private:
 
 	const char* kGameClearEffectPath			= "data/effect/Pierre02/FeatherBomb.efkefc";
-	const char* kSuperAttackIsReadyEffectPath	= "data/effect/Pierre02/FeatherBomb.efkefc";
+	const char* kSuperAttackIsReadyEffectPath	= "data/effect/Pierre02/CosmicMist3.efkefc";
 
 	const float kWalkSpeed					= 1.0f;
 	const float kNormalSpeed				= 2.5f;
