@@ -250,13 +250,16 @@ void SuperAttackUI::Update()
 
 	if (now_state == SuperAttackState::kReady) 
 	{ 
-		float param_speed = (8 * FPS::GetInstance().GetDeltaTime());
-		float size_speed = (30 * FPS::GetInstance().GetDeltaTime());
+		float param_speed = (20 * FPS::GetInstance().GetDeltaTime());
+		float size_speed = (70 * FPS::GetInstance().GetDeltaTime());
 
 		super_attack_ready_param_ -= param_speed;
-		ready_screen_width_ += ready_screen_width_ratio_ * size_speed;
-		ready_screen_height_ += ready_screen_height_ratio_ * size_speed;
+		// ready_screen_width_ += ready_screen_width_ratio_ * size_speed;
+		// ready_screen_height_ += ready_screen_height_ratio_ * size_speed;
 		
+		ready_screen_width_ +=  size_speed;
+		ready_screen_height_ += size_speed;
+
 		if (super_attack_ready_param_ <= 10)
 		{
 			super_attack_ready_param_ = kSuperAttackParamInitNum;

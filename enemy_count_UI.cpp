@@ -18,7 +18,7 @@ EnemyCountUI::EnemyCountUI(int *p)
 
 	const int kFontSize			= 50;
 	const int kFontThick		= 20;
-	const int kFontType		= DX_FONTTYPE_EDGE;
+	const int kFontType			= DX_FONTTYPE_EDGE;
 
 	float all_size			= (kGameWidth + kGameHeight);
 

@@ -40,10 +40,8 @@ void Effect::Init()
 	is_end_ = FALSE;
 }
 
-
 void Effect::Play()
 {
-	
 	//再生していないときは再生させる
 	if (!is_play_ && !is_end_)
 	{
@@ -58,9 +56,12 @@ void Effect::Play()
 	{
 		play_count_ += speed_ * delta_time_;
 		// 再生中のエフェクトを移動する。
-		SetPosPlayingEffekseer3DEffect(playing_handle_, pos_.x, pos_.y, pos_.z);
-		SetRotationPlayingEffekseer3DEffect(playing_handle_, rot_.x, rot_.y, rot_.z);
+		
 		SetSpeedPlayingEffekseer3DEffect(playing_handle_, (speed_ * delta_time_));
+		SetRotationPlayingEffekseer3DEffect(playing_handle_, rot_.x, rot_.y, rot_.z);
+		SetPosPlayingEffekseer3DEffect(playing_handle_, pos_.x, pos_.y, pos_.z);
+
+		printfDx("x : %.2f, y : %.2f, z : %.2f\n", pos_.x, pos_.y, pos_.z);
 	}
 	
 	

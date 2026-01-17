@@ -30,6 +30,7 @@
 #include"out_side_check.h"
 #include"sound.h"
 #include"2D_sound.h"
+#include"super_attack_state_getter.h"
 
 Player::Player(VECTOR pos, int model, int pad_num,int div, float r, float vertical_num)
 	: model_(model)
@@ -41,10 +42,12 @@ Player::Player(VECTOR pos, int model, int pad_num,int div, float r, float vertic
 	, now_state_(PlayerState::kStand)
 {
 	//ゲームをクリアした後のエフェクトの変数
-	const float kGameClearEffectSpeed = 5.f;
-	const float kGameClearEffectSize = 10.f;
-	const float kGameClearEffectCountMax = 120.f;
-
+	const float kGameClearEffectSpeed			= 5.f;
+	const float kGameClearEffectSize			= 10.f;
+	const float kGameClearEffectCountMax		= 120.f;
+	const float kSuperAttackIsReadyEffectSpeed		= 3.f;
+	const float kSuperAttackIsReadyEffectSize			= 10.f;
+	const float kSuperAttackIsReadyEffectCountMax		= 120.f;
 
 	capsule_.r				= r;
 	capsule_.div_num		= div;
@@ -58,6 +61,7 @@ Player::Player(VECTOR pos, int model, int pad_num,int div, float r, float vertic
 	animation_				= std::make_shared<Animation>();
 	super_attack_			= new SuperAttack(VGet(0, 0, 0), "");
 	game_clear_effect_		= std::make_shared<Effect>(kGameClearEffectPath, VectorAssistant::GetZeroVec(), VectorAssistant::GetZeroVec(), kGameClearEffectSpeed, kGameClearEffectSize, kGameClearEffectCountMax, FALSE);
+	super_attack_is_ready_effect_ = std::make_shared<Effect>(kSuperAttackIsReadyEffectPath, VectorAssistant::GetZeroVec(), VectorAssistant::GetZeroVec(), kSuperAttackIsReadyEffectSpeed, kSuperAttackIsReadyEffectSize, kSuperAttackIsReadyEffectCountMax, TRUE);
 	Init(pos);
 
 	VECTOR capsule_start_pos	= VAdd(pos, VGet(0.f, r, 0.f));
@@ -69,13 +73,13 @@ Player::Player(VECTOR pos, int model, int pad_num,int div, float r, float vertic
 	coll_ = std::make_shared<CollisionCapsule>(capsule_start_pos, capsule_end_pos, r);
 	gravity_check_coll_ = std::make_shared<CollisionSphere>(sphere_pos, gravity_radius);
 
-	const char* kEnemyHitSoundPath			= "data/sound/game/se/hit.mp3";
-	const char* kEnemyHitSpringSoundPath	= "data/sound/game/se/hit_spring.mp3";
-	const char* kVacuumSoundPath				= "data/sound/game/se/vacuum.mp3";
+	const char* kEnemyHitSoundPath					= "data/sound/game/se/hit.mp3";
+	const char* kEnemyHitSpringSoundPath			= "data/sound/game/se/hit_spring.mp3";
+	const char* kVacuumSoundPath					= "data/sound/game/se/vacuum.mp3";
 	const char* kGetSoundPath						= "data/sound/game/se/get.mp3";
 
 	enemy_hit_sound_					= std::make_shared<Sound2D>(kEnemyHitSoundPath, DX_PLAYTYPE_BACK, 150, FALSE);
-	enemy_hit_spring_sound_		= std::make_shared<Sound2D>(kEnemyHitSpringSoundPath, DX_PLAYTYPE_BACK, 130, FALSE);
+	enemy_hit_spring_sound_				= std::make_shared<Sound2D>(kEnemyHitSpringSoundPath, DX_PLAYTYPE_BACK, 130, FALSE);
 	get_sound_							= std::make_shared<Sound2D>(kGetSoundPath, DX_PLAYTYPE_BACK, 180, FALSE);
 	vacuum_sound_						= std::make_shared<Sound2D>(kVacuumSoundPath, DX_PLAYTYPE_LOOP, 150, TRUE);
 
@@ -309,6 +313,8 @@ void Player::Draw()
 		weapon_->Draw(delta_time_);
 		//Situation::GetInstance().SetGetSituationPos(weapon_->GetCollisionData().pos);
 	}
+
+	DrawSphere3D(pos_, 3, 20, GetColor(255, 255, 255), GetColor(255, 255, 255), TRUE);
 }
 
 void Player::Debug()
@@ -410,6 +416,7 @@ void Player::SetDeltaTime(const float& delta_time)
 		weapon_->SetDeltaTime(delta_time_);
 	}
 	super_weapon_spin_effect_->SetDeltaTime(delta_time);
+	super_attack_is_ready_effect_->SetDeltaTime(delta_time);
 	game_clear_effect_->SetDeltaTime(delta_time);
 }
 
@@ -467,8 +474,22 @@ void Player::Update(Stage& stage,float target_rot)
 {
 	if (HitStopTimer::GetInstance().CheckHitStop()) { return; }
 	VECTOR camera_pos = Camera::GetInstance().GetPos();
+
 	if (Situation::GetInstance().GetSituationName() < SituationName::kClearOffset)
 	{
+		
+		// super_attackの状態が、is_readyだとeffectを発生させる
+		if (SuperAttackStateGetter::GetInstance().GetState() == SuperAttackState::kReady)
+		{
+			//エフェクトを発生
+			super_attack_is_ready_effect_->SetPos(pos_);
+			super_attack_is_ready_effect_->Play();
+		}
+		else
+		{
+			super_attack_is_ready_effect_->Init();
+		}
+
 		//サウンドのリセット
 		sound_vibration_->Reset();
 
@@ -561,6 +582,7 @@ void Player::Update(Stage& stage,float target_rot)
 	}
 
 	
+
 
 }
 
@@ -1148,7 +1170,6 @@ void Player::IsHitEnemy(EnemyBase* enemy, bool& got)
 			sound_vibration_->Add(kVacuumSound);
 			is_vacuum_ = TRUE;
 			vacuum_sound_->Update();
-
 		}
 		else
 		{
