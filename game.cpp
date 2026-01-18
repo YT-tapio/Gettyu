@@ -226,7 +226,7 @@ void Game::Init()
     Camera::GetInstance().Awake(brain_->GetPositionFromTarget(player_->GetCenterPos()),
         player_->GetCenterPos(), (DX_PI_F / 180.0f) * 75.0f);
 
-    const char* kStagePath = "data/model/map/arena/map.mv1";
+    const char* kStagePath = "data/model/map/arena/new_arena.mv1";
 
     stage_ = std::make_shared<Stage>(kStagePath, VGet(0, 0, 0), 1.0f);
 

@@ -45,6 +45,11 @@ void ConditionTimer::Stop()
 	is_stop_ = TRUE;
 }
 
+void ConditionTimer::Max()
+{
+	timer_ = max_time_;
+}
+
 float ConditionTimer::GetTimeRatio()
 {
 	return timer_ / max_time_;

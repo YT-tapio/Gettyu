@@ -25,6 +25,8 @@ public:
 
 	void Stop();
 
+	void Max();
+
 	float GetTimeRatio();
 
 	const float GetNowTimer()const;

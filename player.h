@@ -46,8 +46,8 @@ class Player
 private:
 
 	const char* kGameClearEffectPath			= "data/effect/Pierre02/FeatherBomb.efkefc";
-	const char* kSuperAttackIsReadyEffectPath	= "data/effect/Pierre02/CosmicMist3.efkefc";
-
+	const char* kSuperAttackIsReadyEffectPath	= "data/effect/NextSoft01/PowerUp.efkefc";
+	const char* kSuperAttackIsReadyEffectPath2 = "data/effect/NextSoft01/MagicHeal1.efkefc";
 	const float kWalkSpeed					= 1.0f;
 	const float kNormalSpeed				= 2.5f;
 	const float kDashSpeed					= 5.5f;
@@ -81,6 +81,7 @@ private:
 	Effect* super_weapon_spin_effect_ = new Effect("data/effect/NextSoft01/MagicTornade.efkefc", VGet(0.f,0.f,0.f), VGet(0.f, 0.f, 0.f), 7.f, 7.f, 150.f, TRUE);
 	std::shared_ptr<Effect> game_clear_effect_;
 	std::shared_ptr<Effect> super_attack_is_ready_effect_;
+	std::shared_ptr<Effect> super_attack_is_ready_effect_2;
 	SoundVibration* sound_vibration_ = new SoundVibration();
 
 

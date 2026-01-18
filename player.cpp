@@ -45,9 +45,15 @@ Player::Player(VECTOR pos, int model, int pad_num,int div, float r, float vertic
 	const float kGameClearEffectSpeed			= 5.f;
 	const float kGameClearEffectSize			= 10.f;
 	const float kGameClearEffectCountMax		= 120.f;
-	const float kSuperAttackIsReadyEffectSpeed		= 3.f;
-	const float kSuperAttackIsReadyEffectSize			= 3.f;
-	const float kSuperAttackIsReadyEffectCountMax		= 120.f;
+	
+	const float kSuperAttackIsReadyEffectSpeed		= 5.f;
+	const float kSuperAttackIsReadyEffectSize			= 7.f;
+	const float kSuperAttackIsReadyEffectCountMax		= 140.f;
+
+	const float kSuperAttackIsReadyEffectSpeed2			= 5.f;
+	const float kSuperAttackIsReadyEffectSize2				= 7.f;
+	const float kSuperAttackIsReadyEffectCountMax2		= 120.f;
+
 
 	capsule_.r				= r;
 	capsule_.div_num		= div;
@@ -61,7 +67,8 @@ Player::Player(VECTOR pos, int model, int pad_num,int div, float r, float vertic
 	animation_				= std::make_shared<Animation>();
 	super_attack_			= new SuperAttack(VGet(0, 0, 0), "");
 	game_clear_effect_		= std::make_shared<Effect>(kGameClearEffectPath, VectorAssistant::GetZeroVec(), VectorAssistant::GetZeroVec(), kGameClearEffectSpeed, kGameClearEffectSize, kGameClearEffectCountMax, FALSE);
-	super_attack_is_ready_effect_ = std::make_shared<Effect>(kSuperAttackIsReadyEffectPath, VectorAssistant::GetZeroVec(), VectorAssistant::GetZeroVec(), kSuperAttackIsReadyEffectSpeed, kSuperAttackIsReadyEffectSize, kSuperAttackIsReadyEffectCountMax, TRUE);
+	super_attack_is_ready_effect_	 = std::make_shared<Effect>(kSuperAttackIsReadyEffectPath, VectorAssistant::GetZeroVec(), VectorAssistant::GetZeroVec(), kSuperAttackIsReadyEffectSpeed, kSuperAttackIsReadyEffectSize, kSuperAttackIsReadyEffectCountMax, TRUE);
+	super_attack_is_ready_effect_2	 = std::make_shared<Effect>(kSuperAttackIsReadyEffectPath2, VectorAssistant::GetZeroVec(), VectorAssistant::GetZeroVec(), kSuperAttackIsReadyEffectSpeed2, kSuperAttackIsReadyEffectSize2, kSuperAttackIsReadyEffectCountMax2, TRUE);
 	Init(pos);
 
 	VECTOR capsule_start_pos	= VAdd(pos, VGet(0.f, r, 0.f));
@@ -416,6 +423,7 @@ void Player::SetDeltaTime(const float& delta_time)
 	}
 	super_weapon_spin_effect_->SetDeltaTime(delta_time);
 	super_attack_is_ready_effect_->SetDeltaTime(delta_time);
+	super_attack_is_ready_effect_2->SetDeltaTime(delta_time);
 	game_clear_effect_->SetDeltaTime(delta_time);
 }
 
@@ -483,10 +491,15 @@ void Player::Update(Stage& stage,float target_rot)
 			//エフェクトを発生
 			super_attack_is_ready_effect_->SetPos(pos_);
 			super_attack_is_ready_effect_->Play();
+
+			//エフェクトを発生
+			super_attack_is_ready_effect_2->SetPos(pos_);
+			super_attack_is_ready_effect_2->Play();
 		}
 		else
 		{
 			super_attack_is_ready_effect_->Init();
+			super_attack_is_ready_effect_2->Init();
 		}
 
 		//サウンドのリセット
@@ -556,8 +569,8 @@ void Player::Update(Stage& stage,float target_rot)
 		// クリア判定になったらアニメーションを違うのに切り替える
 		GameClearUpdate(camera_pos);
 	}
-	//ここで位置の更新もしておく
-	//ここでのsetをやめる(ゲット時)
+	// ここで位置の更新もしておく
+	// ここでのsetをやめる(ゲット時)
 	
 	if (Situation::GetInstance().GetSituationName() != SituationName::kGet)
 	{

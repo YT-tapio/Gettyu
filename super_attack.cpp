@@ -13,6 +13,7 @@
 #include"2D_sound.h"
 #include"clear_time.h"
 #include"super_attack_state_getter.h"
+#include"debug.h"
 
 SuperAttack::SuperAttack(const VECTOR& pos,const char*  file_path)
 	: now_situation_num_(0)
@@ -138,6 +139,16 @@ void SuperAttack::Update()
 	else
 	{
 		TimerStart();
+	}
+
+
+	// デバッグ時タイマーを直接敵にmaxへ
+	if (Debug::GetInstance().GetDisp())
+	{
+		if (Input::GetInstance().CheckInputKey(KEY_INPUT_P) == InputState::kPush)
+		{
+			cool_time_->Max();
+		}
 	}
 
 	switch (state_)

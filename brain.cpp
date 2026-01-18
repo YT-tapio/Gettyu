@@ -1033,8 +1033,6 @@ void Brain::UpdateTracking(const VECTOR& now_camera_pos,std::shared_ptr<Player> 
 	}
 
 	//playerのvelocityをもらう
-
-
 }
 
 void Brain::UpdateVacuum(std::shared_ptr<Player>player,const VECTOR& camera_pos)
@@ -1060,10 +1058,7 @@ void Brain::UpdateVacuum(std::shared_ptr<Player>player,const VECTOR& camera_pos)
 
 	// target_velocity_を足した値がもともとのと一致しない場合は
 
-
-
 	//吸引が発動したらここで発動
-
 
 	// 今の処理はただ単にplayerのvelocityを受け取っているだけなのでそこからだんだん吸収されているような
 	// playerのvelocityをnormしてそこからだんだんと足していく
@@ -1077,14 +1072,13 @@ void Brain::UpdateVacuum(std::shared_ptr<Player>player,const VECTOR& camera_pos)
 
 	if (player->GetIsVacuum())
 	{
-		//offset_distをだんだんと大きくしていく
-		//加速度
+		// offset_distをだんだんと大きくしていく
+		// 加速度
 
-		//offsetmaxいじょうじゃないなら
+		// offsetmaxいじょうじゃないなら
 		if (!(vacuum_offset_dist_ >=  kOffsetMax))
 		{
 			vacuum_offset_dist_ += (vacuum_offset_dist_ + ((delta_time_ / 10.f) * kOffsetSpeed));
-
 
 			if (vacuum_offset_dist_ > kOffsetMax)
 			{
@@ -1096,7 +1090,6 @@ void Brain::UpdateVacuum(std::shared_ptr<Player>player,const VECTOR& camera_pos)
 	{
 		//offset_distをだんだん小さく
 		//減速
-		
 		if (vacuum_offset_dist_ > 0.f)
 		{
 			vacuum_offset_dist_ -= (delta_time_ * kOffsetSpeed);
@@ -1110,6 +1103,11 @@ void Brain::UpdateVacuum(std::shared_ptr<Player>player,const VECTOR& camera_pos)
 	//今等速でなっている加速にしたい
 	decide_dist = kVacuumDist - vacuum_offset_dist_;
 
+	if (vacuum_offset_dist_ < 0.f)
+	{
+		vacuum_offset_dist_ = 0.f;
+		printfDx("-");
+	}
 
 	VECTOR pos	= GetRotatedByTheDistanceFromThePos(kVacuumVerticalRad, side_rad_, decide_dist, player->GetPos());
 	velocity_	= VSub(pos,camera_pos);
