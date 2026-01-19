@@ -22,9 +22,10 @@ private:
 	// HACK: 壁はXZ平面に垂直である前提で成り立っている。それ以外を置くとバグる
 	int							wall_num_;			// 壁ポリゴンと判断されたポリゴンの数
 	int							floor_num_;			// 床ポリゴンと判断されたポリゴンの数
+	int							prioritize_floor_num_;			// 床ポリゴンと判断されたポリゴンの数
 
 	int before_hit_num_ = 0;
-
+	MV1_COLL_RESULT_POLY* prioritize_floor_[kMaxHitColl];	// 優先される床ポリゴンと判断されたポリゴンの構造体のアドレスを保存しておくためのポインタ配列
 	MV1_COLL_RESULT_POLY* wall_[kMaxHitColl];	// 壁ポリゴンと判断されたポリゴンの構造体のアドレスを保存しておくためのポインタ配列
 	MV1_COLL_RESULT_POLY* floor_[kMaxHitColl];	// 床ポリゴンと判断されたポリゴンの構造体のアドレスを保存しておくためのポインタ配列
 
@@ -56,7 +57,7 @@ private:
 	VECTOR CheckHitWithFloor(Player& player, const VECTOR& check_position);
 
 	// 壁or床の情報を受け取って調整したposを返す
-	VECTOR CheckEntityCollisionFixedPos(Player& player, MV1_COLL_RESULT_POLY* entity, int hit_num, CollisionData& old_cap, CollisionData& future_cap);
+	VECTOR CheckEntityCollisionOffsetVelocity(MV1_COLL_RESULT_POLY* entity, int hit_num, std::shared_ptr<ColliderBase> object_next_coll, std::shared_ptr<ColliderBase> object_future_coll, const VECTOR& velocity);
 
 public:
 

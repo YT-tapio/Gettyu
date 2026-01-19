@@ -298,7 +298,7 @@ void NormalEnemy::Update(std::shared_ptr<Player> player, bool& got)
 	//アニメーションの更新
 	AnimationUpdate();
 
-	velocity_ = stage_->CheckCollision(coll_, velocity_);
+	//velocity_ = stage_->CheckCollision(coll_, velocity_);
 	//ポジションの更新
 
 	pos_ = VAdd(pos_, velocity_);
