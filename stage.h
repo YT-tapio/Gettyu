@@ -28,7 +28,7 @@ private:
 	MV1_COLL_RESULT_POLY* prioritize_floor_[kMaxHitColl];	// 優先される床ポリゴンと判断されたポリゴンの構造体のアドレスを保存しておくためのポインタ配列
 	MV1_COLL_RESULT_POLY* wall_[kMaxHitColl];	// 壁ポリゴンと判断されたポリゴンの構造体のアドレスを保存しておくためのポインタ配列
 	MV1_COLL_RESULT_POLY* floor_[kMaxHitColl];	// 床ポリゴンと判断されたポリゴンの構造体のアドレスを保存しておくためのポインタ配列
-
+	MV1_COLL_RESULT_POLY* all_poly_[kMaxHitColl];
 	std::shared_ptr<ColliderBase> next_to_old_cap_;
 
 	// 検出されたポリゴンが壁ポリゴン( ＸＺ平面に垂直なポリゴン )か床ポリゴン( ＸＺ平面に垂直ではないポリゴン )かを判断し、保存する
@@ -57,7 +57,7 @@ private:
 	VECTOR CheckHitWithFloor(Player& player, const VECTOR& check_position);
 
 	// 壁or床の情報を受け取って調整したposを返す
-	VECTOR CheckEntityCollisionOffsetVelocity(MV1_COLL_RESULT_POLY* entity, int hit_num, std::shared_ptr<ColliderBase> object_next_coll, std::shared_ptr<ColliderBase> object_future_coll, const VECTOR& velocity);
+	VECTOR CheckEntityCollisionOffsetVelocity(MV1_COLL_RESULT_POLY* entity, int hit_num, std::shared_ptr<ColliderBase> obj_coll, const VECTOR& velocity);
 
 public:
 

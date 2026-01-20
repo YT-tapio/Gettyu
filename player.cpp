@@ -320,7 +320,7 @@ void Player::Draw()
 		//Situation::GetInstance().SetGetSituationPos(weapon_->GetCollisionData().pos);
 	}
 
-	DrawSphere3D(pos_, 3, 20, GetColor(255, 255, 255), GetColor(255, 255, 255), TRUE);
+	//DrawSphere3D(pos_, 3, 20, GetColor(255, 255, 255), GetColor(255, 255, 255), TRUE);
 }
 
 void Player::Debug()
@@ -328,15 +328,18 @@ void Player::Debug()
 	if (Debug::GetInstance().GetDisp())
 	{
 		coll_->Debug();
-		gravity_check_coll_->Debug();
+		//gravity_check_coll_->Debug();
 
 		//
-		DrawFormatString(0, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), GetColor(0, 0, 0), "---------player--------");
+		DrawFormatString(0, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), GetColor(0, 0, 255), "---------player--------");
 		Debug::GetInstance().Add();
 
-		DrawFormatString(0, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), GetColor(0, 0, 0), "pos");
+		DrawFormatString(300, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), GetColor(0, 0, 255), "pos");
 		Debug::GetInstance().Add();
-		DrawFormatString(0, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), GetColor(0,0,0), "x : %.2f,y : %.2f,z : %.2f", pos_.x, pos_.y, pos_.z);
+		DrawFormatString(300, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), GetColor(0,0,255), "x : %.2f,y : %.2f,z : %.2f", pos_.x, pos_.y, pos_.z);
+		Debug::GetInstance().Add();
+
+		DrawFormatString(300, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), GetColor(0, 0, 255), "x : %.2f,y : %.2f,z : %.2f", coll_->GetPos().x, coll_->GetPos().y, coll_->GetPos().z);
 		Debug::GetInstance().Add();
 
 		DrawFormatString(0, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), GetColor(0, 0, 0), "%.2f", sound_vibration_->GetNum());
@@ -531,7 +534,7 @@ void Player::Update(Stage& stage,float target_rot)
 
 		if (AnimationType::kAttack > now_type_ && !is_super_attack_)
 		{
-			velocity_ = stage.CheckCollision(coll_, velocity_);
+			velocity_ = stage.CheckCollision(coll_->Clone(), velocity_);
 
 			//velocity_ = VSub(pos_, before_pos);
 

@@ -4,7 +4,7 @@
 #include"debug.h"
 
 CollisionCapsule::CollisionCapsule(const VECTOR& pos,const VECTOR& end_pos,const float& r)
-	:ColliderBase(pos,CollisionName::kSphere,r)
+	:ColliderBase(pos,CollisionName::kCapsule,r)
 	,end_pos_(end_pos)
 {
 
@@ -28,6 +28,7 @@ void CollisionCapsule::Debug()
 	DrawFormatString(0, Debug::GetInstance().GetCurrentNum() * Debug::GetInstance().GetFontSize(), GetColor(255, 255, 255), "/*----capsule---*/");
 	Debug::GetInstance().Add();
 	Debug::GetInstance().VectorDraw(pos_);
+	Debug::GetInstance().VectorDraw(end_pos_);
 }
 
 
