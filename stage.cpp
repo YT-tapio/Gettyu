@@ -41,17 +41,17 @@ Stage::~Stage()
 VECTOR Stage::CheckEntityCollisionOffsetVelocity(MV1_COLL_RESULT_POLY* entity, int hit_num, std::shared_ptr<ColliderBase> obj_coll, const VECTOR& velocity)
 {
 	VECTOR offset_vel	= velocity;
-	auto old_coll = obj_coll->Clone();
-	auto next_coll = old_coll->Clone();
+	auto old_coll		= obj_coll->Clone();
+	auto next_coll		= obj_coll->Clone();
 
 	next_coll->Update(offset_vel);
 	
 	VECTOR old_pos		= old_coll->GetPos();
 	VECTOR next_pos		= next_coll->GetPos();
 
-	VECTOR capsule_start_pos = old_coll->GetCenterPos();
-	VECTOR capsule_end_pos = next_coll->GetCenterPos();
-	float coll_radius = old_coll->GetWidth();
+	VECTOR capsule_start_pos	= old_coll->GetCenterPos();
+	VECTOR capsule_end_pos		= next_coll->GetCenterPos();
+	float coll_radius			= old_coll->GetWidth();
 
 	for (int k = 0; k < kHitTryNum; k++)
 	{
@@ -61,7 +61,7 @@ VECTOR Stage::CheckEntityCollisionOffsetVelocity(MV1_COLL_RESULT_POLY* entity, i
 			//ポリゴンを代入
 			auto poly = entity[i];
 			//衝突しているとき
-			if (next_coll->IsHitTriangle(poly.Position[0], poly.Position[1], poly.Position[2]) ||
+			if (next_coll->IsHitTriangle(poly.Position[0], poly.Position[1], poly.Position[2]) || old_coll->IsHitTriangle(poly.Position[0], poly.Position[1], poly.Position[2]) ||
 				(HitCheck_Line_Triangle(old_coll->GetPos(), next_coll->GetPos(), poly.Position[0], poly.Position[1], poly.Position[2]).HitFlag) == 1)
 			{
 				//中点を出す
@@ -73,9 +73,9 @@ VECTOR Stage::CheckEntityCollisionOffsetVelocity(MV1_COLL_RESULT_POLY* entity, i
 
 				/*----------ここからはセグメントのやつ(capsuleのstart_posのやつ)------------*/
 
-			//ポリゴンの中点からの距離を見てから、そのあと正射影ベクトルを出す。
-			//センターからの距離
-			//カプセルの開始の位置
+				//ポリゴンの中点からの距離を見てから、そのあと正射影ベクトルを出す。
+				//センターからの距離
+				//カプセルの開始の位置
 				VECTOR poly_to_old				= VectorAssistant::GetZeroVec();			//old
 				VECTOR poly_to_next				= VectorAssistant::GetZeroVec();
 
@@ -99,10 +99,9 @@ VECTOR Stage::CheckEntityCollisionOffsetVelocity(MV1_COLL_RESULT_POLY* entity, i
 
 
 				// velocityを足し終わった後に法線分三角形にめり込んでいる分を押し出す
-				VECTOR offset_pos = VSub(next_pos, poly_to_next_proj_vec);
-				offset_pos = VAdd(offset_pos, VScale(poly.Normal, old_coll->GetRadius()));
+				VECTOR offset_pos	= VSub(next_pos, poly_to_next_proj_vec);
+				offset_pos			= VAdd(offset_pos, VScale(poly.Normal, old_coll->GetRadius()));
 
-			
 				//　元のposから、offsetした後のposの差を見る
 				offset_vel = VSub(offset_pos, old_pos);
 
@@ -120,7 +119,7 @@ VECTOR Stage::CheckEntityCollisionOffsetVelocity(MV1_COLL_RESULT_POLY* entity, i
 				{
 					poly = entity[j];
 
-					if (next_to_old_cap_->IsHitTriangle(poly.Position[0], poly.Position[1], poly.Position[2])
+					if (old_coll->IsHitTriangle(poly.Position[0], poly.Position[1], poly.Position[2]) || next_coll->IsHitTriangle(poly.Position[0], poly.Position[1], poly.Position[2])
 						|| (HitCheck_Line_Triangle(old_pos, next_pos, poly.Position[0], poly.Position[1], poly.Position[2]).HitFlag) == 1)
 					{
 						is_hit = TRUE;
@@ -461,9 +460,13 @@ void Stage::Draw()
 	for (int i = 0; i < wall_num_; i++)
 	{
 		auto poly = wall_[i];
+		DrawTriangle3D(poly->Position[0], poly->Position[1], poly->Position[2], GetColor(0, 255, 0), FALSE);
+	}
+
+	for (int i = 0; i < floor_num_; i++)
+	{
+		auto poly = floor_[i];
 		DrawTriangle3D(poly->Position[0], poly->Position[1], poly->Position[2], GetColor(255, 0, 0), FALSE);
-
-
 	}
 
 }
@@ -516,43 +519,33 @@ VECTOR Stage::CheckCollision(std::shared_ptr<ColliderBase> object_coll, const VE
 		
 		for (int i = 0; i < hit_dim.HitNum; i++)
 		{
-			auto poly = hit_dim.Dim[i];
-			all_poly_[i] = &hit_dim.Dim[i];
-
-			//この瞬間に優先されるべき床の検出を行う
-
-			if (poly.Normal.y == 0.f)
+			if (fabs(hit_dim.Dim[i].Normal.y) < 0.1f)
 			{
-				//壁
-				is_hit_wall = TRUE;
+				// 壁
 				wall_[wall_num_] = &hit_dim.Dim[i];
 				wall_num_++;
 			}
 			else
 			{
+				// 床
 				floor_[floor_num_] = &hit_dim.Dim[i];
 				floor_num_++;
 			}
 		}
-
-		// 優先されるべき床
 		
 		if (wall_num_ > 0)
 		{
-			// 壁
 			offset_vel = CheckEntityCollisionOffsetVelocity(*wall_, wall_num_, old_coll, offset_vel);
 		}
 
 		if (floor_num_ > 0)
 		{
-			// 床
- 			offset_vel = CheckEntityCollisionOffsetVelocity(*floor_, floor_num_, old_coll, offset_vel);
+			offset_vel = CheckEntityCollisionOffsetVelocity(*floor_, floor_num_, old_coll, offset_vel);
 		}
 		
 		
 		// 検出したプレイヤーの周囲のポリゴン情報を開放する
 		MV1CollResultPolyDimTerminate(hit_dim);
-
 	}
 
 	return offset_vel;

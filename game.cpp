@@ -293,7 +293,10 @@ void Game::Update(SceneName& name)
     //全体のタイムスケール
     static float time_scale = 1.0f;
 
-
+    if (CheckHitKey(KEY_INPUT_UP))      { time_scale += 0.01f; }
+    if (CheckHitKey(KEY_INPUT_DOWN))    { time_scale -= 0.01f; }
+    if (time_scale < 0.f)               { time_scale = 0.f; }
+    FPS::GetInstance().SetTimeScale(time_scale);
 
     if (!stand_by_timer_->GetIsEnd())
     {
