@@ -531,8 +531,101 @@ VECTOR Stage::CheckCollision(std::shared_ptr<ColliderBase> object_coll, const VE
 				floor_[floor_num_] = &hit_dim.Dim[i];
 				floor_num_++;
 			}
+			all_poly_[i] = &hit_dim.Dim[i];
 		}
-		
+
+
+		for (int k = 0; k < kHitTryNum; k++)
+		{
+			bool is_hit = FALSE;
+			for (int i = 0; i < hit_dim.HitNum; i++)
+			{
+				//ポリゴンを代入
+				auto poly = *all_poly_[i];
+				//衝突しているとき
+				if (next_coll->IsHitTriangle(poly.Position[0], poly.Position[1], poly.Position[2]) || old_coll->IsHitTriangle(poly.Position[0], poly.Position[1], poly.Position[2]) ||
+					(HitCheck_Line_Triangle(old_coll->GetPos(), next_coll->GetPos(), poly.Position[0], poly.Position[1], poly.Position[2]).HitFlag) == 1)
+				{
+					//中点を出す
+					VECTOR poly_center_pos =
+						VGet((poly.Position[0].x + poly.Position[1].x + poly.Position[2].x) / 3,
+							(poly.Position[0].y + poly.Position[1].y + poly.Position[2].y) / 3,
+							(poly.Position[0].z + poly.Position[1].z + poly.Position[2].z) / 3
+						);
+
+
+					if (IsFlat(poly.Normal) && wall_num_ != 0)
+					{
+						if (!IsStair(poly_center_pos, old_pos, old_coll->GetRadius())) { continue; }
+					}
+
+					/*----------ここからはセグメントのやつ(capsuleのstart_posのやつ)------------*/
+
+					//ポリゴンの中点からの距離を見てから、そのあと正射影ベクトルを出す。
+					//センターからの距離
+					//カプセルの開始の位置
+					VECTOR poly_to_old = VectorAssistant::GetZeroVec();			//old
+					VECTOR poly_to_next = VectorAssistant::GetZeroVec();
+
+					//正射影ベクトルを出す
+					VECTOR poly_to_old_proj_vec = VectorAssistant::GetZeroVec();
+					VECTOR poly_to_next_proj_vec = VectorAssistant::GetZeroVec();
+
+					//ポリゴンの中点からの距離を見てから、そのあと正射影ベクトルを出す。
+					//センターからの距離
+					poly_to_old = VSub(old_pos, poly_center_pos);			//old
+					poly_to_next = VSub(next_pos, poly_center_pos);			//next
+
+					//nowのpoly.normalの向きを逆にする
+					auto reverce_norm = VScale(poly.Normal, -1);
+
+					// 正射影ベクトルを出す(元のposから)
+					poly_to_old_proj_vec = VectorAssistant::GetProj(poly.Normal, poly_to_old);
+
+					// 次のposから
+					poly_to_next_proj_vec = VectorAssistant::GetProj(reverce_norm, poly_to_next);
+
+
+					// velocityを足し終わった後に法線分三角形にめり込んでいる分を押し出す
+					VECTOR offset_pos = VSub(next_pos, poly_to_next_proj_vec);
+					offset_pos = VAdd(offset_pos, VScale(poly.Normal, old_coll->GetRadius()));
+
+					//　元のposから、offsetした後のposの差を見る
+					offset_vel = VSub(offset_pos, old_pos);
+
+					//offset分足したカプセルの座標
+					next_coll = old_coll->Clone();
+					next_coll->Update(offset_vel);
+					next_pos = next_coll->GetPos();
+					capsule_end_pos = next_coll->GetCenterPos();
+
+					//当たり判定検出の位置を更新
+					next_to_old_cap_ = std::make_shared<CollisionCapsule>(capsule_start_pos, capsule_end_pos, coll_radius);
+
+					//移動後にもう一度何かと当たっているのかを調べる
+					for (int j = 0; j < hit_dim.HitNum; j++)
+					{
+						poly = *all_poly_[j];
+
+						if (old_coll->IsHitTriangle(poly.Position[0], poly.Position[1], poly.Position[2]) || next_coll->IsHitTriangle(poly.Position[0], poly.Position[1], poly.Position[2])
+							|| (HitCheck_Line_Triangle(old_pos, next_pos, poly.Position[0], poly.Position[1], poly.Position[2]).HitFlag) == 1)
+						{
+							is_hit = TRUE;
+							break;
+						}
+					}
+
+					//全てのポリゴンと当たっていない場合ループ終了
+					if (!is_hit)
+					{
+						break;
+					}
+				}
+			}
+		}
+
+
+		/*
 		if (wall_num_ > 0)
 		{
 			offset_vel = CheckEntityCollisionOffsetVelocity(*wall_, wall_num_, old_coll, offset_vel);
@@ -543,6 +636,7 @@ VECTOR Stage::CheckCollision(std::shared_ptr<ColliderBase> object_coll, const VE
 			offset_vel = CheckEntityCollisionOffsetVelocity(*floor_, floor_num_, old_coll, offset_vel);
 		}
 		
+		*/
 		
 		// 検出したプレイヤーの周囲のポリゴン情報を開放する
 		MV1CollResultPolyDimTerminate(hit_dim);
