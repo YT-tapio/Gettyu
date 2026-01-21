@@ -41,7 +41,7 @@ public:
 
 	void End();
 
-
+	void Draw();
 
 
 	void SetPos(const VECTOR& pos) { pos_ = pos; }

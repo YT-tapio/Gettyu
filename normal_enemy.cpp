@@ -85,7 +85,7 @@ void NormalEnemy::DecideNextPos()
 
 bool NormalEnemy::CheckIsGound()
 {
-	return !stage_->CheckDownColl(gravity_check_coll_);
+	return stage_->CheckDownColl(gravity_check_coll_);
 }
 
 void NormalEnemy::Gravity()
@@ -298,7 +298,7 @@ void NormalEnemy::Update(std::shared_ptr<Player> player, bool& got)
 	//アニメーションの更新
 	AnimationUpdate();
 
-	//velocity_ = stage_->CheckCollision(coll_, velocity_);
+	// velocity_ = stage_->CheckCollision(coll_, velocity_);
 	//ポジションの更新
 
 	pos_ = VAdd(pos_, velocity_);
@@ -340,8 +340,8 @@ void NormalEnemy::Patrolling()
 
 	velocity_ = VAdd(velocity_, vel);
 	total_vel_ = VAdd(total_vel_, vel);
-
-	dir_ = VNorm(velocity_);
+	if(VSize(velocity_) > 0){ dir_ = VNorm(velocity_); }
+	
 
 	rot_.y = VectorAssistant::GetPlaneRad(dir_);
 
@@ -398,16 +398,17 @@ void NormalEnemy::Fleeping(std::shared_ptr<Player> player)
 
 	if (lerp_flag_)
 	{
-		vel = NormalLerp(pos_, target_pos_, fleeping_speed_, lerp_flag_);
+		vel = VectorAssistant::GetPlane(VNorm(NormalLerp(pos_, target_pos_, fleeping_speed_, lerp_flag_)));	//平たんにする
 	}
 	else
 	{
 		DecideFleepingPlace(player, my_way_point_);
 	}
 
-	// ラープし終わったら新しい目標地点を選ぶ
+	vel = VScale(vel, fleeping_speed_);
 	velocity_	= VAdd(velocity_, VScale(vel, delta_time_));
-	dir_		= VNorm(velocity_);
+	if (VSize(velocity_) > 0){ dir_ = VNorm(velocity_); }
+	
 
 	rot_.y		= VectorAssistant::GetPlaneRad(dir_);
 

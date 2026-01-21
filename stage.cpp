@@ -9,6 +9,7 @@
 #include"collision_base.h"
 #include"collision_sphere.h"
 #include"collision_capsule.h"
+#include"const_rad.h"
 
 Stage::Stage(const char* path, VECTOR pos, float scale)
 	: ObjectBase(pos, VectorAssistant::GetZeroVec(), VectorAssistant::GetSame3DVec(scale), path)
@@ -188,22 +189,22 @@ void Stage::MakeCollCheckCapsule(CapsuleData old_cap, CapsuleData next_cap)
 
 }
 
-
 bool Stage::IsStair(const VECTOR& poly_pos, const VECTOR& entity_pos,const float& r)
 {
 	// polyの高さがentityのposよりも小さく半径内なら
-
+	/*
 	if (entity_pos.y > poly_pos.y)
 	{
 		//polyとentityの距離が半径分離れている
 		float sub = entity_pos.y - poly_pos.y;
 		return sub < r;		//半径よりも低い
 	}
+	*/
 	
-	VECTOR dist = VSub(poly_pos, entity_pos);
+	
+	//VECTOR dist = VSub(poly_pos, entity_pos);
 
-
-	return (VSize(dist) < r);
+	return poly_pos.y < entity_pos.y;
 }
 
 bool Stage::IsFlat(const VECTOR& norm)
@@ -214,7 +215,7 @@ bool Stage::IsFlat(const VECTOR& norm)
 bool Stage::CheckDownColl(const std::shared_ptr<ColliderBase> coll)
 {
 	bool flag = FALSE;				//こいつが返す
-	const VECTOR kDownVel = VGet(0.f, -0.3f, 0.f);
+	const VECTOR kDownVel = VGet(0.f, -0.2f, 0.f);
 	//最初になにも当たっていないかを確認
 	
 	auto hit_dim = coll->GetCollInfo(model_);
@@ -231,16 +232,17 @@ bool Stage::CheckDownColl(const std::shared_ptr<ColliderBase> coll)
 		//下に少し下げてもなんとも当たらないのなら
 		if (hit_dim.HitNum == 0)
 		{
+			flag = FALSE;
+		}
+		else
+		{
 			flag = TRUE;
 		}
-
-
-
 	}
 	else
 	{
 		// 何かしらにあたっているときに地面じゃないなら
-		flag = FALSE;
+		flag = TRUE;
 	}
 
 	//データ開放
@@ -248,8 +250,6 @@ bool Stage::CheckDownColl(const std::shared_ptr<ColliderBase> coll)
 
 	return flag;
 }
-
-
 
 VECTOR Stage::CheckHitWithWall(Player& player, const VECTOR& check_position)
 {
@@ -456,17 +456,19 @@ void Stage::Draw()
 	MV1SetMatrix(model_, mat_);
 	MV1DrawModel(model_);
 
-
-	for (int i = 0; i < wall_num_; i++)
+	for (auto& poly:wall_polys_)
 	{
-		auto poly = wall_[i];
-		DrawTriangle3D(poly->Position[0], poly->Position[1], poly->Position[2], GetColor(0, 255, 0), FALSE);
+		DrawTriangle3D(poly.pos[0], poly.pos[1], poly.pos[2], GetColor(0, 255, 0), FALSE);
 	}
 
-	for (int i = 0; i < floor_num_; i++)
+	for (auto& poly : floor_polys_)
 	{
-		auto poly = floor_[i];
-		DrawTriangle3D(poly->Position[0], poly->Position[1], poly->Position[2], GetColor(255, 0, 0), FALSE);
+		DrawTriangle3D(poly.pos[0], poly.pos[1], poly.pos[2], GetColor(255, 0, 0), FALSE);
+	}
+
+	for (auto& poly : prioritize_floor_polys_)
+	{
+		DrawTriangle3D(poly.pos[0], poly.pos[1], poly.pos[2], GetColor(0, 0, 255), FALSE);
 	}
 
 }
@@ -507,7 +509,9 @@ VECTOR Stage::CheckCollision(std::shared_ptr<ColliderBase> object_coll, const VE
 	float coll_radius				= old_coll->GetWidth();
 	//当たり判定の検出のカプセルを作る
 	next_to_old_cap_ = std::make_shared<CollisionCapsule>(capsule_start_pos, capsule_end_pos, coll_radius);
-
+	prioritize_floor_polys_.clear();
+	floor_polys_.clear();
+	wall_polys_.clear();
 	// HACK: ステージポリゴンが複数ある場合、ここが繰り返し処理になる
 	{
 		// プレイヤーの周囲にあるステージポリゴンを取得する
@@ -515,49 +519,107 @@ VECTOR Stage::CheckCollision(std::shared_ptr<ColliderBase> object_coll, const VE
 		auto hit_dim = next_to_old_cap_->GetCollInfo(model_);
 		//playerが動いていない場合も考えたい	
 		
-		//さきにかべに当たっているのなら検知させておく
 		
+		const float kWallRad = kOneRad * 80.f;
 		for (int i = 0; i < hit_dim.HitNum; i++)
 		{
-			if (fabs(hit_dim.Dim[i].Normal.y) < 0.1f)
+			auto norm_vertical_dot = VDot(VGet(0.f, 1.f, 0.f), VNorm(hit_dim.Dim[i].Normal));	//真上に線を伸ばした時の角度
+			float rad = acosf(norm_vertical_dot);
+			PolyVertexPos vertex;
+
+			for (int j = 0; j < kVertex; j++)
+			{
+				vertex.pos[j] = hit_dim.Dim[i].Position[j];
+			}
+
+			if (rad > kWallRad)
 			{
 				// 壁
 				wall_[wall_num_] = &hit_dim.Dim[i];
 				wall_num_++;
+
+				wall_polys_.push_back(vertex);
 			}
 			else
 			{
-				// 床
-				floor_[floor_num_] = &hit_dim.Dim[i];
-				floor_num_++;
+				auto poly = hit_dim.Dim[i];
+				//中点を出す
+				VECTOR poly_center_pos =
+					VGet((poly.Position[0].x + poly.Position[1].x + poly.Position[2].x) / 3,
+						(poly.Position[0].y + poly.Position[1].y + poly.Position[2].y) / 3,
+						(poly.Position[0].z + poly.Position[1].z + poly.Position[2].z) / 3
+					);
+
+				if (next_pos.y < poly_center_pos.y)
+				{
+					// 床
+					floor_[floor_num_] = &hit_dim.Dim[i];
+					floor_num_++;
+					floor_polys_.push_back(vertex);
+				}
+				else
+				{
+					// 床
+					prioritize_floor_[prioritize_floor_num_] = &hit_dim.Dim[i];
+					prioritize_floor_num_++;
+					prioritize_floor_polys_.push_back(vertex);
+				}
+				
+				
 			}
-			all_poly_[i] = &hit_dim.Dim[i];
+
+			
+
+			//all_poly_[i] = &hit_dim.Dim[i];
 		}
 
+		int all_poly_num = 0;
+
+		for (int i = 0; i < prioritize_floor_num_; i++)
+		{
+			all_poly_[all_poly_num] = prioritize_floor_[i];
+			all_poly_num++;
+		}
+
+		for (int i = 0; i < wall_num_; i++)
+		{
+			all_poly_[all_poly_num] = wall_[i];
+			all_poly_num++;
+		}
+
+		for (int i = 0; i < floor_num_; i++)
+		{
+			all_poly_[all_poly_num] = floor_[i];
+			all_poly_num++;
+		}
+
+		printfDx("%d\n", all_poly_num);
 
 		for (int k = 0; k < kHitTryNum; k++)
 		{
 			bool is_hit = FALSE;
-			for (int i = 0; i < hit_dim.HitNum; i++)
+			for (int i = 0; i < all_poly_num; i++)
 			{
 				//ポリゴンを代入
-				auto poly = *all_poly_[i];
+				auto poly = all_poly_[i];
 				//衝突しているとき
-				if (next_coll->IsHitTriangle(poly.Position[0], poly.Position[1], poly.Position[2]) || old_coll->IsHitTriangle(poly.Position[0], poly.Position[1], poly.Position[2]) ||
-					(HitCheck_Line_Triangle(old_coll->GetPos(), next_coll->GetPos(), poly.Position[0], poly.Position[1], poly.Position[2]).HitFlag) == 1)
+				if (next_coll->IsHitTriangle(poly->Position[0], poly->Position[1], poly->Position[2]) ||
+					(HitCheck_Line_Triangle(old_coll->GetPos(), next_coll->GetPos(), poly->Position[0], poly->Position[1], poly->Position[2]).HitFlag) == 1)
 				{
 					//中点を出す
 					VECTOR poly_center_pos =
-						VGet((poly.Position[0].x + poly.Position[1].x + poly.Position[2].x) / 3,
-							(poly.Position[0].y + poly.Position[1].y + poly.Position[2].y) / 3,
-							(poly.Position[0].z + poly.Position[1].z + poly.Position[2].z) / 3
+						VGet((poly->Position[0].x + poly->Position[1].x + poly->Position[2].x) / 3,
+							(poly->Position[0].y + poly->Position[1].y + poly->Position[2].y) / 3,
+							(poly->Position[0].z + poly->Position[1].z + poly->Position[2].z) / 3
 						);
 
-
-					if (IsFlat(poly.Normal) && wall_num_ != 0)
+					/*
+					if (IsFlat(poly->Normal) && wall_num_ != 0)
 					{
 						if (!IsStair(poly_center_pos, old_pos, old_coll->GetRadius())) { continue; }
 					}
+					*/
+					
 
 					/*----------ここからはセグメントのやつ(capsuleのstart_posのやつ)------------*/
 
@@ -577,10 +639,10 @@ VECTOR Stage::CheckCollision(std::shared_ptr<ColliderBase> object_coll, const VE
 					poly_to_next = VSub(next_pos, poly_center_pos);			//next
 
 					//nowのpoly.normalの向きを逆にする
-					auto reverce_norm = VScale(poly.Normal, -1);
+					auto reverce_norm = VScale(poly->Normal, -1);
 
 					// 正射影ベクトルを出す(元のposから)
-					poly_to_old_proj_vec = VectorAssistant::GetProj(poly.Normal, poly_to_old);
+					poly_to_old_proj_vec = VectorAssistant::GetProj(poly->Normal, poly_to_old);
 
 					// 次のposから
 					poly_to_next_proj_vec = VectorAssistant::GetProj(reverce_norm, poly_to_next);
@@ -588,7 +650,7 @@ VECTOR Stage::CheckCollision(std::shared_ptr<ColliderBase> object_coll, const VE
 
 					// velocityを足し終わった後に法線分三角形にめり込んでいる分を押し出す
 					VECTOR offset_pos = VSub(next_pos, poly_to_next_proj_vec);
-					offset_pos = VAdd(offset_pos, VScale(poly.Normal, old_coll->GetRadius()));
+					offset_pos = VAdd(offset_pos, VScale(poly->Normal, old_coll->GetRadius()));
 
 					//　元のposから、offsetした後のposの差を見る
 					offset_vel = VSub(offset_pos, old_pos);
@@ -605,10 +667,10 @@ VECTOR Stage::CheckCollision(std::shared_ptr<ColliderBase> object_coll, const VE
 					//移動後にもう一度何かと当たっているのかを調べる
 					for (int j = 0; j < hit_dim.HitNum; j++)
 					{
-						poly = *all_poly_[j];
+						poly = all_poly_[j];
 
-						if (old_coll->IsHitTriangle(poly.Position[0], poly.Position[1], poly.Position[2]) || next_coll->IsHitTriangle(poly.Position[0], poly.Position[1], poly.Position[2])
-							|| (HitCheck_Line_Triangle(old_pos, next_pos, poly.Position[0], poly.Position[1], poly.Position[2]).HitFlag) == 1)
+						if (next_coll->IsHitTriangle(poly->Position[0], poly->Position[1], poly->Position[2])
+							|| (HitCheck_Line_Triangle(old_pos, next_pos, poly->Position[0], poly->Position[1], poly->Position[2]).HitFlag) == 1)
 						{
 							is_hit = TRUE;
 							break;

@@ -32,7 +32,6 @@ Effect::~Effect()
 	DeleteEffekseerEffect(handle_);
 }
 
-
 void Effect::Init()
 {
 	play_count_ = 0.f;
@@ -89,4 +88,9 @@ void Effect::End()
 {
 	Init();
 	StopEffekseer3DEffect(playing_handle_);
+}
+
+void Effect::Draw()
+{
+	//DrawEffekseer3D_Draw(playing_handle_);
 }

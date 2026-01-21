@@ -1,10 +1,16 @@
 #pragma once
 #include"object_base.h"
-
+#include<vector>
 struct CapsuleData;
 class Player;
 class WayPoint;
 class ColliderBase;
+const int kVertex = 3;
+
+struct PolyVertexPos
+{
+	VECTOR pos[kVertex];
+};
 
 class Stage : public ObjectBase
 {
@@ -30,6 +36,11 @@ private:
 	MV1_COLL_RESULT_POLY* floor_[kMaxHitColl];	// 床ポリゴンと判断されたポリゴンの構造体のアドレスを保存しておくためのポインタ配列
 	MV1_COLL_RESULT_POLY* all_poly_[kMaxHitColl];
 	std::shared_ptr<ColliderBase> next_to_old_cap_;
+
+	std::vector<PolyVertexPos> prioritize_floor_polys_;
+	std::vector<PolyVertexPos> floor_polys_;
+	std::vector<PolyVertexPos> wall_polys_;
+
 
 	// 検出されたポリゴンが壁ポリゴン( ＸＺ平面に垂直なポリゴン )か床ポリゴン( ＸＺ平面に垂直ではないポリゴン )かを判断し、保存する
 	void AnalyzeWallAndFloor(MV1_COLL_RESULT_POLY_DIM hit_dim, const VECTOR& check_position);
@@ -77,7 +88,7 @@ public:
 	/// 少し下に下げた時にあたっているかのcheck
 	/// </summary>
 	/// <param name="coll"></param>
-	/// <returns></returns>
+	/// <returns>当たっているときTRUE</returns>
 	bool CheckDownColl(std::shared_ptr<ColliderBase> coll);
 
 	//VECTOR CheckEnemyCollision(EnemyBase* enemy, const VECTOR& velocity);

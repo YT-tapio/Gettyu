@@ -66,9 +66,9 @@ Player::Player(VECTOR pos, int model, int pad_num,int div, float r, float vertic
 	is_hit_					= TRUE;
 	animation_				= std::make_shared<Animation>();
 	super_attack_			= new SuperAttack(VGet(0, 0, 0), "");
-	game_clear_effect_		= std::make_shared<Effect>(kGameClearEffectPath, VectorAssistant::GetZeroVec(), VectorAssistant::GetZeroVec(), kGameClearEffectSpeed, kGameClearEffectSize, kGameClearEffectCountMax, FALSE);
-	super_attack_is_ready_effect_	 = std::make_shared<Effect>(kSuperAttackIsReadyEffectPath, VectorAssistant::GetZeroVec(), VectorAssistant::GetZeroVec(), kSuperAttackIsReadyEffectSpeed, kSuperAttackIsReadyEffectSize, kSuperAttackIsReadyEffectCountMax, TRUE);
-	super_attack_is_ready_effect_2	 = std::make_shared<Effect>(kSuperAttackIsReadyEffectPath2, VectorAssistant::GetZeroVec(), VectorAssistant::GetZeroVec(), kSuperAttackIsReadyEffectSpeed2, kSuperAttackIsReadyEffectSize2, kSuperAttackIsReadyEffectCountMax2, TRUE);
+	game_clear_effect_					= std::make_shared<Effect>(kGameClearEffectPath, VectorAssistant::GetZeroVec(), VectorAssistant::GetZeroVec(), kGameClearEffectSpeed, kGameClearEffectSize, kGameClearEffectCountMax, FALSE);
+	super_attack_is_ready_effect_		= std::make_shared<Effect>(kSuperAttackIsReadyEffectPath, VectorAssistant::GetZeroVec(), VectorAssistant::GetZeroVec(), kSuperAttackIsReadyEffectSpeed, kSuperAttackIsReadyEffectSize, kSuperAttackIsReadyEffectCountMax, TRUE);
+	super_attack_is_ready_effect_2		= std::make_shared<Effect>(kSuperAttackIsReadyEffectPath2, VectorAssistant::GetZeroVec(), VectorAssistant::GetZeroVec(), kSuperAttackIsReadyEffectSpeed2, kSuperAttackIsReadyEffectSize2, kSuperAttackIsReadyEffectCountMax2, TRUE);
 	Init(pos);
 
 	VECTOR capsule_start_pos	= VAdd(pos, VGet(0.f, r, 0.f));
@@ -173,12 +173,10 @@ bool Player::SuperAttackCondition()
 
 void Player::CheckIsGround(Stage& stage)
 {
-	is_ground_ = !stage.CheckDownColl(gravity_check_coll_);	
+	bool prev_is_ground_ = is_ground_;
 
-	if (is_ground_)
-	{
-		fall_speed_ = 0.f;
-	}
+	is_ground_ = stage.CheckDownColl(gravity_check_coll_);	
+	if (is_ground_ != prev_is_ground_) { fall_speed_ = 0.f; }
 }
 
 void Player::GameClearUpdate(const VECTOR& camera_pos)
@@ -319,6 +317,9 @@ void Player::Draw()
 		weapon_->Draw(delta_time_);
 		//Situation::GetInstance().SetGetSituationPos(weapon_->GetCollisionData().pos);
 	}
+	super_attack_is_ready_effect_->Draw();
+	super_attack_is_ready_effect_2->Draw();
+	game_clear_effect_->Draw();
 
 	//DrawSphere3D(pos_, 3, 20, GetColor(255, 255, 255), GetColor(255, 255, 255), TRUE);
 }
@@ -512,9 +513,6 @@ void Player::Update(Stage& stage,float target_rot)
 		// ターゲットを切り替えた時のrotationを色んな奴に持たすわけにはいかないのでplayerに持たせる、
 		// updateにはposだけにしといていいと思う(引き数)
 
-		//ここで着地しているかの判断を行う
-		CheckIsGround(stage);
-
 		super_attack_->Update();
 
 		InputMovement(camera_pos, target_rot);
@@ -547,6 +545,9 @@ void Player::Update(Stage& stage,float target_rot)
 			capsule_.end_pos = capsule_.start_pos;
 			capsule_.end_pos.y = capsule_.vertical_num;
 		}
+
+		//ここで着地しているかの判断を行う
+		CheckIsGround(stage);
 
 		if (OutSide::Check(pos_))
 		{
@@ -594,6 +595,8 @@ void Player::Update(Stage& stage,float target_rot)
 			weapon_->SetModelMatrix(test);
 			weapon_->SetPos(MV1GetFramePosition(model_, frame_num_));
 		}
+
+
 	}
 
 	
@@ -660,6 +663,8 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 
 	JumpAction(velocity);
 
+	
+
 	if (is_super_attack_)
 	{	
 		velocity_ = VGet(0.f, 0.f, 0.f);
@@ -688,8 +693,6 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 	// 必殺技(カメラが動いてない)
 	// 攻撃
 
-	
-	
 	
 
 	
@@ -1074,12 +1077,6 @@ void Player::CheckReverseRot(float& now_rot, float target_rot)
 
 void  Player::JumpAction(VECTOR& velocity)
 {
-	//重力
-	//fall_speed_ -= (kGravity * delta_time_);
-
-	//地面にいるかの判定
-	//is_ground_ = CheckGround();
-
 	if (is_ground_)
 	{
 		if (Input::GetInstance().CheckInputKey(KeyConfig::kJumpKey) == InputState::kPush ||
