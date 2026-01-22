@@ -195,7 +195,6 @@ void Game::UpdateStandBy()
 
 //
 
-
 void Game::Init()
 {
     Situation::GetInstance().Init();
@@ -337,6 +336,28 @@ void Game::Update(SceneName& name)
     concentration_line_->Update();
     concentration_line_->SetIsDisp(player_->GetIsVacuum());
     
+    const float kMaxRad = 180;
+
+    // デバッグ
+    norm_ = VNorm(norm_);
+    if (CheckHitKey(KEY_INPUT_3)) { x_rad_ += 10 * FPS::GetInstance().GetDeltaTime(); }
+    if (CheckHitKey(KEY_INPUT_4)) { x_rad_ -= 10 * FPS::GetInstance().GetDeltaTime(); }
+    if (CheckHitKey(KEY_INPUT_5)) { y_rad_ += 10 * FPS::GetInstance().GetDeltaTime(); }
+    if (CheckHitKey(KEY_INPUT_6)) { y_rad_ -= 10 * FPS::GetInstance().GetDeltaTime(); }
+    if (CheckHitKey(KEY_INPUT_7)) { z_rad_ += 10 * FPS::GetInstance().GetDeltaTime(); }
+    if (CheckHitKey(KEY_INPUT_8)) { z_rad_ -= 10 * FPS::GetInstance().GetDeltaTime(); }
+
+    if (x_rad_ > kMaxRad) { x_rad_ = x_rad_ - (kMaxRad * 2); }
+    if (y_rad_ > kMaxRad) { y_rad_ = y_rad_ - (kMaxRad * 2); }
+    if (z_rad_ > kMaxRad) { z_rad_ = z_rad_ - (kMaxRad * 2); }
+
+    if (x_rad_ < -kMaxRad) { x_rad_ = x_rad_ + (kMaxRad * 2); }
+    if (y_rad_ < -kMaxRad) { y_rad_ = y_rad_ + (kMaxRad * 2); }
+    if (z_rad_ < -kMaxRad) { z_rad_ = z_rad_ + (kMaxRad * 2); }
+
+    x_norm = VectorAssistant::VGetRotRadX(norm_, x_rad_);
+    y_norm = VectorAssistant::VGetRotRadY(norm_, y_rad_);
+    z_norm = VectorAssistant::VGetRotRadZ(norm_, z_rad_);
 
     enemy_manager_->Update(player_);
     player_->Update(*stage_,brain_->GetSideRad());
@@ -388,6 +409,17 @@ void Game::Draw()
     game_goal_UI_->Draw();
     count_down_UI_->Draw();
 
+    DrawLine3D(center_pos_, VAdd(center_pos_, VScale(norm_, 10.f)), GetColor(255, 255, 255));
+    DrawLine3D(center_pos_, VAdd(center_pos_, VScale(x_norm, 10.f)), GetColor(255, 0, 0));
+    DrawLine3D(center_pos_, VAdd(center_pos_, VScale(y_norm, 10.f)), GetColor(0, 255, 0));
+    DrawLine3D(center_pos_, VAdd(center_pos_, VScale(z_norm, 10.f)), GetColor(0, 0, 255));
+    
+    DrawLine3D(VAdd(center_pos_,VGet(-5.f,0.f,0.f)), VAdd(center_pos_, VGet(5.f, 0.f, 0.f)), GetColor(0, 0, 0));
+    DrawLine3D(VAdd(center_pos_, VGet(0.f, -5.f, 0.f)), VAdd(center_pos_, VGet(0.f, 5.f, 0.f)), GetColor(0, 0, 0));
+    DrawLine3D(VAdd(center_pos_, VGet(0.f, 0.f, -5.f)), VAdd(center_pos_, VGet(0.f, 0.f, 5.f)), GetColor(0, 0, 0));
+
+    DrawFormatString(600, 200, GetColor(0, 255, 0), "x : %.2f,y : %.2f,z : %.2f\n", x_rad_, y_rad_, z_rad_);
+    DrawFormatString(600, 230, GetColor(0, 255, 0), "y_norm  x : %.2f,y : %.2f,z : %.2f\n", y_norm.x, y_norm.y, y_norm.z);
     float clear_time = ClearTime::GetInstance().GetClearTime();
     int timer_width = GetDrawFormatStringWidthToHandle(tanuei_font_->GetHandle(), "%.1f", clear_time);
     DrawFormatStringToHandle(static_cast<int>(kTimerPos.x - float(timer_width) * 0.5f), static_cast<int>(kTimerPos.y), kFontColor, tanuei_font_->GetHandle(), "%.1f", clear_time);

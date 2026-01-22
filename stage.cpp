@@ -29,7 +29,7 @@ Stage::Stage(const char* path, VECTOR pos, float scale)
 	next_to_old_cap_ = std::make_shared<CollisionCapsule>(VectorAssistant::GetZeroVec(), VectorAssistant::GetZeroVec(), 0.f);
 
 	MV1SetMatrix(model_, mat_);
-
+	
 }
 
 
@@ -313,7 +313,6 @@ VECTOR Stage::CheckHitWithWall(Player& player, const VECTOR& check_position)
 	return fixed_pos;
 }
 
-
 VECTOR Stage::CheckHitWithFloor(Player& player, const VECTOR& check_position)
 {
 	VECTOR fixed_pos = check_position;
@@ -472,8 +471,18 @@ void Stage::Draw()
 	{
 		DrawTriangle3D(poly.pos[0], poly.pos[1], poly.pos[2], GetColor(255, 0, 0), FALSE);
 	}
-
 	
+	for (auto& data : prioritize_floor_poly_data_)
+	{
+		DrawLine3D(data.center_pos, VAdd(data.center_pos, VScale(data.norm, 10.f)), GetColor(255, 0, 0));			// そのまま (赤)
+		DrawLine3D(data.center_pos, VAdd(data.center_pos, VScale(data.x_angle_norm, 10.f)), GetColor(0, 255, 0));	// x軸回転  (緑)
+		DrawLine3D(data.center_pos, VAdd(data.center_pos, VScale(data.z_angle_norm, 10.f)), GetColor(0, 0, 255));	// y軸回転  (青)
+
+
+		//DrawLine3D(data.center_pos, VAdd(data.center_pos, VScale(data.z_angle_norm, 10.f)), GetColor(0, 0, 2))
+		//DrawLine3D(data.center_pos, VAdd(data.center_pos, VScale(VectorAssistant::VGetRotRadZ(data.norm, 90), 10.f)), GetColor(0, 0, 0));
+
+	}
 
 }
 
@@ -481,7 +490,6 @@ void Stage::Draw()
 void Stage::Debug()
 {
 	next_to_old_cap_->Debug();
-
 }
 
 
@@ -501,6 +509,8 @@ VECTOR Stage::CheckCollision(std::shared_ptr<ColliderBase> object_coll, const VE
 	// 新しくこいつで当たり判定を行う
 	auto old_coll	= object_coll->Clone();
 	auto next_coll	= object_coll->Clone();
+
+	prioritize_floor_poly_data_.clear();
 
 	next_coll->Update(offset_vel);
 
@@ -567,6 +577,19 @@ VECTOR Stage::CheckCollision(std::shared_ptr<ColliderBase> object_coll, const VE
 					prioritize_floor_[prioritize_floor_num_] = &hit_dim.Dim[i];
 					prioritize_floor_num_++;
 					prioritize_floor_polys_.push_back(vertex);
+
+					PrioritizeFloorPolyData data;
+					data.center_pos = poly_center_pos;
+					data.norm = poly.Normal;
+					data.x_angle_norm = VectorAssistant::VGetRotRadX(poly.Normal,-90);
+					// data.right_angle_norm = VectorAssistant::VGetRotRadY(data.right_angle_norm, -90);
+					// data.right_angle_norm = VectorAssistant::VGetRotRadZ(data.right_angle_norm, -90);
+					data.z_angle_norm = VectorAssistant::VGetRotRadZ(poly.Normal, -90);
+					//data.left_angle_norm = VectorAssistant::VGetRotRadY(data.left_angle_norm, 90);
+					//data.left_angle_norm = VectorAssistant::VGetRotRadZ(data.left_angle_norm, 90);
+					
+					prioritize_floor_poly_data_.push_back(data);
+
 				}
 				
 				
@@ -627,21 +650,22 @@ VECTOR Stage::CheckCollision(std::shared_ptr<ColliderBase> object_coll, const VE
 						);
 
 					//今のポリゴンがprioritize_floor_numの範囲内だと
-					if (prioritize_floor_num_ != 0)
+					if (i < prioritize_floor_num_)
 					{
-						if (i < prioritize_floor_num_)
-						{
-							// normの記憶
-							is_hit_prioritize_floor = TRUE;
-							
-							//90,-90度回転させた
-							VECTOR patern_a = VectorAssistant::VGetRotRadY(poly->Normal, 90);		// 90度回転
-							VECTOR patern_b = VectorAssistant::VGetRotRadY(poly->Normal, -90);		// -90度回転
 
-							float petern_a_dot = VDot(VNorm(offset_vel), patern_a);					// 90度回転したvectorのdot
-							float petern_b_dot = VDot(VNorm(offset_vel), patern_b);					// -90度回転したvectorのdot
-							prioritize_floor_offset_dir = (petern_b_dot > petern_a_dot) ? patern_b : patern_a;
-						}
+						// normの記憶
+						is_hit_prioritize_floor = TRUE;
+
+						//90,-90度回転させた
+						VECTOR patern_a = VNorm(VectorAssistant::VGetRotRadZ(poly->Normal, 90));		// 90度回転
+						VECTOR patern_b = VNorm(VectorAssistant::VGetRotRadZ(poly->Normal, -90));		// -90度回転
+
+						float petern_a_dot = VDot(VNorm(offset_vel), patern_a);					// 90度回転したvectorのdot
+						float petern_b_dot = VDot(VNorm(offset_vel), patern_b);					// -90度回転したvectorのdot
+						prioritize_floor_offset_dir = (petern_b_dot > petern_a_dot) ? patern_b : patern_a;
+						
+						
+
 					}
 
 					/*----------ここからはセグメントのやつ(capsuleのstart_posのやつ)------------*/
@@ -671,13 +695,13 @@ VECTOR Stage::CheckCollision(std::shared_ptr<ColliderBase> object_coll, const VE
 					poly_to_next_proj_vec = VectorAssistant::GetProj(reverce_norm, poly_to_next);
 					
 					VECTOR suck_back_vel = poly_to_next_proj_vec;//押し戻し量
-
+					suck_back_vel = VAdd(suck_back_vel, VScale(reverce_norm, old_coll->GetRadius()));
 					// ポリゴンが壁なら
 					if (is_hit_prioritize_floor && (prioritize_floor_num_ <= i && (i < (prioritize_floor_num_ + wall_num_)))){ suck_back_vel = VectorAssistant::GetProj(prioritize_floor_offset_dir, suck_back_vel); }
 
 					// velocityを足し終わった後に法線分三角形にめり込んでいる分を押し出す
 					VECTOR offset_pos = VSub(next_pos, suck_back_vel);
-					offset_pos = VAdd(offset_pos, VScale(poly->Normal, old_coll->GetRadius()));
+					//offset_pos = VAdd(offset_pos, VScale(poly->Normal, old_coll->GetRadius()));
 
 					//　元のposから、offsetした後のposの差を見る
 					offset_vel = VSub(offset_pos, old_pos);

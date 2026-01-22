@@ -12,6 +12,14 @@ struct PolyVertexPos
 	VECTOR pos[kVertex];
 };
 
+struct PrioritizeFloorPolyData
+{
+	VECTOR norm;
+	VECTOR x_angle_norm;
+	VECTOR z_angle_norm;
+	VECTOR center_pos;
+};
+
 class Stage : public ObjectBase
 {
 private:
@@ -40,7 +48,8 @@ private:
 	std::vector<PolyVertexPos> prioritize_floor_polys_;
 	std::vector<PolyVertexPos> floor_polys_;
 	std::vector<PolyVertexPos> wall_polys_;
-
+	std::vector<PrioritizeFloorPolyData> prioritize_floor_poly_data_;
+	
 
 	// ŒŸo‚³‚ê‚½ƒ|ƒŠƒSƒ“‚ª•Çƒ|ƒŠƒSƒ“( ‚w‚y•½–Ê‚É‚’¼‚Èƒ|ƒŠƒSƒ“ )‚©°ƒ|ƒŠƒSƒ“( ‚w‚y•½–Ê‚É‚’¼‚Å‚Í‚È‚¢ƒ|ƒŠƒSƒ“ )‚©‚ğ”»’f‚µA•Û‘¶‚·‚é
 	void AnalyzeWallAndFloor(MV1_COLL_RESULT_POLY_DIM hit_dim, const VECTOR& check_position);

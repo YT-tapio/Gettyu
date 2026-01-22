@@ -80,6 +80,16 @@ private:
 	std::shared_ptr<ConditionTimer>		clear_offset_timer_;
 	std::shared_ptr<ConditionTimer>		clear_timer_;
 
+	VECTOR center_pos_	= VGet(0.f, 0.f, 0.f);
+	VECTOR norm_		= VGet(0.f, 1.f, 0.f);
+	VECTOR x_norm = VGet(0.f, 0.f, 0.f);
+	VECTOR y_norm = VGet(0.f, 0.f, 0.f);
+	VECTOR z_norm = VGet(0.f, 0.f, 0.f);
+
+	float x_rad_ = 90.f;
+	float y_rad_ = 90.f;
+	float z_rad_ = 90.f;
+
 	int color_handle_;
 
 	float offset_fade_param_;		// ƒQ[ƒ€I—¹‚Ìfadeout‚âfadein‚Ì

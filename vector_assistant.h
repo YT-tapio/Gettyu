@@ -97,7 +97,7 @@ namespace VectorAssistant
 
 		value.x = me.x;
 		value.y = (me.y * cosf(num)) - (me.z * sinf(num));
-		value.z = (me.y * sinf(num)) + (me.x * cosf(num));
+		value.z = (me.y * sinf(num)) + (me.z * cosf(num));
 
 		return value;
 	}
@@ -139,6 +139,34 @@ namespace VectorAssistant
 	inline VECTOR VGetRotRadY(const VECTOR& me, const float rad)
 	{
 		return VGetRotPiY(me, kOneRad * rad);
+	}
+
+	/// <summary>
+	/// x軸回転させた時のvector(ラジアン角ではなく実数値)
+	/// </summary>
+	/// <param name="me">変換したいベクトル</param>
+	/// <param name="num">(-3.14～3.14)</param>
+	/// <returns></returns>
+	inline VECTOR VGetRotPiZ(const VECTOR& me, const float num)
+	{
+		VECTOR value = GetZeroVec();
+
+		value.x = (me.x * cosf(num)) - (me.y * sinf(num));
+		value.y = (me.x * sinf(num)) + (me.y * cosf(num));
+		value.z = me.z;
+
+		return value;
+	}
+
+	/// <summary>
+	/// x軸回転したときのvector
+	/// </summary>
+	/// <param name="me">変換したいベクトル</param>
+	/// <param name="rad">ラジアン角(-180～180)</param>
+	/// <returns></returns>
+	inline VECTOR VGetRotRadZ(const VECTOR& me, const float rad)
+	{
+		return VGetRotPiZ(me, kOneRad * rad);
 	}
 
 	/// @brief y軸の回転量を返す

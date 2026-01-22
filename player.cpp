@@ -492,10 +492,10 @@ void Player::Update(Stage& stage,float target_rot)
 		if (SuperAttackStateGetter::GetInstance().GetState() == SuperAttackState::kReady)
 		{
 			//エフェクトを発生
-			super_attack_is_ready_effect_->Play();
+			//super_attack_is_ready_effect_->Play();
 
 			//エフェクトを発生
-			super_attack_is_ready_effect_2->Play();
+			//super_attack_is_ready_effect_2->Play();
 		}
 		else
 		{
