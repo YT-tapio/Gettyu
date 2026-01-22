@@ -44,7 +44,7 @@ public:
 	void Draw();
 
 
-	void SetPos(const VECTOR& pos) { pos_ = pos; }
+	void SetPos(const VECTOR& pos);
 
 
 	void SetIsPlay(bool flag) { if (flag != is_play_) is_play_ = flag; }

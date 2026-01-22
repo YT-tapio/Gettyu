@@ -140,7 +140,6 @@ VECTOR Stage::CheckEntityCollisionOffsetVelocity(MV1_COLL_RESULT_POLY* entity, i
 	return offset_vel;
 }
 
-
 /*------------private------------*/
 
 void Stage::AnalyzeWallAndFloor(MV1_COLL_RESULT_POLY_DIM hit_dim, const VECTOR& check_position)
@@ -456,20 +455,25 @@ void Stage::Draw()
 	MV1SetMatrix(model_, mat_);
 	MV1DrawModel(model_);
 
+	// 優先される床(青)
+	for (auto& poly : prioritize_floor_polys_)
+	{
+		DrawTriangle3D(poly.pos[0], poly.pos[1], poly.pos[2], GetColor(0, 0, 255), FALSE);
+	}
+
+	// 壁(緑)
 	for (auto& poly:wall_polys_)
 	{
 		DrawTriangle3D(poly.pos[0], poly.pos[1], poly.pos[2], GetColor(0, 255, 0), FALSE);
 	}
 
+	// 床(赤)
 	for (auto& poly : floor_polys_)
 	{
 		DrawTriangle3D(poly.pos[0], poly.pos[1], poly.pos[2], GetColor(255, 0, 0), FALSE);
 	}
 
-	for (auto& poly : prioritize_floor_polys_)
-	{
-		DrawTriangle3D(poly.pos[0], poly.pos[1], poly.pos[2], GetColor(0, 0, 255), FALSE);
-	}
+	
 
 }
 
@@ -586,18 +590,27 @@ VECTOR Stage::CheckCollision(std::shared_ptr<ColliderBase> object_coll, const VE
 			all_poly_[all_poly_num] = wall_[i];
 			all_poly_num++;
 		}
-
-		for (int i = 0; i < floor_num_; i++)
+		
+		if (wall_num_ == 0)
 		{
-			all_poly_[all_poly_num] = floor_[i];
-			all_poly_num++;
+			for (int i = 0; i < floor_num_; i++)
+			{
+				all_poly_[all_poly_num] = floor_[i];
+				all_poly_num++;
+			}
 		}
+		
 
 		printfDx("%d\n", all_poly_num);
 
+		
+		
+
 		for (int k = 0; k < kHitTryNum; k++)
 		{
+			bool is_hit_prioritize_floor = FALSE;
 			bool is_hit = FALSE;
+			VECTOR prioritize_floor_offset_dir = VGet(0, 0, 0);// prioritizeの押し戻し方向を記憶
 			for (int i = 0; i < all_poly_num; i++)
 			{
 				//ポリゴンを代入
@@ -613,13 +626,23 @@ VECTOR Stage::CheckCollision(std::shared_ptr<ColliderBase> object_coll, const VE
 							(poly->Position[0].z + poly->Position[1].z + poly->Position[2].z) / 3
 						);
 
-					/*
-					if (IsFlat(poly->Normal) && wall_num_ != 0)
+					//今のポリゴンがprioritize_floor_numの範囲内だと
+					if (prioritize_floor_num_ != 0)
 					{
-						if (!IsStair(poly_center_pos, old_pos, old_coll->GetRadius())) { continue; }
+						if (i < prioritize_floor_num_)
+						{
+							// normの記憶
+							is_hit_prioritize_floor = TRUE;
+							
+							//90,-90度回転させた
+							VECTOR patern_a = VectorAssistant::VGetRotRadY(poly->Normal, 90);		// 90度回転
+							VECTOR patern_b = VectorAssistant::VGetRotRadY(poly->Normal, -90);		// -90度回転
+
+							float petern_a_dot = VDot(VNorm(offset_vel), patern_a);					// 90度回転したvectorのdot
+							float petern_b_dot = VDot(VNorm(offset_vel), patern_b);					// -90度回転したvectorのdot
+							prioritize_floor_offset_dir = (petern_b_dot > petern_a_dot) ? patern_b : patern_a;
+						}
 					}
-					*/
-					
 
 					/*----------ここからはセグメントのやつ(capsuleのstart_posのやつ)------------*/
 
@@ -646,10 +669,14 @@ VECTOR Stage::CheckCollision(std::shared_ptr<ColliderBase> object_coll, const VE
 
 					// 次のposから
 					poly_to_next_proj_vec = VectorAssistant::GetProj(reverce_norm, poly_to_next);
+					
+					VECTOR suck_back_vel = poly_to_next_proj_vec;//押し戻し量
 
+					// ポリゴンが壁なら
+					if (is_hit_prioritize_floor && (prioritize_floor_num_ <= i && (i < (prioritize_floor_num_ + wall_num_)))){ suck_back_vel = VectorAssistant::GetProj(prioritize_floor_offset_dir, suck_back_vel); }
 
 					// velocityを足し終わった後に法線分三角形にめり込んでいる分を押し出す
-					VECTOR offset_pos = VSub(next_pos, poly_to_next_proj_vec);
+					VECTOR offset_pos = VSub(next_pos, suck_back_vel);
 					offset_pos = VAdd(offset_pos, VScale(poly->Normal, old_coll->GetRadius()));
 
 					//　元のposから、offsetした後のposの差を見る
@@ -661,11 +688,11 @@ VECTOR Stage::CheckCollision(std::shared_ptr<ColliderBase> object_coll, const VE
 					next_pos = next_coll->GetPos();
 					capsule_end_pos = next_coll->GetCenterPos();
 
-					//当たり判定検出の位置を更新
+					// 当たり判定検出の位置を更新
 					next_to_old_cap_ = std::make_shared<CollisionCapsule>(capsule_start_pos, capsule_end_pos, coll_radius);
 
-					//移動後にもう一度何かと当たっているのかを調べる
-					for (int j = 0; j < hit_dim.HitNum; j++)
+					// 移動後にもう一度何かと当たっているのかを調べる
+					for (int j = 0; j < all_poly_num; j++)
 					{
 						poly = all_poly_[j];
 

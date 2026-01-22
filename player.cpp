@@ -354,7 +354,6 @@ void Player::Debug()
 	}
 }
 
-
 void Player::AddAnim()
 {
 	/*--キャラクターのダウンロード--*/
@@ -493,11 +492,9 @@ void Player::Update(Stage& stage,float target_rot)
 		if (SuperAttackStateGetter::GetInstance().GetState() == SuperAttackState::kReady)
 		{
 			//エフェクトを発生
-			super_attack_is_ready_effect_->SetPos(pos_);
 			super_attack_is_ready_effect_->Play();
 
 			//エフェクトを発生
-			super_attack_is_ready_effect_2->SetPos(pos_);
 			super_attack_is_ready_effect_2->Play();
 		}
 		else
@@ -567,6 +564,10 @@ void Player::Update(Stage& stage,float target_rot)
 			fall_speed_ = 0.f;
 
 		}
+
+		super_attack_is_ready_effect_2->SetPos(pos_);
+		super_attack_is_ready_effect_->SetPos(pos_);
+
 	}
 	else
 	{

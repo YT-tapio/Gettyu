@@ -2,6 +2,7 @@
 #include<math.h>
 #include"DxLib.h"
 #include"screen.h"
+#include"const_rad.h"
 
 namespace VectorAssistant
 {
@@ -82,6 +83,62 @@ namespace VectorAssistant
 	inline VECTOR GetHerf(const VECTOR& pos)
 	{
 		return VScale(pos, 0.5f);
+	}
+
+	/// <summary>
+	/// x軸回転させた時のvector(ラジアン角ではなく実数値)
+	/// </summary>
+	/// <param name="me"></param>
+	/// <param name="num">(-3.14～3.14)</param>
+	/// <returns></returns>
+	inline VECTOR VGetRotPiX(const VECTOR& me, const float num)
+	{
+		VECTOR value = GetZeroVec();
+
+		value.x = me.x;
+		value.y = (me.y * cosf(num)) - (me.z * sinf(num));
+		value.z = (me.y * sinf(num)) + (me.x * cosf(num));
+
+		return value;
+	}
+
+	/// <summary>
+	/// x軸回転したときのvector
+	/// </summary>
+	/// <param name="me">子のベクトルを回転</param>
+	/// <param name="rad">ラジアン角(-180～180)</param>
+	/// <returns></returns>
+	inline VECTOR VGetRotRadX(const VECTOR& me, const float rad)
+	{
+		return VGetRotPiX(me, kOneRad * rad);
+	}
+
+	/// <summary>
+	/// y軸回転させた時のvector(ラジアン角ではなく実数値)
+	/// </summary>
+	/// <param name="me"></param>
+	/// <param name="num">(-3.14～3.14)</param>
+	/// <returns></returns>
+	inline VECTOR VGetRotPiY(const VECTOR& me, const float num)
+	{
+		VECTOR value = GetZeroVec();
+
+		value.x = (me.x * cosf(num)) + (me.z * sinf(num));
+		value.y = me.y;
+		value.z = (-me.x * sinf(num)) + (me.z * cosf(num));
+
+		return value;
+	}
+
+	/// <summary>
+	/// y軸回転したときのvector
+	/// </summary>
+	/// <param name="me">子のベクトルを回転</param>
+	/// <param name="rad">ラジアン角(-180～180)</param>
+	/// <returns></returns>
+	inline VECTOR VGetRotRadY(const VECTOR& me, const float rad)
+	{
+		return VGetRotPiY(me, kOneRad * rad);
 	}
 
 	/// @brief y軸の回転量を返す

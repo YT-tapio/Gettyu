@@ -94,3 +94,13 @@ void Effect::Draw()
 {
 	//DrawEffekseer3D_Draw(playing_handle_);
 }
+
+void Effect::SetPos(const VECTOR& pos)
+{
+	pos_ = pos;
+
+	if (is_play_)
+	{
+		SetPosPlayingEffekseer3DEffect(playing_handle_, pos_.x, pos_.y, pos_.z);
+	}
+}
