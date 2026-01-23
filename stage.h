@@ -57,6 +57,16 @@ private:
 	void MakeCollCheckCapsule(CapsuleData old_cap, CapsuleData next_cap);
 
 	/// <summary>
+	/// セグメントと三角形(ポリゴン)の押し戻しを行い押し戻した後の移動量を返す
+	/// </summary>
+	/// <param name="start_pos">始点</param>
+	/// <param name="end_pos"></param>
+	/// <param name="poly_center_pos">ポリゴンの中心座標</param>
+	/// <param name="poly_norm">法線</param>
+	/// <returns></returns>
+	VECTOR GetSegmentPolySuckVel(const VECTOR& start_pos, const VECTOR& end_pos, const VECTOR& poly_center_pos, const VECTOR& poly_norm);
+
+	/// <summary>
 	/// 階段かどうかの判別
 	/// </summary>
 	/// <param name="pos"></param>

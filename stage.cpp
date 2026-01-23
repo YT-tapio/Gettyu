@@ -188,6 +188,25 @@ void Stage::MakeCollCheckCapsule(CapsuleData old_cap, CapsuleData next_cap)
 
 }
 
+VECTOR Stage::GetSegmentPolySuckVel(const VECTOR& start_pos, const VECTOR& end_pos, const VECTOR& poly_center_pos, const VECTOR& poly_norm)
+{
+
+	VECTOR center_to_start	= VSub(start_pos, poly_center_pos);
+	VECTOR center_to_end	= VSub(end_pos, poly_center_pos);
+
+	
+	VECTOR center_to_end_proj_vec	= VectorAssistant::GetZeroVec();
+
+	//nowのpoly.normalの向きを逆にする
+	auto reverce_norm = VScale(poly_norm, -1);
+
+	center_to_end_proj_vec		= VectorAssistant::GetProj(reverce_norm, center_to_end);
+
+	VECTOR offset_pos = VSub(end_pos, center_to_end_proj_vec);
+
+	return VSub(offset_pos,start_pos);
+}
+
 bool Stage::IsStair(const VECTOR& poly_pos, const VECTOR& entity_pos,const float& r)
 {
 	// polyの高さがentityのposよりも小さく半径内なら
@@ -663,49 +682,13 @@ VECTOR Stage::CheckCollision(std::shared_ptr<ColliderBase> object_coll, const VE
 						float petern_a_dot = VDot(VNorm(offset_vel), patern_a);					// 90度回転したvectorのdot
 						float petern_b_dot = VDot(VNorm(offset_vel), patern_b);					// -90度回転したvectorのdot
 						prioritize_floor_offset_dir = (petern_b_dot > petern_a_dot) ? patern_b : patern_a;
-						
-						
 
 					}
 
 					/*----------ここからはセグメントのやつ(capsuleのstart_posのやつ)------------*/
-
-					//ポリゴンの中点からの距離を見てから、そのあと正射影ベクトルを出す。
-					//センターからの距離
-					//カプセルの開始の位置
-					VECTOR poly_to_old = VectorAssistant::GetZeroVec();			//old
-					VECTOR poly_to_next = VectorAssistant::GetZeroVec();
-
-					//正射影ベクトルを出す
-					VECTOR poly_to_old_proj_vec = VectorAssistant::GetZeroVec();
-					VECTOR poly_to_next_proj_vec = VectorAssistant::GetZeroVec();
-
-					//ポリゴンの中点からの距離を見てから、そのあと正射影ベクトルを出す。
-					//センターからの距離
-					poly_to_old = VSub(old_pos, poly_center_pos);			//old
-					poly_to_next = VSub(next_pos, poly_center_pos);			//next
-
-					//nowのpoly.normalの向きを逆にする
-					auto reverce_norm = VScale(poly->Normal, -1);
-
-					// 正射影ベクトルを出す(元のposから)
-					poly_to_old_proj_vec = VectorAssistant::GetProj(poly->Normal, poly_to_old);
-
-					// 次のposから
-					poly_to_next_proj_vec = VectorAssistant::GetProj(reverce_norm, poly_to_next);
 					
-					VECTOR suck_back_vel = poly_to_next_proj_vec;//押し戻し量
-					suck_back_vel = VAdd(suck_back_vel, VScale(reverce_norm, old_coll->GetRadius()));
-					// ポリゴンが壁なら
-					if (is_hit_prioritize_floor && (prioritize_floor_num_ <= i && (i < (prioritize_floor_num_ + wall_num_)))){ suck_back_vel = VectorAssistant::GetProj(prioritize_floor_offset_dir, suck_back_vel); }
-
-					// velocityを足し終わった後に法線分三角形にめり込んでいる分を押し出す
-					VECTOR offset_pos = VSub(next_pos, suck_back_vel);
-					//offset_pos = VAdd(offset_pos, VScale(poly->Normal, old_coll->GetRadius()));
-
-					//　元のposから、offsetした後のposの差を見る
-					offset_vel = VSub(offset_pos, old_pos);
-
+					offset_vel = GetSegmentPolySuckVel(old_pos, next_pos, poly_center_pos, poly->Normal);
+					offset_vel = VAdd(offset_vel, VScale(poly->Normal, old_coll->GetRadius()));
 					//offset分足したカプセルの座標
 					next_coll = old_coll->Clone();
 					next_coll->Update(offset_vel);

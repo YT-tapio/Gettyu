@@ -107,7 +107,7 @@ void Title::Setting()
 	title_ui_screen_->Up();
 
 	DrawStringToHandle(static_cast<int>(kInitTitlePos.x)
-		, static_cast<int>(kInitTitlePos.y), "‚°‚Á‚¿‚ã`", Color::kGold, tanuei_font_->GetHandle());
+		, static_cast<int>(kInitTitlePos.y), "‚°‚Á‚¿‚ã`", Color::kGold, tanuei_font_->GetHandle(),GetColor(255,0,0));
 
 	title_ui_screen_->Down();
 

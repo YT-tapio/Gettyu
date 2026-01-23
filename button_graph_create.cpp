@@ -108,7 +108,7 @@ void ButtonGraph::MakeExit()
 
 void ButtonGraph::MakeRetryScreen()
 {
-	const float kScreenWidth = 200.f;
+	const float kScreenWidth = 230.f;
 	const float kScreenHeight = 100.f;
 
 	retry_screen_ = new NormalSubScreen(VectorAssistant::GetZeroVec(), kScreenWidth, kScreenHeight, kScreenWidth, kScreenHeight, FALSE, AlphaColorType::kBlack, 10, FALSE);
@@ -139,8 +139,8 @@ void ButtonGraph::MakeRetryScreen()
 
 void ButtonGraph::MakeGoTitle()
 {
-	const float kScreenWidth = 200.f;
-	const float kScreenHeight = 100.f;
+	const float kScreenWidth	= 230.f;
+	const float kScreenHeight	= 100.f;
 
 	go_title_screen_ = new NormalSubScreen(VectorAssistant::GetZeroVec(), kScreenWidth, kScreenHeight, kScreenWidth, kScreenHeight, FALSE, AlphaColorType::kBlack, 10, FALSE);
 	go_title_screen_->SetIsDisp(TRUE);
