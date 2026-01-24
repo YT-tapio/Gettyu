@@ -38,7 +38,6 @@ private:
 	const VECTOR kInitWeaponScale		= VectorAssistant::GetSame3DVec(0.25f);
 	const VECTOR kInitWeaponRot		= VGet(-kOneRad * 30.f, kOneRad * 0.f, kOneRad * 45.f);
 
-
 	const int disp_width_					= 700;
 	const int disp_height_					= 600;
 

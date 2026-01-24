@@ -182,7 +182,6 @@ void Stage::AnalyzeWallAndFloor(MV1_COLL_RESULT_POLY_DIM hit_dim, const VECTOR& 
 	}
 }
 
-
 void Stage::MakeCollCheckCapsule(CapsuleData old_cap, CapsuleData next_cap)
 {
 
@@ -206,6 +205,30 @@ VECTOR Stage::GetSegmentPolySuckVel(const VECTOR& start_pos, const VECTOR& end_p
 
 	return VSub(offset_pos,start_pos);
 }
+
+VECTOR Stage::GetSegmentPolyHitPos(const VECTOR& start_pos, const VECTOR& end_pos, const VECTOR& poly_center_pos, const VECTOR& poly_norm)
+{
+
+	VECTOR hit_pos			= VectorAssistant::GetZeroVec();			// 
+	VECTOR vel				= VSub(end_pos, start_pos);					// 移動量
+	VECTOR center_to_start	= VSub(start_pos, poly_center_pos);			// ポリゴンの中心座標から始点までの距離
+	VECTOR center_to_end	= VSub(end_pos, poly_center_pos);			// ポリゴンの中心座標から終点までの距離
+	VECTOR center_to_start_proj_vec = VectorAssistant::GetZeroVec();	// 
+	VECTOR center_to_end_proj_vec	= VectorAssistant::GetZeroVec();	// 
+
+	//nowのpoly.normalの向きを逆にする
+	auto reverce_norm = VScale(poly_norm, -1);
+
+	center_to_start_proj_vec	= VectorAssistant::GetProj(poly_norm, center_to_start);
+	center_to_end_proj_vec		= VectorAssistant::GetProj(reverce_norm, center_to_end);
+
+	// 正射影ベクトルの比を見る
+
+	float ratio = VSize(center_to_start_proj_vec) / (VSize(center_to_start_proj_vec) + VSize(center_to_end_proj_vec));
+	
+	return VAdd(start_pos, VScale(vel, ratio));
+}
+
 
 bool Stage::IsStair(const VECTOR& poly_pos, const VECTOR& entity_pos,const float& r)
 {
@@ -442,6 +465,66 @@ VECTOR Stage::CheckHitWithFloor(Player& player, const VECTOR& check_position)
 	return fixed_pos;
 }
 
+VECTOR Stage::CheckFootProjectionPos(const VECTOR& old_pos,const VECTOR& next_pos, const float& r)
+{
+	const float kSizeSegment = 3.f;
+
+	const float kOffsetDist = r + kSizeSegment;	// レイの許容範囲
+	VECTOR projection_pos = next_pos;
+
+	VECTOR old_segment_start_pos	= old_pos;				// カプセルの始点
+	VECTOR old_segment_end_pos		= VAdd(old_segment_start_pos, VGet(0.f, -(kOffsetDist), 0.f));				// カプセルの始点からセグメントを伸ばす
+	auto old_segment_hit_dim = MV1CollCheck_LineDim(model_, -1, old_segment_start_pos, old_segment_end_pos);
+
+	if (old_segment_hit_dim.HitNum > 0)
+	{
+		const float next_segment_size = r + kSizeSegment;
+
+		// sphereを少し下げたときに何もないときに投映を開始
+		auto next_sphere_hit_dim = MV1CollCheck_Sphere(model_, -1, VAdd(next_pos, VGet(0.f, -0.1f, 0.f)), r);
+
+		if (next_sphere_hit_dim.HitNum == 0)
+		{
+			//投映する
+			const float kNextSegmentSize = 10.f;
+
+			VECTOR next_segment_start_pos = next_pos;			// カプセルの始点
+			VECTOR next_segment_end_pos = VAdd(next_segment_start_pos, VGet(0.f, -(next_segment_size), 0.f));				// カプセルの始点からセグメントを伸ばす
+			auto next_segment_hit_dim = MV1CollCheck_LineDim(model_, -1, next_segment_start_pos, next_segment_end_pos);		// 
+
+			
+			for (int i = 0; i < next_segment_hit_dim.HitNum; i++)
+			{
+				auto poly = next_segment_hit_dim.Dim[i];
+				auto hit_check = HitCheck_Line_Triangle(next_segment_start_pos, next_segment_end_pos, poly.Position[0], poly.Position[1], poly.Position[2]);
+				if (hit_check.HitFlag)
+				{
+					//中点を出す
+					VECTOR poly_center_pos =
+						VGet((poly.Position[0].x + poly.Position[1].x + poly.Position[2].x) / 3,
+							(poly.Position[0].y + poly.Position[1].y + poly.Position[2].y) / 3,
+							(poly.Position[0].z + poly.Position[1].z + poly.Position[2].z) / 3
+						);
+
+
+					VECTOR hit_pos = GetSegmentPolyHitPos(next_segment_start_pos, next_segment_end_pos, poly_center_pos, poly.Normal);
+					next_segment_end_pos = hit_pos;
+					projection_pos = VAdd(next_segment_end_pos, VScale(poly.Normal, r));
+				}
+			}
+			MV1CollResultPolyDimTerminate(next_segment_hit_dim);
+		}
+		// 検出したプレイヤーの周囲のポリゴン情報を開放する
+		MV1CollResultPolyDimTerminate(next_sphere_hit_dim);
+	}
+
+	// 検出したプレイヤーの周囲のポリゴン情報を開放する
+	MV1CollResultPolyDimTerminate(old_segment_hit_dim);
+	
+
+	return projection_pos;
+}
+
 /*------------public------------*/
 
 void Stage::Init()
@@ -550,9 +633,7 @@ VECTOR Stage::CheckCollision(std::shared_ptr<ColliderBase> object_coll, const VE
 		// プレイヤーの周囲にあるステージポリゴンを取得する
 		// ( 検出する範囲は移動距離も考慮する )
 		auto hit_dim = next_to_old_cap_->GetCollInfo(model_);
-		//playerが動いていない場合も考えたい	
-		
-		
+
 		const float kWallRad = kOneRad * 80.f;
 		for (int i = 0; i < hit_dim.HitNum; i++)
 		{
@@ -641,12 +722,9 @@ VECTOR Stage::CheckCollision(std::shared_ptr<ColliderBase> object_coll, const VE
 				all_poly_num++;
 			}
 		}
-		
-
-		printfDx("%d\n", all_poly_num);
 
 		
-		
+		bool is_projection = TRUE;
 
 		for (int k = 0; k < kHitTryNum; k++)
 		{
@@ -661,6 +739,7 @@ VECTOR Stage::CheckCollision(std::shared_ptr<ColliderBase> object_coll, const VE
 				if (next_coll->IsHitTriangle(poly->Position[0], poly->Position[1], poly->Position[2]) ||
 					(HitCheck_Line_Triangle(old_coll->GetPos(), next_coll->GetPos(), poly->Position[0], poly->Position[1], poly->Position[2]).HitFlag) == 1)
 				{
+					is_projection = FALSE;
 					//中点を出す
 					VECTOR poly_center_pos =
 						VGet((poly->Position[0].x + poly->Position[1].x + poly->Position[2].x) / 3,
@@ -719,20 +798,16 @@ VECTOR Stage::CheckCollision(std::shared_ptr<ColliderBase> object_coll, const VE
 				}
 			}
 		}
-
-
-		/*
-		if (wall_num_ > 0)
-		{
-			offset_vel = CheckEntityCollisionOffsetVelocity(*wall_, wall_num_, old_coll, offset_vel);
-		}
-
-		if (floor_num_ > 0)
-		{
-			offset_vel = CheckEntityCollisionOffsetVelocity(*floor_, floor_num_, old_coll, offset_vel);
-		}
 		
-		*/
+		if (is_projection)
+		{
+			// 何も当たっていなく,y成分が0の時
+			if (fabs(velocity.y) == 0.f)
+			{
+				auto foot_projection_pos = CheckFootProjectionPos(old_pos, next_pos, next_coll->GetRadius());
+				offset_vel = VScale(VNorm(VSub(foot_projection_pos, old_pos)), VSize(velocity));
+			}
+		}
 		
 		// 検出したプレイヤーの周囲のポリゴン情報を開放する
 		MV1CollResultPolyDimTerminate(hit_dim);

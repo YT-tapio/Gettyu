@@ -321,6 +321,8 @@ void Player::Draw()
 	super_attack_is_ready_effect_2->Draw();
 	game_clear_effect_->Draw();
 
+	DrawLine3D(coll_->GetPos(), VAdd(coll_->GetPos(), VGet(0.f, -(coll_->GetRadius() + 5.f), 0.f)), GetColor(0, 0, 0));
+
 	//DrawSphere3D(pos_, 3, 20, GetColor(255, 255, 255), GetColor(255, 255, 255), TRUE);
 }
 

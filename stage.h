@@ -66,6 +66,12 @@ private:
 	/// <returns></returns>
 	VECTOR GetSegmentPolySuckVel(const VECTOR& start_pos, const VECTOR& end_pos, const VECTOR& poly_center_pos, const VECTOR& poly_norm);
 
+	// セグメントと三角形の接地点を返す
+	VECTOR GetSegmentPolyHitPos(const VECTOR& start_pos, const VECTOR& end_pos, const VECTOR& poly_center_pos, const VECTOR& poly_norm);
+
+	VECTOR CheckFoot(const VECTOR& old_pos,const VECTOR& next_pos,const float& r);
+
+
 	/// <summary>
 	/// 階段かどうかの判別
 	/// </summary>
@@ -88,6 +94,9 @@ private:
 
 	// 壁or床の情報を受け取って調整したposを返す
 	VECTOR CheckEntityCollisionOffsetVelocity(MV1_COLL_RESULT_POLY* entity, int hit_num, std::shared_ptr<ColliderBase> obj_coll, const VECTOR& velocity);
+
+	//投映したポジションを返す
+	VECTOR CheckFootProjectionPos(const VECTOR& old_pos, const VECTOR& next_pos, const float& r);
 
 public:
 
