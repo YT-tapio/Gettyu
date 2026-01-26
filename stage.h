@@ -38,6 +38,8 @@ private:
 	int							floor_num_;			// 床ポリゴンと判断されたポリゴンの数
 	int							prioritize_floor_num_;			// 床ポリゴンと判断されたポリゴンの数
 
+	VECTOR rem_hit_pos = VGet(0.f, 0.f, 0.f);
+
 	int before_hit_num_ = 0;
 	MV1_COLL_RESULT_POLY* prioritize_floor_[kMaxHitColl];	// 優先される床ポリゴンと判断されたポリゴンの構造体のアドレスを保存しておくためのポインタ配列
 	MV1_COLL_RESULT_POLY* wall_[kMaxHitColl];	// 壁ポリゴンと判断されたポリゴンの構造体のアドレスを保存しておくためのポインタ配列

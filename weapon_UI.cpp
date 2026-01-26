@@ -5,6 +5,7 @@
 #include"weapon_checker.h"
 #include"gauss.h"
 #include"gauss_data.h"
+#include"super_attack_state_getter.h"
 
 WeaponUI::WeaponUI()
 {
@@ -100,6 +101,8 @@ void WeaponUI::SetCirclePos()
 	case WeaponName::kBat:
 
 		circle_gauss_pos_ = bat_button_.pos;
+		// この時必殺技が有効ならば虹色に
+
 
 		break;
 
@@ -109,8 +112,6 @@ void WeaponUI::SetCirclePos()
 		circle_gauss_pos_ = warprod_button_.pos;
 
 		break;
-
-
 	}
 
 
@@ -193,6 +194,9 @@ void WeaponUI::Update()
 {
 	SetAll();
 
+	// 周りの丸に虹色のブラーをつける
+
+
 	//こっからは更新なしにしましょう//
 
 	circle_gauss_->Up();
@@ -227,6 +231,9 @@ void WeaponUI::Update()
 
 void WeaponUI::Draw()
 {
+
+	
+
 	circle_gauss_->Draw();
 	sub_screen_->Draw();
 }
