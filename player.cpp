@@ -504,8 +504,7 @@ void Player::Update(Stage& stage,float target_rot)
 			super_attack_is_ready_effect_->Init();
 			super_attack_is_ready_effect_2->Init();
 		}
-		//ここで着地しているかの判断を行う
-		CheckIsGround(stage);
+		
 		//サウンドのリセット
 		sound_vibration_->Reset();
 
@@ -546,7 +545,8 @@ void Player::Update(Stage& stage,float target_rot)
 			capsule_.end_pos.y = capsule_.vertical_num;
 		}
 
-		
+		//ここで着地しているかの判断を行う
+		CheckIsGround(stage);
 
 		if (OutSide::Check(pos_))
 		{

@@ -9,7 +9,6 @@ class WeaponUI
 {
 private:
 	
-
 	const float kBatVibrationSpeed = 5.f;
 	const float kWarprodVibrationSpeed = 7.f;
 
@@ -37,8 +36,11 @@ private:
 
 	const int kSuperAttackGaugeFrameHandle = LoadGraph("data/UI/A_ButtonUI.png");
 
+	const int kBlurInitRadius = 100;
+
 	std::shared_ptr<NormalSubScreen> sub_screen_;
 	std::shared_ptr<NormalSubScreen> circle_gauss_;
+	std::shared_ptr<NormalSubScreen> blur_circle_;
 
 
 	VECTOR bat_pos_;
@@ -51,13 +53,29 @@ private:
 	UIGraphData warprod_button_;
 	
 	VECTOR circle_gauss_pos_;
+
+	int back_circle_color_red_;
+	int back_circle_color_green_;
+	int back_circle_color_blue_;
+
 	float circle_gauss_r_;
+
+	float blur_circle_r_;
+	int blur_circle_param_;
 
 	float bat_vibration_rad_;
 	float warprod_vibration_rad_;
 
+	bool is_change_red_;
+	bool is_change_green_;
+	bool is_change_blue_;
 
-	void SetCirclePos();
+
+	void SetCircle();
+
+	void SetClurCircle();
+
+	void ChangeColorNum(int& color,bool& flag,const float change_speed);
 
 	void SetWeaponScale();
 
