@@ -497,6 +497,11 @@ VECTOR Stage::CheckFootProjectionPos(const VECTOR& old_pos,const VECTOR& next_po
 		for (int i = 0; i < next_segment_hit_dim.HitNum; i++)
 		{
 			auto poly = next_segment_hit_dim.Dim[i];
+
+			// ƒ|ƒŠƒSƒ“‚ª‘ÎÛ‚ÌyÀ•W‚æ‚è‚à‚‚¢ê‡‚ðœ‚«‚½‚¢
+			VECTOR entity_pos = VAdd(next_pos, VGet(0.f, -r, 0.f));
+			if (!((poly.Position[0].y < entity_pos.y) && (poly.Position[1].y < entity_pos.y) && (poly.Position[2].y < entity_pos.y))) { continue; }
+			
 			auto hit_check = HitCheck_Line_Triangle(next_segment_start_pos, next_segment_end_pos, poly.Position[0], poly.Position[1], poly.Position[2]);
 
 			

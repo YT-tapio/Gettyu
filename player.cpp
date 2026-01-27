@@ -256,11 +256,10 @@ void Player::DecideAnimation()
 
 bool Player::CheckChangeWeapon()
 {
-	if (Situation::GetInstance().GetSituationName() == SituationName::kStandBy) { return FALSE; }
-	if (now_type_ > AnimationType::kAttack)														{ return FALSE; }
-	if (is_super_attack_)																						{ return FALSE; }
-
-
+	if (Situation::GetInstance().GetSituationName() == SituationName::kStandBy)			{ return FALSE; }
+	if (now_type_ > AnimationType::kAttack)												{ return FALSE; }
+	if (is_super_attack_)																{ return FALSE; }
+	if (SuperAttackStateGetter::GetInstance().GetState() == SuperAttackState::kActive)	{ return FALSE; }
 	return TRUE;
 }
 
@@ -317,8 +316,6 @@ void Player::Draw()
 		weapon_->Draw(delta_time_);
 		//Situation::GetInstance().SetGetSituationPos(weapon_->GetCollisionData().pos);
 	}
-	super_attack_is_ready_effect_->Draw();
-	super_attack_is_ready_effect_2->Draw();
 	game_clear_effect_->Draw();
 
 	DrawLine3D(coll_->GetPos(), VAdd(coll_->GetPos(), VGet(0.f, -(coll_->GetRadius() + 5.f), 0.f)), GetColor(0, 0, 0));
@@ -493,11 +490,9 @@ void Player::Update(Stage& stage,float target_rot)
 		// super_attackの状態が、is_readyだとeffectを発生させる
 		if (SuperAttackStateGetter::GetInstance().GetState() == SuperAttackState::kReady)
 		{
-			//エフェクトを発生
-			//super_attack_is_ready_effect_->Play();
-
-			//エフェクトを発生
-			//super_attack_is_ready_effect_2->Play();
+			// エフェクトを発生
+			super_attack_is_ready_effect_->Play();
+			super_attack_is_ready_effect_2->Play();
 		}
 		else
 		{

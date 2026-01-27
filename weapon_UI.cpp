@@ -6,7 +6,7 @@
 #include"gauss.h"
 #include"gauss_data.h"
 #include"super_attack_state_getter.h"
-
+#include"Draw2D.h"
 WeaponUI::WeaponUI()
 {
 
@@ -18,27 +18,34 @@ WeaponUI::WeaponUI()
 	float kScreenHeightPercent = kGameHeight / all_screen_size;
 
 
-	int sub_screen_width = 1000;
-	int sub_screen_height = 1000;
+	int sub_screen_width	= 1000;
+	int sub_screen_height	= 1000;
 
-	sub_screen_width = sub_screen_width * kScreenWidthPercent;
-	sub_screen_height = sub_screen_height * kScreenHeightPercent;
+	int blur_circle_width	= 2000;
+	int blur_circle_height	= 2000;
 
+	sub_screen_width	= static_cast<int>(sub_screen_width * kScreenWidthPercent);
+	sub_screen_height	= static_cast<int>(sub_screen_height * kScreenHeightPercent);
 
-	//screenの設定
+	blur_circle_width = static_cast<int>(blur_circle_width * kScreenWidthPercent);
+	blur_circle_height = static_cast<int>(blur_circle_height * kScreenHeightPercent);
+
+	//screenの設定 マジックナンバー削除
 	sub_screen_		= std::make_shared<NormalSubScreen>(VGet(1000.f, 200.f,0.f), kGameWidth, kGameHeight, static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0,FALSE);
-	circle_gauss_		= std::make_shared<NormalSubScreen>(VGet(1000.f, 200.f, 0.f), kGameWidth, kGameHeight, static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0,FALSE);
-	//blur_circle_ = std::make_shared<NormalSubScreen>(VGet(1000.f, 200.f, 0.f), kGameWidth, kGameHeight, static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0, FALSE);
+	circle_gauss_	= std::make_shared<NormalSubScreen>(VGet(1000.f, 200.f, 0.f), kGameWidth, kGameHeight, static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0,FALSE);
+	blur_circle_	= std::make_shared<NormalSubScreen>(VGet(100.f, 100.f, 0.f), 200, 200, static_cast<int>(200), static_cast<int>(200), TRUE, AlphaColorType::kBlack, 0, FALSE);
 	//ここでいろんなデーターダウンロード
 	bat_button_.handle					= kXButtonHandle;
-	warprod_button_.handle				= kYButtonHandle;	
+	warprod_button_.handle				= kYButtonHandle;
 
 	//posの設定
 	bat_button_.pos							= VGet(800.f, 400.f, 0.f);
-	warprod_button_.pos					= VGet(1000.f, 200.f, 0.f);
+	warprod_button_.pos						= VGet(1000.f, 200.f, 0.f);
+
+	warprod_button_pos_ = VectorAssistant::Get2DVec(1167.f, 95.f);
 
 	//元の画像のサイズ
-	bat_button_.original_width				= 1920.f;
+	bat_button_.original_width			= 1920.f;
 	bat_button_.original_height			= 1080.f;
 	warprod_button_.original_width		= 1920.f;
 	warprod_button_.original_height		= 1080.f;
@@ -58,7 +65,13 @@ WeaponUI::WeaponUI()
 	circle_gauss_r_ = 150.f;
 
 	blur_circle_r_ = kBlurInitRadius;
-	blur_circle_param_ = 0;
+	blur_circle_param_ = 255;
+
+	blur_screen_width_ = 100;
+	blur_screen_height_ = 100;
+
+	circle_screen_width_ = 100.f;
+	circle_screen_height_ = 100.f;
 
 	if (kSuperAttackGaugeFrameHandle == -1 ||bat_button_.handle == -1 || warprod_button_.handle == -1)
 	{
@@ -67,7 +80,7 @@ WeaponUI::WeaponUI()
 
 	sub_screen_->SetIsDisp(TRUE);
 	circle_gauss_->SetIsDisp(TRUE);
-
+	blur_circle_->SetIsDisp(TRUE);
 	bat_pos_ = kInitBatPos;
 	warprod_pos_ = kInitWarprodPos;
 	bat_scale_ = kInitBatScale;
@@ -80,10 +93,13 @@ WeaponUI::WeaponUI()
 	back_circle_color_green_	= 255;
 	back_circle_color_blue_		= 255;
 
+	blur_circle_color_red_		= 255;
+	blur_circle_color_green_	= 255;
+	blur_circle_color_blue_		= 255;
+
 	is_change_red_		= TRUE;
 	is_change_green_	= TRUE;
 	is_change_blue_		= TRUE;
-
 	SetModelMatrix(kBatHandle, kBatRot, bat_scale_, bat_pos_);
 	SetModelMatrix(kBatHandle, kBatRot, bat_scale_, warprod_pos_);
 	//gausser_->Update(VGet(kGameWidth * 0.5f, kGameHeight * 0.5f, 0.f), kGameWidth, kGameHeight, circle_gauss_->GetHandle(), 8, 10000);
@@ -122,22 +138,18 @@ void WeaponUI::SetCircle()
 	case WeaponName::kBugNet:
 
 		circle_gauss_pos_ = warprod_button_.pos;
-		
-		// この時必殺技が有効ならば虹色に
-		if (SuperAttackStateGetter::GetInstance().GetState() == SuperAttackState::kReady)
+		if(SuperAttackStateGetter::GetInstance().GetState() == SuperAttackState::kCoolTime)
 		{
-
-			const float kAllSpeed = 3.f;
-
-			// 虹色にする
-			const float kChangeCircleColorRedSpeed		= 1.f * kAllSpeed;
-			const float kChangeCircleColorGreenSpeed	= 3.f * kAllSpeed;
-			const float kChangeCircleColorBlueSpeed		= 5.f * kAllSpeed;
-
-			ChangeColorNum(back_circle_color_red_, is_change_red_, kChangeCircleColorRedSpeed);			//赤
-			ChangeColorNum(back_circle_color_green_, is_change_green_, kChangeCircleColorGreenSpeed);	//緑
-			ChangeColorNum(back_circle_color_blue_, is_change_blue_, kChangeCircleColorBlueSpeed);		//青
-			circle_gauss_r_ = 200;
+			//白色に
+			back_circle_color_red_ = 255;
+			back_circle_color_green_ = 255;
+			back_circle_color_blue_ = 255;
+		}
+		else
+		{
+			back_circle_color_red_ = blur_circle_color_red_;
+			back_circle_color_green_ = blur_circle_color_green_;
+			back_circle_color_blue_ = blur_circle_color_blue_;	
 		}
 
 		break;
@@ -146,11 +158,41 @@ void WeaponUI::SetCircle()
 
 }
 
-void WeaponUI::SetClurCircle()
+void WeaponUI::SetBlurCircle()
 {
-	const float kBlurSpeed = 5.f;
-	blur_circle_r_ += kBlurSpeed * FPS::GetInstance().GetDeltaTime();
-	blur_circle_param_ += static_cast<int>(kBlurSpeed * FPS::GetInstance().GetDeltaTime());
+	const float kBlurSpeed		= 35.f;
+	const float kSizeUpSpeed	= 6.f;
+	static int count = 0;
+	float delta_time = FPS::GetInstance().GetDeltaTime();
+	count += 3;
+	circle_screen_width_		+= (kSizeUpSpeed * count * delta_time);
+	circle_screen_height_		+= (kSizeUpSpeed * count * delta_time);
+	blur_circle_param_	-= static_cast<int>(kBlurSpeed * delta_time);
+
+
+	const float kAllSpeed = 3.f;
+
+	// 虹色にする
+	const float kChangeCircleColorRedSpeed = 1.f * kAllSpeed;
+	const float kChangeCircleColorGreenSpeed = 3.f * kAllSpeed;
+	const float kChangeCircleColorBlueSpeed = 5.f * kAllSpeed;
+
+	ChangeColorNum(blur_circle_color_red_, is_change_red_, kChangeCircleColorRedSpeed);			//赤
+	ChangeColorNum(blur_circle_color_green_, is_change_green_, kChangeCircleColorGreenSpeed);	//緑
+	ChangeColorNum(blur_circle_color_blue_, is_change_blue_, kChangeCircleColorBlueSpeed);		//青
+
+	
+
+	circle_gauss_r_ = 200;
+
+	if (blur_circle_param_ < 0)
+	{
+		blur_circle_param_		= 255;
+		blur_circle_r_			= kBlurInitRadius;
+		circle_screen_width_	= 100;
+		circle_screen_height_	= 100;
+		count = 0;
+	}
 }
 
 void WeaponUI::ChangeColorNum(int& color_num, bool& flag, const float change_speed)
@@ -227,13 +269,13 @@ void WeaponUI::SetModelMatrix(int handle, const VECTOR& rot, const VECTOR& scale
 void WeaponUI::SetAll()
 {
 	//UIを上下に浮かすように
-	bat_pos_ = UpDown(kInitBatPos, bat_vibration_rad_, kBatVibrationSpeed, kVibrationSize);
-	warprod_pos_ = UpDown(kInitWarprodPos, warprod_vibration_rad_, kWarprodVibrationSpeed, kVibrationSize);
-
-
+	bat_pos_		= UpDown(kInitBatPos, bat_vibration_rad_, kBatVibrationSpeed, kVibrationSize);
+	warprod_pos_	= UpDown(kInitWarprodPos, warprod_vibration_rad_, kWarprodVibrationSpeed, kVibrationSize);
+	auto super_attack_state = SuperAttackStateGetter::GetInstance().GetState();
+	if (super_attack_state != SuperAttackState::kCoolTime) { SetBlurCircle(); }
 	// 武器の種類によって変える
 	SetCircle();
-
+	
 	// UIの切り替え
 	SetGraph();
 
@@ -258,8 +300,13 @@ void WeaponUI::Update()
 	circle_gauss_->Up();
 
 	DrawCircle(static_cast<int>(circle_gauss_pos_.x), static_cast<int>(circle_gauss_pos_.y), static_cast<int>(circle_gauss_r_),		GetColor(back_circle_color_red_, back_circle_color_green_, back_circle_color_blue_), TRUE);
-	//DrawCircle(static_cast<int>(warprod_button_.pos.x), static_cast<int>(warprod_button_.pos.y), static_cast<int>(blur_circle_r_),	GetColor(back_circle_color_red_, back_circle_color_green_, back_circle_color_blue_), FALSE);
 	circle_gauss_->Down();
+
+	blur_circle_->Up();
+
+	if(SuperAttackStateGetter::GetInstance().GetState() == SuperAttackState::kReady){ DrawCircle(static_cast<int>(100), static_cast<int>(100), static_cast<int>(blur_circle_r_), GetColor(blur_circle_color_red_, blur_circle_color_green_, blur_circle_color_blue_), FALSE, 5); }
+	
+	blur_circle_->Down();
 
 	Gauss::GetInstance().Update(circle_gauss_->GetHandle(), kPixelWidthHigh, kCircleGaussParam);
 	
@@ -289,4 +336,5 @@ void WeaponUI::Draw()
 {
 	circle_gauss_->Draw();
 	sub_screen_->Draw();
+	Draw2D::BlendGraph(VectorAssistant::Get2DVec(warprod_button_pos_.x, warprod_button_pos_.y), circle_screen_width_, circle_screen_height_, blur_circle_->GetHandle(), TRUE, blur_circle_param_);
 }

@@ -86,14 +86,14 @@ private:
 
 	MaskData gauge_mask_data_;
 
-	std::shared_ptr<NormalSubScreen> frame_screen_;		// 外枠
+	std::shared_ptr<NormalSubScreen> frame_screen_;			// 外枠
 	std::shared_ptr<NormalSubScreen> body_screen_;			// 本体
 	std::shared_ptr<NormalSubScreen> back_screen_;			// 背景
 	std::shared_ptr<NormalSubScreen> weapon_screen_;		// 必殺技の武器を表示
 	std::shared_ptr<NormalSubScreen> effect_screen_;		// effectの描画を行う
 	std::shared_ptr<NormalSubScreen> button_screen_;		// 対応している操作のボタンを表示
-	std::shared_ptr<NormalSubScreen> ready_screen_;		// 準備完了の時の際の画像を表示
-	//Effect* ready_effect_;
+	std::shared_ptr<NormalSubScreen> ready_screen_;			// 準備完了の時の際の画像を表示
+	std::shared_ptr<NormalSubScreen> input_type_screen_;	// 操作を対応しているやつを表示
 	
 	//UIに沿わす
 	VECTOR ready_effect_pos_		= VGet(0.f, 0.f, 0.f);

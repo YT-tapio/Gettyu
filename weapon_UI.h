@@ -36,7 +36,7 @@ private:
 
 	const int kSuperAttackGaugeFrameHandle = LoadGraph("data/UI/A_ButtonUI.png");
 
-	const int kBlurInitRadius = 100;
+	const float kBlurInitRadius = 30.f;
 
 	std::shared_ptr<NormalSubScreen> sub_screen_;
 	std::shared_ptr<NormalSubScreen> circle_gauss_;
@@ -45,6 +45,8 @@ private:
 
 	VECTOR bat_pos_;
 	VECTOR warprod_pos_;
+
+	VECTOR warprod_button_pos_;
 
 	VECTOR bat_scale_;
 	VECTOR warprod_scale_;
@@ -58,6 +60,13 @@ private:
 	int back_circle_color_green_;
 	int back_circle_color_blue_;
 
+	int blur_circle_color_red_;
+	int blur_circle_color_green_;
+	int blur_circle_color_blue_;
+
+	int blur_screen_width_;
+	int blur_screen_height_;
+
 	float circle_gauss_r_;
 
 	float blur_circle_r_;
@@ -66,6 +75,9 @@ private:
 	float bat_vibration_rad_;
 	float warprod_vibration_rad_;
 
+	float circle_screen_width_;
+	float circle_screen_height_;
+
 	bool is_change_red_;
 	bool is_change_green_;
 	bool is_change_blue_;
@@ -73,7 +85,7 @@ private:
 
 	void SetCircle();
 
-	void SetClurCircle();
+	void SetBlurCircle();
 
 	void ChangeColorNum(int& color,bool& flag,const float change_speed);
 

@@ -75,10 +75,12 @@ SuperAttackUI::SuperAttackUI()
 
 	frame_screen_			= std::make_shared<NormalSubScreen>(kInitScreenPos, static_cast<int>(kGameWidth), static_cast<int>(kGameHeight), static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0,FALSE);
 	body_screen_			= std::make_shared<NormalSubScreen>(kInitScreenPos, static_cast<int>(kGameWidth), static_cast<int>(kGameHeight), static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 10,TRUE);
-	back_screen_				= std::make_shared<NormalSubScreen>(kInitScreenPos, static_cast<int>(kGameWidth), static_cast<int>(kGameHeight), static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0,FALSE);
-	weapon_screen_		= std::make_shared<NormalSubScreen>(kInitWeaponScreenPos, static_cast<int>(kGameWidth), static_cast<int>(kGameHeight), static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0, FALSE);
+	back_screen_			= std::make_shared<NormalSubScreen>(kInitScreenPos, static_cast<int>(kGameWidth), static_cast<int>(kGameHeight), static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0,FALSE);
+	weapon_screen_			= std::make_shared<NormalSubScreen>(kInitWeaponScreenPos, static_cast<int>(kGameWidth), static_cast<int>(kGameHeight), static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0, FALSE);
 	effect_screen_			= std::make_shared<NormalSubScreen>(kInitScreenPos, static_cast<int>(kGameWidth), static_cast<int>(kGameHeight), static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0, FALSE);
 	ready_screen_			= std::make_shared<NormalSubScreen>(kInitScreenPos, static_cast<int>(kGameWidth), static_cast<int>(kGameHeight), static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0, FALSE);
+	input_type_screen_		= std::make_shared<NormalSubScreen>(VectorAssistant::GetZeroVec(), static_cast<int>(100), static_cast<int>(100), static_cast<int>(100), static_cast<int>(100), TRUE, AlphaColorType::kBlack, 0, FALSE);
+	
 	if (kGaugeBackHandle == -1)
 	{
 		printfDx("2D:読み込みエラー");
@@ -105,6 +107,7 @@ SuperAttackUI::SuperAttackUI()
 	weapon_screen_->SetIsDisp(TRUE);
 	effect_screen_	->SetIsDisp(TRUE);
 	ready_screen_	->SetIsDisp(TRUE);
+	input_type_screen_->SetIsDisp(TRUE);
 	//どのくらい大きくするかを決定
 	frame_target_width_ = 0.f;
 	frame_target_height_ = 0.f;
@@ -321,6 +324,14 @@ void SuperAttackUI::Update()
 	Draw2D::ColorChangeGraph(body_data_.pos, body_data_.width, body_data_.height, body_data_.handle, TRUE, change_color_num_);
 	DrawUIGraph(frame_data_);
 	ready_screen_->Down();
+
+	// 操作方法の描画を行う
+
+	input_type_screen_->Up();
+
+	//Draw2D::ExtendGraph(VectorAssistant::Get2DVec(50.f,50.f), , , );
+
+	input_type_screen_->Down();
 
 	Gauss::GetInstance().Update(back_screen_->GetHandle(), kPixelWidthMiddle, kBackGaussParam);
 }
