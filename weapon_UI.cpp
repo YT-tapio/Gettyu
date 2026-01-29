@@ -334,7 +334,7 @@ void WeaponUI::Update()
 
 void WeaponUI::Draw()
 {
+	Draw2D::BlendGraph(VectorAssistant::Get2DVec(warprod_button_pos_.x, warprod_button_pos_.y), circle_screen_width_, circle_screen_height_, blur_circle_->GetHandle(), TRUE, blur_circle_param_);
 	circle_gauss_->Draw();
 	sub_screen_->Draw();
-	Draw2D::BlendGraph(VectorAssistant::Get2DVec(warprod_button_pos_.x, warprod_button_pos_.y), circle_screen_width_, circle_screen_height_, blur_circle_->GetHandle(), TRUE, blur_circle_param_);
 }

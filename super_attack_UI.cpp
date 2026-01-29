@@ -5,6 +5,7 @@
 #include"FPS.h"
 #include"Draw2D.h"
 #include"super_attack_state_getter.h"
+#include"input.h"
 
 SuperAttackUI::SuperAttackUI()
 {
@@ -79,7 +80,7 @@ SuperAttackUI::SuperAttackUI()
 	weapon_screen_			= std::make_shared<NormalSubScreen>(kInitWeaponScreenPos, static_cast<int>(kGameWidth), static_cast<int>(kGameHeight), static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0, FALSE);
 	effect_screen_			= std::make_shared<NormalSubScreen>(kInitScreenPos, static_cast<int>(kGameWidth), static_cast<int>(kGameHeight), static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0, FALSE);
 	ready_screen_			= std::make_shared<NormalSubScreen>(kInitScreenPos, static_cast<int>(kGameWidth), static_cast<int>(kGameHeight), static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0, FALSE);
-	input_type_screen_		= std::make_shared<NormalSubScreen>(VectorAssistant::GetZeroVec(), static_cast<int>(100), static_cast<int>(100), static_cast<int>(100), static_cast<int>(100), TRUE, AlphaColorType::kBlack, 0, FALSE);
+	input_type_screen_		= std::make_shared<NormalSubScreen>(VectorAssistant::GetZeroVec(), static_cast<int>(500), static_cast<int>(500), static_cast<int>(500), static_cast<int>(500), TRUE, AlphaColorType::kBlack, 0, FALSE);
 	
 	if (kGaugeBackHandle == -1)
 	{
@@ -269,7 +270,6 @@ void SuperAttackUI::Update()
 			ready_screen_width_ = init_ready_screen_width_;
 			ready_screen_height_ = init_ready_screen_height_;
 		}
-
 	}
 
 	//‚±‚±‚Å‚ª‚¼‚¤‚Ìdraw(screen‚ð‹N“®‚µ‚Ä‚©‚ç)
@@ -329,7 +329,23 @@ void SuperAttackUI::Update()
 
 	input_type_screen_->Up();
 
-	//Draw2D::ExtendGraph(VectorAssistant::Get2DVec(50.f,50.f), , , );
+	switch (Input::GetInstance().GetDeviceType())
+	{
+	case InputDeviceType::kPad:
+
+		Draw2D::ExtendGraph(kSuperAttackPCPos, static_cast<int>(kSuperAttackPCOriginalSize.x * kSuperAttackPCScale.x), 
+			static_cast<int>(kSuperAttackPCOriginalSize.y * kSuperAttackPCScale.y), kSuperAttackInputPCButton, TRUE);
+
+			break;
+
+	case InputDeviceType::kKey:
+
+		Draw2D::ExtendGraph(kSuperAttackPadPos, static_cast<int>(kSuperAttackPadOriginalSize.x* kSuperAttackPadScale.x), 
+			static_cast<int>(kSuperAttackPadOriginalSize.y * kSuperAttackPadScale.y), kSuperAttackInputPadButton, TRUE);
+
+		break;
+
+	}
 
 	input_type_screen_->Down();
 
@@ -343,12 +359,11 @@ void SuperAttackUI::Draw()
 	if (SuperAttackStateGetter::GetInstance().GetState() == SuperAttackState::kReady)
 	{
 		Draw2D::BlendGraph(kInitScreenPos, ready_screen_width_, ready_screen_height_, ready_screen_->GetHandle(), TRUE, super_attack_ready_param_);
+		Draw2D::ExtendGraph(VectorAssistant::Get2DVec(350.f, 140.f), 500, 500, input_type_screen_->GetHandle(), TRUE);
 	}
 
 	body_screen_->Draw();			//í‚ê‚é–{‘Ì
 	frame_screen_->Draw();		//ŠO˜g
 	weapon_screen_->Draw();
-	effect_screen_->Draw();
-
-	
+	effect_screen_->Draw();	
 }

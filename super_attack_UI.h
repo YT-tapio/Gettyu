@@ -21,6 +21,9 @@ private:
 
 	const int kWeaponHandle = MV1LoadModel("data/model/weapon/vacuum/vacuum.mv1");
 
+	const int kSuperAttackInputPadButton		= LoadGraph("data/image/pad/R_button.png");
+	const int kSuperAttackInputPCButton		= LoadGraph("data/image/PC/right_mouse_button.png");
+
 	//元の画像の大きさ
 	const int kOriginalImagWidth		= 793;
 	const int kOriginalImageHeight	= 72;
@@ -37,6 +40,14 @@ private:
 	const VECTOR kInitWeaponPos		= VGet(0.7f,0.4f,10.f);
 	const VECTOR kInitWeaponScale		= VectorAssistant::GetSame3DVec(0.25f);
 	const VECTOR kInitWeaponRot		= VGet(-kOneRad * 30.f, kOneRad * 0.f, kOneRad * 45.f);
+
+	const VECTOR kSuperAttackPCScale = VectorAssistant::Get2DVec(0.3f, 0.3f);
+	const VECTOR kSuperAttackPadScale = VectorAssistant::Get2DVec(0.5f, 0.5f);
+
+	const VECTOR kSuperAttackPCPos					= VectorAssistant::Get2DVec(250.f, 250.f);
+	const VECTOR kSuperAttackPadPos					= VectorAssistant::Get2DVec(230.f, 260.f);
+	const VECTOR kSuperAttackPCOriginalSize		= VectorAssistant::Get2DVec(200.f, 400.f);
+	const VECTOR kSuperAttackPadOriginalSize		= VectorAssistant::Get2DVec(200.f, 200.f);
 
 	const int disp_width_					= 700;
 	const int disp_height_					= 600;
@@ -87,18 +98,17 @@ private:
 	MaskData gauge_mask_data_;
 
 	std::shared_ptr<NormalSubScreen> frame_screen_;			// 外枠
-	std::shared_ptr<NormalSubScreen> body_screen_;			// 本体
-	std::shared_ptr<NormalSubScreen> back_screen_;			// 背景
-	std::shared_ptr<NormalSubScreen> weapon_screen_;		// 必殺技の武器を表示
-	std::shared_ptr<NormalSubScreen> effect_screen_;		// effectの描画を行う
-	std::shared_ptr<NormalSubScreen> button_screen_;		// 対応している操作のボタンを表示
+	std::shared_ptr<NormalSubScreen> body_screen_;				// 本体
+	std::shared_ptr<NormalSubScreen> back_screen_;				// 背景
+	std::shared_ptr<NormalSubScreen> weapon_screen_;			// 必殺技の武器を表示
+	std::shared_ptr<NormalSubScreen> effect_screen_;			// effectの描画を行う
+	std::shared_ptr<NormalSubScreen> button_screen_;			// 対応している操作のボタンを表示
 	std::shared_ptr<NormalSubScreen> ready_screen_;			// 準備完了の時の際の画像を表示
-	std::shared_ptr<NormalSubScreen> input_type_screen_;	// 操作を対応しているやつを表示
+	std::shared_ptr<NormalSubScreen> input_type_screen_;		// 操作を対応しているやつを表示
 	
 	//UIに沿わす
 	VECTOR ready_effect_pos_		= VGet(0.f, 0.f, 0.f);
 	VECTOR ready_effect_rot_		= VGet(0.f, 0.f, 0.f);
-
 
 	bool is_size_up_;
 	bool is_size_down_;

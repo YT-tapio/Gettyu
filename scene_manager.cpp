@@ -52,7 +52,6 @@ SceneManager::SceneManager()
     SetUseZBufferFlag(TRUE);		// Ｚバッファを使用する
     SetUseBackCulling(TRUE);		// バックカリングを行う
 
-    
     SetUseSetDrawScreenSettingReset(FALSE);
 
     player_model_   = MV1LoadModel(kPlayerModelPath);
