@@ -176,7 +176,7 @@ void ButtonGraph::MakeGraph()
 
 	const float kFontSize			= 50.f;
 	const float kFontThick			= 20.f;
-	const float kFontType = DX_FONTTYPE_EDGE;
+	const int kFontType				= DX_FONTTYPE_EDGE;
 
 	font_ = new Font(kFontPath, kFontName, kFontSize, kFontThick, kFontType);
 

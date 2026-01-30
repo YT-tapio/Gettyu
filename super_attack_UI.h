@@ -46,10 +46,13 @@ private:
 	const VECTOR kSuperAttackPadScale = VectorAssistant::Get2DVec(0.5f, 0.5f);
 
 	const VECTOR kSuperAttackPCPos					= VectorAssistant::Get2DVec(250.f, 250.f);
-	const VECTOR kSuperAttackPadPos					= VectorAssistant::Get2DVec(230.f, 260.f);
+	const VECTOR kSuperAttackPadPos					= VectorAssistant::Get2DVec(230.f, 250.f);
 
 	const VECTOR kSuperAttackPCOriginalSize		= VectorAssistant::Get2DVec(200.f, 400.f);
 	const VECTOR kSuperAttackPadOriginalSize		= VectorAssistant::Get2DVec(200.f, 200.f);
+
+	const VECTOR kPushKeyPos		= VectorAssistant::Get2DVec(210.f, 250.f);
+	const VECTOR kPushPadPos		= VectorAssistant::Get2DVec(200.f, 265.f);
 
 	const int disp_width_					= 700;
 	const int disp_height_					= 600;
@@ -71,6 +74,8 @@ private:
 	const float kReadyEffectMaxCount	= 10.f;
 
 	VECTOR push_UI_pos_;
+	VECTOR push_font_scale_;
+	VECTOR push_font_offset_vel_;
 
 	float init_ready_screen_width_;		// 初期画像の大きさ：横
 	float init_ready_screen_height_;		// 初期画像の大きさ：縦
@@ -80,6 +85,8 @@ private:
 
 	float ready_screen_width_ratio_;		// 画像サイズの比率：横
 	float ready_screen_height_ratio_;	// 画像サイズの比率：縦
+
+	float alpha_num_;
 
 	int frame_target_width_;
 	int frame_target_height_;
@@ -133,6 +140,8 @@ private:
 	void SizeUpInit();
 
 	void SizeDownInit();
+
+	void ChangeParam();
 
 public:
 

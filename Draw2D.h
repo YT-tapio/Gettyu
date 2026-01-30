@@ -35,6 +35,11 @@ namespace Draw2D
 	{
 		DrawCircle(static_cast<int>(pos.x), static_cast<int>(pos.y), radius, color, alpha);
 	}
+ 
+	inline void EdgeStringToHandle(const VECTOR& pos, const char* string, const int& handle, const int& font_color, const int& edge_color)
+	{
+		DrawStringToHandle(static_cast<int>(pos.x), static_cast<int>(pos.y), string, font_color, handle, edge_color);
+	}
 
 	/// <summary>
 	/// boxÇÃìßâﬂÇçsÇ§
@@ -45,9 +50,9 @@ namespace Draw2D
 	/// <param name="color">êF</param>
 	/// <param name="alpha">ògÇèoÇ∑ÇÃÇ©Ç«Ç§Ç© , TRUE ëSïîï`âÊ : FALSE ògÇæÇØ</param>
 	/// <param name="alpha_num">ìßâﬂ ; ëÂÇ´Ç≠Ç∑ÇÈÇ∆ï`âÊÇ≥ÇÍÇ»Ç¢ max 255</param>
-	inline void BlendBox(const VECTOR& pos, int width, int height, int color, const bool& alpha, const int& alpha_num)
+	inline void BlendBox(const VECTOR& pos, int width, int height, int color, const bool& alpha, const float& alpha_num)
 	{
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha_num);
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(alpha_num));
 		Box(pos, width, height, color, alpha);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}
@@ -60,10 +65,17 @@ namespace Draw2D
 	/// <param name="color">êF</param>
 	/// <param name="alpha">ògÇèoÇ∑ÇÃÇ©Ç«Ç§Ç© , TRUE ëSïîï`âÊ : FALSE ògÇæÇØ</param>
 	/// <param name="alpha_num">ìßâﬂ ; ëÂÇ´Ç≠Ç∑ÇÈÇ∆ï`âÊÇ≥ÇÍÇ»Ç¢ max 255</param>
-	inline void BlendCircle(const VECTOR& pos, const float& radius, int color, bool alpha, const int& alpha_num)
+	inline void BlendCircle(const VECTOR& pos, const float& radius, int color, bool alpha, const float& alpha_num)
 	{
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha_num);
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(alpha_num));
 		Circle(pos, radius, color, alpha);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	}
+
+	inline void BlendEdgeStringToHandle(const VECTOR& pos, const char* string, const int& handle, const int& font_color, const int& edge_color, const float& alpha_num)
+	{
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(alpha_num));
+		EdgeStringToHandle(pos, string, handle, font_color, edge_color);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}
 
