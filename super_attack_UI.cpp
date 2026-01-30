@@ -81,7 +81,9 @@ SuperAttackUI::SuperAttackUI()
 	effect_screen_			= std::make_shared<NormalSubScreen>(kInitScreenPos, static_cast<int>(kGameWidth), static_cast<int>(kGameHeight), static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0, FALSE);
 	ready_screen_			= std::make_shared<NormalSubScreen>(kInitScreenPos, static_cast<int>(kGameWidth), static_cast<int>(kGameHeight), static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0, FALSE);
 	input_type_screen_		= std::make_shared<NormalSubScreen>(VectorAssistant::GetZeroVec(), static_cast<int>(500), static_cast<int>(500), static_cast<int>(500), static_cast<int>(500), TRUE, AlphaColorType::kBlack, 0, FALSE);
-	
+
+	push_UI_pos_ = VectorAssistant::Get2DVec(250.f, 250.f);
+
 	if (kGaugeBackHandle == -1)
 	{
 		printfDx("2D:ì«Ç›çûÇ›ÉGÉâÅ[");
@@ -331,14 +333,14 @@ void SuperAttackUI::Update()
 
 	switch (Input::GetInstance().GetDeviceType())
 	{
-	case InputDeviceType::kPad:
+	case InputDeviceType::kKey:
 
 		Draw2D::ExtendGraph(kSuperAttackPCPos, static_cast<int>(kSuperAttackPCOriginalSize.x * kSuperAttackPCScale.x), 
 			static_cast<int>(kSuperAttackPCOriginalSize.y * kSuperAttackPCScale.y), kSuperAttackInputPCButton, TRUE);
 
 			break;
 
-	case InputDeviceType::kKey:
+	case InputDeviceType::kPad:
 
 		Draw2D::ExtendGraph(kSuperAttackPadPos, static_cast<int>(kSuperAttackPadOriginalSize.x* kSuperAttackPadScale.x), 
 			static_cast<int>(kSuperAttackPadOriginalSize.y * kSuperAttackPadScale.y), kSuperAttackInputPadButton, TRUE);
@@ -346,6 +348,11 @@ void SuperAttackUI::Update()
 		break;
 
 	}
+
+	Draw2D::Box(push_UI_pos_, 20, 20, GetColor(0, 0, 0), TRUE);
+
+	DrawString(static_cast<int>(push_UI_pos_.x - 20), static_cast<int>(push_UI_pos_.y - 15), "push", GetColor(255, 255, 255), GetColor(0, 0, 0));
+
 
 	input_type_screen_->Down();
 

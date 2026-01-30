@@ -8,6 +8,7 @@
 #include"effect.h"
 #include"EffekseerForDXLib.h"
 #include"vector_assistant.h"
+#include"font.h"
 
 class SuperAttackUI
 {
@@ -46,6 +47,7 @@ private:
 
 	const VECTOR kSuperAttackPCPos					= VectorAssistant::Get2DVec(250.f, 250.f);
 	const VECTOR kSuperAttackPadPos					= VectorAssistant::Get2DVec(230.f, 260.f);
+
 	const VECTOR kSuperAttackPCOriginalSize		= VectorAssistant::Get2DVec(200.f, 400.f);
 	const VECTOR kSuperAttackPadOriginalSize		= VectorAssistant::Get2DVec(200.f, 200.f);
 
@@ -67,6 +69,8 @@ private:
 	const float kReadyEffectSpeed		= 1.f;
 	const float kReadyEffectSize		= 100.f;
 	const float kReadyEffectMaxCount	= 10.f;
+
+	VECTOR push_UI_pos_;
 
 	float init_ready_screen_width_;		// 初期画像の大きさ：横
 	float init_ready_screen_height_;		// 初期画像の大きさ：縦
@@ -106,6 +110,8 @@ private:
 	std::shared_ptr<NormalSubScreen> ready_screen_;			// 準備完了の時の際の画像を表示
 	std::shared_ptr<NormalSubScreen> input_type_screen_;		// 操作を対応しているやつを表示
 	
+	std::shared_ptr<Font> tanuei_font_;
+
 	//UIに沿わす
 	VECTOR ready_effect_pos_		= VGet(0.f, 0.f, 0.f);
 	VECTOR ready_effect_rot_		= VGet(0.f, 0.f, 0.f);
