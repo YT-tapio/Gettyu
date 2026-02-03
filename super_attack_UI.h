@@ -19,6 +19,8 @@ private:
 	const int kGaugeFrameHandle		= LoadGraph("data/UI/super_attack/GaugeFreamOutsideB_Orende.png");
 	const int kGaugeBodyHandle		= LoadGraph("data/UI/super_attack/BodyGaugeB_Green.png");
 	const int kGaugeBackHandle		= LoadGraph("data/UI/super_attack/BodyBackB_Black.png");
+	const int kCursorSpinHandle		= LoadGraph("data/image/PC/mouse_cursor_spin.png");
+	const int kStickSpinHandle		= LoadGraph("data/image/pad/stick_spin.png");
 
 	const int kWeaponHandle = MV1LoadModel("data/model/weapon/vacuum/vacuum.mv1");
 
@@ -54,6 +56,8 @@ private:
 	const VECTOR kPushKeyPos		= VectorAssistant::Get2DVec(210.f, 250.f);
 	const VECTOR kPushPadPos		= VectorAssistant::Get2DVec(200.f, 265.f);
 
+	const VECTOR kSpinWheelPos		= VectorAssistant::Get2DVec(650.f, 350.f);
+
 	const int disp_width_					= 700;
 	const int disp_height_					= 600;
 
@@ -63,11 +67,19 @@ private:
 	const int kDispBackWidth			= 730;
 	const int kDispBackHeight			= 645;
 
+	const int kCursorSpinImageWidth			= 300;
+	const int kCursorSpinImageHeight		= 400;
+
+	const int kStickSpinImageWidth		= 300;
+	const int kStickSpinImageHeight		= 400;
+
 	const int kAddSize					= 200;
 
 	const float kSizeUpSpeed			= 65.f;
 	const float kSizeDownSpeed			= 40.f;
 
+	const float kWheelSpinScreenScale	= 0.3f;
+	const float kStickSpinScreenScale	= 0.4f;
 
 	const float kReadyEffectSpeed		= 1.f;
 	const float kReadyEffectSize		= 100.f;

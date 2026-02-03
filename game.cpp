@@ -408,18 +408,21 @@ void Game::Draw()
     enemy_count_UI_->Draw();
     game_goal_UI_->Draw();
     count_down_UI_->Draw();
+    if (FALSE)
+    {
+        DrawLine3D(center_pos_, VAdd(center_pos_, VScale(norm_, 10.f)), GetColor(255, 255, 255));
+        DrawLine3D(center_pos_, VAdd(center_pos_, VScale(x_norm, 10.f)), GetColor(255, 0, 0));
+        DrawLine3D(center_pos_, VAdd(center_pos_, VScale(y_norm, 10.f)), GetColor(0, 255, 0));
+        DrawLine3D(center_pos_, VAdd(center_pos_, VScale(z_norm, 10.f)), GetColor(0, 0, 255));
 
-    DrawLine3D(center_pos_, VAdd(center_pos_, VScale(norm_, 10.f)), GetColor(255, 255, 255));
-    DrawLine3D(center_pos_, VAdd(center_pos_, VScale(x_norm, 10.f)), GetColor(255, 0, 0));
-    DrawLine3D(center_pos_, VAdd(center_pos_, VScale(y_norm, 10.f)), GetColor(0, 255, 0));
-    DrawLine3D(center_pos_, VAdd(center_pos_, VScale(z_norm, 10.f)), GetColor(0, 0, 255));
+        DrawLine3D(VAdd(center_pos_, VGet(-5.f, 0.f, 0.f)), VAdd(center_pos_, VGet(5.f, 0.f, 0.f)), GetColor(0, 0, 0));
+        DrawLine3D(VAdd(center_pos_, VGet(0.f, -5.f, 0.f)), VAdd(center_pos_, VGet(0.f, 5.f, 0.f)), GetColor(0, 0, 0));
+        DrawLine3D(VAdd(center_pos_, VGet(0.f, 0.f, -5.f)), VAdd(center_pos_, VGet(0.f, 0.f, 5.f)), GetColor(0, 0, 0));
+
+        DrawFormatString(600, 200, GetColor(0, 255, 0), "x : %.2f,y : %.2f,z : %.2f\n", x_rad_, y_rad_, z_rad_);
+        DrawFormatString(600, 230, GetColor(0, 255, 0), "y_norm  x : %.2f,y : %.2f,z : %.2f\n", y_norm.x, y_norm.y, y_norm.z);
+    }
     
-    DrawLine3D(VAdd(center_pos_,VGet(-5.f,0.f,0.f)), VAdd(center_pos_, VGet(5.f, 0.f, 0.f)), GetColor(0, 0, 0));
-    DrawLine3D(VAdd(center_pos_, VGet(0.f, -5.f, 0.f)), VAdd(center_pos_, VGet(0.f, 5.f, 0.f)), GetColor(0, 0, 0));
-    DrawLine3D(VAdd(center_pos_, VGet(0.f, 0.f, -5.f)), VAdd(center_pos_, VGet(0.f, 0.f, 5.f)), GetColor(0, 0, 0));
-
-    DrawFormatString(600, 200, GetColor(0, 255, 0), "x : %.2f,y : %.2f,z : %.2f\n", x_rad_, y_rad_, z_rad_);
-    DrawFormatString(600, 230, GetColor(0, 255, 0), "y_norm  x : %.2f,y : %.2f,z : %.2f\n", y_norm.x, y_norm.y, y_norm.z);
     float clear_time = ClearTime::GetInstance().GetClearTime();
     int timer_width = GetDrawFormatStringWidthToHandle(tanuei_font_->GetHandle(), "%.1f", clear_time);
     DrawFormatStringToHandle(static_cast<int>(kTimerPos.x - float(timer_width) * 0.5f), static_cast<int>(kTimerPos.y), kFontColor, tanuei_font_->GetHandle(), "%.1f", clear_time);

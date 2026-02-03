@@ -1148,13 +1148,13 @@ void Brain::UpdateVacuum(std::shared_ptr<Player>player,const VECTOR& camera_pos)
 	if (Input::GetInstance().GetDeviceType() == InputDeviceType::kKey)
 	{
 		decide_side_rad_value = mouse_side_rad_value;
-		//decide_vertical_rad_value = mouse_vertical_rad_value;
+		decide_vertical_rad_value = mouse_vertical_rad_value;
 	}
 
 	if (Input::GetInstance().GetDeviceType() == InputDeviceType::kPad)
 	{
 		decide_side_rad_value = pad_side_rad_value;
-		decide_vertical_rad_value = pad_vertical_rad_value;
+		//decide_vertical_rad_value = pad_vertical_rad_value;
 	}
 
 	if (decide_side_rad_value == 0.f && decide_vertical_rad_value == 0.f)

@@ -593,39 +593,42 @@ void Stage::Draw()
 
 	MV1SetMatrix(model_, mat_);
 	MV1DrawModel(model_);
-
-	// óDêÊÇ≥ÇÍÇÈè∞(ê¬)
-	for (auto& poly : prioritize_floor_polys_)
+	if (FALSE)
 	{
-		DrawTriangle3D(poly.pos[0], poly.pos[1], poly.pos[2], GetColor(0, 0, 255), FALSE);
-	}
+		// óDêÊÇ≥ÇÍÇÈè∞(ê¬)
+		for (auto& poly : prioritize_floor_polys_)
+		{
+			DrawTriangle3D(poly.pos[0], poly.pos[1], poly.pos[2], GetColor(0, 0, 255), FALSE);
+		}
 
-	// ï«(óŒ)
-	for (auto& poly:wall_polys_)
-	{
-		DrawTriangle3D(poly.pos[0], poly.pos[1], poly.pos[2], GetColor(0, 255, 0), FALSE);
-	}
+		// ï«(óŒ)
+		for (auto& poly : wall_polys_)
+		{
+			DrawTriangle3D(poly.pos[0], poly.pos[1], poly.pos[2], GetColor(0, 255, 0), FALSE);
+		}
 
-	// è∞(ê‘)
-	for (auto& poly : floor_polys_)
-	{
-		DrawTriangle3D(poly.pos[0], poly.pos[1], poly.pos[2], GetColor(255, 0, 0), FALSE);
+		// è∞(ê‘)
+		for (auto& poly : floor_polys_)
+		{
+			DrawTriangle3D(poly.pos[0], poly.pos[1], poly.pos[2], GetColor(255, 0, 0), FALSE);
+		}
+
+		for (auto& data : prioritize_floor_poly_data_)
+		{
+			DrawLine3D(data.center_pos, VAdd(data.center_pos, VScale(data.norm, 10.f)), GetColor(255, 0, 0));			// ÇªÇÃÇ‹Ç‹ (ê‘)
+			DrawLine3D(data.center_pos, VAdd(data.center_pos, VScale(data.x_angle_norm, 10.f)), GetColor(0, 255, 0));	// xé≤âÒì]  (óŒ)
+			DrawLine3D(data.center_pos, VAdd(data.center_pos, VScale(data.z_angle_norm, 10.f)), GetColor(0, 0, 255));	// yé≤âÒì]  (ê¬)
+
+
+			//DrawLine3D(data.center_pos, VAdd(data.center_pos, VScale(data.z_angle_norm, 10.f)), GetColor(0, 0, 2))
+			//DrawLine3D(data.center_pos, VAdd(data.center_pos, VScale(VectorAssistant::VGetRotRadZ(data.norm, 90), 10.f)), GetColor(0, 0, 0));
+
+		}
+
+		DrawSphere3D(rem_hit_pos, 0.5f, 20, GetColor(255, 255, 255), GetColor(255, 255, 255), TRUE);
+
 	}
 	
-	for (auto& data : prioritize_floor_poly_data_)
-	{
-		DrawLine3D(data.center_pos, VAdd(data.center_pos, VScale(data.norm, 10.f)), GetColor(255, 0, 0));			// ÇªÇÃÇ‹Ç‹ (ê‘)
-		DrawLine3D(data.center_pos, VAdd(data.center_pos, VScale(data.x_angle_norm, 10.f)), GetColor(0, 255, 0));	// xé≤âÒì]  (óŒ)
-		DrawLine3D(data.center_pos, VAdd(data.center_pos, VScale(data.z_angle_norm, 10.f)), GetColor(0, 0, 255));	// yé≤âÒì]  (ê¬)
-
-
-		//DrawLine3D(data.center_pos, VAdd(data.center_pos, VScale(data.z_angle_norm, 10.f)), GetColor(0, 0, 2))
-		//DrawLine3D(data.center_pos, VAdd(data.center_pos, VScale(VectorAssistant::VGetRotRadZ(data.norm, 90), 10.f)), GetColor(0, 0, 0));
-
-	}
-
-	DrawSphere3D(rem_hit_pos, 0.5f, 20, GetColor(255, 255, 255), GetColor(255, 255, 255), TRUE);
-
 }
 
 

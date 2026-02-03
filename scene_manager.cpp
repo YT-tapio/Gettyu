@@ -107,6 +107,7 @@ void SceneManager::Update()
             now_scene_->Init();
             before_name = now_scene_->GetName();
             init = TRUE;
+            Input::GetInstance().Update();
         }
 
         //init‚µ‚½‚Æ‚«‚¿‚å‚Á‚Æ1f’x‚ê‚³‚¹‚é

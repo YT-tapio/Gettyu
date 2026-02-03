@@ -281,6 +281,8 @@ void SuperAttackUI::ChangeParam()
 
 void SuperAttackUI::Update()
 {
+	auto device_type = Input::GetInstance().GetDeviceType();
+
 	const float kMaxHue = 180.f;
 	const float kChangeHueSpeed = 15.f;
 	auto now_state = SuperAttackStateGetter::GetInstance().GetState();
@@ -365,7 +367,22 @@ void SuperAttackUI::Update()
 
 	input_type_super_attack_screen_->Up();
 
-	Draw2D::Box(VectorAssistant::Get2DVec(250.f, 250.f), 500, 500, GetColor(0, 255, 255), TRUE);
+	// ‚±‚Ì’†‚Å‰æ‘œ‚Ì‘I•Ê
+
+	switch (device_type)
+	{
+	case InputDeviceType::kKey:
+		Draw2D::ExtendGraph(VectorAssistant::Get2DVec(250.f, 250.f), kCursorSpinImageWidth, kCursorSpinImageHeight, kCursorSpinHandle, TRUE);
+		break;
+
+
+	case InputDeviceType::kPad:
+		Draw2D::ExtendGraph(VectorAssistant::Get2DVec(250.f, 250.f), kStickSpinImageWidth, kStickSpinImageHeight, kStickSpinHandle, TRUE);
+		break;
+	}
+
+
+	
 
 	input_type_super_attack_screen_->Down();
 	
@@ -390,7 +407,7 @@ void SuperAttackUI::Update()
 
 	input_type_push_screen_->Up();
 
-	switch (Input::GetInstance().GetDeviceType())
+	switch (device_type)
 	{
 	case InputDeviceType::kKey:
 
@@ -429,7 +446,7 @@ void SuperAttackUI::Draw()
 	
 
 	body_screen_->Draw();			//í‚ê‚é–{‘Ì
-	frame_screen_->Draw();		//ŠO˜g
+	frame_screen_->Draw();			//ŠO˜g
 	weapon_screen_->Draw();
 	effect_screen_->Draw();	
 	if (super_attack_state == SuperAttackState::kReady)
@@ -440,7 +457,8 @@ void SuperAttackUI::Draw()
 
 	if (super_attack_state == SuperAttackState::kActive)
 	{
-		Draw2D::BlendGraph(VectorAssistant::GetScreenCenterPos(), 500, 500, input_type_super_attack_screen_->GetHandle(), TRUE,30);
+		
+		Draw2D::ExtendGraph(kSpinWheelPos, 500 * kWheelSpinScreenScale, 500 * kWheelSpinScreenScale, input_type_super_attack_screen_->GetHandle(), TRUE);
 	}
 	
 }

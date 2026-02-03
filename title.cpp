@@ -73,6 +73,7 @@ Title::Title(int model)
 	
 	objects_.push_back(std::make_shared<RotatedObject>(VectorAssistant::GetZeroVec(), VectorAssistant::GetZeroVec(), VectorAssistant::GetSame3DVec(kSkyDomeScale), kSkyDomePath, kRotateSpeed));
 	objects_.push_back(std::make_shared<RotatedObject>(VectorAssistant::GetZeroVec(), VectorAssistant::GetZeroVec(), VectorAssistant::GetSame3DVec(kStageScale), kStagePath, kRotateSpeed));
+
 }
 
 
@@ -139,6 +140,8 @@ void Title::Init()
 	button_num++;
 	buttons_.push_back(std::make_shared<Button>(kGameEndButtonPos, kButtonWidth, kButtonHeight, "", button_num, &game_end_,exit_handle));
 	AnimationSetting();
+
+	
 }
 
 void Title::Update(SceneName& name)
