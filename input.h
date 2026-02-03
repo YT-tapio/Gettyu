@@ -181,6 +181,16 @@ public:
 
 	float GetStickSpin(int type);
 
+	int GetPadTriggerNum(int type);
+
+	/// <summary>
+	/// トリガーのインプット状態を確認
+	/// </summary>
+	/// <param name="type">どちらのスティックを確認するか</param>
+	/// <param name="num">判断する量</param>
+	/// <returns></returns>
+	InputState GetPadTriggerState(int type, int num);
+
 	/// <summary>
 	/// 引数以上に動いているかの判別
 	/// </summary>

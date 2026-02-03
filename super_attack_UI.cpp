@@ -81,8 +81,8 @@ SuperAttackUI::SuperAttackUI()
 	weapon_screen_			= std::make_shared<NormalSubScreen>(kInitWeaponScreenPos, static_cast<int>(kGameWidth), static_cast<int>(kGameHeight), static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0, FALSE);
 	effect_screen_			= std::make_shared<NormalSubScreen>(kInitScreenPos, static_cast<int>(kGameWidth), static_cast<int>(kGameHeight), static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0, FALSE);
 	ready_screen_			= std::make_shared<NormalSubScreen>(kInitScreenPos, static_cast<int>(kGameWidth), static_cast<int>(kGameHeight), static_cast<int>(sub_screen_width), static_cast<int>(sub_screen_height), TRUE, AlphaColorType::kBlack, 0, FALSE);
-	input_type_screen_		= std::make_shared<NormalSubScreen>(VectorAssistant::GetZeroVec(), static_cast<int>(500), static_cast<int>(500), static_cast<int>(500), static_cast<int>(500), TRUE, AlphaColorType::kBlack, 0, FALSE);
-
+	input_type_push_screen_			= std::make_shared<NormalSubScreen>(VectorAssistant::GetZeroVec(), static_cast<int>(500), static_cast<int>(500), static_cast<int>(500), static_cast<int>(500), TRUE, AlphaColorType::kBlack, 0, FALSE);
+	input_type_super_attack_screen_ = std::make_shared<NormalSubScreen>(VectorAssistant::GetZeroVec(), 500, 500, 500, 500, TRUE, AlphaColorType::kBlack, 0, FALSE);
 	const char* kFilePath = "data/font/TanueiKakuPop_1_00/TanueiKakuPop.otf";
 	const char* kFontPath = "たぬえいカクポップタイ";
 
@@ -120,7 +120,8 @@ SuperAttackUI::SuperAttackUI()
 	weapon_screen_->SetIsDisp(TRUE);
 	effect_screen_	->SetIsDisp(TRUE);
 	ready_screen_	->SetIsDisp(TRUE);
-	input_type_screen_->SetIsDisp(TRUE);
+	input_type_push_screen_->SetIsDisp(TRUE);
+	input_type_super_attack_screen_->SetIsDisp(TRUE);
 	//どのくらい大きくするかを決定
 	frame_target_width_ = 0.f;
 	frame_target_height_ = 0.f;
@@ -361,6 +362,13 @@ void SuperAttackUI::Update()
 	DrawMaskBox(gauge_mask_data_);
 	body_screen_->Down();
 
+
+	input_type_super_attack_screen_->Up();
+
+	Draw2D::Box(VectorAssistant::Get2DVec(250.f, 250.f), 500, 500, GetColor(0, 255, 255), TRUE);
+
+	input_type_super_attack_screen_->Down();
+	
 	//武器の表示
 	weapon_screen_->Up();
 	weapon_screen_->SetUpCamera();
@@ -380,7 +388,7 @@ void SuperAttackUI::Update()
 
 	// 操作方法の描画を行う
 
-	input_type_screen_->Up();
+	input_type_push_screen_->Up();
 
 	switch (Input::GetInstance().GetDeviceType())
 	{
@@ -400,18 +408,22 @@ void SuperAttackUI::Update()
 
 	}
 
+
+
 	//Draw2D::Box(push_UI_pos_, 20, 20, GetColor(0, 0, 0), TRUE);
 	Draw2D::BlendEdgeStringToHandle(VAdd(push_UI_pos_, push_font_offset_vel_), "ぷっしゅ", tanuei_font_->GetHandle(), Color::kGold, GetColor(0, 0, 0),alpha_num_);
 	//DrawStringToHandle(static_cast<int>(push_UI_pos_.x - 20), static_cast<int>(push_UI_pos_.y - 15), "push", GetColor(255, 255, 255), tanuei_font_->GetHandle(),GetColor(0, 0, 0));
 
 
-	input_type_screen_->Down();
+	input_type_push_screen_->Down();
 
 	Gauss::GetInstance().Update(back_screen_->GetHandle(), kPixelWidthMiddle, kBackGaussParam);
 }
 
 void SuperAttackUI::Draw()
 {
+	auto super_attack_state = SuperAttackStateGetter::GetInstance().GetState();
+
 	back_screen_->Draw();
 	
 	
@@ -420,9 +432,15 @@ void SuperAttackUI::Draw()
 	frame_screen_->Draw();		//外枠
 	weapon_screen_->Draw();
 	effect_screen_->Draw();	
-	if (SuperAttackStateGetter::GetInstance().GetState() == SuperAttackState::kReady)
+	if (super_attack_state == SuperAttackState::kReady)
 	{
 		Draw2D::BlendGraph(kInitScreenPos, ready_screen_width_, ready_screen_height_, ready_screen_->GetHandle(), TRUE, super_attack_ready_param_);
-		Draw2D::ExtendGraph(VectorAssistant::Get2DVec(350.f, 140.f), 500, 500, input_type_screen_->GetHandle(), TRUE);
+		Draw2D::ExtendGraph(VectorAssistant::Get2DVec(350.f, 140.f), 500, 500, input_type_push_screen_->GetHandle(), TRUE);
 	}
+
+	if (super_attack_state == SuperAttackState::kActive)
+	{
+		Draw2D::BlendGraph(VectorAssistant::GetScreenCenterPos(), 500, 500, input_type_super_attack_screen_->GetHandle(), TRUE,30);
+	}
+	
 }

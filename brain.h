@@ -91,6 +91,9 @@ private:
 	bool is_blend_;			// 座標のブレンド
 	bool is_target_blend_;	// 見る座標のブレンド
 
+	bool is_rt_push_;
+	bool is_lt_push_;
+
 	bool is_init = FALSE;
 
 	bool is_blend_tracking_ = FALSE;//かめらを切り替えたブレンド中でもちゃんと動く奴はこのフラグをTRUEに

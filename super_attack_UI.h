@@ -113,10 +113,11 @@ private:
 	std::shared_ptr<NormalSubScreen> back_screen_;				// 背景
 	std::shared_ptr<NormalSubScreen> weapon_screen_;			// 必殺技の武器を表示
 	std::shared_ptr<NormalSubScreen> effect_screen_;			// effectの描画を行う
-	std::shared_ptr<NormalSubScreen> button_screen_;			// 対応している操作のボタンを表示
-	std::shared_ptr<NormalSubScreen> ready_screen_;			// 準備完了の時の際の画像を表示
-	std::shared_ptr<NormalSubScreen> input_type_screen_;		// 操作を対応しているやつを表示
-	
+	std::shared_ptr<NormalSubScreen> button_screen_;					// 対応している操作のボタンを表示
+	std::shared_ptr<NormalSubScreen> ready_screen_;						// 準備完了の時の際の画像を表示
+	std::shared_ptr<NormalSubScreen> input_type_push_screen_;			// 操作を対応しているやつを表示
+	std::shared_ptr<NormalSubScreen> input_type_super_attack_screen_;	// 必殺技の操作方法を描画する
+
 	std::shared_ptr<Font> tanuei_font_;
 
 	//UIに沿わす

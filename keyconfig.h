@@ -27,6 +27,7 @@ struct KeyConfig
     static const int kJumpKey               = KEY_INPUT_SPACE;
     static const int kAttackKey             = MOUSE_INPUT_LEFT;
     static const int kSuperAttackKey        = MOUSE_INPUT_RIGHT;
+    
     //static const int kSwordSlash;
 
     //“®‚«‚É‚ÍŠÖŒW‚µ‚È‚¢‚à‚Ì
@@ -60,6 +61,8 @@ struct PadConfig
     static const int kDownStick             = 0;
     static const int kJumpButton            = XINPUT_BUTTON_A;
     static const int kAttackButton          = XINPUT_BUTTON_LEFT_SHOULDER;
+    static const int kCameraMoveButtonValue = 100;
+
     //“®‚«‚É‚ÍŠÖŒW‚µ‚È‚¢‚à‚Ì
     static const int kSuperAttackButton     = XINPUT_BUTTON_RIGHT_SHOULDER;
     static const int kSwitchWarpRodButton   = XINPUT_BUTTON_Y;

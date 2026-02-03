@@ -297,6 +297,9 @@ void Input::Update()
 	before_type_state_.mouse_x = now_type_state_.mouse_x;
 	before_type_state_.mouse_y = now_type_state_.mouse_y;
 
+	before_type_state_.pad.LeftTrigger	= now_type_state_.pad.LeftTrigger;
+	before_type_state_.pad.RightTrigger = now_type_state_.pad.RightTrigger;
+
 	//printfDx("%.2f\n", GetMouseWheelRotVolF());
 
 	float next_wheel_num = GetMouseWheelRotVolF();
@@ -333,7 +336,6 @@ void Input::Update()
 	DecideDeviceType();
 	
 }
-
 
 void Input::SetTypeState(const  InputType& now_input, const InputType& before_input)
 {
@@ -724,6 +726,59 @@ float Input::GetStickSpin(int type)
 	
 
 	return (GetPadStickRad(StickType::kRight) - before_type_state_.right_stick_rad);
+}
+
+int Input::GetPadTriggerNum(int type)
+{
+	int num = -1;
+	switch (type)
+	{
+	case StickType::kRight:
+		num = now_type_state_.pad.RightTrigger;
+		break;
+
+	case StickType::kLeft:
+		num = now_type_state_.pad.LeftTrigger;
+		break;
+
+	default:
+		printfDx("エラー");
+	}
+	return num;
+}
+
+InputState Input::GetPadTriggerState(int type, int num)
+{
+	InputState state = InputState::kOff;
+	int now_trigger_num = GetPadTriggerNum(type);
+	int before_trigger_num = -1;
+	
+	bool now_trigger_on		= FALSE;
+	bool before_trigger_on	= FALSE;
+	switch (type)
+	{
+	case StickType::kRight:
+		before_trigger_num = before_type_state_.pad.RightTrigger;
+		break;
+
+	case StickType::kLeft:
+		before_trigger_num = before_type_state_.pad.LeftTrigger;
+		break;
+
+	default:
+		printfDx("エラー");
+	}
+
+
+	if (now_trigger_num >= num)		{ now_trigger_on = TRUE; }
+	if (before_trigger_num >= num)	{ before_trigger_on = TRUE; }
+
+	if (!now_trigger_on && !before_trigger_on)	{ state = InputState::kOff; }		// どちらもoff
+	if ( now_trigger_on && !before_trigger_on)	{ state = InputState::kPush; }		// 今のだけon
+	if ( now_trigger_on &&  before_trigger_on)	{ state = InputState::kOn; }		// どちらもon
+	if (!now_trigger_on &&  before_trigger_on)	{ state = InputState::kRelease; }	// 前のだけoff
+
+	return state;
 }
 
 void Input::NoActive()

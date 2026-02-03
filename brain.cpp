@@ -11,6 +11,7 @@
 #include"const_rad.h"
 #include"lerp.h"
 #include"vector_assistant.h"
+#include"keyconfig.h"
 
 Brain::Brain(const VECTOR& next_target_pos)
 	:pos_(VGet(0,0,0))
@@ -37,6 +38,8 @@ Brain::Brain(const VECTOR& next_target_pos)
 	tracking_camera_			= new Tracking(VirtualCameraName::kTracking);
 	vacuum_camera_				= new VacuumCamera(VirtualCameraName::kVacuum);
 	game_clear_camera_			= new GameClearCamera();
+	is_lt_push_ = FALSE;
+	is_rt_push_ = FALSE;
 }
 
 
@@ -1103,13 +1106,100 @@ void Brain::UpdateVacuum(std::shared_ptr<Player>player,const VECTOR& camera_pos)
 	//今等速でなっている加速にしたい
 	decide_dist = kVacuumDist - vacuum_offset_dist_;
 
+
+	// カメラの回転を行えるように
+
+	float pad_side_rad_value = 0.0f;
+	float pad_vertical_rad_value = 0.0f;
+
+	float mouse_side_rad_value = 0.0f;
+	float mouse_vertical_rad_value = 0.0f;
+
+	float decide_side_rad_value = 0.0f;
+	float decide_vertical_rad_value = 0.0f;
+
+	// パッドの入力方法を変える
+	// LT,RTの操作を可能にする
+
+	// 値をもらう
+	auto LT_num = Input::GetInstance().GetPadTriggerNum(StickType::kLeft);
+	auto RT_num = Input::GetInstance().GetPadTriggerNum(StickType::kRight);
+	
+	//最終的にこれに代入
+	int trigger_num = 0;
+
+	// パッドの入力状況によって変化させる
+
+	if (LT_num >= PadConfig::kCameraMoveButtonValue) { trigger_num += LT_num; }
+	if (RT_num >= PadConfig::kCameraMoveButtonValue) { trigger_num -= LT_num; }
+
+	float trigger_input_value = trigger_num / PadConfig::kCameraMoveButtonValue;
+
+	// LT,RTの入力量によって変化
+	pad_side_rad_value = static_cast<float>(((M_PI / 180) * (trigger_input_value * kCameraSpeed) * all_sensitivity_) * side_sensitivity_) * 0.5f;
+
+	//if()
+	mouse_side_rad_value = static_cast<float>((M_PI / 180) * (Input::GetInstance().GetMousePercent(Control::kX) * kCameraSpeed) * all_sensitivity_) * side_sensitivity_;
+	mouse_vertical_rad_value = static_cast<float>((M_PI / 180) * (Input::GetInstance().GetMousePercent(Control::kY) * kCameraSpeed) * all_sensitivity_) * vertical_sensitivity_;
+
+	Input::GetInstance().ResetMousePoint();
+
+
+	if (Input::GetInstance().GetDeviceType() == InputDeviceType::kKey)
+	{
+		decide_side_rad_value = mouse_side_rad_value;
+		//decide_vertical_rad_value = mouse_vertical_rad_value;
+	}
+
+	if (Input::GetInstance().GetDeviceType() == InputDeviceType::kPad)
+	{
+		decide_side_rad_value = pad_side_rad_value;
+		decide_vertical_rad_value = pad_vertical_rad_value;
+	}
+
+	if (decide_side_rad_value == 0.f && decide_vertical_rad_value == 0.f)
+	{
+		no_update_ = TRUE;
+	}
+	else
+	{
+		no_update_ = FALSE;
+	}
+
+	//pad対応
+	side_rad_ += decide_side_rad_value * (delta_time_ * 20);
+	vertical_rad_ -= decide_vertical_rad_value * (delta_time_ * 20);	//pad操作の時、カメラを動かすときは上下が反転する
+
+	//side_radの調整
+	if (side_rad_ > static_cast<float>((M_PI / 180) * 180))
+	{
+		side_rad_ -= static_cast<float>((M_PI / 180) * 360);
+	}
+
+	if (side_rad_ < -static_cast<float>((M_PI / 180) * 180))
+	{
+		side_rad_ += static_cast<float>((M_PI / 180) * 360);
+	}
+
+	//真上に来た時に後ろに行かないように
+	if ((kOneRad * 20) > vertical_rad_)
+	{
+		vertical_rad_ = (kOneRad * 20);
+	}
+
+	//真下に来た時に後ろに行かないように
+	if ((kOneRad * 150) < vertical_rad_)
+	{
+		vertical_rad_ = (kOneRad * 150);
+	}
+
 	if (vacuum_offset_dist_ < 0.f)
 	{
 		vacuum_offset_dist_ = 0.f;
 		printfDx("-");
 	}
 
-	VECTOR pos	= GetRotatedByTheDistanceFromThePos(kVacuumVerticalRad, side_rad_, decide_dist, player->GetPos());
+	VECTOR pos	= GetRotatedByTheDistanceFromThePos(vertical_rad_, side_rad_, decide_dist, player->GetPos());
 	velocity_	= VSub(pos,camera_pos);
 	//posを記憶
 	vacuum_camera_->SetPos(VAdd(camera_pos, velocity_));
