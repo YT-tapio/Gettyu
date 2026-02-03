@@ -20,7 +20,6 @@ Stage::Stage(const char* path, VECTOR pos, float scale)
 {
 	MV1SetupCollInfo(model_, -1);
 
-
 	MATRIX scale_matrix = MGetScale(scale_);
 	//s—ñ‚ð¶¬
 	MATRIX pos_matrix = MGetTranslate(pos_);
@@ -230,7 +229,6 @@ VECTOR Stage::GetSegmentPolyHitPos(const VECTOR& start_pos, const VECTOR& end_po
 
 	return VAdd(start_pos, VScale(vel, ratio));
 }
-
 
 bool Stage::IsStair(const VECTOR& poly_pos, const VECTOR& entity_pos,const float& r)
 {
@@ -631,12 +629,10 @@ void Stage::Draw()
 	
 }
 
-
 void Stage::Debug()
 {
 	next_to_old_cap_->Debug();
 }
-
 
 VECTOR Stage::CheckCollision(std::shared_ptr<ColliderBase> object_coll, const VECTOR& velocity)
 {

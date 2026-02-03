@@ -364,7 +364,6 @@ void SuperAttackUI::Update()
 	DrawMaskBox(gauge_mask_data_);
 	body_screen_->Down();
 
-
 	input_type_super_attack_screen_->Up();
 
 	// ‚±‚Ì’†‚Å‰æ‘œ‚Ì‘I•Ê
@@ -372,17 +371,15 @@ void SuperAttackUI::Update()
 	switch (device_type)
 	{
 	case InputDeviceType::kKey:
+		disp_spin_scale_ = kWheelSpinScreenScale;
 		Draw2D::ExtendGraph(VectorAssistant::Get2DVec(250.f, 250.f), kCursorSpinImageWidth, kCursorSpinImageHeight, kCursorSpinHandle, TRUE);
 		break;
 
-
 	case InputDeviceType::kPad:
+		disp_spin_scale_ = kStickSpinScreenScale;
 		Draw2D::ExtendGraph(VectorAssistant::Get2DVec(250.f, 250.f), kStickSpinImageWidth, kStickSpinImageHeight, kStickSpinHandle, TRUE);
 		break;
 	}
-
-
-	
 
 	input_type_super_attack_screen_->Down();
 	
@@ -410,17 +407,13 @@ void SuperAttackUI::Update()
 	switch (device_type)
 	{
 	case InputDeviceType::kKey:
-
 		Draw2D::ExtendGraph(kSuperAttackPCPos, static_cast<int>(kSuperAttackPCOriginalSize.x * kSuperAttackPCScale.x), 
 			static_cast<int>(kSuperAttackPCOriginalSize.y * kSuperAttackPCScale.y), kSuperAttackInputPCButton, TRUE);
-
 			break;
 
 	case InputDeviceType::kPad:
-
 		Draw2D::ExtendGraph(kSuperAttackPadPos, static_cast<int>(kSuperAttackPadOriginalSize.x* kSuperAttackPadScale.x), 
 			static_cast<int>(kSuperAttackPadOriginalSize.y * kSuperAttackPadScale.y), kSuperAttackInputPadButton, TRUE);
-
 		break;
 
 	}
@@ -457,8 +450,7 @@ void SuperAttackUI::Draw()
 
 	if (super_attack_state == SuperAttackState::kActive)
 	{
-		
-		Draw2D::ExtendGraph(kSpinWheelPos, 500 * kWheelSpinScreenScale, 500 * kWheelSpinScreenScale, input_type_super_attack_screen_->GetHandle(), TRUE);
+		Draw2D::BlendGraph(kSpinWheelPos, 500 * disp_spin_scale_, 500 * disp_spin_scale_, input_type_super_attack_screen_->GetHandle(), TRUE, 238);
 	}
 	
 }

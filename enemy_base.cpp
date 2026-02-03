@@ -465,7 +465,6 @@ void EnemyBase::Draw(int i)
 {
 
 	mat_ = MMult(MMult(MGetRotY(rot_.y), MGetScale(scale_)), MGetTranslate(pos_));
-	
 
 	if (model_ == -1)
 	{

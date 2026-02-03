@@ -42,7 +42,6 @@ Brain::Brain(const VECTOR& next_target_pos)
 	is_rt_push_ = FALSE;
 }
 
-
 Brain::~Brain()
 {
 	delete sphere_camera_;
@@ -269,7 +268,6 @@ VECTOR Brain::GetVelocityDecidedRad()
 
 /*---------------public---------------*/
 
-
 void Brain::Init(const VECTOR& camera_pos,const VECTOR& player_pos)
 {
 
@@ -485,7 +483,6 @@ void Brain::Update(const VECTOR& now_target_pos,const VECTOR& camera_pos, std::s
 	player->SetIsBlend(is_blend_);
 	player->SetIsTargetBlend(is_target_blend_);
 }
-
 
 void Brain::ChangeCameraInit(int& before_camera_name,const VECTOR& camera_pos,std::shared_ptr<Player>player,const VECTOR& now_target_pos,bool& is_init)
 {

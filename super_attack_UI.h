@@ -56,7 +56,7 @@ private:
 	const VECTOR kPushKeyPos		= VectorAssistant::Get2DVec(210.f, 250.f);
 	const VECTOR kPushPadPos		= VectorAssistant::Get2DVec(200.f, 265.f);
 
-	const VECTOR kSpinWheelPos		= VectorAssistant::Get2DVec(650.f, 350.f);
+	const VECTOR kSpinWheelPos		= VectorAssistant::Get2DVec(650.f, 285.f);
 
 	const int disp_width_					= 700;
 	const int disp_height_					= 600;
@@ -70,16 +70,16 @@ private:
 	const int kCursorSpinImageWidth			= 300;
 	const int kCursorSpinImageHeight		= 400;
 
-	const int kStickSpinImageWidth		= 300;
-	const int kStickSpinImageHeight		= 400;
+	const int kStickSpinImageWidth		= 500;
+	const int kStickSpinImageHeight		= 500;
 
 	const int kAddSize					= 200;
 
 	const float kSizeUpSpeed			= 65.f;
 	const float kSizeDownSpeed			= 40.f;
 
-	const float kWheelSpinScreenScale	= 0.3f;
-	const float kStickSpinScreenScale	= 0.4f;
+	const float kWheelSpinScreenScale	= 0.45f;
+	const float kStickSpinScreenScale	= 1.4f;
 
 	const float kReadyEffectSpeed		= 1.f;
 	const float kReadyEffectSize		= 100.f;
@@ -99,6 +99,8 @@ private:
 	float ready_screen_height_ratio_;	// 画像サイズの比率：縦
 
 	float alpha_num_;
+
+	float disp_spin_scale_;
 
 	int frame_target_width_;
 	int frame_target_height_;
