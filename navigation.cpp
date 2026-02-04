@@ -82,7 +82,7 @@ void Navigation::MakeWayPoint()
 
 void Navigation::Load()
 {
-	const char* file_path = "data/csv/way_point.csv";
+	const char* file_path = "data/csv/way_point2.csv";
 
 	std::ifstream file(file_path);
 	std::string line;
@@ -91,10 +91,9 @@ void Navigation::Load()
 	{
 		printfDx("csvファイル読み込み失敗\n");
 	}
-
+	
 	// 最初の行を飛ばす
 	std::getline(file, line);
-
 
 	while (std::getline(file, line))
 	{

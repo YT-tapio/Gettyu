@@ -13,6 +13,7 @@ private:
 
 	NormalSubScreen* start_screen_;
 	NormalSubScreen* exit_screen_;
+	NormalSubScreen* go_tutorial_screen_;
 	NormalSubScreen* input_type_screen_;
 	NormalSubScreen* retry_screen_;
 	NormalSubScreen* go_title_screen_;
@@ -22,6 +23,8 @@ private:
 	void MakeStart();
 
 	void MakeInputType();
+
+	void MakeGoTutorial();
 
 	void MakeExit();
 
@@ -51,6 +54,9 @@ public:
 	const int GetStartHandle() const;
 
 	const int GetInputTypeHandle() const;
+
+	// チュートリアル
+	const int GetGoTutorialHandle() const;
 
 	// ゲーム終了
 	const int GetExitHandle() const;

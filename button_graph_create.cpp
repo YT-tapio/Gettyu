@@ -75,6 +75,35 @@ void ButtonGraph::MakeInputType()
 	input_type_screen_->Down();
 }
 
+void ButtonGraph::MakeGoTutorial()
+{
+	const float kScreenWidth = 300.f;
+	const float kScreenHeight = 80.f;
+
+
+	input_type_screen_ = new NormalSubScreen(VectorAssistant::GetZeroVec(), kScreenWidth, kScreenHeight, kScreenWidth, kScreenHeight, FALSE, AlphaColorType::kBlack, 10, FALSE);
+	input_type_screen_->SetIsDisp(TRUE);
+
+	VECTOR center_pos = VectorAssistant::GetHerf(VectorAssistant::Get2DVec(kScreenWidth, kScreenHeight));
+
+	int font_color = GetColor(255, 210, 0);
+	int font_edge_color = GetColor(255, 69, 0);
+	int back_color = GetColor(210, 180, 140);
+	int edge_color = GetColor(255, 215, 0);
+
+	const char* kFontSentence = "チュートリアル";
+
+	input_type_screen_->Up();
+
+	Draw2D::Box(center_pos, kScreenWidth, kScreenHeight, back_color, TRUE);
+	Draw2D::Box(center_pos, kScreenWidth, kScreenHeight, edge_color, FALSE);
+
+	int width = GetDrawStringWidthToHandle(kFontSentence, strlen(kFontSentence), font_->GetHandle());
+	const char* kSizeOneSentence = "あ";
+	int height = GetDrawStringWidthToHandle(kSizeOneSentence, strlen(kSizeOneSentence), font_->GetHandle());
+	DrawStringToHandle(static_cast<int>(center_pos.x - float(width) * 0.5f), static_cast<int>(center_pos.y - float(height) * 0.5f), kFontSentence, font_color, font_->GetHandle(), font_edge_color);
+}
+
 void ButtonGraph::MakeExit()
 {
 	const float kScreenWidth = 300.f;
@@ -182,6 +211,7 @@ void ButtonGraph::MakeGraph()
 
 	MakeStart();
 	MakeInputType();
+	MakeGoTutorial();
 	MakeExit();
 	MakeRetryScreen();
 	MakeGoTitle();
@@ -191,6 +221,7 @@ void ButtonGraph::DeleteGraph()
 {
 	delete font_;
 	delete start_screen_;
+	delete go_tutorial_screen_;
 	delete input_type_screen_;
 	delete exit_screen_;
 	delete go_title_screen_;
@@ -204,6 +235,11 @@ const int ButtonGraph::GetStartHandle() const
 const int ButtonGraph::GetInputTypeHandle() const
 {
 	return input_type_screen_->GetHandle();
+}
+
+const int ButtonGraph::GetGoTutorialHandle() const
+{
+	return go_tutorial_screen_->GetHandle();
 }
 
 const int ButtonGraph::GetExitHandle() const

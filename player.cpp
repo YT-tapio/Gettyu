@@ -32,6 +32,7 @@
 #include"2D_sound.h"
 #include"super_attack_state_getter.h"
 #include"super_attack_state.h"
+#include"tutorial.h"
 
 Player::Player(VECTOR pos, int model, int pad_num,int div, float r, float vertical_num)
 	: model_(model)
@@ -203,7 +204,9 @@ void Player::GameClearUpdate(const VECTOR& camera_pos)
 
 	//ダンスエモートに切り替える
 	if (now_type_ != AnimationType::kClearDance) { now_type_ = AnimationType::kClearDance; }
-	
+	// 音の停止
+	vacuum_sound_->Reset();
+	vacuum_sound_->Stop();
 
 	if (animation_->GetPlayTime(now_type_) <= kDanceStop)
 	{
@@ -216,7 +219,7 @@ void Player::GameClearUpdate(const VECTOR& camera_pos)
 		game_clear_effect_->Play();
 	}
 	
-
+	
 }
 
 void Player::DecideAnimation()
@@ -326,11 +329,11 @@ void Player::Draw()
 		weapon_->Draw(delta_time_);
 		//Situation::GetInstance().SetGetSituationPos(weapon_->GetCollisionData().pos);
 	}
-	game_clear_effect_->Draw();
+	// game_clear_effect_->Draw();
 
-	DrawLine3D(coll_->GetPos(), VAdd(coll_->GetPos(), VGet(0.f, -(coll_->GetRadius() + 5.f), 0.f)), GetColor(0, 0, 0));
+	// DrawLine3D(coll_->GetPos(), VAdd(coll_->GetPos(), VGet(0.f, -(coll_->GetRadius() + 5.f), 0.f)), GetColor(0, 0, 0));
 
-	//DrawSphere3D(pos_, 3, 20, GetColor(255, 255, 255), GetColor(255, 255, 255), TRUE);
+	// DrawSphere3D(pos_, 3, 20, GetColor(255, 255, 255), GetColor(255, 255, 255), TRUE);
 }
 
 void Player::Debug()
@@ -659,7 +662,10 @@ void Player::Update(Stage& stage,float target_rot)
 
 	}
 
-	
+	if (Tutorial::GetInstance().GetIsTutorial())
+	{
+		Tutorial::GetInstance().CheckCollision(pos_);
+	}
 
 
 }
@@ -1225,7 +1231,11 @@ void Player::IsHitEnemy(EnemyBase* enemy, bool& got)
 			Vibration(kVacuumVibration);
 			sound_vibration_->Add(kVacuumSound);
 			is_vacuum_ = TRUE;
-			vacuum_sound_->Update();
+			if (Situation::GetInstance().GetSituationName() < SituationName::kClearOffset)
+			{
+				vacuum_sound_->Update();
+			}
+			
 		}
 		else
 		{

@@ -17,6 +17,7 @@
 #include"2D_sound.h"
 #include"button_graph_create.h"
 #include"UI_data.h"
+#include"tutorial.h"
 
 Title::Title(int model)
 	:BaseScene(SceneName::kTitle,model)
@@ -28,7 +29,7 @@ Title::Title(int model)
 	enemy_model_							= MV1LoadModel(kEnemyModelPath);
 
 	start_			= FALSE;
-	go_input_type_	= FALSE;
+	go_tutorial_	= FALSE;
 	game_end_		= FALSE;
 
 	auto pos_mat	= MGetTranslate(kPos);
@@ -132,15 +133,17 @@ void Title::Init()
 	int button_num = 0;
 	SetMouseDispFlag(TRUE);
 	selecter_ = std::make_shared<ButtonSelecter>();
-	auto start_handle			= ButtonGraph::GetInstance().GetStartHandle();
-	auto input_type_handle		= ButtonGraph::GetInstance().GetInputTypeHandle();
-	auto exit_handle			= ButtonGraph::GetInstance().GetExitHandle();
+	auto start_handle				= ButtonGraph::GetInstance().GetStartHandle();
+	auto go_tutorial_handle		= ButtonGraph::GetInstance().GetInputTypeHandle();
+	auto exit_handle					= ButtonGraph::GetInstance().GetExitHandle();
 
 	buttons_.push_back(std::make_shared<Button>(kGameStartButtonPos, kButtonWidth, kButtonHeight, "", button_num,&start_, start_handle));
 	button_num++;
-	buttons_.push_back(std::make_shared<Button>(kGameEndButtonPos, kButtonWidth, kButtonHeight, "", button_num, &game_end_,exit_handle));
+	buttons_.push_back(std::make_shared<Button>(kGoTutorialButtonPos, kButtonWidth, kButtonHeight, "", button_num, &go_tutorial_,go_tutorial_handle));
+	button_num++;
+	buttons_.push_back(std::make_shared<Button>(kGameEndButtonPos, kButtonWidth, kButtonHeight, "", button_num, &game_end_, exit_handle));
 	AnimationSetting();
-
+	Tutorial::GetInstance().ChangeTutorial(FALSE);
 	
 }
 
@@ -166,10 +169,10 @@ void Title::Update(SceneName& name)
 
 	if (button_num_ < 0)
 	{
-		button_num_ = 1;
+		button_num_ = 2;
 	}
 
-	if (button_num_ > 1)
+	if (button_num_ > 2)
 	{
 		button_num_ = 0;
 	}
@@ -212,6 +215,12 @@ void Title::Update(SceneName& name)
 
 	bgm_->Update();
 
+	if (go_tutorial_)
+	{
+		start_ = TRUE;
+		// チュートリアルのフラグをたてる
+		Tutorial::GetInstance().ChangeTutorial(TRUE);
+	}
 
 	if (game_end_)
 	{

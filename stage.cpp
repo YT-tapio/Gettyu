@@ -253,10 +253,27 @@ bool Stage::IsFlat(const VECTOR& norm)
 	return (norm.y != 0.f );
 }
 
-bool Stage::CheckTriangleAreaSize(const VECTOR& pos1, const VECTOR& pos2, const VECTOR& pos3)
+bool Stage::CheckTriangleAreaSize(const VECTOR& pos1, const VECTOR& pos2, const VECTOR& pos3,const  VECTOR& object_pos)
 {
+	// ïÅí Ç…í∏ì_Ç™àÍÇ¬Ç≈Ç‡í·Ç©Ç¡ÇΩÇÁîªíËÇ≥ÇπÇÈÇÊÇ§Ç…Ç∑ÇÈ
+
+	if (object_pos.y > pos1.y)
+	{
+		return FALSE;
+	}
+
+	if (object_pos.y > pos2.y)
+	{
+		return FALSE;
+	}
+
+	if (object_pos.y > pos3.y)
+	{
+		return FALSE;
+	}
 
 
+	// ñ êœÇ™Ç≈Ç©Ç¢Ç‡ÇÃÇÕí Ç∑
 	return TRUE;
 }
 
@@ -600,7 +617,7 @@ void Stage::Draw()
 
 	MV1SetMatrix(model_, mat_);
 	MV1DrawModel(model_);
-	if (TRUE)
+	if (FALSE)
 	{
 		// óDêÊÇ≥ÇÍÇÈè∞(ê¬)
 		for (auto& poly : prioritize_floor_polys_)
@@ -781,15 +798,10 @@ VECTOR Stage::CheckCollision(std::shared_ptr<ColliderBase> object_coll, const VE
 			auto poly = floor_[i];
 			//
 
-			if (CheckTriangleAreaSize(poly->Position[0], poly->Position[1], poly->Position[2])) { continue; }
+			if (CheckTriangleAreaSize(poly->Position[0], poly->Position[1], poly->Position[2],old_pos)) { continue; }
 
 			all_poly_[all_poly_num] = floor_[i];
 			all_poly_num++;
-		}
-
-		if (wall_num_ == 0)
-		{
-			
 		}
 
 		

@@ -33,8 +33,8 @@ private:
 	
 	const VECTOR kInitTitlePos = VectorAssistant::Get2DVec(80.f, 20.f);
 
-	const VECTOR kGameStartButtonPos	= VectorAssistant::Get2DVec(900.f, 500.f);
-	const VECTOR kInputTypeButtonPos	= VectorAssistant::Get2DVec(900.f, 600.f);
+	const VECTOR kGameStartButtonPos	= VectorAssistant::Get2DVec(900.f, 450.f);
+	const VECTOR kGoTutorialButtonPos	= VectorAssistant::Get2DVec(900.f, 565.f);
 	const VECTOR kGameEndButtonPos		= VectorAssistant::Get2DVec(900.f, 680.f);
 	const float kButtonWidth						= 300.f;
 	const float kButtonHeight					= 100.f;
@@ -76,7 +76,7 @@ private:
 	float fade_in_param_;
 
 	bool start_;
-	bool go_input_type_;
+	bool go_tutorial_;
 	bool game_end_;	
 
 

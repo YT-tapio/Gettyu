@@ -8,6 +8,7 @@
 #include"Draw2D.h"
 #include"weapon_UI.h"
 #include"UI_data.h"
+#include"tutorial.h"
 
 ResultScoreUI::ResultScoreUI(const float& time)
 {
@@ -41,6 +42,16 @@ ResultScoreUI::~ResultScoreUI()
 
 void ResultScoreUI::DecideScore(const float& time)
 {
+
+	if (Tutorial::GetInstance().GetIsTutorial()) 
+	{
+		const char* kTutorialSentence				= "チュートリアル";
+		const char* kTutorialSentenceDown		= "かんりょう";
+		sentence_				= kTutorialSentence;
+		down_sentence_	= kTutorialSentenceDown;
+		return;
+	}
+
 	const char* kSentenceDown		= "げっちゅめん";
 
 	const float kFastTime = 80.f;

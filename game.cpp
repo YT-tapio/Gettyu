@@ -15,6 +15,7 @@
 #include"2D_sound.h"
 #include"game_goal_ui.h"
 #include"count_down_UI.h"
+#include"tutorial.h"
 
 Game::Game(int model)
     :BaseScene(SceneName::kGame,model)
@@ -225,7 +226,7 @@ void Game::Init()
     Camera::GetInstance().Awake(brain_->GetPositionFromTarget(player_->GetCenterPos()),
         player_->GetCenterPos(), (DX_PI_F / 180.0f) * 75.0f);
     /*aho/aho*/
-    const char* kStagePath = "data/model/map/arena/new_arena/new_arena3.mv1";
+    const char* kStagePath = "data/model/map/arena/default_arena/default_arena.mv1";
 
     stage_ = std::make_shared<Stage>(kStagePath, VGet(0, 0, 0), 1.0f);
 
@@ -279,6 +280,12 @@ void Game::Init()
     clear_offset_timer_ = std::make_shared<ConditionTimer>(kClearOffsetTime);
    
     offset_fade_param_  = 255.f;
+
+    if (Tutorial::GetInstance().GetIsTutorial())
+    {
+        Tutorial::GetInstance().Reset();
+    }
+
 
     ClearTime::GetInstance().Reset();
 }
@@ -393,7 +400,11 @@ void Game::Update(SceneName& name)
     SetUseLighting(TRUE);
 
     GameClear(name);
-
+    if (stand_by_timer_->GetIsEnd())
+    {
+        Tutorial::GetInstance().Update();
+    }
+    
     FPS::GetInstance().SetTimeScale(time_scale);
 
     // name = SceneName::kResult;
@@ -425,7 +436,19 @@ void Game::Draw()
     
     float clear_time = ClearTime::GetInstance().GetClearTime();
     int timer_width = GetDrawFormatStringWidthToHandle(tanuei_font_->GetHandle(), "%.1f", clear_time);
-    DrawFormatStringToHandle(static_cast<int>(kTimerPos.x - float(timer_width) * 0.5f), static_cast<int>(kTimerPos.y), kFontColor, tanuei_font_->GetHandle(), "%.1f", clear_time);
+    if (!Tutorial::GetInstance().GetIsTutorial()) 
+    { 
+        DrawFormatStringToHandle(static_cast<int>(kTimerPos.x - float(timer_width) * 0.5f), static_cast<int>(kTimerPos.y), kFontColor, tanuei_font_->GetHandle(), "%.1f", clear_time);
+    }
+    else
+    {
+        if (stand_by_timer_->GetIsEnd())
+        {
+            Tutorial::GetInstance().Draw();
+            Tutorial::GetInstance().Debug();
+        }
+        
+    }
     Draw2D::WhiteBoxBlend(static_cast<int>(offset_fade_param_));
     //DrawFormatString((kGameWidth - 300), (kGameHeight - 30), GetColor(0, 0, 0), "TAB / BACK Button : result");
 }

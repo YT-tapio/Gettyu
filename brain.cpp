@@ -370,7 +370,7 @@ void Brain::InitGameClear(const VECTOR& camera_pos,const VECTOR& target_pos, con
 	// カメラの最終位置を出す
 	next_pos_ = VAdd(camera_pos, offset_vel);
 
-	//playerの足元からの視線に合わせる
+	//playerの足元からの始点に合わせる
 	next_pos_.y = player_pos.y;
 
 	//player_center_posにtarget_posを合わせる
@@ -570,8 +570,9 @@ void Brain::ChangeCameraInit(int& before_camera_name,const VECTOR& camera_pos,st
 			// 角度も指定できるように
 			//とりあえず真上に行くようにposをセットさせておく
 			vertical_rad_ = kVacuumVerticalRad;
-
-			next_pos_ = GetRotatedByTheDistanceFromThePos(vertical_rad_, side_rad_, kVacuumDist, player->GetPos());
+			decide_dist_ = kVacuumDist;
+			vacuum_offset_dist_ = 0.f;
+			next_pos_ = GetRotatedByTheDistanceFromThePos(vertical_rad_, side_rad_, decide_dist_, player->GetPos());
 			vacuum_camera_->SetTargetPos(player->GetCenterPos());
 			start_target_pos_	= now_target_pos;
 			next_target_pos_	= player->GetCenterPos();
@@ -584,11 +585,11 @@ void Brain::ChangeCameraInit(int& before_camera_name,const VECTOR& camera_pos,st
 			
 			if (before_camera_name == VirtualCameraName::kGet)
 			{
-				next_pos_ = vacuum_camera_->GetPos();
+				//next_pos_ = GetRotatedByTheDistanceFromThePos(vertical_rad_, side_rad_, decide_dist_, player->GetPos());
 			}
 			else
 			{
-				vacuum_offset_dist_ = 0.f;
+				
 			}
 
 
@@ -1045,7 +1046,7 @@ void Brain::UpdateVacuum(std::shared_ptr<Player>player,const VECTOR& camera_pos)
 	static float timer			= 0.f;
 	static float accel			= 0.f;
 
-	float decide_dist			= 0.f;
+	//decide_dist_			= 0.f;
 	float side_dist				= 0.f;							//地上の距離
 
 	// プレイヤーの真上に行って
@@ -1101,8 +1102,10 @@ void Brain::UpdateVacuum(std::shared_ptr<Player>player,const VECTOR& camera_pos)
 	}
 
 	//今等速でなっている加速にしたい
-	decide_dist = kVacuumDist - vacuum_offset_dist_;
+	decide_dist_ = kVacuumDist - vacuum_offset_dist_;
 
+	if (decide_dist_ > kVacuumDist) { decide_dist_ = kVacuumDist; }
+	if (decide_dist_ < kOffsetMax) { decide_dist_ = kOffsetMax; }
 
 	// カメラの回転を行えるように
 
@@ -1193,10 +1196,10 @@ void Brain::UpdateVacuum(std::shared_ptr<Player>player,const VECTOR& camera_pos)
 	if (vacuum_offset_dist_ < 0.f)
 	{
 		vacuum_offset_dist_ = 0.f;
-		printfDx("-");
+		//printfDx("-");
 	}
 
-	VECTOR pos	= GetRotatedByTheDistanceFromThePos(vertical_rad_, side_rad_, decide_dist, player->GetPos());
+	VECTOR pos	= GetRotatedByTheDistanceFromThePos(vertical_rad_, side_rad_, decide_dist_, player->GetPos());
 	velocity_	= VSub(pos,camera_pos);
 	//posを記憶
 	vacuum_camera_->SetPos(VAdd(camera_pos, velocity_));

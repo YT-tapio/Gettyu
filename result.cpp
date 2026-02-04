@@ -18,6 +18,7 @@
 #include"result_score.h"
 #include"button_graph_create.h"
 #include"condition_timer.h"
+#include"tutorial.h"
 
 Result::Result(int model)
 	:BaseScene(SceneName::kResult,model)
@@ -349,9 +350,12 @@ void Result::Draw()
 	}
 
 	result_sentence_->Draw();
-
-	DrawFormatStringToHandle(static_cast<int>(kClearTimerPos.x), static_cast<int>(kClearTimerPos.y), 
-		kFontColor, tanuei_font_->GetHandle(), "%.1f", time_,kFontThickColor);
+	if (!Tutorial::GetInstance().GetIsTutorial())
+	{
+		DrawFormatStringToHandle(static_cast<int>(kClearTimerPos.x), static_cast<int>(kClearTimerPos.y),
+			kFontColor, tanuei_font_->GetHandle(), "%.1f", time_, kFontThickColor);
+	}
+	
 
 	Draw2D::WhiteBoxBlend(static_cast<int>(fade_in_param_));
 	Draw2D::WhiteBoxBlend(static_cast<int>(fade_out_param_));

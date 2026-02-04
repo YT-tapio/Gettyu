@@ -9,7 +9,7 @@
 #include"Stage.h"
 #include"navigation.h"
 #include"hit_stop_timer.h"
-
+#include"tutorial.h"
 
 EnemyManager::EnemyManager(std::shared_ptr<Stage> stage)
 	: not_get_count_(0)
@@ -40,25 +40,40 @@ void EnemyManager::Init()
 
 	const float kFleepingSpeed = 2.f;
 
-	enemies_.push_back(std::make_shared<NormalEnemy>(normal_model_path,
-		kInitPos1, scale, VGet(0.f, static_cast<float>((M_PI / 180) * 70), 0.0f), get_effect_, got_effect_, 0.5f, kFleepingSpeed, AlertState::kLow, static_cast<float>((M_PI / 180) * 100),stage_,navigation_));
-	
-	
-	enemies_.push_back(std::make_shared<NormalEnemy>(normal_model_path,
-		kInitPos2, scale, VGet(0.f, static_cast<float>((M_PI / 180) * 80), 0.0f), get_effect_, got_effect_, 1.f, kFleepingSpeed, AlertState::kLow, static_cast<float>((M_PI / 180) * 100),stage_, navigation_));
+	if (Tutorial::GetInstance().GetIsTutorial())
+	{
+		enemies_.push_back(std::make_shared<NormalEnemy>(normal_model_path,
+			kInitPos1, scale, VGet(0.f, static_cast<float>((M_PI / 180) * 70), 0.0f), get_effect_, got_effect_, 0.5f, kFleepingSpeed, AlertState::kLow, static_cast<float>((M_PI / 180) * 100), stage_, navigation_));
 
-	enemies_.push_back(std::make_shared<NormalEnemy>(normal_model_path,
-		kInitPos3, scale, VGet(0.f, static_cast<float>((M_PI / 180) * 90), 0.0f), get_effect_, got_effect_, 0.5f, kFleepingSpeed, AlertState::kNormal, static_cast<float>((M_PI / 180) * 100),stage_, navigation_));
-	
-	enemies_.push_back(std::make_shared<NormalEnemy>(normal_model_path,
-		kInitPos4, scale, VGet(0.f, static_cast<float>((M_PI / 180) * 80), 0.0f), get_effect_, got_effect_, 1.f, kFleepingSpeed, AlertState::kNormal, static_cast<float>((M_PI / 180) * 100), stage_, navigation_));
+		enemies_.push_back(std::make_shared<NormalEnemy>(normal_model_path,
+			kInitPos2, scale, VGet(0.f, static_cast<float>((M_PI / 180) * 80), 0.0f), get_effect_, got_effect_, 1.f, kFleepingSpeed, AlertState::kLow, static_cast<float>((M_PI / 180) * 100), stage_, navigation_));
 
-	enemies_.push_back(std::make_shared<NormalEnemy>(normal_model_path,
-		kInitPos5, scale, VGet(0.f, static_cast<float>((M_PI / 180) * 90), 0.0f), get_effect_, got_effect_, 0.5f, kFleepingSpeed, AlertState::kHigh, static_cast<float>((M_PI / 180) * 100), stage_, navigation_));
+		enemies_.push_back(std::make_shared<NormalEnemy>(normal_model_path,
+			kInitPos3, scale, VGet(0.f, static_cast<float>((M_PI / 180) * 90), 0.0f), get_effect_, got_effect_, 0.5f, kFleepingSpeed, AlertState::kNormal, static_cast<float>((M_PI / 180) * 100), stage_, navigation_));
+	}
+	else
+	{
+		enemies_.push_back(std::make_shared<NormalEnemy>(normal_model_path,
+			kInitPos1, scale, VGet(0.f, static_cast<float>((M_PI / 180) * 70), 0.0f), get_effect_, got_effect_, 0.5f, kFleepingSpeed, AlertState::kLow, static_cast<float>((M_PI / 180) * 100), stage_, navigation_));
+
+		enemies_.push_back(std::make_shared<NormalEnemy>(normal_model_path,
+			kInitPos2, scale, VGet(0.f, static_cast<float>((M_PI / 180) * 80), 0.0f), get_effect_, got_effect_, 1.f, kFleepingSpeed, AlertState::kLow, static_cast<float>((M_PI / 180) * 100), stage_, navigation_));
+
+		enemies_.push_back(std::make_shared<NormalEnemy>(normal_model_path,
+			kInitPos3, scale, VGet(0.f, static_cast<float>((M_PI / 180) * 90), 0.0f), get_effect_, got_effect_, 0.5f, kFleepingSpeed, AlertState::kNormal, static_cast<float>((M_PI / 180) * 100), stage_, navigation_));
+
+		enemies_.push_back(std::make_shared<NormalEnemy>(normal_model_path,
+			kInitPos4, scale, VGet(0.f, static_cast<float>((M_PI / 180) * 80), 0.0f), get_effect_, got_effect_, 1.f, kFleepingSpeed, AlertState::kNormal, static_cast<float>((M_PI / 180) * 100), stage_, navigation_));
+
+		enemies_.push_back(std::make_shared<NormalEnemy>(normal_model_path,
+			kInitPos5, scale, VGet(0.f, static_cast<float>((M_PI / 180) * 90), 0.0f), get_effect_, got_effect_, 0.5f, kFleepingSpeed, AlertState::kHigh, static_cast<float>((M_PI / 180) * 100), stage_, navigation_));
+
+
+		enemies_.push_back(std::make_shared<NormalEnemy>(normal_model_path,
+			kInitPos6, scale, VGet(0.f, static_cast<float>((M_PI / 180) * 90), 0.0f), get_effect_, got_effect_, 0.5f, kFleepingSpeed, AlertState::kHigh, static_cast<float>((M_PI / 180) * 100), stage_, navigation_));
+	}
 
 	
-	enemies_.push_back(std::make_shared<NormalEnemy>(normal_model_path,
-		kInitPos6, scale, VGet(0.f, static_cast<float>((M_PI / 180) * 90), 0.0f), get_effect_, got_effect_, 0.5f, kFleepingSpeed, AlertState::kHigh, static_cast<float>((M_PI / 180) * 100), stage_, navigation_));
 	
 	//アニメーションの追加を行う
 

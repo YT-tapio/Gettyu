@@ -86,6 +86,8 @@ private:
 	float blend_timer_		= 0.f;
 	float blend_timer_max_	= 0.f;
 
+	float decide_dist_ = 0.f;
+
 	bool is_change_;
 	bool no_update_;
 	bool is_blend_;			// À•W‚ÌƒuƒŒƒ“ƒh

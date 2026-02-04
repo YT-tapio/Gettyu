@@ -68,10 +68,12 @@ SceneManager::SceneManager()
     FPS::GetInstance();
     Timer::GetInstance();
     Input::GetInstance().Awake(DX_INPUT_PAD1);
+    Tutorial::GetInstance().Awake();
 }
 
 SceneManager::~SceneManager()
 {
+    Tutorial::GetInstance().Delete();
     ButtonGraph::GetInstance().DeleteGraph();
     MV1DeleteModel(player_model_);
 }
