@@ -88,6 +88,8 @@ private:
 	/// @return 
 	bool IsFlat(const VECTOR& norm);
 
+	bool CheckTriangleAreaSize(const VECTOR& pos1, const VECTOR& pos2, const VECTOR& pos3);
+
 	// 壁ポリゴンとの当たりをチェックし、補正すべき移動ベクトルを返す
 	VECTOR CheckHitWithWall(Player& player, const VECTOR& check_position);
 

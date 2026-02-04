@@ -2,5 +2,5 @@
 #define _USE_MATH_DEFINES
 #include<math.h>
 
-const float kOneRad			= static_cast<float>(M_PI / 180);		//1度
-const float kReverceRad		= kOneRad * 180;								//180度
+const float kOneRad			= static_cast<float>(M_PI / 180);		// 1度
+const float kReverceRad		= kOneRad * 180;						// 180度

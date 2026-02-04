@@ -3,11 +3,11 @@
 WizardStaff::WizardStaff()
 	:WeaponBase()
 {
-	const float kCollRadius = 4.f;
+	const float kCollRadius = 10.f;
 
 	scale_ = VGet(kScale, kScale, kScale);
 	model_ = MV1LoadModel("data/model/weapon/vacuum/vacuum.mv1");
-	r_ = 0;
+	r_ = kCollRadius;
 	bone_path_ = 2;
 
 	collision_data_.name = CollisionName::kSphere;

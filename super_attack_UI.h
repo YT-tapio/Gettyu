@@ -79,7 +79,7 @@ private:
 	const float kSizeDownSpeed			= 40.f;
 
 	const float kWheelSpinScreenScale	= 0.45f;
-	const float kStickSpinScreenScale	= 1.4f;
+	const float kStickSpinScreenScale	= 0.5f;
 
 	const float kReadyEffectSpeed		= 1.f;
 	const float kReadyEffectSize		= 100.f;

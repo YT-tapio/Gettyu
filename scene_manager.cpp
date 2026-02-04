@@ -5,6 +5,7 @@
 #include"debug.h"
 #include"input.h"
 #include"button_graph_create.h"
+#include"tutorial.h"
 
 SceneManager::SceneManager()
 {

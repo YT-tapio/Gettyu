@@ -31,6 +31,7 @@
 #include"sound.h"
 #include"2D_sound.h"
 #include"super_attack_state_getter.h"
+#include"super_attack_state.h"
 
 Player::Player(VECTOR pos, int model, int pad_num,int div, float r, float vertical_num)
 	: model_(model)
@@ -143,6 +144,12 @@ void Player::MakeTargetRot(const VECTOR& target_pos, float& target_rot)
 
 bool Player::SuperAttackCondition()
 {
+
+	if (is_attack_)
+	{
+		return FALSE;
+	}
+
 	if (is_super_attack_)
 	{
 		return FALSE;
@@ -266,9 +273,12 @@ bool Player::CheckChangeWeapon()
 bool Player::CheckAttack()
 {
 	if (Situation::GetInstance().GetSituationName() == SituationName::kStandBy)				{ return FALSE; }
-	if (Input::GetInstance().CheckInputMouse(KeyConfig::kAttackKey) != InputState::kPush)	{ return FALSE; }
+	if (is_attack_)																			{ return FALSE; }
+	if (Input::GetInstance().CheckInputMouse(KeyConfig::kAttackKey)		!= InputState::kPush && 
+		Input::GetInstance().CheckInputPadButton(PadConfig::kAttackButton)  != InputState::kPush)	{ return FALSE; }
+	if (!is_ground_)																		{ return FALSE; }
 	if (is_super_attack_)																	{ return FALSE; }
-
+	//if (SuperAttackStateGetter::GetInstance().GetState() == SuperAttackState::kOffset)		{ return FALSE; }
 
 	return TRUE;
 }
@@ -347,9 +357,61 @@ void Player::Debug()
 
 		DrawFormatString(0, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), GetColor(0, 0, 0), "%.2f", game_clear_effect_->GetPlayCount());
 		Debug::GetInstance().Add();
+		/*
+		enum class PlayerState
+		{
+			kStand,
+			kSlowRun,
+			kWalk,
+			kRun,
+			kJump,
+			kFall,
+			kAttack
+		};
+		*/
+		
+		const char* state_name = "‚È‚µ";
+
+
+		switch (now_state_)
+		{
+		case PlayerState::kStand:
+			state_name = "kStand";
+			break;
+
+		case PlayerState::kSlowRun:
+			state_name = "kSlowRun";
+			break;
+
+		case PlayerState::kWalk:
+			state_name = "kWalk";
+			break;
+
+		case PlayerState::kRun:
+			state_name = "kRun";
+			break;
+
+		case PlayerState::kJump:
+			state_name = "kJump";
+			break;
+
+		case PlayerState::kFall:
+			state_name = "kFall";
+			break;
+
+		case PlayerState::kAttack:
+			state_name = "kAttack";
+			break;
+		}
+
+		DrawFormatString(0, Debug::GetInstance().GetFontSize() * Debug::GetInstance().GetCurrentNum(), GetColor(0, 0, 0), "%s", state_name);
+		Debug::GetInstance().Add();
 
 		animation_->Debug(now_type_);
 		super_attack_->Debug();
+
+		weapon_->Debug();
+
 	}
 }
 
@@ -697,11 +759,9 @@ void Player::InputMovement(const VECTOR& pos,float& rotation)
 	//–_‚ðU‚éŒn‚Ì‚â‚Â
 	if (CheckAttack())
 	{
-		if (is_ground_ && weapon_->GetName() != WeaponName::kWizardStaff)
-		{
-			now_type_ = AnimationType::kSwordSlash;
-			now_state_ = PlayerState::kAttack;
-		}
+		now_type_ = AnimationType::kSwordSlash;
+		now_state_ = PlayerState::kAttack;
+		is_attack_ = TRUE;
 	}
 
 	//•KŽE‹Z‚É‚æ‚é•Ší‘Ö‚¦
@@ -935,21 +995,7 @@ void Player::CheckDirection(const VECTOR& pos, float& rotation)
 		}
 	}
 
-	/*---–_‚ðU‚é--*/
-
-	//‚Æ‚è‚ ‚¦‚¸‰EƒXƒeƒBƒbƒN‚Ì“ü—Í—Ê‚ðŽó‚¯Žæ‚é
-	//¡˜A‘±‚Å‚Ó‚ê‚é‚æ‚¤‚É‚È‚Á‚Ä‚µ‚Ü‚Á‚Ä‚¢‚é
-	if ((Input::GetInstance().CheckInputPadButton(PadConfig::kAttackButton) == InputState::kPush ) && now_weapon_name_ != WeaponName::kWizardStaff)
-	{
-		now_type_ = AnimationType::kSwordSlash;
-		now_state_ = PlayerState::kAttack;
-		is_attack_ = TRUE;
-
-	}
-	else
-	{
-		rejected = FALSE;
-	}
+	
 	
 	
 
@@ -1150,7 +1196,7 @@ void Player::MakeLine(float& constant, const VECTOR& pos)
 
 void Player::IsHitEnemy(EnemyBase* enemy, bool& got)
 {
-	
+	auto before_state = now_state_;
 	//‚±‚±‚Åweapon‚ÌƒAƒbƒvƒf[ƒg‚ð‚·‚é
 	if (weapon_->GetName() == WeaponName::kWizardStaff)
 	{
@@ -1160,12 +1206,12 @@ void Player::IsHitEnemy(EnemyBase* enemy, bool& got)
 
 		float spin_num = 0.f;
 
-		if (stick_spin_rad != 0.f && (Input::GetInstance().GetPadStickVertical(StickType::kRight) > kPadSpinMin) && Input::GetInstance().GetDeviceType() == InputDeviceType::kPad)
+		if (Input::GetInstance().GetDeviceType() == InputDeviceType::kPad)
 		{
 			spin_num = stick_spin_rad;
 		}
 
-		if (wheel_spin != 0.f && Input::GetInstance().GetDeviceType() == InputDeviceType::kKey)
+		if (Input::GetInstance().GetDeviceType() == InputDeviceType::kKey)
 		{
 			spin_num = wheel_spin;
 		}
@@ -1198,14 +1244,13 @@ void Player::IsHitEnemy(EnemyBase* enemy, bool& got)
 		
 		enemy->SetVecuum(FALSE);
 	}
-
 	//‘¼‚Ì‚à‚Ì‚ªUŒ‚‚É‚ ‚½‚Á‚Ä‚¢‚éŽž‚Íˆ—‚ð‰ñ‚³‚È‚¢
 
 	if (now_state_ == PlayerState::kAttack)
 	{
 		auto anim_time = animation_->GetPlayTime(now_type_);
-		if (!(kAttackAnimTimeMin <= anim_time && anim_time <= kAttackAnimTimeMax)) { return; }
-
+		if (!(kAttackAnimTimeMin <= anim_time && anim_time <= kAttackAnimTimeMax) && weapon_->GetName() != WeaponName::kWizardStaff) { return; }
+		
 		// •Ší‚Æ“G‚Ì“–‚½‚è”»’è‚ð‚µ‚Ü‚·
 		if (SphereCapsuleCollision(weapon_->GetCollisionData(), enemy->GetCollisionData()))
 		{

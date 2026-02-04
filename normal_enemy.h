@@ -2,7 +2,6 @@
 #include"DxLib.h"
 #include"enemy_base.h"
 
-
 class Player;
 class EnemyBase;
 class ColliderBase;
@@ -12,17 +11,9 @@ class NormalEnemy : public EnemyBase
 {
 private:
 
-	// ラジアンにした時の1度の値
-	const float kRad = static_cast<float>(M_PI / 180);
-	const float kReverceRad = kRad * 180;		//反転の値
-
 	const float kGravity = 0.75f;
 
 	const float kWaitTime = 2.5f;
-
-	VECTOR total_vel_;
-
-	ConditionTimer* wait_timer_;
 
 	std::shared_ptr<ColliderBase> gravity_check_coll_;
 
@@ -37,11 +28,19 @@ private:
 	float fall_speed_;
 
 
-	void DecideNextPos();
+	
 
 	bool CheckIsGound();
 
 	void Gravity();
+
+protected:
+
+	VECTOR total_vel_;
+
+	ConditionTimer* wait_timer_;
+
+	void DecideNextPos();
 
 	AnimationType ChageAnimType(AnimationType now,AnimationType next);
 
@@ -53,13 +52,13 @@ public:
 		float speed, float fleeping_speed, AlertState alert, float fov, std::shared_ptr<Stage> stage,Navigation* navigation);
 
 
-	~NormalEnemy() override;
+	virtual ~NormalEnemy() override;
 
 	
 
-	void Init(const VECTOR& pos,const VECTOR scale) override;
+	virtual void Init(const VECTOR& pos,const VECTOR scale) override;
 
-	void PatrollingInit(std::shared_ptr<Player> player) override;
+	virtual void PatrollingInit(std::shared_ptr<Player> player) override;
 
 	void SurpriseInit(std::shared_ptr<Player> player) override;
 
@@ -69,11 +68,11 @@ public:
 
 	void FleepingInit(std::shared_ptr<Player> player) override;
 
-	void AddAnim() override;
+	virtual void AddAnim() override;
 
-	void Update(std::shared_ptr<Player> player, bool& got) override;
+	virtual void Update(std::shared_ptr<Player> player, bool& got) override;
 	
-	void Patrolling() override;
+	virtual void Patrolling() override;
 
 	void Surprise() override;
 
@@ -82,4 +81,15 @@ public:
 	void Alert(std::shared_ptr<Player> player) override;
 
 	void Fleeping(std::shared_ptr<Player> player) override;
+
+	virtual void PatrollingExit() override;
+
+	virtual void SurpriseExit() override;
+
+	virtual void StanExit() override;
+
+	virtual void AlertExit() override;
+
+	virtual void FleepingExit() override;
+
 };

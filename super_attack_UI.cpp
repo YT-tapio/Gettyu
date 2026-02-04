@@ -412,10 +412,9 @@ void SuperAttackUI::Update()
 			break;
 
 	case InputDeviceType::kPad:
-		Draw2D::ExtendGraph(kSuperAttackPadPos, static_cast<int>(kSuperAttackPadOriginalSize.x* kSuperAttackPadScale.x), 
+		Draw2D::ExtendGraph(kSuperAttackPadPos, static_cast<int>(kSuperAttackPadOriginalSize.x* kSuperAttackPadScale.x),
 			static_cast<int>(kSuperAttackPadOriginalSize.y * kSuperAttackPadScale.y), kSuperAttackInputPadButton, TRUE);
 		break;
-
 	}
 
 

@@ -26,7 +26,7 @@ void EnemyFleeping::Update(EnemyBase* enemy, std::shared_ptr<Player>player)
 
 void EnemyFleeping::Exit(EnemyBase* enemy)
 {
-
+	enemy->FleepingExit();
 }
 
 std::shared_ptr<BaseEnemyState> EnemyFleeping::ChangeState(EnemyBase* enemy, std::shared_ptr<Player> player)

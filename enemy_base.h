@@ -168,6 +168,16 @@ public:
 
 	virtual void Fleeping(std::shared_ptr<Player> player) = 0;
 
+	virtual void PatrollingExit() = 0;
+
+	virtual void SurpriseExit() = 0;
+
+	virtual void StanExit() = 0;
+
+	virtual void AlertExit() = 0;
+
+	virtual void FleepingExit() = 0;
+
 	virtual void AddAnim() = 0;
 
 	void EffectUpdate();

@@ -1128,7 +1128,7 @@ void Brain::UpdateVacuum(std::shared_ptr<Player>player,const VECTOR& camera_pos)
 	// ƒpƒbƒh‚Ì“ü—Íó‹µ‚É‚æ‚Á‚Ä•Ï‰»‚³‚¹‚é
 
 	if (LT_num >= PadConfig::kCameraMoveButtonValue) { trigger_num += LT_num; }
-	if (RT_num >= PadConfig::kCameraMoveButtonValue) { trigger_num -= LT_num; }
+	if (RT_num >= PadConfig::kCameraMoveButtonValue) { trigger_num -= RT_num; }
 
 	float trigger_input_value = trigger_num / PadConfig::kCameraMoveButtonValue;
 

@@ -319,6 +319,12 @@
     <Filter Include="ソース ファイル\Singleton\super_attack_state">
       <UniqueIdentifier>{2e5db825-4ed8-4f92-b7dc-07076bd4fd2f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Singleton\tutorial">
+      <UniqueIdentifier>{8eb51841-d88f-4ee2-9f6d-9e69b2f7e915}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\enemy\dance_enemy">
+      <UniqueIdentifier>{aad9f7bc-0347-4f0e-b819-16a3b62f0e14}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -611,6 +617,12 @@
     </ClCompile>
     <ClCompile Include="super_attack_state_getter.cpp">
       <Filter>ソース ファイル\Singleton\super_attack_state</Filter>
+    </ClCompile>
+    <ClCompile Include="tutorial.cpp">
+      <Filter>ソース ファイル\Singleton\tutorial</Filter>
+    </ClCompile>
+    <ClCompile Include="dance_enemy.cpp">
+      <Filter>ソース ファイル\enemy\dance_enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -937,6 +949,12 @@
     </ClInclude>
     <ClInclude Include="super_attack_state_getter.h">
       <Filter>ソース ファイル\Singleton\super_attack_state</Filter>
+    </ClInclude>
+    <ClInclude Include="tutorial.h">
+      <Filter>ソース ファイル\Singleton\tutorial</Filter>
+    </ClInclude>
+    <ClInclude Include="dance_enemy.h">
+      <Filter>ソース ファイル\enemy\dance_enemy</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -77,6 +77,7 @@ public:
 
 	void Draw(float delta_time);
 
+	void Debug();
 
 	void SetWeaponName(int name);
 

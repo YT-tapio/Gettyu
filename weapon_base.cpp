@@ -102,6 +102,11 @@ void WeaponBase::Draw(float delta_time)
 
 }
 
+void WeaponBase::Debug()
+{
+	DrawSphere3D(collision_data_.pos, collision_data_.r, 20, GetColor(255, 255, 255), GetColor(255, 255, 255), FALSE);
+}
+
 
 void WeaponBase::SetWeaponName(int name)
 {

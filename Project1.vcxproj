@@ -149,6 +149,7 @@
     <ClCompile Include="button_selecter.cpp" />
     <ClCompile Include="character_dance.cpp" />
     <ClCompile Include="count_down_UI.cpp" />
+    <ClCompile Include="dance_enemy.cpp" />
     <ClCompile Include="enemy_get_num.cpp" />
     <ClCompile Include="clear_time.cpp" />
     <ClCompile Include="collision2D.cpp" />
@@ -202,6 +203,7 @@
     <ClCompile Include="super_attack_cool_time.cpp" />
     <ClCompile Include="super_attack_state_getter.cpp" />
     <ClCompile Include="super_attack_UI.cpp" />
+    <ClCompile Include="tutorial.cpp" />
     <ClCompile Include="UI_data.cpp" />
     <ClCompile Include="vector_assistant.cpp" />
     <ClCompile Include="weapon_checker.cpp" />
@@ -245,6 +247,7 @@
     <ClInclude Include="button_state.h" />
     <ClInclude Include="character_dance.h" />
     <ClInclude Include="count_down_UI.h" />
+    <ClInclude Include="dance_enemy.h" />
     <ClInclude Include="enemy_get_num.h" />
     <ClInclude Include="clear_time.h" />
     <ClInclude Include="color.h" />
@@ -312,6 +315,7 @@
     <ClInclude Include="super_attack_state_getter.h" />
     <ClInclude Include="super_attack_UI.h" />
     <ClInclude Include="screen_state.h" />
+    <ClInclude Include="tutorial.h" />
     <ClInclude Include="vector_assistant.h" />
     <ClInclude Include="weapon_checker.h" />
     <ClInclude Include="patrolling.h" />

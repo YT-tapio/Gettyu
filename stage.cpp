@@ -253,6 +253,13 @@ bool Stage::IsFlat(const VECTOR& norm)
 	return (norm.y != 0.f );
 }
 
+bool Stage::CheckTriangleAreaSize(const VECTOR& pos1, const VECTOR& pos2, const VECTOR& pos3)
+{
+
+
+	return TRUE;
+}
+
 bool Stage::CheckDownColl(const std::shared_ptr<ColliderBase> coll)
 {
 	bool flag = FALSE;				//こいつが返す
@@ -291,6 +298,8 @@ bool Stage::CheckDownColl(const std::shared_ptr<ColliderBase> coll)
 
 	return flag;
 }
+
+
 
 VECTOR Stage::CheckHitWithWall(Player& player, const VECTOR& check_position)
 {
@@ -591,7 +600,7 @@ void Stage::Draw()
 
 	MV1SetMatrix(model_, mat_);
 	MV1DrawModel(model_);
-	if (FALSE)
+	if (TRUE)
 	{
 		// 優先される床(青)
 		for (auto& poly : prioritize_floor_polys_)
@@ -669,13 +678,17 @@ VECTOR Stage::CheckCollision(std::shared_ptr<ColliderBase> object_coll, const VE
 	wall_polys_.clear();
 	// HACK: ステージポリゴンが複数ある場合、ここが繰り返し処理になる
 	{
-		if (VSize(velocity) != 0.f && (velocity.y <= 0.f && velocity.y >= -0.1f))
+		if (FALSE)
 		{
-			auto foot_projection_pos = CheckFootProjectionPos(old_pos, next_pos, next_coll->GetRadius());
-			//offset_vel = VScale(VNorm(VSub(foot_projection_pos, old_pos)), VSize(velocity));
-			offset_vel = VScale(VNorm(VSub(foot_projection_pos, old_pos)),VSize(velocity));			// velocityを調整できるように
-			rem_hit_pos = VAdd(VAdd(old_pos, offset_vel), VGet(0.f, -old_coll->GetRadius(), 0.f));
+			if (VSize(velocity) != 0.f && (velocity.y <= 0.f && velocity.y >= -0.1f))
+			{
+				auto foot_projection_pos = CheckFootProjectionPos(old_pos, next_pos, next_coll->GetRadius());
+				//offset_vel = VScale(VNorm(VSub(foot_projection_pos, old_pos)), VSize(velocity));
+				offset_vel = VScale(VNorm(VSub(foot_projection_pos, old_pos)), VSize(velocity));			// velocityを調整できるように
+				rem_hit_pos = VAdd(VAdd(old_pos, offset_vel), VGet(0.f, -old_coll->GetRadius(), 0.f));
+			}
 		}
+		
 		
 		
 
@@ -763,13 +776,20 @@ VECTOR Stage::CheckCollision(std::shared_ptr<ColliderBase> object_coll, const VE
 			all_poly_num++;
 		}
 		
+		for (int i = 0; i < floor_num_; i++)
+		{
+			auto poly = floor_[i];
+			//
+
+			if (CheckTriangleAreaSize(poly->Position[0], poly->Position[1], poly->Position[2])) { continue; }
+
+			all_poly_[all_poly_num] = floor_[i];
+			all_poly_num++;
+		}
+
 		if (wall_num_ == 0)
 		{
-			for (int i = 0; i < floor_num_; i++)
-			{
-				all_poly_[all_poly_num] = floor_[i];
-				all_poly_num++;
-			}
+			
 		}
 
 		

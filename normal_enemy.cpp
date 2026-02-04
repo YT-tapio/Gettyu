@@ -1,6 +1,4 @@
 
-#define _USE_MATH_DEFINES
-#include <math.h>
 #include<map>
 #include <random>
 
@@ -421,10 +419,27 @@ void NormalEnemy::Fleeping(std::shared_ptr<Player> player)
 
 }
 
+void NormalEnemy::PatrollingExit()
+{
 
+}
 
+void NormalEnemy::SurpriseExit()
+{
 
+}
 
+void NormalEnemy::StanExit()
+{
 
+}
 
-//êÙëÛÇ‡ÇÃÇ≈Ç∑
+void NormalEnemy::AlertExit()
+{
+
+}
+
+void NormalEnemy::FleepingExit()
+{
+
+}
