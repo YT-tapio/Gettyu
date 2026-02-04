@@ -11,7 +11,7 @@ SceneManager::SceneManager()
 {
 
     SetGraphMode(kGameWidth, kGameHeight, 32);			//ウィンドウのサイズとカラーモードを決める
-    ChangeWindowMode(TRUE);				//ウィンドウモードにする
+    ChangeWindowMode(FALSE);				//ウィンドウモードにする
 
     Set3DSoundOneMetre(1.0f);
 

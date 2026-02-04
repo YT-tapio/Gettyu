@@ -445,7 +445,7 @@ void Game::Draw()
         if (stand_by_timer_->GetIsEnd())
         {
             Tutorial::GetInstance().Draw();
-            Tutorial::GetInstance().Debug();
+            // Tutorial::GetInstance().Debug();
         }
         
     }
