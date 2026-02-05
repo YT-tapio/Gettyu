@@ -248,7 +248,7 @@ void Game::Init()
     const char* kClearBombSoundPath         = "data/sound/game/se/clear_bomb.mp3";
 
     bgm_sound_              = std::make_shared<Sound2D>(kBgmSoundPath, DX_PLAYTYPE_LOOP,100,TRUE);
-    clear_sound_             = std::make_shared<Sound2D>(kClearBgmSoundPath, DX_PLAYTYPE_BACK, 100,FALSE);
+    clear_sound_             = std::make_shared<Sound2D>(kClearBgmSoundPath, DX_PLAYTYPE_BACK, 150,FALSE);
     clear_bomb_sound_   = std::make_shared<Sound2D>(kClearBombSoundPath, DX_PLAYTYPE_BACK, 200, FALSE);
     /*--UI--*/
 

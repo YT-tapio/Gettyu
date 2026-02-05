@@ -588,8 +588,24 @@ void Player::Update(Stage& stage,float target_rot)
 			super_attack_->EffectUpdate();
 		}
 
-		
+		if (!(AnimationType::kAttack > now_type_ && !is_super_attack_))
+		{
+			velocity_ = VectorAssistant::GetZeroVec();
+		}
 
+		velocity_ = stage.CheckCollision(coll_->Clone(), velocity_);
+
+		//velocity_ = VSub(pos_, before_pos);
+
+		pos_ = VAdd(pos_, velocity_);
+		//当たり判定の更新
+		coll_->Update(velocity_);
+		gravity_check_coll_->Update(velocity_);
+		capsule_.start_pos = pos_;
+		capsule_.start_pos.y += capsule_.r;
+		capsule_.end_pos = capsule_.start_pos;
+		capsule_.end_pos.y = capsule_.vertical_num;
+		/*
 		if (AnimationType::kAttack > now_type_ && !is_super_attack_)
 		{
 			velocity_ = stage.CheckCollision(coll_->Clone(), velocity_);
@@ -605,6 +621,8 @@ void Player::Update(Stage& stage,float target_rot)
 			capsule_.end_pos = capsule_.start_pos;
 			capsule_.end_pos.y = capsule_.vertical_num;
 		}
+		*/
+		
 
 		//ここで着地しているかの判断を行う
 		CheckIsGround(stage);
@@ -1130,8 +1148,8 @@ void  Player::JumpAction(VECTOR& velocity)
 {
 	if (is_ground_)
 	{
-		if (Input::GetInstance().CheckInputKey(KeyConfig::kJumpKey) == InputState::kPush ||
-			Input::GetInstance().CheckInputPadButton(PadConfig::kJumpButton) == InputState::kPush)
+		if ((Input::GetInstance().CheckInputKey(KeyConfig::kJumpKey) == InputState::kPush ||
+			Input::GetInstance().CheckInputPadButton(PadConfig::kJumpButton) == InputState::kPush) && !is_attack_)
 		{
 			//ジャンプの処理
 			fall_speed_ = kJumpPower;

@@ -262,6 +262,11 @@ void Result::Update(SceneName& name)
 	{
 		if (restart_)
 		{
+			if (Tutorial::GetInstance().GetIsTutorial())
+			{
+				Tutorial::GetInstance().ChangeTutorial(TRUE);
+			}
+
 			name = SceneName::kGame;
 		}
 

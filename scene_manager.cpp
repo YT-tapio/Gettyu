@@ -6,7 +6,7 @@
 #include"input.h"
 #include"button_graph_create.h"
 #include"tutorial.h"
-
+#include"load.h"
 SceneManager::SceneManager()
 {
 
@@ -60,6 +60,7 @@ SceneManager::SceneManager()
     ButtonGraph::GetInstance().MakeGraph();
 
     now_scene_ = std::make_shared<Title>(player_model_);
+    load_ui_ = std::make_shared<LoadUI>();
 
     now_scene_->Init();
     now_scene_name_ = now_scene_->GetName();
@@ -92,6 +93,7 @@ void SceneManager::Update()
         if (before_name != now_scene_name_)
         {
             now_scene_ = nullptr;
+           
             switch (now_scene_name_)
             {
             case SceneName::kTitle:
@@ -106,7 +108,6 @@ void SceneManager::Update()
                 now_scene_ = std::make_shared<Result>(player_model_);
                 break;
             }
-            
             now_scene_->Init();
             before_name = now_scene_->GetName();
             init = TRUE;
@@ -128,6 +129,11 @@ void SceneManager::Update()
         //ここで描画処理
         now_scene_->Draw();
 
+        if (before_name != now_scene_name_)
+        {
+            load_ui_->Draw();
+        }
+        
         //ここでデバック処理
 
         Timer::GetInstance().Debug();

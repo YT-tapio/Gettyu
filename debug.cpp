@@ -8,6 +8,7 @@ void Debug::CheckChangeDisp()
 		Input::GetInstance().CheckInputPadButton(PadConfig::kChageDebugButton) == InputState::kPush)
 	{
 		disp_ = !disp_;
+		
 	}
 }
 

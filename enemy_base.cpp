@@ -168,7 +168,7 @@ std::shared_ptr<WayPoint> EnemyBase::DecideIsVacuumNextWayPoint(const VECTOR& pl
 	for (auto& way_point : way_points)
 	{
 
-		const float kDistMax = 70.f;	//”ÍˆÍ
+		const float kDistMax = 180.f;	//”ÍˆÍ
 		// ”ÍˆÍ‚ÅŒŸõ
 		VECTOR dist = VSub(way_point->GetPos(), pos_);
 		float dist_size = VSize(dist);
@@ -345,7 +345,10 @@ void EnemyBase::DecideIsVacuumFleepingPlace(std::shared_ptr<Player> player)
 	// ‚‚³‚ª‚ ‚é‚Ì‚È‚çŽŸ‚És‚©‚È‚¢‚Å‚­‚¾‚³‚¢
 	before_way_point_ = my_way_point_;
 	my_way_point_ = DecideIsVacuumNextWayPoint(player->GetPos(), navigation_->GetWayPoint());
-
+	if(my_way_point_ == nullptr)
+	{
+		my_way_point_ = before_way_point_;
+	}
 
 	target_pos_ = my_way_point_->GetPos();
 }

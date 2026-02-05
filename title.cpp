@@ -172,7 +172,11 @@ void Title::Update(SceneName& name)
 	Setting();
 	animation_->Update(AnimationType::kFastRun);
 	enemy_animation_->Update(AnimationType::kFastRun);
-	button_num_ = button_num_ + selecter_->Select(SelectType::kVertical);
+	if (!start_)
+	{
+		button_num_ = button_num_ + selecter_->Select(SelectType::kVertical);
+	}
+	
 
 	for (auto& obj : objects_)
 	{
@@ -233,6 +237,13 @@ void Title::Update(SceneName& name)
 		// チュートリアルのフラグをたてる
 		Tutorial::GetInstance().ChangeTutorial(TRUE);
 	}
+	else
+	{
+		// チュートリアルのフラグをたてない
+		Tutorial::GetInstance().ChangeTutorial(FALSE);
+	}
+
+
 
 	if (game_end_)
 	{

@@ -58,6 +58,13 @@ void Tutorial::Awake()
 	is_disp_attack_coll_info_				= FALSE;
 	is_disp_super_attack_coll_info_		= FALSE;
 
+	is_disp_ = FALSE;
+
+	secound_weapon_info_ = FALSE;
+	third_weapon_info_ = FALSE;
+
+	weapon_info_end_ = FALSE;
+
 	// 文字を描画する際のポジション
 	weapon_info_pos_		= VectorAssistant::GetZeroVec();
 	attack_info_pos_		= VectorAssistant::GetZeroVec();
@@ -77,9 +84,13 @@ void Tutorial::Reset()
 	is_disp_attack_coll_info_				= FALSE;
 	is_disp_super_attack_coll_info_	= FALSE;
 
+	is_disp_ = FALSE;
+
 	secound_weapon_info_		= FALSE;
 	third_weapon_info_			= FALSE;
-	is_disp_ = FALSE;
+	
+	weapon_info_end_ = FALSE;
+
 }
 
 void Tutorial::CheckCollision(const VECTOR& pos)
@@ -120,10 +131,16 @@ void Tutorial::Update()
 
 	// 文字の感覚を段々とする
 
-	if (weapon_info_timer_->GetIsEnd()) 
+	if (weapon_info_timer_->GetIsEnd() && !weapon_info_end_) 
 	{ 
 		// さいごもおわったなら描画しない
-		if (!secound_weapon_info_ && third_weapon_info_) { weapon_info_end_ = TRUE; is_disp_ = FALSE; is_disp_weapon_coll_info_ = FALSE; return; }
+		if (!secound_weapon_info_ && third_weapon_info_) 
+		{ 
+			weapon_info_end_ = TRUE; 
+			is_disp_ = FALSE; 
+			is_disp_weapon_coll_info_ = FALSE;
+			return;
+		}
 
 		if (!secound_weapon_info_ && !third_weapon_info_)
 		{
@@ -138,6 +155,22 @@ void Tutorial::Update()
 		}
 		
 	}
+
+	if (weapon_info_end_ && SuperAttackStateGetter::GetInstance().GetState() == SuperAttackState::kReady)
+	{
+		is_disp_super_attack_coll_info_ = TRUE;
+		is_disp_weapon_coll_info_ = FALSE;
+		//is_disp_ = TRUE;
+	}
+	/*
+	if (weapon_info_end_)
+	{
+		printfDx("aaa\n");
+	}
+
+	*/
+	
+
 }
 
 void Tutorial::Draw()
@@ -225,18 +258,24 @@ void Tutorial::Draw()
 			}
 			else
 			{
+				const char* kFontSentenceZero = "Yのぶきをそうびし";
 				const char* kFontSentence = "Rボタンでひっさつわざをうてるぞ!";
 				const char* kFontSentenceMiddle = "きょうりょくなぶきにかわり";
 				const char* kFontSentenceEnd = "てきをすいこむぞ!";
-				font_width = GetDrawStringWidthToHandle(kFontSentence, strlen(kFontSentence), tanuei_font_->GetHandle());
+
 				font_height = GetDrawStringWidthToHandle(kSizeOneSentence, strlen(kSizeOneSentence), tanuei_font_->GetHandle());
-				DrawStringToHandle(static_cast<int>(center_pos.x - float(font_width) * 0.5f), static_cast<int>(center_pos.y - float(font_height) * 1.5f), kFontSentence, font_color, tanuei_font_->GetHandle(), font_edge_color);
+
+				int font_zero_width = GetDrawStringWidthToHandle(kFontSentenceZero, strlen(kFontSentenceZero), tanuei_font_->GetHandle());
+				DrawStringToHandle(static_cast<int>(center_pos.x - float(font_zero_width) * 0.5f), static_cast<int>(center_pos.y - float(font_height) * 2.0f), kFontSentenceZero, font_color, tanuei_font_->GetHandle(), font_edge_color);
+
+				font_width = GetDrawStringWidthToHandle(kFontSentence, strlen(kFontSentence), tanuei_font_->GetHandle());
+				DrawStringToHandle(static_cast<int>(center_pos.x - float(font_width) * 0.5f), static_cast<int>(center_pos.y - float(font_height) * 1.0f), kFontSentence, font_color, tanuei_font_->GetHandle(), font_edge_color);
 
 				int font_middle_width = GetDrawStringWidthToHandle(kFontSentenceMiddle, strlen(kFontSentenceMiddle), tanuei_font_->GetHandle());
-				DrawStringToHandle(static_cast<int>(center_pos.x - float(font_middle_width) * 0.5f), static_cast<int>(center_pos.y - float(font_height) * 0.5f), kFontSentenceMiddle, font_color, tanuei_font_->GetHandle(), font_edge_color);
+				DrawStringToHandle(static_cast<int>(center_pos.x - float(font_middle_width) * 0.5f), static_cast<int>(center_pos.y), kFontSentenceMiddle, font_color, tanuei_font_->GetHandle(), font_edge_color);
 
 				int font_end_width = GetDrawStringWidthToHandle(kFontSentenceEnd, strlen(kFontSentenceEnd), tanuei_font_->GetHandle());
-				DrawStringToHandle(static_cast<int>(center_pos.x - float(font_end_width) * 0.5f), static_cast<int>(center_pos.y + float(font_height) * 0.5f), kFontSentenceEnd, font_color, tanuei_font_->GetHandle(), font_edge_color);
+				DrawStringToHandle(static_cast<int>(center_pos.x - float(font_end_width) * 0.5f), static_cast<int>(center_pos.y + float(font_height) * 1.0f), kFontSentenceEnd, font_color, tanuei_font_->GetHandle(), font_edge_color);
 			}
 
 

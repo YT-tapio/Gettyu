@@ -331,6 +331,9 @@
     <Filter Include="ソース ファイル\UI\button_decide">
       <UniqueIdentifier>{980aeb17-8b8a-4cc4-89af-16b95b0f551e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\UI\load">
+      <UniqueIdentifier>{2f165d7e-ae2d-41b1-9c9a-5b3a912480b2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -635,6 +638,9 @@
     </ClCompile>
     <ClCompile Include="button_decide.cpp">
       <Filter>ソース ファイル\UI\button_decide</Filter>
+    </ClCompile>
+    <ClCompile Include="load.cpp">
+      <Filter>ソース ファイル\UI\load</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -973,6 +979,9 @@
     </ClInclude>
     <ClInclude Include="button_decide.h">
       <Filter>ソース ファイル\UI\button_decide</Filter>
+    </ClInclude>
+    <ClInclude Include="load.h">
+      <Filter>ソース ファイル\UI\load</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
