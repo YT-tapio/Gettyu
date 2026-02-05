@@ -144,6 +144,7 @@
     <ClCompile Include="alert_state.cpp" />
     <ClCompile Include="animation.cpp" />
     <ClCompile Include="button.cpp" />
+    <ClCompile Include="button_decide.cpp" />
     <ClCompile Include="button_graph_create.cpp" />
     <ClCompile Include="button_manager.cpp" />
     <ClCompile Include="button_selecter.cpp" />
@@ -163,6 +164,7 @@
     <ClCompile Include="game_goal_ui.cpp" />
     <ClCompile Include="hit_effect.cpp" />
     <ClCompile Include="hit_stop_timer.cpp" />
+    <ClCompile Include="input_info_UI.cpp" />
     <ClCompile Include="object_base.cpp" />
     <ClCompile Include="base_scene.cpp" />
     <ClCompile Include="base_enemy_state.cpp" />
@@ -241,6 +243,7 @@
     <ClInclude Include="animation_2D.h" />
     <ClInclude Include="2D_sound.h" />
     <ClInclude Include="3D_sound.h" />
+    <ClInclude Include="button_decide.h" />
     <ClInclude Include="button_graph_create.h" />
     <ClInclude Include="button_manager.h" />
     <ClInclude Include="button_selecter.h" />
@@ -268,6 +271,7 @@
     <ClInclude Include="game_goal_ui.h" />
     <ClInclude Include="hit_effect.h" />
     <ClInclude Include="hit_stop_timer.h" />
+    <ClInclude Include="input_info_UI.h" />
     <ClInclude Include="object_base.h" />
     <ClInclude Include="base_scene.h" />
     <ClInclude Include="base_enemy_state.h" />

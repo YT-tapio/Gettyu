@@ -18,6 +18,7 @@
 #include"button_graph_create.h"
 #include"UI_data.h"
 #include"tutorial.h"
+#include"button_decide.h"
 
 Title::Title(int model)
 	:BaseScene(SceneName::kTitle,model)
@@ -74,6 +75,8 @@ Title::Title(int model)
 	
 	objects_.push_back(std::make_shared<RotatedObject>(VectorAssistant::GetZeroVec(), VectorAssistant::GetZeroVec(), VectorAssistant::GetSame3DVec(kSkyDomeScale), kSkyDomePath, kRotateSpeed));
 	objects_.push_back(std::make_shared<RotatedObject>(VectorAssistant::GetZeroVec(), VectorAssistant::GetZeroVec(), VectorAssistant::GetSame3DVec(kStageScale), kStagePath, kRotateSpeed));
+
+	button_decide_ui_ = std::make_shared<ButtonDecideUI>();
 
 }
 
@@ -152,6 +155,15 @@ void Title::Update(SceneName& name)
 	animation_->SetDeltaTime(FPS::GetInstance().GetDeltaTime());
 	enemy_animation_->SetDeltaTime(FPS::GetInstance().GetDeltaTime());
 	
+	if (Input::GetInstance().GetDeviceType() == InputDeviceType::kPad)
+	{
+		SetMouseDispFlag(FALSE);
+	}
+	else
+	{
+		SetMouseDispFlag(TRUE);
+	}
+
 	for (auto& obj : objects_)
 	{
 		obj->SetDeltaTime();
@@ -252,8 +264,9 @@ void Title::Draw()
 	}
 
 	title_ui_screen_->Draw();
-	
+	button_decide_ui_->Draw();
 	Draw2D::WhiteBoxBlend(fade_in_param_);
+	
 	//title_ui_screen_->Debug();
 
 }

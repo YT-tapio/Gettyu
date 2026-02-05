@@ -28,6 +28,8 @@ private:
 	bool is_disp_attack_coll_info_				= FALSE;
 	bool is_disp_super_attack_coll_info_	= FALSE;
 
+	bool is_disp_ = FALSE;
+
 	bool secound_weapon_info_	= FALSE;
 	bool third_weapon_info_			= FALSE;
 

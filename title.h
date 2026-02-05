@@ -15,7 +15,7 @@ class Animation;
 class ConditionTimer;
 class SoundBase;
 class ObjectBase;
-
+class ButtonDecideUI;
 
 class Title : public BaseScene
 {
@@ -63,6 +63,8 @@ private:
 	std::shared_ptr<NormalSubScreen> title_ui_screen_;
 
 	std::shared_ptr<SoundBase> select_sound_;
+
+	std::shared_ptr<ButtonDecideUI> button_decide_ui_;
 
 	//‰æ–Ê‘JˆÚ‚Ìtimer
 	std::shared_ptr<ConditionTimer> transition_timer_;

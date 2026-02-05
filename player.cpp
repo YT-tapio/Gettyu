@@ -279,6 +279,7 @@ bool Player::CheckAttack()
 	if (is_attack_)																			{ return FALSE; }
 	if (Input::GetInstance().CheckInputMouse(KeyConfig::kAttackKey)		!= InputState::kPush && 
 		Input::GetInstance().CheckInputPadButton(PadConfig::kAttackButton)  != InputState::kPush)	{ return FALSE; }
+	if (weapon_->GetName() == WeaponName::kWizardStaff)														{ return FALSE; }
 	if (!is_ground_)																		{ return FALSE; }
 	if (is_super_attack_)																	{ return FALSE; }
 	//if (SuperAttackStateGetter::GetInstance().GetState() == SuperAttackState::kOffset)		{ return FALSE; }

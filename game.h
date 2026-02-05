@@ -29,6 +29,7 @@ class HitEffect;
 class SoundBase;
 class GameGoalUI;
 class CountDownUI;
+class InputInfoUI;
 
 class Game : public BaseScene
 {
@@ -71,6 +72,7 @@ private:
 	std::shared_ptr<EnemyCountUI> enemy_count_UI_;
 	std::shared_ptr<GameGoalUI> game_goal_UI_;
 	std::shared_ptr<CountDownUI> count_down_UI_;
+	std::shared_ptr<InputInfoUI> input_info_UI_;
 
 	std::shared_ptr<Font> tanuei_font_;
 

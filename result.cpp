@@ -19,6 +19,7 @@
 #include"button_graph_create.h"
 #include"condition_timer.h"
 #include"tutorial.h"
+#include"button_decide.h"
 
 Result::Result(int model)
 	:BaseScene(SceneName::kResult,model)
@@ -109,6 +110,7 @@ Result::Result(int model)
 		screen->SetIsDisp(TRUE);
 	}
 	result_sentence_ = std::make_shared<ResultScoreUI>(time_);
+	button_decide_ui_ = std::make_shared<ButtonDecideUI>();
 }
 
 
@@ -356,6 +358,7 @@ void Result::Draw()
 			kFontColor, tanuei_font_->GetHandle(), "%.1f", time_, kFontThickColor);
 	}
 	
+	button_decide_ui_->Draw();
 
 	Draw2D::WhiteBoxBlend(static_cast<int>(fade_in_param_));
 	Draw2D::WhiteBoxBlend(static_cast<int>(fade_out_param_));

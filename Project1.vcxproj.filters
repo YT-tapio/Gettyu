@@ -325,6 +325,12 @@
     <Filter Include="ソース ファイル\enemy\dance_enemy">
       <UniqueIdentifier>{aad9f7bc-0347-4f0e-b819-16a3b62f0e14}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\UI\input_info">
+      <UniqueIdentifier>{bee49932-2e98-4083-88f9-e9928036fe19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\UI\button_decide">
+      <UniqueIdentifier>{980aeb17-8b8a-4cc4-89af-16b95b0f551e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -623,6 +629,12 @@
     </ClCompile>
     <ClCompile Include="dance_enemy.cpp">
       <Filter>ソース ファイル\enemy\dance_enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="input_info_UI.cpp">
+      <Filter>ソース ファイル\UI\input_info</Filter>
+    </ClCompile>
+    <ClCompile Include="button_decide.cpp">
+      <Filter>ソース ファイル\UI\button_decide</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -955,6 +967,12 @@
     </ClInclude>
     <ClInclude Include="dance_enemy.h">
       <Filter>ソース ファイル\enemy\dance_enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="input_info_UI.h">
+      <Filter>ソース ファイル\UI\input_info</Filter>
+    </ClInclude>
+    <ClInclude Include="button_decide.h">
+      <Filter>ソース ファイル\UI\button_decide</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

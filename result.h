@@ -13,6 +13,7 @@ class Font;
 class SoundBase;
 class ResultScoreUI;
 class ConditionTimer;
+class ButtonDecideUI;
 
 class Result : public BaseScene
 {
@@ -54,12 +55,16 @@ private:
 
 	std::shared_ptr<ResultScoreUI> result_sentence_;
 
+	std::shared_ptr<ButtonDecideUI> button_decide_ui_;
+
 	std::shared_ptr<ConditionTimer> next_scene_offset_timer_;
 
 	int button_num_;
 	int before_button_num_;
 	std::vector<std::shared_ptr<Button>> buttons_;
 	std::shared_ptr<ButtonSelecter> selecter_;
+
+
 
 	std::shared_ptr<Animation> animation_;
 

@@ -20,6 +20,8 @@ Input::Input()
 
 bool Input::GetInputKey()
 {
+
+
 	if (CheckHitKeyAll(DX_CHECKINPUT_KEY) != 0 ||
 		CheckHitKeyAll(DX_CHECKINPUT_MOUSE) != 0)
 	{
@@ -77,22 +79,48 @@ bool Input::GetInputPad()
 	return FALSE;
 }
 
+bool Input::CheckMouseMoving()
+{
+	bool flag = FALSE;
+	int mouse_x_diff = now_type_state_.mouse_x - before_type_state_.mouse_x;
+	int mouse_y_diff = now_type_state_.mouse_y - before_type_state_.mouse_y;
+	int wheel_diff = now_type_state_.wheel - before_type_state_.wheel;
+
+	//printfDx("%d\n", mouse_x_diff);
+
+	if (fabs(mouse_x_diff) > 0)
+	{
+		return TRUE;
+	}
+
+	if (fabs(mouse_y_diff) > 0)
+	{
+		return TRUE;
+	}
+
+	if (fabs(wheel_diff) > 0)
+	{
+		return TRUE;
+	}
+
+	return flag;
+}
 
 void Input::DecideDeviceType()
 {
 	
 	bool is_key = GetInputKey();
 	bool is_pad = GetInputPad();
-	
-	//何が入力されているか
+	bool is_mouse = CheckMouseMoving();
 
+	//何が入力されているか
 
 	switch(device_type_)
 	{
 	case InputDeviceType::kNothing:
 
 		//キーボード入力検知
-		if (is_key)
+		if (is_key || is_mouse)
 		{
 			//キーボード入力されたら
 			device_type_ = InputDeviceType::kKey;

@@ -8,6 +8,7 @@
 #include"keyconfig.h"
 #include"super_attack_state_getter.h"
 #include"super_attack_state.h"
+#include"situation.h"
 
 Tutorial::Tutorial()
 {
@@ -48,7 +49,7 @@ void Tutorial::Awake()
 	super_attack_info_coll_r_	= 30.f;
 
 	// タイマーを生成
-	const float kDispTimerMax		= 10.f;
+	const float kDispTimerMax		= 15.f;
 	weapon_info_timer_				= std::make_shared<ConditionTimer>(kDispTimerMax);
 	attack_info_timer_					= std::make_shared<ConditionTimer>(kDispTimerMax);
 	super_attack_info_timer_		= std::make_shared<ConditionTimer>(kDispTimerMax);
@@ -78,6 +79,7 @@ void Tutorial::Reset()
 
 	secound_weapon_info_		= FALSE;
 	third_weapon_info_			= FALSE;
+	is_disp_ = FALSE;
 }
 
 void Tutorial::CheckCollision(const VECTOR& pos)
@@ -91,6 +93,7 @@ void Tutorial::CheckCollision(const VECTOR& pos)
 			is_disp_super_attack_coll_info_	= FALSE;
 			secound_weapon_info_				= FALSE;
 			third_weapon_info_					= FALSE;
+			is_disp_ = TRUE;
 			weapon_info_timer_->Reset();
 		}
 
@@ -120,7 +123,7 @@ void Tutorial::Update()
 	if (weapon_info_timer_->GetIsEnd()) 
 	{ 
 		// さいごもおわったなら描画しない
-		if (!secound_weapon_info_ && third_weapon_info_) { weapon_info_end_ = TRUE; return; }
+		if (!secound_weapon_info_ && third_weapon_info_) { weapon_info_end_ = TRUE; is_disp_ = FALSE; is_disp_weapon_coll_info_ = FALSE; return; }
 
 		if (!secound_weapon_info_ && !third_weapon_info_)
 		{
@@ -140,7 +143,7 @@ void Tutorial::Update()
 void Tutorial::Draw()
 {
 	if (!is_tutorial_) { return; }
-	VECTOR back_pos			= VAdd(VectorAssistant::GetScreenCenterPos(), VectorAssistant::Get2DVec(0.f, -200.f));
+	VECTOR back_pos			= VAdd(VectorAssistant::GetScreenCenterPos(), VectorAssistant::Get2DVec(0.f, -280.f));
 
 	const int kBoxWidth		= 575.f;
 	const int kBoxHeight		= 250.f;
@@ -155,86 +158,102 @@ void Tutorial::Draw()
 	const char* kSizeOneSentence = "あ";
 	int font_width		= 0;
 	int font_height		= 0;
-	Draw2D::BlendBox(back_pos, kBoxWidth, kBoxHeight, kBoxColor, TRUE, kBoxAlphaNum);
+
+	if (is_disp_|| is_disp_super_attack_coll_info_)
+	{
+		Draw2D::BlendBox(back_pos, kBoxWidth, kBoxHeight, kBoxColor, TRUE, kBoxAlphaNum);
+	}
+
+	
 	// ここで文字を描画する
-	if (is_disp_weapon_coll_info_ && !is_disp_super_attack_coll_info_ && !weapon_info_end_) 
+
+	if (Situation::GetInstance().GetSituationName() < SituationName::kClearOffset)
 	{
-		if (secound_weapon_info_)
+		if (is_disp_weapon_coll_info_ && !is_disp_super_attack_coll_info_ && !weapon_info_end_)
 		{
-			const char* kFontSentence			= "Yボタンのぶきは";
-			const char* kFontSentenceDown	= "てきをつかまえられるぞ!";
-			font_width = GetDrawStringWidthToHandle(kFontSentence, strlen(kFontSentence), tanuei_font_->GetHandle());
-			font_height = GetDrawStringWidthToHandle(kSizeOneSentence, strlen(kSizeOneSentence), tanuei_font_->GetHandle());
-			DrawStringToHandle(static_cast<int>(center_pos.x - float(font_width) * 0.5f), static_cast<int>(center_pos.y - float(font_height) * 1.5f), kFontSentence, font_color, tanuei_font_->GetHandle(), font_edge_color);
-			
-			int font_down_width = GetDrawStringWidthToHandle(kFontSentenceDown, strlen(kFontSentenceDown), tanuei_font_->GetHandle());
-			DrawStringToHandle(static_cast<int>(center_pos.x - float(font_down_width) * 0.5f), static_cast<int>(center_pos.y + float(font_height)), kFontSentenceDown, font_color, tanuei_font_->GetHandle(), font_edge_color);
+			if (secound_weapon_info_)
+			{
+				const char* kFontSentence = "Xボタンのぶきは";
+				const char* kFontSentenceMiddle = "てきをすこしのあいだ";
+				const char* kFontSentenceDown = "うごけなくできるぞ!";
+				font_width = GetDrawStringWidthToHandle(kFontSentence, strlen(kFontSentence), tanuei_font_->GetHandle());
+				font_height = GetDrawStringWidthToHandle(kSizeOneSentence, strlen(kSizeOneSentence), tanuei_font_->GetHandle());
+				DrawStringToHandle(static_cast<int>(center_pos.x - float(font_width) * 0.5f), static_cast<int>(center_pos.y - float(font_height) * 2.f), kFontSentence, font_color, tanuei_font_->GetHandle(), font_edge_color);
 
+				int font_middle_width = GetDrawStringWidthToHandle(kFontSentenceMiddle, strlen(kFontSentenceMiddle), tanuei_font_->GetHandle());
+				DrawStringToHandle(static_cast<int>(center_pos.x - float(font_middle_width) * 0.5f), static_cast<int>(center_pos.y - float(font_height) * 0.5f), kFontSentenceMiddle, font_color, tanuei_font_->GetHandle(), font_edge_color);
+
+				int font_down_width = GetDrawStringWidthToHandle(kFontSentenceDown, strlen(kFontSentenceDown), tanuei_font_->GetHandle());
+				DrawStringToHandle(static_cast<int>(center_pos.x - float(font_down_width) * 0.5f), static_cast<int>(center_pos.y + float(font_height)), kFontSentenceDown, font_color, tanuei_font_->GetHandle(), font_edge_color);
+			}
+			else if (third_weapon_info_)
+			{
+				const char* kFontSentence = "Yボタンのぶきは";
+				const char* kFontSentenceDown = "てきをつかまえられるぞ!";
+				font_width = GetDrawStringWidthToHandle(kFontSentence, strlen(kFontSentence), tanuei_font_->GetHandle());
+				font_height = GetDrawStringWidthToHandle(kSizeOneSentence, strlen(kSizeOneSentence), tanuei_font_->GetHandle());
+				DrawStringToHandle(static_cast<int>(center_pos.x - float(font_width) * 0.5f), static_cast<int>(center_pos.y - float(font_height) * 1.5f), kFontSentence, font_color, tanuei_font_->GetHandle(), font_edge_color);
+
+				int font_down_width = GetDrawStringWidthToHandle(kFontSentenceDown, strlen(kFontSentenceDown), tanuei_font_->GetHandle());
+				DrawStringToHandle(static_cast<int>(center_pos.x - float(font_down_width) * 0.5f), static_cast<int>(center_pos.y + float(font_height)), kFontSentenceDown, font_color, tanuei_font_->GetHandle(), font_edge_color);
+			}
+			else
+			{
+				const char* kFontSentence = "XとYボタンでぶきをきりかえられるぞ!";
+				const char* kFontSentenceDown = "LBでこうげきできるぞ!";
+				font_width = GetDrawStringWidthToHandle(kFontSentence, strlen(kFontSentence), tanuei_font_->GetHandle());
+				font_height = GetDrawStringWidthToHandle(kSizeOneSentence, strlen(kSizeOneSentence), tanuei_font_->GetHandle());
+				DrawStringToHandle(static_cast<int>(center_pos.x - float(font_width) * 0.5f), static_cast<int>(center_pos.y - float(font_height) * 1.5f), kFontSentence, font_color, tanuei_font_->GetHandle(), font_edge_color);
+
+				int font_down_width = GetDrawStringWidthToHandle(kFontSentenceDown, strlen(kFontSentenceDown), tanuei_font_->GetHandle());
+				DrawStringToHandle(static_cast<int>(center_pos.x - float(font_down_width) * 0.5f), static_cast<int>(center_pos.y + float(font_height)), kFontSentenceDown, font_color, tanuei_font_->GetHandle(), font_edge_color);
+			}
 		}
-		else if (third_weapon_info_)
+		if (is_disp_super_attack_coll_info_)
 		{
-			const char* kFontSentence				= "Xボタンのぶきは";
-			const char* kFontSentenceMiddle	= "てきをすこしのあいだ";
-			const char* kFontSentenceDown		= "うごけなくできるぞ!";
-			font_width = GetDrawStringWidthToHandle(kFontSentence, strlen(kFontSentence), tanuei_font_->GetHandle());
-			font_height = GetDrawStringWidthToHandle(kSizeOneSentence, strlen(kSizeOneSentence), tanuei_font_->GetHandle());
-			DrawStringToHandle(static_cast<int>(center_pos.x - float(font_width) * 0.5f), static_cast<int>(center_pos.y - float(font_height) * 2.f), kFontSentence, font_color, tanuei_font_->GetHandle(), font_edge_color);
-			
-			int font_middle_width = GetDrawStringWidthToHandle(kFontSentenceMiddle, strlen(kFontSentenceMiddle), tanuei_font_->GetHandle());
-			DrawStringToHandle(static_cast<int>(center_pos.x - float(font_middle_width) * 0.5f), static_cast<int>(center_pos.y - float(font_height) * 0.5f), kFontSentenceMiddle, font_color, tanuei_font_->GetHandle(), font_edge_color);
 
-			int font_down_width = GetDrawStringWidthToHandle(kFontSentenceDown, strlen(kFontSentenceDown), tanuei_font_->GetHandle());
-			DrawStringToHandle(static_cast<int>(center_pos.x - float(font_down_width) * 0.5f), static_cast<int>(center_pos.y + float(font_height)), kFontSentenceDown, font_color, tanuei_font_->GetHandle(), font_edge_color);
-		}
-		else
-		{
-			const char* kFontSentence			= "XとYボタンでぶきをきりかえられるぞ!";
-			const char* kFontSentenceDown	= "RBでこうげきできるぞ!";
-			font_width = GetDrawStringWidthToHandle(kFontSentence, strlen(kFontSentence), tanuei_font_->GetHandle());
-			font_height = GetDrawStringWidthToHandle(kSizeOneSentence, strlen(kSizeOneSentence), tanuei_font_->GetHandle());
-			DrawStringToHandle(static_cast<int>(center_pos.x - float(font_width) * 0.5f), static_cast<int>(center_pos.y - float(font_height) * 1.5f), kFontSentence, font_color, tanuei_font_->GetHandle(), font_edge_color);
+			if (SuperAttackStateGetter::GetInstance().GetState() == SuperAttackState::kActive)
+			{
+				const char* kFontSentence = "ひっさつわざちゅうはLTとRTで";
+				const char* kFontSentenceEnd = "カメラをうごかせるぞ!";
+				font_width = GetDrawStringWidthToHandle(kFontSentence, strlen(kFontSentence), tanuei_font_->GetHandle());
+				font_height = GetDrawStringWidthToHandle(kSizeOneSentence, strlen(kSizeOneSentence), tanuei_font_->GetHandle());
+				DrawStringToHandle(static_cast<int>(center_pos.x - float(font_width) * 0.5f), static_cast<int>(center_pos.y - float(font_height)), kFontSentence, font_color, tanuei_font_->GetHandle(), font_edge_color);
 
-			int font_down_width = GetDrawStringWidthToHandle(kFontSentenceDown, strlen(kFontSentenceDown), tanuei_font_->GetHandle());
-			DrawStringToHandle(static_cast<int>(center_pos.x - float(font_down_width) * 0.5f), static_cast<int>(center_pos.y + float(font_height)), kFontSentenceDown, font_color, tanuei_font_->GetHandle(), font_edge_color);
+				int font_end_width = GetDrawStringWidthToHandle(kFontSentenceEnd, strlen(kFontSentenceEnd), tanuei_font_->GetHandle());
+				DrawStringToHandle(static_cast<int>(center_pos.x - float(font_end_width) * 0.5f), static_cast<int>(center_pos.y + float(font_height)), kFontSentenceEnd, font_color, tanuei_font_->GetHandle(), font_edge_color);
+			}
+			else
+			{
+				const char* kFontSentence = "Rボタンでひっさつわざをうてるぞ!";
+				const char* kFontSentenceMiddle = "きょうりょくなぶきにかわり";
+				const char* kFontSentenceEnd = "てきをすいこむぞ!";
+				font_width = GetDrawStringWidthToHandle(kFontSentence, strlen(kFontSentence), tanuei_font_->GetHandle());
+				font_height = GetDrawStringWidthToHandle(kSizeOneSentence, strlen(kSizeOneSentence), tanuei_font_->GetHandle());
+				DrawStringToHandle(static_cast<int>(center_pos.x - float(font_width) * 0.5f), static_cast<int>(center_pos.y - float(font_height) * 1.5f), kFontSentence, font_color, tanuei_font_->GetHandle(), font_edge_color);
+
+				int font_middle_width = GetDrawStringWidthToHandle(kFontSentenceMiddle, strlen(kFontSentenceMiddle), tanuei_font_->GetHandle());
+				DrawStringToHandle(static_cast<int>(center_pos.x - float(font_middle_width) * 0.5f), static_cast<int>(center_pos.y - float(font_height) * 0.5f), kFontSentenceMiddle, font_color, tanuei_font_->GetHandle(), font_edge_color);
+
+				int font_end_width = GetDrawStringWidthToHandle(kFontSentenceEnd, strlen(kFontSentenceEnd), tanuei_font_->GetHandle());
+				DrawStringToHandle(static_cast<int>(center_pos.x - float(font_end_width) * 0.5f), static_cast<int>(center_pos.y + float(font_height) * 0.5f), kFontSentenceEnd, font_color, tanuei_font_->GetHandle(), font_edge_color);
+			}
+
+
+
 		}
 	}
-	if (is_disp_super_attack_coll_info_) 
+	else
 	{
+		const char* kFontSentence = "ゲームクリア!";
 
-		if (SuperAttackStateGetter::GetInstance().GetState() == SuperAttackState::kActive)
-		{
-			const char* kFontSentence = "ひっさつわざちゅうはLTとRTで";
-			const char* kFontSentenceEnd = "カメラをうごかせるぞ!";
-			font_width = GetDrawStringWidthToHandle(kFontSentence, strlen(kFontSentence), tanuei_font_->GetHandle());
-			font_height = GetDrawStringWidthToHandle(kSizeOneSentence, strlen(kSizeOneSentence), tanuei_font_->GetHandle());
-			DrawStringToHandle(static_cast<int>(center_pos.x - float(font_width) * 0.5f), static_cast<int>(center_pos.y - float(font_height)), kFontSentence, font_color, tanuei_font_->GetHandle(), font_edge_color);
+		font_width = GetDrawStringWidthToHandle(kFontSentence, strlen(kFontSentence), tanuei_font_->GetHandle());
+		font_height = GetDrawStringWidthToHandle(kSizeOneSentence, strlen(kSizeOneSentence), tanuei_font_->GetHandle());
 
-			int font_end_width = GetDrawStringWidthToHandle(kFontSentenceEnd, strlen(kFontSentenceEnd), tanuei_font_->GetHandle());
-			DrawStringToHandle(static_cast<int>(center_pos.x - float(font_end_width) * 0.5f), static_cast<int>(center_pos.y + float(font_height)), kFontSentenceEnd, font_color, tanuei_font_->GetHandle(), font_edge_color);
-		}
-		else
-		{
-			const char* kFontSentence = "Rボタンでひっさつわざをうてるぞ!";
-			const char* kFontSentenceMiddle = "きょうりょくなぶきにかわり";
-			const char* kFontSentenceDown = "みぎすてぃっくをまわすと";
-			const char* kFontSentenceEnd = "てきをすいこむぞ!";
-			font_width = GetDrawStringWidthToHandle(kFontSentence, strlen(kFontSentence), tanuei_font_->GetHandle());
-			font_height = GetDrawStringWidthToHandle(kSizeOneSentence, strlen(kSizeOneSentence), tanuei_font_->GetHandle());
-			DrawStringToHandle(static_cast<int>(center_pos.x - float(font_width) * 0.5f), static_cast<int>(center_pos.y - float(font_height) * 2.4f), kFontSentence, font_color, tanuei_font_->GetHandle(), font_edge_color);
-
-			int font_middle_width = GetDrawStringWidthToHandle(kFontSentenceMiddle, strlen(kFontSentenceMiddle), tanuei_font_->GetHandle());
-			DrawStringToHandle(static_cast<int>(center_pos.x - float(font_middle_width) * 0.5f), static_cast<int>(center_pos.y - float(font_height) * 1.2f), kFontSentenceMiddle, font_color, tanuei_font_->GetHandle(), font_edge_color);
-
-			int font_down_width = GetDrawStringWidthToHandle(kFontSentenceDown, strlen(kFontSentenceDown), tanuei_font_->GetHandle());
-			DrawStringToHandle(static_cast<int>(center_pos.x - float(font_down_width) * 0.5f), static_cast<int>(center_pos.y), kFontSentenceDown, font_color, tanuei_font_->GetHandle(), font_edge_color);
-
-			int font_end_width = GetDrawStringWidthToHandle(kFontSentenceEnd, strlen(kFontSentenceEnd), tanuei_font_->GetHandle());
-			DrawStringToHandle(static_cast<int>(center_pos.x - float(font_end_width) * 0.5f), static_cast<int>(center_pos.y + float(font_height) * 1.2f), kFontSentenceEnd, font_color, tanuei_font_->GetHandle(), font_edge_color);
-		}
-
-		
-
+		DrawStringToHandle(static_cast<int>(center_pos.x - float(font_width) * 0.5f), static_cast<int>(center_pos.y - float(font_height) * 0.5f), kFontSentence, font_color, tanuei_font_->GetHandle(), font_edge_color);
 	}
+
+	
 	
 }
 

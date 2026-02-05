@@ -822,6 +822,12 @@ void Brain::UpdateSphere(const VECTOR& target_pos,const VECTOR& camera_pos)
 		decide_vertical_rad_value = pad_vertical_rad_value;
 	}
 
+	if (Situation::GetInstance().GetSituationName() >= SituationName::kClearOffset)
+	{
+		decide_side_rad_value = 0.f;
+		decide_vertical_rad_value = 0.f;
+	}
+
 	if (mouse_side_rad_value == 0.0f && mouse_vertical_rad_value == 0.0f &&
 		pad_side_rad_value == 0.0f && pad_vertical_rad_value == 0.0f)
 	{
@@ -869,17 +875,15 @@ void Brain::UpdateSphere(const VECTOR& target_pos,const VECTOR& camera_pos)
 
 	velocity_.x = direction_.x * side_distance_;
 	velocity_.z = direction_.z * side_distance_;
-
-	next_pos_ = VAdd(target_pos, velocity_);
 	
+	next_pos_ = VAdd(target_pos, velocity_);
 	velocity_ = GetFutureToNowPositionVelocity(next_pos_, camera_pos);
-
 	//カメラの位置を記憶
 	sphere_camera_->SetPos(VAdd(camera_pos, velocity_));
 
-
 	//カメラの位置を記憶
 	pos_ = VAdd(camera_pos, velocity_);
+	
 }
 
 void Brain::UpdateTracking(const VECTOR& now_camera_pos,std::shared_ptr<Player> player)
@@ -1043,8 +1047,8 @@ void Brain::UpdateVacuum(std::shared_ptr<Player>player,const VECTOR& camera_pos)
 	const float kAccelSpeed		= 0.5f;
 	const float kOffsetMax		= 30.f;
 	const float kOffsetSpeed	= 1.f;
-	static float timer			= 0.f;
-	static float accel			= 0.f;
+	static float timer				= 0.f;
+	static float accel				= 0.f;
 
 	//decide_dist_			= 0.f;
 	float side_dist				= 0.f;							//地上の距離

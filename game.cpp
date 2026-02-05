@@ -16,7 +16,7 @@
 #include"game_goal_ui.h"
 #include"count_down_UI.h"
 #include"tutorial.h"
-
+#include"input_info_ui.h"
 Game::Game(int model)
     :BaseScene(SceneName::kGame,model)
 {
@@ -257,6 +257,7 @@ void Game::Init()
     enemy_count_UI_            = std::make_shared<EnemyCountUI>(&enemy_manager_->not_get_count_);
     game_goal_UI_                = std::make_shared<GameGoalUI>(&enemy_manager_->not_get_count_);
     count_down_UI_              = std::make_shared<CountDownUI>();
+    input_info_UI_                  = std::make_shared<InputInfoUI>();
 
     tanuei_font_                = std::make_shared<Font>(kTanueiFontPath, kTanueiFontName, kFontSize, kFontThickSize, DX_FONTTYPE_EDGE);
 
@@ -320,13 +321,16 @@ void Game::Update(SceneName& name)
     ClearTime::GetInstance().Update();
 
     
-
-    //デバッグ用
-    if (Input::GetInstance().CheckInputKey(KeyConfig::kGameToResultKey) == InputState::kPush ||
-        Input::GetInstance().CheckInputPadButton(PadConfig::kGameToResultButton) == InputState::kPush)
+    if (Debug::GetInstance().GetDisp())
     {
-        name = SceneName::kResult;
+        //デバッグ用
+        if (Input::GetInstance().CheckInputKey(KeyConfig::kGameToResultKey) == InputState::kPush ||
+            Input::GetInstance().CheckInputPadButton(PadConfig::kGameToResultButton) == InputState::kPush)
+        {
+            name = SceneName::kResult;
+        }
     }
+    
 
     //更新処理
 
@@ -379,7 +383,7 @@ void Game::Update(SceneName& name)
     enemy_count_UI_->Update();
     game_goal_UI_->Update();
     count_down_UI_->Update(stand_by_timer_->GetNowTimer());
-
+    input_info_UI_->Update();
     hit_effect_->Update();
 
     Camera::GetInstance().Update(brain_->GetVelocity(), brain_->GetTargetVelocity());
@@ -415,10 +419,15 @@ void Game::Draw()
     screen_->Draw();
     
     weapon_UI_->Draw();
-    super_attack_UI_->Draw();
     enemy_count_UI_->Draw();
     game_goal_UI_->Draw();
     count_down_UI_->Draw();
+    input_info_UI_->Draw();
+    if (stand_by_timer_->GetIsEnd() && Tutorial::GetInstance().GetIsTutorial())
+    {
+        Tutorial::GetInstance().Draw();
+    }
+    super_attack_UI_->Draw();
     if (FALSE)
     {
         DrawLine3D(center_pos_, VAdd(center_pos_, VScale(norm_, 10.f)), GetColor(255, 255, 255));
@@ -440,15 +449,7 @@ void Game::Draw()
     { 
         DrawFormatStringToHandle(static_cast<int>(kTimerPos.x - float(timer_width) * 0.5f), static_cast<int>(kTimerPos.y), kFontColor, tanuei_font_->GetHandle(), "%.1f", clear_time);
     }
-    else
-    {
-        if (stand_by_timer_->GetIsEnd())
-        {
-            Tutorial::GetInstance().Draw();
-            // Tutorial::GetInstance().Debug();
-        }
-        
-    }
+   
     Draw2D::WhiteBoxBlend(static_cast<int>(offset_fade_param_));
     //DrawFormatString((kGameWidth - 300), (kGameHeight - 30), GetColor(0, 0, 0), "TAB / BACK Button : result");
 }

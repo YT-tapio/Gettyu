@@ -92,6 +92,7 @@ private:
 
 	bool GetInputPad();
 
+	bool CheckMouseMoving();
 
 	void DecideDeviceType();
 

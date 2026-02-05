@@ -63,6 +63,8 @@ struct PadConfig
     static const int kAttackButton          = XINPUT_BUTTON_LEFT_SHOULDER;
     static const int kCameraMoveButtonValue = 100;
 
+    static const int kInputInfoButton = XINPUT_BUTTON_START;
+
     //“®‚«‚É‚ÍŠÖŒW‚µ‚È‚¢‚à‚Ì
     static const int kSuperAttackButton     = XINPUT_BUTTON_RIGHT_SHOULDER;
     static const int kSwitchWarpRodButton   = XINPUT_BUTTON_Y;

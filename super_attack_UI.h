@@ -24,7 +24,7 @@ private:
 
 	const int kWeaponHandle = MV1LoadModel("data/model/weapon/vacuum/vacuum.mv1");
 
-	const int kSuperAttackInputPadButton		= LoadGraph("data/image/pad/R_button.png");
+	const int kSuperAttackInputPadButton		= LoadGraph("data/image/pad/right_pad_button2.png");
 	const int kSuperAttackInputPCButton		= LoadGraph("data/image/PC/right_mouse_button.png");
 
 	//Œ³‚Ì‰æ‘œ‚Ì‘å‚«‚³
@@ -51,7 +51,7 @@ private:
 	const VECTOR kSuperAttackPadPos					= VectorAssistant::Get2DVec(230.f, 250.f);
 
 	const VECTOR kSuperAttackPCOriginalSize		= VectorAssistant::Get2DVec(200.f, 400.f);
-	const VECTOR kSuperAttackPadOriginalSize		= VectorAssistant::Get2DVec(200.f, 200.f);
+	const VECTOR kSuperAttackPadOriginalSize		= VectorAssistant::Get2DVec(300.f, 300.f);
 
 	const VECTOR kPushKeyPos		= VectorAssistant::Get2DVec(210.f, 250.f);
 	const VECTOR kPushPadPos		= VectorAssistant::Get2DVec(200.f, 265.f);
@@ -75,11 +75,11 @@ private:
 
 	const int kAddSize					= 200;
 
-	const float kSizeUpSpeed			= 65.f;
+	const float kSizeUpSpeed				= 65.f;
 	const float kSizeDownSpeed			= 40.f;
 
 	const float kWheelSpinScreenScale	= 0.45f;
-	const float kStickSpinScreenScale	= 0.5f;
+	const float kStickSpinScreenScale	    = 0.5f;
 
 	const float kReadyEffectSpeed		= 1.f;
 	const float kReadyEffectSize		= 100.f;
