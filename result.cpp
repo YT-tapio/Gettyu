@@ -257,6 +257,16 @@ void Result::Update(SceneName& name)
 	}
 
 	Setting();
+	
+	if (Input::GetInstance().GetDeviceType() == InputDeviceType::kPad)
+	{
+		SetMouseDispFlag(FALSE);
+	}
+	else
+	{
+		SetMouseDispFlag(TRUE);
+	}
+
 	UpdateDispEnemyScreen();
 	if (next_scene_offset_timer_->GetIsEnd()) 
 	{

@@ -11,7 +11,7 @@ SceneManager::SceneManager()
 {
 
     SetGraphMode(kGameWidth, kGameHeight, 32);			//ウィンドウのサイズとカラーモードを決める
-    ChangeWindowMode(TRUE);				//ウィンドウモードにする
+    ChangeWindowMode(FALSE);				//ウィンドウモードにする
 
     Set3DSoundOneMetre(1.0f);
 
@@ -131,7 +131,10 @@ void SceneManager::Update()
 
         if (before_name != now_scene_name_)
         {
-            load_ui_->Draw();
+            if (now_scene_name_ != SceneName::kEnd)
+            {
+                load_ui_->Draw();
+            }
         }
         
         //ここでデバック処理
