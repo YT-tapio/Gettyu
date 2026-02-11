@@ -226,9 +226,21 @@ void Game::Init()
     Camera::GetInstance().Awake(brain_->GetPositionFromTarget(player_->GetCenterPos()),
         player_->GetCenterPos(), (DX_PI_F / 180.0f) * 75.0f);
     /*aho/aho*/
+
+    const char* kPracPath = "data/model/map/test/prac_stage4.mv1";
+
     const char* kStagePath = "data/model/map/arena/default_arena/default_arena.mv1";
 
-    stage_ = std::make_shared<Stage>(kStagePath, VGet(0, 0, 0), 1.0f);
+    if (FALSE)
+    {
+        stage_ = std::make_shared<Stage>(kStagePath, VGet(0, 0, 0), 1.0f);
+    }
+    else
+    {
+        stage_ = std::make_shared<Stage>(kPracPath, VGet(0, -40.f, 0), 10.0f);
+    }
+
+    
 
     brain_->Init(Camera::GetInstance().GetPos(), player_->GetCenterPos());
     Camera::GetInstance().Init(brain_->GetVelocity());
@@ -281,6 +293,8 @@ void Game::Init()
     clear_offset_timer_ = std::make_shared<ConditionTimer>(kClearOffsetTime);
    
     offset_fade_param_  = 255.f;
+
+    stage_->Init();
 
     if (Tutorial::GetInstance().GetIsTutorial())
     {
@@ -369,6 +383,8 @@ void Game::Update(SceneName& name)
     x_norm = VectorAssistant::VGetRotRadX(norm_, x_rad_);
     y_norm = VectorAssistant::VGetRotRadY(norm_, y_rad_);
     z_norm = VectorAssistant::VGetRotRadZ(norm_, z_rad_);
+
+    //stage_->Update();
 
     enemy_manager_->Update(player_);
     player_->Update(*stage_,brain_->GetSideRad());

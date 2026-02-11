@@ -19,16 +19,19 @@ Stage::Stage(const char* path, VECTOR pos, float scale)
 	, floor_{ nullptr }
 {
 	MV1SetupCollInfo(model_, -1);
-
+	scale_ = VectorAssistant::GetSame3DVec(scale);
+	rot_ = VectorAssistant::GetZeroVec();
 	MATRIX scale_matrix = MGetScale(scale_);
 	//行列を生成
 	MATRIX pos_matrix = MGetTranslate(pos_);
 	mat_ = MMult(scale_matrix, pos_matrix);
 
 	next_to_old_cap_ = std::make_shared<CollisionCapsule>(VectorAssistant::GetZeroVec(), VectorAssistant::GetZeroVec(), 0.f);
+	SetMat();
 
+	MV1SetupCollInfo(model_);
 	MV1SetMatrix(model_, mat_);
-	
+	MV1RefreshCollInfo(model_);
 }
 
 
@@ -316,8 +319,6 @@ bool Stage::CheckDownColl(const std::shared_ptr<ColliderBase> coll)
 	return flag;
 }
 
-
-
 VECTOR Stage::CheckHitWithWall(Player& player, const VECTOR& check_position)
 {
 	VECTOR fixed_pos = check_position;
@@ -596,7 +597,11 @@ void Stage::Init()
 
 void Stage::Update()
 {
-
+	MATRIX scale_matrix = MGetScale(scale_);
+	//行列を生成
+	MATRIX pos_matrix = MGetTranslate(pos_);
+	mat_ = MMult(scale_matrix, pos_matrix);
+	MV1SetMatrix(model_, mat_);
 }
 
 void Stage::Draw()
@@ -614,10 +619,11 @@ void Stage::Draw()
 	{
 		mat_ = pos_matrix;
 	}
-
-	MV1SetMatrix(model_, mat_);
+	//SetMat();
+	//MV1SetMatrix(model_, mat_);
 	MV1DrawModel(model_);
-	if (FALSE)
+
+	if (TRUE)
 	{
 		// 優先される床(青)
 		for (auto& poly : prioritize_floor_polys_)
@@ -695,20 +701,6 @@ VECTOR Stage::CheckCollision(std::shared_ptr<ColliderBase> object_coll, const VE
 	wall_polys_.clear();
 	// HACK: ステージポリゴンが複数ある場合、ここが繰り返し処理になる
 	{
-		if (FALSE)
-		{
-			if (VSize(velocity) != 0.f && (velocity.y <= 0.f && velocity.y >= -0.1f))
-			{
-				auto foot_projection_pos = CheckFootProjectionPos(old_pos, next_pos, next_coll->GetRadius());
-				//offset_vel = VScale(VNorm(VSub(foot_projection_pos, old_pos)), VSize(velocity));
-				offset_vel = VScale(VNorm(VSub(foot_projection_pos, old_pos)), VSize(velocity));			// velocityを調整できるように
-				rem_hit_pos = VAdd(VAdd(old_pos, offset_vel), VGet(0.f, -old_coll->GetRadius(), 0.f));
-			}
-		}
-		
-		
-		
-
 		// プレイヤーの周囲にあるステージポリゴンを取得する
 		// ( 検出する範囲は移動距離も考慮する )
 		auto hit_dim = next_to_old_cap_->GetCollInfo(model_);
