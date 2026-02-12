@@ -237,7 +237,7 @@ void Game::Init()
     }
     else
     {
-        stage_ = std::make_shared<Stage>(kPracPath, VGet(0, -40.f, 0), 10.0f);
+        stage_ = std::make_shared<Stage>(kPracPath, VGet(0, -40.f, 0), 30.0f);
     }
 
     
