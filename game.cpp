@@ -231,7 +231,7 @@ void Game::Init()
 
     const char* kStagePath = "data/model/map/arena/default_arena/default_arena.mv1";
 
-    if (FALSE)
+    if (TRUE)
     {
         stage_ = std::make_shared<Stage>(kStagePath, VGet(0, 0, 0), 1.0f);
     }
@@ -239,8 +239,6 @@ void Game::Init()
     {
         stage_ = std::make_shared<Stage>(kPracPath, VGet(0, -40.f, 0), 30.0f);
     }
-
-    
 
     brain_->Init(Camera::GetInstance().GetPos(), player_->GetCenterPos());
     Camera::GetInstance().Init(brain_->GetVelocity());

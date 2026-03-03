@@ -117,7 +117,6 @@ void Animation::Detach(AnimationType type)
             MV1DetachAnim(animation.model_handle, animation.attach_index);
             animation.attach_index = -1;
         }
-
     }
 }
 
