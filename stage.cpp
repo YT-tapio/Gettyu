@@ -623,7 +623,7 @@ void Stage::Draw()
 	//MV1SetMatrix(model_, mat_);
 	MV1DrawModel(model_);
 
-	if (TRUE)
+	if (FALSE)
 	{
 		// —Dæ‚³‚ê‚é°(Â)
 		for (auto& poly : prioritize_floor_polys_)
