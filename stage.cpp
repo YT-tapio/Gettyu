@@ -679,7 +679,7 @@ VECTOR Stage::CheckCollision(std::shared_ptr<ColliderBase> object_coll, const VE
 	prioritize_floor_num_ = 0;
 	// 今の当たり判定は未来のカプセルのとこだけになっているので、カプセルを大ききくしたやつにする(nowとnextの合計のもの)
 
-	// 新しくこいつで当たり判定を行う
+	// 新しく生成し当たり判定を行う
 	auto old_coll	= object_coll->Clone();
 	auto next_coll	= object_coll->Clone();
 

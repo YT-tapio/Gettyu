@@ -29,6 +29,5 @@ public:
 
 	MV1_COLL_RESULT_POLY_DIM GetCollInfo(const int model) override;
 
-
 	bool IsHitTriangle(const VECTOR& tri_1, const VECTOR& tri_2, const VECTOR& tri_3) override;
 };

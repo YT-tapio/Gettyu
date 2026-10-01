@@ -33,14 +33,14 @@ public:
 	/// @brief @brief カプセルに当たっているモデルの情報を返す
 	/// @param model モデル
 	/// @return 当たっているポリゴンの情報
-	virtual MV1_COLL_RESULT_POLY_DIM GetCollInfo(const int model);
+	virtual MV1_COLL_RESULT_POLY_DIM GetCollInfo(const int model) = 0;
 
 	/// @brief 三角形との当たり判定
 	/// @param tri_1 
 	/// @param tri_2 
 	/// @param tri_3 
 	/// @return TRUE : 当たっている
-	virtual bool IsHitTriangle(const VECTOR& tri_1, const VECTOR& tri_2, const VECTOR& tri_3);
+	virtual bool IsHitTriangle(const VECTOR& tri_1, const VECTOR& tri_2, const VECTOR& tri_3) = 0;
 
 	virtual std::shared_ptr<ColliderBase> Clone() const = 0;
 

@@ -38,13 +38,3 @@ VECTOR ColliderBase::GetCenterPos()
 	return center_pos;
 }
 
-MV1_COLL_RESULT_POLY_DIM ColliderBase::GetCollInfo(const int model)
-{
-	return MV1CollCheck_Sphere(model, -1, pos_, radius_);
-}
-
-bool ColliderBase::IsHitTriangle(const VECTOR& tri_1, const VECTOR& tri_2, const VECTOR& tri_3)
-{
-	return HitCheck_Sphere_Triangle(pos_, radius_, tri_1, tri_2, tri_3);
-}
-
