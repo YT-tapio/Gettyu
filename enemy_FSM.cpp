@@ -81,8 +81,6 @@ std::shared_ptr<BaseEnemyState> EnemyFSM::ChangeFleeping(std::shared_ptr<BaseEne
 	float rad = acosf(dot);
 	float herf_fov = (enemy->GetFov() * 0.5f);
 
-	
-
 	//radがfovの半分以下かつ、視界の距離ないなら
 	if (rad <= herf_fov && (enemy->GetAlertDist() >= VSize(enemy_to_player_dist)))
 	{
@@ -123,8 +121,6 @@ std::shared_ptr<BaseEnemyState> EnemyFSM::ChangeFleeping(std::shared_ptr<BaseEne
 		}
 	}
 
-	
-
 	//リターンされないのなら気づいていなくする
 	return std::make_shared<EnemyPatrolling>();
 }
@@ -152,24 +148,23 @@ std::shared_ptr<BaseEnemyState> EnemyFSM::Surprise(EnemyBase* enemy)
 
 std::shared_ptr<BaseEnemyState> EnemyFSM::UpdateState(std::shared_ptr<BaseEnemyState> now_state,std::shared_ptr<Player> player, EnemyBase* enemy)
 {
-
+	// 最初はパトロール
 	if (now_state == nullptr)
 	{
 		return std::make_shared<EnemyPatrolling>();
 	}
 	else
 	{
+		// 現在のステートからのチェンジ
 		auto state = now_state->ChangeState(enemy, player);
-
 
 		if (state != nullptr)
 		{
 			return state;
 		}
 
-		//nullptrが返された場合
+		// stateがnullptrの返された場合
 		return now_state;
 	}
-
 	
 }
